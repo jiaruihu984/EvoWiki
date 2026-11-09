@@ -172,7 +172,7 @@ class MemoryStore(Protocol):
 
     def episodes(self, user_id: str, *, since: datetime | None = None,
                  until: datetime | None = None, as_of: datetime | None = None,
-                 exclude_sessions_from: Mapping[str, int] = _NO_EXCLUDE) -> list[Episode]:
+                 exclude_sessions_from: Mapping[str, int] = _NO_EXCLUDE, include_hidden: bool = False) -> list[Episode]:
         """`exclude_sessions_from` = {session_id: first turn index kept verbatim in the
         context}: that session's turns from there on are left out, its folded turns stay."""
         ...
@@ -190,7 +190,7 @@ class MemoryStore(Protocol):
 
     def items(self, user_id: str, *, kinds: Sequence[str] | None = None,
               statuses: Sequence[str] | None = None,
-              as_of: datetime | None = None) -> list[Item]: ...
+              as_of: datetime | None = None, include_hidden: bool = False) -> list[Item]: ...
 
     def set_item_status(self, item_id: str, status: ItemStatus, *, at: datetime, by: str,
                         superseded_by: str | None = None) -> None: ...
@@ -215,7 +215,7 @@ class MemoryStore(Protocol):
         """What this user's open forget requests hide (nothing in memory)."""
         ...
 
-    def unless_forgotten(self, user_id: str, session_id: str) -> AbstractContextManager[bool]:
+    def unless_forgotten(self, user_id: str, session_id: str, *, evidence: Sequence[EvidenceRef] = (), kind: str | None = None) -> AbstractContextManager[bool]:
         """Held around a write about the session outside its consolidation commit (a preference
         landing): True when it is not being forgotten; a forget request of it waits until the
         block ends, so that write is either before the request or never."""
@@ -285,7 +285,7 @@ class InMemoryMemoryStore:
         self._ep_vec.pop(episode_key(session_id, message_id), None)
 
     def episodes(self, user_id, *, since=None, until=None, as_of=None,
-                 exclude_sessions_from=_NO_EXCLUDE) -> list[Episode]:
+                 exclude_sessions_from=_NO_EXCLUDE, include_hidden=False) -> list[Episode]:
         out = [e for e in self._episodes.values() if e.user_id == user_id
                and _keep_episode(e, since=since, until=until, as_of=as_of,
                                  exclude_sessions_from=exclude_sessions_from)]
@@ -308,7 +308,7 @@ class InMemoryMemoryStore:
         it = self._items.get(item_id)
         return it if it is not None and it.user_id == user_id else None
 
-    def items(self, user_id, *, kinds=None, statuses=None, as_of=None) -> list[Item]:
+    def items(self, user_id, *, kinds=None, statuses=None, as_of=None, include_hidden=False) -> list[Item]:
         return _filter_items((i for i in self._items.values() if i.user_id == user_id),
                              kinds=kinds, statuses=statuses, as_of=as_of)
 
@@ -361,9 +361,15 @@ class InMemoryMemoryStore:
         return NO_HIDDEN
 
     @contextmanager
-    def unless_forgotten(self, user_id, session_id) -> Iterator[bool]:
+    def unless_forgotten(self, user_id, session_id, *, evidence=(), kind=None) -> Iterator[bool]:
         h = self.hidden(user_id)
-        yield not h.paused and not h.session(session_id)
+        yield (not h.paused and not h.session(session_id)
+                   and not any(h.episode(e.session_id or session_id, e.message_id)
+                               for e in evidence if e.message_id)
+                   and not any(s.kind in (kind, "episode") and
+                               s.evidence_message_ids.intersection(
+                                   e.message_id for e in evidence if e.message_id)
+                               for s in self.suppressions(user_id)))
 
     def commit_consolidation(self, sessions, *, session_id, entry_id, payload, items,
                              status_changes, at, read_watermark=None) -> bool:
@@ -452,13 +458,20 @@ class PgMemoryStore:
             return hidden_of(conn, user_id)
 
     @contextmanager
-    def unless_forgotten(self, user_id, session_id) -> Iterator[bool]:
+    def unless_forgotten(self, user_id, session_id, *, evidence=(), kind=None) -> Iterator[bool]:
         from evowiki.assistant.pg_store import lock_consolidation
         from evowiki.memory.forget import hidden_of
         with self._pool.connection() as conn, conn.transaction():
             lock_consolidation(conn, session_id)
+            conn.execute("select pg_advisory_xact_lock(hashtext('memory:user:' || %s))", (user_id,))
             h = hidden_of(conn, user_id)
-            yield not h.paused and not h.session(session_id)
+            yield (not h.paused and not h.session(session_id)
+                   and not any(h.episode(e.session_id or session_id, e.message_id)
+                               for e in evidence if e.message_id)
+                   and not any(s.kind in (kind, "episode") and
+                               s.evidence_message_ids.intersection(
+                                   e.message_id for e in evidence if e.message_id)
+                               for s in self.suppressions(user_id)))
 
     def upsert_episode(self, ep: Episode) -> None:
         if self.hidden(ep.user_id).episode(ep.session_id, ep.message_id):
@@ -494,7 +507,7 @@ class PgMemoryStore:
                          "and message_id = %s", (session_id, message_id))
 
     def episodes(self, user_id, *, since=None, until=None, as_of=None,
-                 exclude_sessions_from=_NO_EXCLUDE) -> list[Episode]:
+                 exclude_sessions_from=_NO_EXCLUDE, include_hidden=False) -> list[Episode]:
         with self._pool.connection() as conn:
             rows = fetch_all(
                 conn,
@@ -508,7 +521,7 @@ class PgMemoryStore:
         return [e for e in map(_episode, rows)
                 if _keep_episode(e, since=None, until=None, as_of=None,
                                  exclude_sessions_from=exclude_sessions_from)
-                and not h.episode(e.session_id, e.message_id)]
+                and (include_hidden or not h.episode(e.session_id, e.message_id))]
 
     def episode_vectors(self, user_id, embedder_tag) -> dict[str, list[float]]:
         eid, ver, dim = embedder_tag
@@ -546,7 +559,7 @@ class PgMemoryStore:
         it = _item(r)
         return None if self.hidden(user_id).item(it) else it
 
-    def items(self, user_id, *, kinds=None, statuses=None, as_of=None) -> list[Item]:
+    def items(self, user_id, *, kinds=None, statuses=None, as_of=None, include_hidden=False) -> list[Item]:
         with self._pool.connection() as conn:
             rows = fetch_all(
                 conn, f"select {_ITEM_COLS} from memory_item where user_id = %(u)s "
@@ -555,7 +568,7 @@ class PgMemoryStore:
                 {"u": user_id, "kinds": list(kinds) if kinds is not None else None,
                  "asof": as_of})
         h = self.hidden(user_id)
-        return _filter_items((it for it in map(_item, rows) if not h.item(it)), kinds=kinds,
+        return _filter_items((it for it in map(_item, rows) if include_hidden or not h.item(it)), kinds=kinds,
                              statuses=statuses, as_of=as_of)
 
     def set_item_status(self, item_id, status, *, at, by, superseded_by=None) -> None:
@@ -610,10 +623,16 @@ class PgMemoryStore:
         from evowiki.memory.forget import hidden_of
 
         with self._pool.connection() as conn, conn.transaction():
+            row = fetch_one(conn, "select user_id from assistant_session where session_id=%s",
+                            (session_id,))
+            if row is None:
+                raise LookupError(f"unknown assistant session {session_id}")
+            uid = row["user_id"]
             lock_consolidation(conn, session_id)
-            uid = lock_session(conn, session_id)["user_id"]
+            conn.execute("select pg_advisory_xact_lock(hashtext('memory:user:' || %s))", (uid,))
+            lock_session(conn, session_id)
             h = hidden_of(conn, uid)
-            if h.paused or h.session(session_id):
+            if h.paused or h.session(session_id) or any(h.item(it) for it in items):
                 return False       # a forget request came in while the model call ran
             r = None if "through_message_id" not in payload else fetch_one(
                 conn,

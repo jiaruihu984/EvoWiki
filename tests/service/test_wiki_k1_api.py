@@ -142,10 +142,12 @@ def test_path_errors(wiki):
     assert client.get(f"/wiki/paths/{path_id}", headers=H("ghost")).status_code == 404
     r = client.post(f"/wiki/paths/{path_id}/pages/1/done", headers=H("u1"))
     assert r.status_code == 409 and r.json()["detail"] == "这一页还没开始"
+    assert r.json()["code"] == "page_not_started"
     for _ in range(3):
         next_page(client, path_id)
     r = client.post(f"/wiki/paths/{path_id}/next", headers=H("u1"))
     assert r.status_code == 409 and r.json()["detail"] == "这条路径的页都已经开始了"
+    assert r.json()["code"] == "path_already_started"
     for bad in (0, 4, 99):
         r = client.post(f"/wiki/paths/{path_id}/pages/{bad}/done", headers=H("u1"))
         assert r.status_code == 404, (bad, r.text)

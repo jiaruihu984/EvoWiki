@@ -96,7 +96,7 @@ RENDERED = {
     "reading_unit": lambda: engine._reading_unit(),
     "path": lambda: _src(path.path_prompt),
     "outline": lambda: engine._outline(),
-    "write": lambda: engine._deep(deep_agent.WRITE_SYSTEM),
+    "write": lambda: deep_agent.WRITE_SYSTEM,
     "check": lambda: engine._outline(),
     "followup": lambda: engine._followup(),
     "card": lambda: engine._card_cue(),
@@ -133,7 +133,7 @@ def test_rendered_prompts_have_one_span_per_step_and_no_stray_markers():
 ALL_RENDERS = (
     engine._intake, engine._enter, RENDERED["source_outline"], RENDERED["source_reference"],
     RENDERED["understand"], engine._blocks, engine._page_fit, engine._reading_unit,
-    engine._outline, lambda: engine._deep(deep_agent.WRITE_SYSTEM), engine._followup, engine._card_cue,
+    engine._outline, lambda: deep_agent.WRITE_SYSTEM, engine._followup, engine._card_cue,
     engine._card_check, lambda: loop_mod.SYSTEM, lambda: compact_mod.COMPACT_SYSTEM,
     engine._understand,
     RENDERED["graph_group_naming"], RENDERED["source_match"])

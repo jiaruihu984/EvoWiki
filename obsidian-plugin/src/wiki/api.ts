@@ -443,9 +443,9 @@ export class HttpWikiClient implements WikiApi {
   wantNode(nodeId: string, mapId: string): Promise<NodeActionOut> { return this.call("POST", `${node(nodeId)}/want`, { map_id: mapId }); }
   editPath(pathId: string, edit: PathEditIn): Promise<PathEditOut> {
     const wire: Record<string, unknown> = edit.op === "move" ? { op: "move", from: edit.from, to: edit.to }
-      : edit.op === "remove" ? { op: "remove", index: edit.index } : edit.op === "unremove" ? { op: "unremove", page_key: edit.page_key }
+      : edit.op === "remove" ? { op: "remove", page_key: edit.page_key } : edit.op === "unremove" ? { op: "unremove", page_key: edit.page_key }
       : edit.op === "retitle" ? { op: "retitle", page_key: edit.page_key, title: edit.title }
-      : { op: "add", title: edit.title };
+      : { op: "add", title: edit.title, request_id: edit.request_id };
     if (edit.op === "add" && edit.node_id !== undefined) wire.node_id = edit.node_id;
     if (edit.op === "add" && edit.to_index !== undefined) wire.to_index = edit.to_index;
     return this.call("POST", `${path(pathId)}/edits`, wire);

@@ -29,7 +29,7 @@ export interface EvouiPort {
   /** The text of the vault file at `path`, or null when there is none. */
   read(path: string): Promise<string | null>;
   canFetch(): boolean;
-  /** Where a fetched evoui asset lands (`<notes>/Wiki/assets/<id>.json`). */
+  /** Where a fetched evoui asset lands (`<notes>/assets/<id>.json`). */
   assetPath(assetId: string): string | null;
   retrieve(assetId: string): Promise<boolean>;
   /** A result event of an asset block (evidence, graded by the server); absent = nobody listens. */

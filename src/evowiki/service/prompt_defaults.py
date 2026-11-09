@@ -42,7 +42,7 @@ RENDER: dict[str, Callable[[], str]] = {
     "reading_unit": engine._reading_unit,
     "path": _path,
     "outline": engine._outline,
-    "write": lambda: engine._deep(deep_agent.WRITE_SYSTEM),
+    "write": lambda: deep_agent.WRITE_SYSTEM,
     "check": engine._outline,
     "followup": engine._followup,
     "card": engine._card_cue,

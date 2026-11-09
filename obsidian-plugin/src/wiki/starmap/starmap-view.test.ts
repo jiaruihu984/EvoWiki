@@ -13,6 +13,11 @@ import { levelFor } from "../graph-page/sigma-cloud";
 import type { GraphSource } from "../graph-page/store";
 import type { WriteOut } from "../schema";
 import type { GraphOut, PathEditIn } from "../schema";
+import type { GoalApi } from "../learn/goal-api";
+import { FakeGoalApi } from "../learn/goal-fake";
+import { NestedGoalApi, NESTED_MAP } from "../learn/nested-goal-kit";
+import { learnScene } from "../learn/learn-scene";
+import { buildScene } from "../graph-page/scene";
 import { STAR_COPY } from "./copy";
 import { regionWord, STARMAP_VIEW_TYPE, StarMapView, type StarMapHost } from "./starmap-view";
 
@@ -34,7 +39,7 @@ beforeEach(() => {
 });
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); noticeHost().replaceChildren(); document.body.replaceChildren(); });
 
-interface Opts { load?: () => Promise<unknown>; offline?: boolean; demo?: boolean; connection?: StarMapHost["connection"]; fail?: Partial<Record<"split" | "skip" | "want" | "editPath" | "splitRow", boolean>>;
+interface Opts { api?: GoalApi; load?: () => Promise<unknown>; offline?: boolean; demo?: boolean; connection?: StarMapHost["connection"]; fail?: Partial<Record<"split" | "skip" | "want" | "editPath" | "splitRow", boolean>>;
   writes?: GraphSource["writes"]; splitGate?: Promise<void>; waits?: StarMapHost["waits"]; kChanged?: GraphSource["kChanged"] }
 function make(o: Opts = {}) {
   const fx = new GraphFixture();
@@ -52,11 +57,13 @@ function make(o: Opts = {}) {
     ...(o.writes ? { writes: o.writes } : {}),
     ...(o.kChanged ? { kChanged: o.kChanged } : {}),
   };
-  const openLearn = vi.fn();
+  const openLearn = vi.fn(), openGoal = vi.fn();
   let cssFn: (() => void) | null = null;
   const unsubCss = vi.fn();
   const showPage = vi.fn(), writePage = vi.fn(), openRow = vi.fn();
-  const host: StarMapHost = { source, openLearn, showPage, writePage, openRow, onCssChange: (fn) => { cssFn = fn; return unsubCss; }, ...(o.connection ? { connection: o.connection } : {}),
+  const pendingApi = new FakeGoalApi({ roundMs: 0 });
+  pendingApi.getMap = () => new Promise(() => {}); // These tests isolate the base graph while the map read is pending.
+  const host: StarMapHost = { source, goalApi: () => o.api ?? pendingApi, openLearn, openGoal, showPage, writePage, openRow, onCssChange: (fn) => { cssFn = fn; return unsubCss; }, ...(o.connection ? { connection: o.connection } : {}),
     ...(o.waits ? { waits: o.waits } : {}) };
   const view = new StarMapView({} as WorkspaceLeaf, host);
   document.body.append(view.contentEl);
@@ -73,7 +80,7 @@ function make(o: Opts = {}) {
   const goalButtons = (): HTMLButtonElement[] => all<HTMLButtonElement>(".ew-goal");
   const pathTitles = (): string[] => all(".ew-pages li .ew-t").map((t) => t.firstChild!.textContent!);
   const open = async (): Promise<void> => { await view.onOpen(); await flush(); };
-  return { view, fx, calls, load, openLearn, showPage, writePage, openRow, root, q, all, button, state, pickNode, card, goalButtons, pathTitles, open, css: () => cssFn?.(), unsubCss };
+  return { view, fx, calls, load, openLearn, openGoal, showPage, writePage, openRow, root, q, all, button, state, pickNode, card, goalButtons, pathTitles, open, css: () => cssFn?.(), unsubCss };
 }
 type M = ReturnType<typeof make>;
 /** The Sigma the page drew with (jsdom: the fake). */
@@ -103,6 +110,100 @@ describe("知识图谱: a wait with no page (page-waits.ts)", () => {
     sig = "b";
     fire();
     expect(m.q<HTMLElement>(".ew-panel > .ew-revbar").dataset.wait).toBe("b");
+  });
+});
+
+describe("the focused goal shares 学点新的's composed scene", () => {
+  it("uses the same nodes, coordinates and links, including actual parent spokes and canonical place links", async () => {
+    const api = new NestedGoalApi(); await api.enterRegion(NESTED_MAP, "A");
+    const places = { places: { A: [0.1, 0.2] as [number, number], B: [0.7, 0.8] as [number, number] }, links: [["A", "B"] as [string, string]] };
+    const placeRead = vi.fn(() => Promise.resolve(places));
+    const goalApi: GoalApi = Object.assign(api, { graphPlaces: placeRead });
+    const graph = new GraphFixture().graph();
+    graph.goals = [{ ...graph.goals[0]!, map_id: NESTED_MAP, name: "黑壳虾", goal: "黑壳虾", nodes: [], path_id: null, path: [], paths: [] }];
+    const expected = learnScene(buildScene(graph), api.map(), places, api.map().title);
+    const m = make({ api: goalApi, load: () => Promise.resolve(graph) }); await m.open(); await flush();
+    expect(m.view.cloudScene).toEqual(expected);
+    expect(placeRead).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ id: "A" }), expect.objectContaining({ id: "B" })]));
+    expect(m.view.cloudScene!.scene.nodes.get("A2")!.pre).toContainEqual({ id: "A", phrase: "" });
+    expect(m.view.cloudScene!.scene.nodes.get("A")!.pre).toContainEqual({ id: "B", phrase: "" });
+    const canvas = sigma().graph;
+    expect(canvas.hasEdge("A2", "A") || canvas.hasEdge("A", "A2")).toBe(true);
+    expect(canvas.hasEdge("A", "B") || canvas.hasEdge("B", "A")).toBe(true);
+    m.pickNode("A");
+    m.card()!.querySelector<HTMLButtonElement>("button")!.click();
+    expect(m.openGoal).toHaveBeenCalledWith(NESTED_MAP, "A");
+    const complete = m.view.cloudScene;
+    m.view.focusOn(null); // the Today thumbnail clears the filter, not the topology
+    expect(m.view.focusGoal).toBeNull();
+    expect(m.view.cloudScene).toBe(complete);
+    expect(sigma().graph.hasNode("A")).toBe(true);
+    expect(canvas.hasEdge("A2", "A") || canvas.hasEdge("A", "A2")).toBe(true);
+    expect(canvas.hasEdge("A", "B") || canvas.hasEdge("B", "A")).toBe(true);
+    await m.view.onClose();
+  });
+
+  it("a late map read completes the overview without restoring a cleared goal filter", async () => {
+    const api = new NestedGoalApi();
+    let release!: (map: Awaited<ReturnType<GoalApi["getMap"]>>) => void;
+    const getMap = vi.spyOn(api, "getMap").mockImplementation(() => new Promise((done) => { release = done; }));
+    const graph = new GraphFixture().graph(); graph.goals = [{ ...graph.goals[0]!, map_id: NESTED_MAP }];
+    const m = make({ api, load: () => Promise.resolve(graph) }); await m.open();
+    expect(getMap).toHaveBeenCalledWith(NESTED_MAP);
+    m.view.setFocus(null); release(api.map()); await flush();
+    expect(m.view.cloudScene?.scene.nodes.has("A")).toBe(true); expect(m.view.focusGoal).toBeNull();
+    await m.view.onClose();
+  });
+
+  it("an older graph's map read cannot replace the latest overview", async () => {
+    const api = new NestedGoalApi();
+    const releases: ((map: Awaited<ReturnType<GoalApi["getMap"]>>) => void)[] = [];
+    vi.spyOn(api, "getMap").mockImplementation(() => new Promise((resolve) => { releases.push(resolve); }));
+    const graph = new GraphFixture().graph(); graph.goals = [{ ...graph.goals[0]!, map_id: NESTED_MAP }];
+    const m = make({ api, load: () => Promise.resolve(structuredClone(graph)) }); await m.open();
+    m.view.focusOn(null); m.view.refresh(); await flush();
+    expect(releases).toHaveLength(2);
+    releases[1]!({ ...api.map(), title: "Latest" }); await flush();
+    releases[0]!({ ...api.map(), title: "Older" }); await flush();
+    expect(m.view.focusGoal).toBeNull();
+    expect(m.view.cloudScene!.scene.l2.find((g) => g.id === "~goal~" + NESTED_MAP)?.name).toBe("Latest");
+    await m.view.onClose();
+  });
+
+  it("loads all goal topology in the overview and filters shared points without rebuilding it", async () => {
+    const api = new NestedGoalApi();
+    const getMap = vi.spyOn(api, "getMap").mockImplementation((id) => Promise.resolve({ ...api.map(), map_id: id }));
+    const graph = new GraphFixture().graph();
+    graph.goals = ["first", "second", "third"].map((id) => ({ ...graph.goals[0]!, map_id: id }));
+    const m = make({ api, load: () => Promise.resolve(graph) }); await m.open();
+    const full = m.view.cloudScene;
+    expect(full).not.toBeNull(); expect(m.view.focusGoal).toBeNull();
+    const copies = sigma().graph.nodes().filter((id) => id === "A" || id.startsWith("A~in~"));
+    expect(copies).toHaveLength(3);
+    expect(new Set(full!.scene.l1.map((g) => g.id)).size).toBe(full!.scene.l1.length);
+    for (const goal of graph.goals) {
+      m.view.focusOn(goal.map_id);
+      await atBlocks();
+      expect(copies.filter((id) => sigma().node(id).color === sigma().graph.getNodeAttribute(id, "color"))).toHaveLength(1);
+    }
+    m.view.focusOn(null);
+    await atBlocks();
+    expect(m.view.cloudScene).toBe(full);
+    expect(copies.every((id) => sigma().node(id).color === sigma().graph.getNodeAttribute(id, "color"))).toBe(true);
+    expect(getMap).toHaveBeenCalledTimes(3);
+    await m.view.onClose();
+  });
+});
+
+describe("single-goal framing", () => {
+  it("frames a sole goal once and leaves later user camera changes alone", async () => {
+    const graph = new GraphFixture().graph(); graph.goals = [graph.goals[1]!];
+    const m = make({ load: () => Promise.resolve(graph) }); await m.open();
+    expect(m.view.focusGoal).toBe(graph.goals[0]!.map_id);
+    sigma().camera.setState({ x: 0.12, y: 0.34, ratio: 0.2 });
+    m.view.refresh(); await flush();
+    expect(sigma().camera.getState()).toMatchObject({ x: 0.12, y: 0.34, ratio: 0.2 });
+    await m.view.onClose();
   });
 });
 
@@ -350,7 +451,7 @@ describe("你的目标: share bars without numbers, goal focus dims what the goa
     const smallest = Math.min(...drawnPoints().map((id) => sigma().node(id).size as number));
     const lit = drawnPoints().filter((id) => sigma().node(id).size > smallest);
     expect(lit).toHaveLength(6);                                         // the path's points: bigger, so their names win
-    expect(drawnPoints().filter((id) => dimmed(id))).toHaveLength(11);   // a point on both goals is one dot here, drawn on its first goal
+    expect(drawnPoints().filter((id) => dimmed(id))).toHaveLength(12);   // each goal keeps its own copy of a shared point
     framedOn(MATH);                                                      // framed on the goal
     m.goalButtons()[1]!.click();
     expect(m.view.focusGoal).toBeNull();
@@ -379,14 +480,69 @@ describe("the node card (graph.html nodeCard)", () => {
     await m.view.onClose();
   });
 
-  it("the card has no buttons at all: no 我想学这个, 看不懂 or 我会了，跳过", async () => {
+  it("the card has a navigation button without generation actions", async () => {
     const m = make();
     await m.open();
     for (const id of ["mul", "vec", "py", "grad"]) {
       m.pickNode(id);
-      expect(m.card()!.querySelector("button, .ew-row")).toBeNull();
+      expect(m.card()!.querySelector("button")).not.toBeNull();
       expect(m.card()!.textContent).not.toMatch(/我想学这个|看不懂|跳过|证据/);
     }
+    await m.view.onClose();
+  });
+
+  it("lists exact written pages and never opens an unrelated page or a trashed copy", async () => {
+    const graph = new GraphFixture().graph();
+    const rows = graph.goals.flatMap((g) => g.paths.length ? g.paths.flatMap((p) => p.path) : g.path);
+    const match = rows.find((r) => r.node_ids.includes("mul"))!;
+    match.state = "written"; match.page_id = "exact-page"; match.trashed = false;
+    for (const row of rows.filter((r) => r !== match && r.node_ids.includes("mul"))) { row.state = "written"; row.page_id = "trashed-page"; row.trashed = true; }
+    const m = make({ load: () => Promise.resolve(graph) }); await m.open();
+    m.pickNode("mul");
+    m.card()!.querySelector<HTMLButtonElement>("button")!.click();
+    expect(m.showPage).toHaveBeenCalledExactlyOnceWith("exact-page", null);
+    expect(m.openRow).not.toHaveBeenCalled(); expect(m.writePage).not.toHaveBeenCalled();
+    await m.view.onClose();
+  });
+
+  it("shared copies keep one colour and each goal frames and selects its own copy", async () => {
+    const m = make(); await m.open(); await atBlocks();
+    const copies = sigma().graph.nodes().filter((id) => id === "pca" || id.startsWith("pca~in~"));
+    expect(copies).toHaveLength(2);
+    expect(new Set(copies.map((id) => String(sigma().graph.getNodeAttribute(id, "color")))).size).toBe(1);
+    for (const goal of m.fx.graph().goals) {
+      m.view.focusOn(goal.map_id); await flush();
+      const visible = copies.filter((id) => sigma().node(id).color === sigma().graph.getNodeAttribute(id, "color"));
+      expect(visible).toHaveLength(1);
+      sigma().emit("clickNode", { node: visible[0]! });
+      m.card()!.querySelector<HTMLButtonElement>("button")!.click();
+      if (goal.map_id === "map_ml") expect(m.openRow).toHaveBeenLastCalledWith(expect.objectContaining({ goal: goal.goal }));
+      else expect(m.openGoal).toHaveBeenLastCalledWith(goal.map_id, "pca");
+    }
+    expect(m.writePage).not.toHaveBeenCalled(); await m.view.onClose();
+  });
+
+  it("an unwritten node opens its exact path row without writing", async () => {
+    const graph = new GraphFixture().graph();
+    const rows = graph.goals.flatMap((g) => g.paths.length ? g.paths.flatMap((p) => p.path) : g.path);
+    for (const row of rows.filter((r) => r.node_ids.includes("mul"))) { row.state = "planned"; row.page_id = null; }
+    const exact = rows.find((r) => r.node_ids.includes("mul"))!;
+    const m = make({ load: () => Promise.resolve(graph) }); await m.open(); m.pickNode("mul");
+    m.card()!.querySelector<HTMLButtonElement>("button")!.click();
+    expect(m.openRow).toHaveBeenCalledWith(expect.objectContaining({ key: exact.key, pageId: null }));
+    expect(m.showPage).not.toHaveBeenCalled(); expect(m.writePage).not.toHaveBeenCalled();
+    await m.view.onClose();
+  });
+
+  it("a node without a page opens its owning goal, while an orphan prefills a new goal", async () => {
+    const m = make(); await m.open();
+    const graph = m.fx.graph();
+    const pageNodes = new Set(graph.goals.flatMap((g) => g.paths.length ? g.paths.flatMap((p) => p.path.flatMap((r) => r.node_ids)) : g.path.flatMap((r) => r.node_ids)));
+    const own = graph.goals.flatMap((g) => g.nodes.map((id) => ({ g, id }))).find(({ id }) => !pageNodes.has(id))!;
+    m.pickNode(own.id);
+    m.card()!.querySelector<HTMLButtonElement>("button")!.click();
+    expect(m.openGoal).toHaveBeenCalledWith(own.g.map_id, own.id);
+    expect(m.openRow).not.toHaveBeenCalled(); expect(m.writePage).not.toHaveBeenCalled();
     await m.view.onClose();
   });
 
@@ -419,6 +575,46 @@ describe("学习路径: editable (drag, Alt + ↑ / ↓, ⋯ 删除, 加上), ea
     m.goalButtons()[1]!.click();
     return m;
   }
+
+
+  it("failed overlapping removals restore confirmed rows without losing an earlier rollback", async () => {
+    const m = await onMath({ fail: { editPath: true } });
+    const before = m.pathTitles();
+    removeRow(m, 0); removeRow(m, 1);
+    await flush(); await flush();
+    expect(m.calls.filter((c) => c[0] === "editPath")).toHaveLength(2);
+    expect(m.pathTitles()).toEqual(before);
+    await m.view.onClose();
+  });
+
+  it("double click and Enter overlap submit a single add intent", async () => {
+    const m = await onMath();
+    const inp = m.q<HTMLInputElement>(".ew-card input[type=text]"); inp.value = "Added";
+    const add = m.button("添加");
+    inp.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" })); add.click(); add.click();
+    await flush();
+    const calls = m.calls.filter((c) => c[0] === "editPath");
+    expect(calls).toHaveLength(1);
+    expect(m.pathTitles().filter((t) => t === "Added")).toHaveLength(1);
+    const next = m.q<HTMLInputElement>(".ew-card input[type=text]"); next.value = "Added";
+    m.button("添加").click(); await flush();
+    expect(m.pathTitles().filter((t) => t === "Added")).toHaveLength(2);
+    await m.view.onClose();
+  });
+
+  it("lost add response retry reuses its intent without duplicating the saved row", async () => {
+    const m = await onMath(); const original = m.fx.editPath.bind(m.fx);
+    vi.spyOn(m.fx, "editPath").mockImplementationOnce((id, edit) => { original(id, edit); throw new Error("lost response"); });
+    const inp = m.q<HTMLInputElement>(".ew-card input[type=text]"); inp.value = "Added";
+    m.button("添加").click(); await flush();
+    const retry = m.q<HTMLInputElement>(".ew-card input[type=text]"); retry.value = "Added";
+    m.button("添加").click(); await flush();
+    const requests = m.calls.filter((c) => c[0] === "editPath").map((c) => c[2]);
+    expect(requests).toHaveLength(2); expect(requests[1]).toEqual(requests[0]);
+    expect(m.pathTitles().filter((t) => t === "Added")).toHaveLength(1);
+    await m.view.onClose();
+  });
+
   it("rows: number, title, summary, ⋮⋮ and ⋯ (no ×); draggable, focusable, labelled", async () => {
     const m = await onMath();
     const li = m.all<HTMLLIElement>(".ew-pages li")[0]!;
@@ -495,7 +691,7 @@ describe("学习路径: editable (drag, Alt + ↑ / ↓, ⋯ 删除, 加上), ea
     inp.value = "  交叉验证 ";
     m.button("添加").click();
     await flush();
-    expect(m.calls).toEqual([["editPath", "path_math", { op: "remove", index: 3 }], ["editPath", "path_math", { op: "add", title: "交叉验证" }]]);
+    expect(m.calls).toEqual([["editPath", "path_math", { op: "remove", page_key: "path_math_4" }], ["editPath", "path_math", { op: "add", title: "交叉验证", request_id: expect.any(String) as string }]]);
     const last = m.all<HTMLElement>(".ew-pages li").pop()!;
     expect(last.querySelector(".ew-mine")!.textContent).toBe("你添加的");
     expect(last.querySelector(".ew-s")!.textContent).toBe("你加的，会在图谱里找到或新建对应的点");
@@ -670,7 +866,7 @@ describe("Task 14: a path row's ⋯ menu", () => {
     expect(notices()).toContain("路径里删掉了「特征值与特征向量」撤销");
     noticeLink("路径里删掉了").click();
     await flush();
-    expect(m.calls).toEqual([["editPath", "path_math", { op: "remove", index: 1 }],
+    expect(m.calls).toEqual([["editPath", "path_math", { op: "remove", page_key: "path_math_2" }],
       ["editPath", "path_math", { op: "unremove", page_key: "path_math_2" }]]);
     expect(m.pathTitles()).toEqual(["向量和矩阵乘法", "特征值与特征向量", "导数和梯度", "条件概率"]);
     await m.view.onClose();
@@ -901,7 +1097,7 @@ describe("Task 14 fixes: lookups, opened, minors", () => {
     inp.value = "交叉验证";
     inp.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
     await flush();
-    expect(m.calls).toEqual([["editPath", "path_math", { op: "add", title: "交叉验证" }]]);
+    expect(m.calls).toEqual([["editPath", "path_math", { op: "add", title: "交叉验证", request_id: expect.any(String) as string }]]);
     await m.view.onClose();
   });
 

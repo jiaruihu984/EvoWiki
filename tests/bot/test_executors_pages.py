@@ -34,6 +34,7 @@ from evowiki.wikiapp.path_order import shown
 from evowiki.wikiapp.refine_spec import WikiSpecSource
 from evowiki.wikiapp.repo import Commit, PgRepo
 from evowiki.wikiapp.review import deadline_days
+from evowiki.wikiapp.revise import KIND as REVISE_KIND
 from tests.deep.fakes import PRACTICE_BLOCK, DeepScript, FakeChecker, interactive, library, turn
 from tests.deep.fakes import call as tool_call
 from tests.runtime.helpers import make_user
@@ -141,7 +142,7 @@ def test_the_strictest_scope_decides_the_level(env):
         store.put_settings(conn, "u1", BotSettings(levels={
             "new_page": "ask", "structure": "auto_undo"}), NOW)
     assert action_level(env.ledger, "u1", "page_split") == ("ask", "new_page")
-    assert set(SCOPES) - {PROFILE_FACT, FORGET_KIND, "memory_forget"} == set(env.ex)     # those two: registered by service/deps
+    assert set(SCOPES) - {PROFILE_FACT, FORGET_KIND, "memory_forget", REVISE_KIND} == set(env.ex)     # these executors are registered by service/deps
 
 
 # --- page_split ---------------------------------------------------------------------------

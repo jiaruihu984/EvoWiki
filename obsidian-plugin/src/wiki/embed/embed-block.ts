@@ -168,7 +168,7 @@ export interface EmbedPort {
   read(path: string): Promise<string | null>;
   /** Server set, online and not the demo: the 取回 button may be shown. */
   canFetch(): boolean;
-  /** Where a fetched asset lands (`<notes>/Wiki/assets/<id>.html`); the button is shown only when the block points there. */
+  /** Where a fetched asset lands (`<notes>/assets/<id>.html`); the button is shown only when the block points there. */
   assetPath(assetId: string): string | null;
   /** Fetches one asset into the vault; true when the file is there afterwards. */
   retrieve(assetId: string): Promise<boolean>;

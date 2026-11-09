@@ -511,9 +511,13 @@ def consolidate(state: SessionState, *, sessions: SessionStore, store: MemorySto
         landed: Landed | None = None
         if c.kind in ("preference", "about_me"):
             key = _key_of(c, sid)
-            with store.unless_forgotten(uid, sid) as allowed:
+            with store.unless_forgotten(uid, sid, evidence=refs, kind=c.kind) as allowed:
                 if not allowed:
-                    return ConsolidateResult(call=call)
+                    result.pending.append({"candidate_key": key, "candidate": c.model_dump(),
+                                           "valid_from": valid_from.isoformat(),
+                                           "page_id": info.page_id, "concept_ids": list(concepts),
+                                           "reason": "suppressed"})
+                    continue
                 out = lander.land(uid, c, session_id=sid, provenance="explicit_history",
                                   idempotency_key=key, same_as=same_as, page_id=info.page_id)
             if c.kind == "preference" and not isinstance(out, Refused):
@@ -628,9 +632,10 @@ def retry_pending_landings(store: MemoryStore, sessions: SessionStore, lander: P
             if scope is None:
                 refused.append([key, "bad_scope"])
                 continue
-            with store.unless_forgotten(user_id, info.session_id) as allowed:
+            with store.unless_forgotten(user_id, info.session_id,
+                                        evidence=evidence_refs(c, info.session_id), kind=c.kind) as allowed:
                 if not allowed:
-                    break
+                    continue
                 out = lander.land(user_id, c, session_id=info.session_id,
                                   provenance="explicit_history", idempotency_key=key,
                                   same_as=same_as, page_id=p.get("page_id"))

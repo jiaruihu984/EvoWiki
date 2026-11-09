@@ -425,7 +425,7 @@ export interface FeedbackUndoOut {
  */
 export interface HandEditIn {
   sections?: HandEditSectionIn[];
-  removed?: string[];
+  removed?: HandEditRemovedIn[];
   summary: string;
 }
 
@@ -618,7 +618,7 @@ export interface PathMoveIn {
 /** wikiapp/wiki_schemas.py PathRemoveIn */
 export interface PathRemoveIn {
   op: "remove";
-  index: number;
+  page_key: string;
 }
 
 /** wikiapp/wiki_schemas.py PathUnremoveIn: Undo of a remove: the row with this key (hidden by the learner's remove) is shown again where it was. */
@@ -630,6 +630,7 @@ export interface PathUnremoveIn {
 /** wikiapp/wiki_schemas.py PathAddIn */
 export interface PathAddIn {
   op: "add";
+  request_id: string;
   title: string;
   node_id?: string | null;
   to_index?: number | null;
@@ -1500,6 +1501,12 @@ export interface HandEditSectionIn {
   cue?: string | null;
   folded?: boolean | null;
   fingerprint?: string | null;
+}
+
+/** wikiapp/wiki_schemas.py HandEditRemovedIn */
+export interface HandEditRemovedIn {
+  section_id: string;
+  fingerprint: string;
 }
 
 /** wikiapp/wiki_schemas.py CellChangeOut */

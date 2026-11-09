@@ -232,6 +232,11 @@ export class LearnFlow {
   private _state: LearnState;
   private readonly subs = new Set<() => void>();
   private epoch = 0;
+  private mapVersion = 0;
+  private mapRead = 0;
+  private mapWriting = false;
+  private readonly rowQueues = new Map<string, { tail: Promise<unknown> | null; rows: PageRow[]; pending: { apply: (rows: PageRow[]) => PageRow[] }[] }>();
+  private readonly addIntents = new Map<string, { requestId: string; pending?: Promise<boolean> }>();
   /**
    * A diagnosis request failed (a backend restart, the network): the server may have taken it all the same, so the next
    * step reads the draft back first (`resynced`) instead of acting on a stage that may be stale.
@@ -248,6 +253,7 @@ export class LearnFlow {
   dispose(): void { this.epoch++; this.subs.clear(); }
 
   private set(p: Partial<LearnState>): void {
+    if (p.map !== undefined) this.mapVersion++;
     this._state = { ...this._state, ...p };
     for (const f of [...this.subs]) f();
   }
@@ -507,7 +513,14 @@ export class LearnFlow {
   async refreshMap(fresh?: GoalMapOut): Promise<void> {
     const id = this._state.map?.map_id;
     if (id === undefined || id === DRAFT_MAP_ID) return;
-    try { this.setMap(fresh ?? await this.api.getMap(id)); } catch (e) { this.host.fail(learnErrorText(e, "other")); }
+    const ep = this.epoch, version = this.mapVersion, read = ++this.mapRead;
+    if (this.mapWriting) return;
+    try {
+      const map = fresh ?? await this.api.getMap(id);
+      if (ep === this.epoch && version === this.mapVersion && read === this.mapRead && !this.mapWriting && this._state.map?.map_id === id) this.setMap(map);
+    } catch (e) {
+      if (ep === this.epoch && read === this.mapRead && version === this.mapVersion) this.host.fail(learnErrorText(e, "other"));
+    }
   }
 
   /**
@@ -623,18 +636,23 @@ export class LearnFlow {
    */
   private async editMap(ops: MapEditOpIn[], shown?: GoalMapOut): Promise<MapEditOpIn[] | null> {
     const s = this._state, map = s.map;
-    if (map === null || map.map_id === DRAFT_MAP_ID || s.busy) return null;
+    if (map === null || map.map_id === DRAFT_MAP_ID || s.busy || this.mapWriting) return null;
+    const ep = this.epoch;
+    this.mapVersion++; this.mapWriting = true;
     if (shown) this.set({ map: shown });
     try {
       const out = await this.api.editMap(map.map_id, ops);
+      if (ep !== this.epoch || this._state.map?.map_id !== map.map_id) return null;
       this.set({ map: out.map, ...this.keepEntered(out.map) });
       this.host.edited?.();
       return out.undo;
     } catch (e) {
-      if (shown) this.set({ map });
-      this.host.fail(learnErrorText(e, "edit"));
+      if (ep === this.epoch && this._state.map?.map_id === map.map_id) {
+        if (shown) this.set({ map });
+        this.host.fail(learnErrorText(e, "edit"));
+      }
       return null;
-    }
+    } finally { this.mapVersion++; this.mapWriting = false; }
   }
 
   /** The entered card stays only while its node is still on the map. */
@@ -729,38 +747,64 @@ export class LearnFlow {
   private readonly parts = new Set<string>();
 
   /** One edit of the page list; the answer's rows replace the list. Null when it failed (a notice said why). */
-  private async editRows(run: (pathId: string) => Promise<PathEditOut>, shown?: PageRow[]): Promise<PathEditOut | null> {
+  private editRows(run: (pathId: string) => Promise<PathEditOut>, shown: (rows: PageRow[]) => PageRow[] = (rows) => rows): Promise<PathEditOut | null> {
     const e = this._state.entered;
-    if (e === null || e.path === null || e.splitting) return null;
-    const path = e.path, before = e.rows;
-    if (shown) this.set({ entered: { ...e, rows: shown } });
-    try {
-      const out = await run(path.path_id);
-      const cur = this._state.entered;
-      if (cur !== null && cur.path?.path_id === path.path_id) this.set({ entered: { ...cur, rows: rowsOf(out.path, before, this.parts) } });
-      this.host.edited?.();
-      return out;
-    } catch (err) {
-      const cur = this._state.entered;
-      if (cur !== null && cur.path?.path_id === path.path_id && shown) this.set({ entered: { ...cur, rows: before } });
-      this.host.fail(learnErrorText(err, "edit"));
-      return null;
+    if (e === null || e.path === null || e.splitting) return Promise.resolve(null);
+    const id = e.path.path_id, ep = this.epoch;
+    let queue = this.rowQueues.get(id);
+    if (!queue) {
+      queue = { tail: null, rows: e.rows, pending: [] };
+      this.rowQueues.set(id, queue);
     }
+    const q = queue, pending = { apply: shown };
+    q.pending.push(pending);
+    const display = (): void => {
+      const cur = this._state.entered;
+      if (ep === this.epoch && cur?.path?.path_id === id) this.set({ entered: { ...cur, rows: q.pending.reduce((rows, item) => item.apply(rows), q.rows) } });
+    };
+    display();
+    const execute = async (): Promise<PathEditOut | null> => {
+      try {
+        if (ep !== this.epoch || this._state.entered?.path?.path_id !== id) return null;
+        const out = await run(id);
+        q.rows = rowsOf(out.path, q.rows, this.parts);
+        if (ep === this.epoch) this.host.edited?.();
+        return out;
+      } catch (err) {
+        if (ep === this.epoch) this.host.fail(learnErrorText(err, "edit"));
+        return null;
+      } finally {
+        q.pending.splice(q.pending.indexOf(pending), 1);
+        display();
+        if (q.pending.length === 0) this.rowQueues.delete(id);
+      }
+    };
+    const result = q.tail ? q.tail.then(execute) : execute();
+    q.tail = result;
+    return result;
   }
 
   async movePage(from: number, to: number): Promise<void> {
     const rows = this._state.entered?.rows ?? [];
     if (from === to || from < 0 || to < 0 || from >= rows.length || to >= rows.length) return;
-    const shown = [...rows]; const [x] = shown.splice(from, 1); shown.splice(to, 0, x!);
-    const edit: PathEditIn = { op: "move", from, to };
-    await this.editRows((id) => this.api.editPath(id, edit), shown);
+    const key = rows[from]!.key, target = rows[to]!.key;
+    const move = (current: PageRow[]): PageRow[] => {
+      const result = [...current], a = result.findIndex((r) => r.key === key), b = result.findIndex((r) => r.key === target);
+      if (a < 0 || b < 0) return result;
+      const [row] = result.splice(a, 1); result.splice(b, 0, row!);
+      return result;
+    };
+    await this.editRows((id) => {
+      const confirmed = this.rowQueues.get(id)!.rows;
+      return this.api.editPath(id, { op: "move", from: confirmed.findIndex((r) => r.key === key), to: confirmed.findIndex((r) => r.key === target) });
+    }, move);
   }
   /** ⋯ 删除: resolves to the removed row's key (撤销 = unremovePage), null when it failed. */
   async removePage(index: number): Promise<string | null> {
     const rows = this._state.entered?.rows ?? [], row = rows[index];
     if (!row) return null;
-    const edit: PathEditIn = { op: "remove", index };
-    return (await this.editRows((id) => this.api.editPath(id, edit), rows.filter((_, k) => k !== index))) ? row.key : null;
+    const edit: PathEditIn = { op: "remove", page_key: row.key };
+    return (await this.editRows((id) => this.api.editPath(id, edit), (current) => current.filter((r) => r.key !== row.key))) ? row.key : null;
   }
   async unremovePage(key: string): Promise<void> {
     const edit: PathEditIn = { op: "unremove", page_key: key };
@@ -768,18 +812,29 @@ export class LearnFlow {
   }
   /** ⋯ 重命名 → 保存 (and its 撤销, with the old title). False: it failed (a notice said why). */
   async renamePage(key: string, title: string): Promise<boolean> {
-    const rows = this._state.entered?.rows ?? [], v = title.trim();
-    if (v === "") return false;
-    const edit: PathEditIn = { op: "retitle", page_key: key, title: v };
-    return (await this.editRows((id) => this.api.editPath(id, edit), rows.map((r) => (r.key === key ? { ...r, title: v } : r)))) !== null;
-  }
-  /** 加一页 … 加上. */
-  async addPage(title: string): Promise<boolean> {
     const v = title.trim();
     if (v === "") return false;
-    const edit: PathEditIn = { op: "add", title: v };
-    return (await this.editRows((id) => this.api.editPath(id, edit))) !== null;
+    const edit: PathEditIn = { op: "retitle", page_key: key, title: v };
+    return (await this.editRows((id) => this.api.editPath(id, edit), (current) => current.map((r) => (r.key === key ? { ...r, title: v } : r)))) !== null;
   }
+  /** 加一页 … 加上. */
+  addPage(title: string): Promise<boolean> {
+    const v = title.trim(), id = this._state.entered?.path?.path_id;
+    if (v === "" || id === undefined) return Promise.resolve(false);
+    const key = JSON.stringify([id, v]);
+    let intent = this.addIntents.get(key);
+    if (intent?.pending) return intent.pending;
+    if (!intent) { intent = { requestId: crypto.randomUUID() }; this.addIntents.set(key, intent); }
+    const current = intent;
+    const edit: PathEditIn = { op: "add", title: v, request_id: current.requestId };
+    current.pending = this.editRows((pathId) => this.api.editPath(pathId, edit)).then((out) => {
+      if (out !== null) this.addIntents.delete(key);
+      else delete current.pending;
+      return out !== null;
+    });
+    return current.pending;
+  }
+
   /**
    * ⋯ 拆成多页 (may call the model: the row says 正在拆成多页… meanwhile). Resolves to how many rows took its place and the
    * undo token (null undo: nothing to undo), `kept` the model's line when it left the node whole (no row changed); null

@@ -1,3 +1,4 @@
+import { FakeGoalApi } from "./learn/goal-fake";
 /**
  * Task 12: the whole flow of the Obsidian redesign, on fake data only (FakeWikiApi, an in-memory vault under the real
  * note writer, the obsidian mock). Real renderers, real glue: the 今天 sidebar (WikiView), the end-of-note block, the top
@@ -104,7 +105,7 @@ beforeAll(async () => {
   const vault = new MemVault();
   let n = 0;
   const deps = { store: vault, now: () => new Date(Date.UTC(2026, 9, 10, 8, 0, n)), rand: () => `abcd${String(++n).padStart(4, "0")}` };
-  s.sync.run = async (input: WikiNoteInput) => { s.sync.runs.push(input); return syncWithVault(deps, "Notes/Wiki", input); };
+  s.sync.run = async (input: WikiNoteInput) => { s.sync.runs.push(input); return syncWithVault(deps, "Notes", input); };
   // The learner already has a first page (p1, a z-score page: its cards come due) and then names a bigger goal (a path).
   await firstPage(s.c);
   await newGoal(s.c, "学统计推断");
@@ -324,14 +325,14 @@ describe("the whole flow (fake data)", () => {
     expect(f.openedMap.count).toBe(1);
   });
 
-  it("12 知识图谱: the graph page reads GET /wiki/graph; a pick from the hidden list opens the node card (K state only, no buttons)", async () => {
+  it("12 知识图谱: the graph page reads GET /wiki/graph; a pick from the hidden list opens the node card with its learning-path navigation", async () => {
     // The Cloud's browser APIs (jsdom has none of them): no frames, reduced motion, a ResizeObserver that never fires.
     vi.stubGlobal("requestAnimationFrame", () => 1);
     vi.stubGlobal("cancelAnimationFrame", () => undefined);
     vi.stubGlobal("matchMedia", () => ({ matches: true }));
     vi.stubGlobal("ResizeObserver", class { observe(): void {} disconnect(): void {} });
     try {
-      const big = new StarMapView({} as WorkspaceLeaf, { source: f.c.graphSource(), openLearn: () => undefined, showPage: () => undefined, writePage: () => undefined, openRow: () => undefined, onCssChange: () => () => undefined });
+      const big = new StarMapView({} as WorkspaceLeaf, { source: f.c.graphSource(), goalApi: () => new FakeGoalApi({ roundMs: 0 }), openLearn: () => undefined, openGoal: () => undefined, showPage: () => undefined, writePage: () => undefined, openRow: () => undefined, onCssChange: () => () => undefined });
       document.body.append(big.contentEl);
       await big.onOpen();
       await wait(() => big.contentEl.querySelector("ul.evowiki-sr-only [data-node]") !== null);
@@ -340,7 +341,7 @@ describe("the whole flow (fake data)", () => {
       py.click();
       const card = q(big.contentEl, "[data-card=node]");
       expect(card.querySelector("h2")!.textContent).toBe("Python掌握");
-      expect(card.querySelector("button")).toBeNull();   // the card only tells (no 我想学这个)
+      expect(card.querySelector("button")).not.toBeNull();   // the card only tells (no 我想学这个)
       await big.onClose();
     } finally { vi.unstubAllGlobals(); }
   });

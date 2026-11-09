@@ -43,7 +43,7 @@ def services(pool) -> Services:
 
 @pytest.fixture
 def client(services) -> TestClient:
-    return TestClient(create_app(services))
+    return TestClient(create_app(services), base_url="http://127.0.0.1")
 
 
 def H(uid: str) -> dict[str, str]:
@@ -80,6 +80,8 @@ def leave_mid_stream(app, method: str, path: str, *, body: bytes = b"",
     import asyncio
 
     hdrs = [(k.lower().encode(), v.encode()) for k, v in (headers or {}).items()]
+    if not any(k == b"host" for k, _ in hdrs):
+        hdrs.insert(0, (b"host", b"127.0.0.1:8000"))
     if body:
         hdrs.append((b"content-type", b"application/json"))
     path, _, query = path.partition("?")

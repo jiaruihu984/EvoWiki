@@ -420,7 +420,11 @@ def test_rewrite_runs_the_deep_writer_scoped_to_the_section(tmp_path):
     first = req.messages[0].text
     for must in (case.initial_explanation, case.follow_up, "换个讲法", case.prompt):
         assert must in first, must
-    assert language_rule("en") in req.system
+    for request in ds.requests:
+        if request.purpose == "deep.write":
+            assert request.messages[-1].role == "user"
+            assert language_rule("en") in request.messages[-1].text
+            assert language_rule("en") not in request.system
     assert "这次只改写这些段：s1" in first
 
 

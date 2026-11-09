@@ -264,7 +264,7 @@ def test_user_started_revisions_are_listed_as_changes():
 
 
 def test_without_a_ledger_the_routes_say_unavailable(services):
-    c = TestClient(create_app(services))
+    c = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(c)
     assert c.post("/wiki/pages/p/revise", json={}, headers=U).status_code == 503
 

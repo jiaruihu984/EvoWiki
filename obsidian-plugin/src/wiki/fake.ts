@@ -972,7 +972,7 @@ export class FakeWikiApi implements WikiApi {
         if (e.cue !== undefined && e.cue !== null) x.cue = e.cue;
         if (e.folded !== undefined && e.folded !== null) x.folded = e.folded;
       }
-      p.sections = p.sections.filter((x) => !(body.removed ?? []).includes(x.fx.id));
+      p.sections = p.sections.filter((x) => !(body.removed ?? []).some((r) => r.section_id === x.fx.id));
       this.recordSignal("note_edit", pageId, null, [], body.summary);
       return { edit_id: `he${this.handEdits++}`, page: this.pageOut(p, null) };
     });

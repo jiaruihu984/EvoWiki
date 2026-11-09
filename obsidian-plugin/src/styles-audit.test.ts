@@ -154,10 +154,7 @@ const HOOK_ONLY = new Set([
   "evowiki-sidebar",
 ]);
 
-describe("styles.css animations (Task 16): the demo's keyframes and timings; reduced motion stops only loops and transitions", () => {
-  const demo = join(process.cwd(), "..", "docs", "superpowers", "specs", "prototypes", "full-demo");
-  const shell = readFileSync(join(demo, "src", "shell.html"), "utf8").replace(/\r\n/g, "\n");
-  const graph = readFileSync(join(demo, "graph.html"), "utf8").replace(/\r\n/g, "\n");
+describe("styles.css animations: motion feedback, timings and reduced motion", () => {
   /** `@keyframes name{…}` with its nested braces, whitespace dropped. */
   const keyframes = (src: string, name: string): string | null => {
     const at = src.indexOf(`@keyframes ${name}{`);
@@ -174,23 +171,29 @@ describe("styles.css animations (Task 16): the demo's keyframes and timings; red
   };
   const reducedBlocks = (src: string): string[] => [...src.matchAll(/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{((?:[^{}]*\{[^{}]*\})*)\s*\}/g)].map((m) => m[1]!);
 
-  it.each([["wpulse", "wpulse"], ["ew-blink", "blink"], ["pop", "pop"], ["draw", "draw"], ["rise", "rise"], ["ants", "ants"], ["ew-spin", "spin"], ["ew-spinfade", "spinfade"]])(
-    "@keyframes %s is the demo's %s, value for value", (ours, theirs) => {
-      expect(keyframes(full, ours)).not.toBeNull();
-      expect(keyframes(full, ours)).toBe(keyframes(shell, theirs));
-    });
-  it("the 知识图谱 rows' rise (graph.html: 4px) and wpulse are graph.html's", () => {
-    expect(keyframes(full, "grise")).toBe(keyframes(graph, "rise"));
-    expect(keyframes(graph, "wpulse")).toBe(keyframes(shell, "wpulse"));
+  // The shipped stylesheet is the product contract; these values describe visible feedback
+  // without requiring the private design prototype to be available in a release checkout.
+  it.each([
+    ["wpulse", "{0%,100%{opacity:.25}50%{opacity:1}}"],
+    ["ew-blink", "{0%,80%,100%{opacity:.25}40%{opacity:1}}"],
+    ["pop", "{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}"],
+    ["draw", "{to{stroke-dashoffset:0}}"],
+    ["rise", "{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}"],
+    ["ants", "{to{stroke-dashoffset:-12}}"],
+    ["ew-spin", "{to{transform:rotate(360deg)}}"],
+    ["ew-spinfade", "{50%{opacity:.35}}"],
+    ["grise", "{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}"],
+  ])("@keyframes %s preserves its feedback states", (name, expected) => {
+    expect(keyframes(full, name)).toBe(expected);
   });
-  it("uses: duration, delay, easing and repeat as the demo", () => {
+  it("preserves duration, delay, easing and repeat for each feedback state", () => {
     expect(decl(full, "body .ew .ew-ws i,body .ew .ew-wline i")).toContain("animation:wpulse 1.2s infinite ease-in-out");
     expect(decl(full, "body .ew .ew-typing i")).toContain("animation:ew-blink 1.2s infinite ease-in-out");
     expect(decl(full, "body .ew .ew-spin")).toContain("animation:ew-spin .9s linear infinite");
     expect(decl(full, "body .ew .ew-typing i:nth-child(2)")).toBe("animation-delay:.15s");
     expect(decl(full, "body .ew .ew-typing i:nth-child(3)")).toBe("animation-delay:.3s");
-    expect(decl(full, "body .ew .ew-o.ew-right.ew-pop")).toBe(decl(shell, ".o.right.pop"));
-    expect(decl(full, "body .ew .ew-okline.ew-anim path")).toBe(decl(shell, ".okline.anim path"));
+    expect(decl(full, "body .ew .ew-o.ew-right.ew-pop")).toBe("animation:pop .35s ease-out");
+    expect(decl(full, "body .ew .ew-okline.ew-anim path")).toBe("stroke-dasharray:22;stroke-dashoffset:22;animation:draw .35s .1s ease-out forwards");
     expect(decl(full, "body .ew .ew-okline.ew-anim path")).toContain("animation:draw .35s .1s ease-out forwards");
     expect(decl(full, "body .ew .ew-donec.ew-anim .ew-dstats div")).toContain("animation:rise .35s ease-out forwards");
     expect(decl(full, "body .ew-graph .ew-pages .ew-w i")).toContain("animation:wpulse 1.2s infinite ease-in-out");

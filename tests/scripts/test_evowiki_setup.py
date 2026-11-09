@@ -118,11 +118,27 @@ def test_malformed_and_interrupted_config_fail_closed(config):
         setup.ensure_integrity(config)
 
 
-def test_exclusive_setup_lock_prevents_overlapping_write(config):
-    run = config / ".evowiki-run"
-    run.mkdir()
-    (run / "setup.lock").write_text("", encoding="utf-8")
-    assert setup.handle(request(config), config, stopped)["code"] == "setup_busy"
+def test_exclusive_setup_lock_prevents_overlapping_write_and_recovers_after_kill(config):
+    import subprocess
+    import sys
+
+    child = subprocess.Popen([sys.executable, "-u", "-c", """
+import sys
+from pathlib import Path
+from evowiki.service.backup import _file_lock
+with _file_lock(Path(sys.argv[1])):
+    print('locked', flush=True)
+    sys.stdin.read()
+""", str(config / ".evowiki-run" / "setup.lock")],
+        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    try:
+        assert child.stdout.readline().strip() == "locked"
+        assert setup.handle(request(config), config, stopped)["code"] == "setup_busy"
+    finally:
+        child.kill()
+        child.communicate(timeout=10)
+    for _ in range(2):
+        assert setup.handle(request(config), config, stopped)["ok"]
 
 
 def test_dotenv_quotes_and_backslashes_round_trip(config):
@@ -342,3 +358,66 @@ def test_models_ignore_existing_model_and_prices_errors(config, monkeypatch):
     model_server(monkeypatch, [{"data": [{"id": "gpt-new"}, {"id": "gpt-image-1"}, {"id": "text-embedding-new"}]}])
     result = setup.handle({"op": "models", "provider": "openai"}, config)
     assert result["ok"] and result["model_catalog"]["models"] == ["gpt-new"]
+
+
+@pytest.mark.parametrize("stage", ["before_payload", "partial_payload", "after_payload"])
+def test_process_exit_during_configuration_write_keeps_integrity_marker(config, stage):
+    import subprocess
+    import sys
+
+    child = subprocess.run([sys.executable, "-c", """
+import os, sys
+from pathlib import Path
+sys.path.insert(0, sys.argv[3])
+import evowiki_setup as setup
+root, stage = Path(sys.argv[1]), sys.argv[2]
+fsync = os.fsync
+calls = 0
+def interrupt(fd):
+    global calls
+    fsync(fd)
+    calls += 1
+    if (calls == 1 and stage == 'before_payload') or (calls == 2 and stage == 'after_payload'):
+        os._exit(23)
+setup.os.fsync = interrupt
+original_open = Path.open
+class InterruptedTarget:
+    def __init__(self, target):
+        self.target = target
+    def __getattr__(self, key):
+        return getattr(self.target, key)
+    def __enter__(self):
+        return self
+    def __exit__(self, *args):
+        self.target.close()
+    def write(self, payload):
+        self.target.write(payload[:len(payload) // 2])
+        self.target.flush()
+        fsync(self.target.fileno())
+        os._exit(23)
+def open_target(path, *args, **kwargs):
+    target = original_open(path, *args, **kwargs)
+    if stage == 'partial_payload' and path == root / '.env' and args == ('r+b',):
+        return InterruptedTarget(target)
+    return target
+Path.open = open_target
+request = dict(op='apply', provider='deepseek', api_key='fake-test-only',
+               expected_revision=setup.revision((root / '.env').read_bytes()))
+setup.handle(request, root, lambda *_: dict(state='stopped', port=8002))
+""", str(config), stage, str(setup.ROOT / "scripts")], capture_output=True, text=True, timeout=10, check=False)
+    assert child.returncode == 23, child.stderr
+    assert (config / ".evowiki-run" / "setup-write.json").exists()
+    assert status(config)["code"] == "interrupted_write"
+    assert setup.handle(request(config), config, stopped)["code"] == "interrupted_write"
+
+
+def test_interrupted_write_discovered_after_inspection_is_not_overwritten(config):
+    before = (config / ".env").read_bytes()
+    def inspect(root, op):
+        run = root / ".evowiki-run"
+        run.mkdir()
+        (run / "setup-write.json").write_text('{"expected_hash":"incomplete"}', encoding="utf-8")
+        return stopped(root, op)
+    result = setup.handle(request(config), config, inspect)
+    assert result["code"] == "interrupted_write"
+    assert (config / ".env").read_bytes() == before

@@ -125,8 +125,8 @@ describe("panel logic", () => {
   it("path helpers: move, optimistic remove, Alt + arrows inside the ends", () => {
     const P = g.goals[1]!.path, t = (p: PathItemOut[]): string[] => p.map((x) => x.title);
     expect(t(movedPath(P, 0, 2))).toEqual(["特征值与特征向量", "导数和梯度", "向量和矩阵乘法", "条件概率"]);
-    expect(t(optimisticPath(P, { op: "remove", index: 1 })!)).toEqual(["向量和矩阵乘法", "导数和梯度", "条件概率"]);
-    expect(optimisticPath(P, { op: "add", title: "x" })).toBeNull();
+    expect(t(optimisticPath(P, { op: "remove", page_key: P[1]!.key })!)).toEqual(["向量和矩阵乘法", "导数和梯度", "条件概率"]);
+    expect(optimisticPath(P, { op: "add", request_id: "test-intent", title: "x" })).toBeNull();
     expect(P).toHaveLength(4);
   });
 });

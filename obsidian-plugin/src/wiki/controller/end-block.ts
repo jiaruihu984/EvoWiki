@@ -163,10 +163,11 @@ export class EndBlock {
     if (now.kind === "open" && now.page.page_id === pageId && now.status?.tone === "error") {
       this.endLine(pageId, { kind: "error", text: WIKI_COPY.endDoneFailed }); return;
     }
-    // a page opened while it was written named itself as the step: the page read back knows what follows
-    if (after !== null && "step" in after && after.step.page_id === pageId) after = endModel(this.core.state, pageId)?.primary ?? null;
+    // Completing the page can change the goal's next action; use the freshly read server state.
+    after = endModel(this.core.state, pageId)?.primary ?? null;
     if (after !== null && (after.kind === "next" || after.kind === "next-block")) { await this.h.followStep(after.step); return; }
     this.endLine(pageId, { kind: "saved", text: WIKI_COPY.endPageDoneLine });
+    this.core.deps.learnNew?.("");
   }
 
 }

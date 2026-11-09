@@ -57,9 +57,9 @@ export interface WikiControllerDeps {
   learnNew?: (topic: string) => void;
   /**
    * A goal's next block (a block's last page read, 今天's 下一块): the chat's run of that map enters it, its diagnosis in the
-   * 助手 when it needs one, and writes its first page. False: no run of that map here.
+   * 助手 when it needs one, restoring its run after reload when needed. Rejects when it cannot continue.
    */
-  continueGoal?: (mapId: string, region?: string | null) => boolean;
+  continueGoal?: (mapId: string, region?: string | null) => Promise<void>;
   /** 「⋯ → 问助手」 (`reteach`: 重讲这一节 waiting in the composer, unsent): opens the sidebar on 助手 with this quote above the composer; absent = nothing happens (tests). */
   askAssistant?: (pageId: string, title: string, quote: { text: string; heading: string | null; kind?: "text" | "wrong_answer" }, reteach?: string) => void;
   /**

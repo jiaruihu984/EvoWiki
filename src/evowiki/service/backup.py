@@ -24,7 +24,7 @@ from pathlib import Path
 
 import psycopg
 from dotenv import dotenv_values
-from psycopg.conninfo import conninfo_to_dict
+from psycopg.conninfo import conninfo_to_dict, make_conninfo
 
 log = logging.getLogger(__name__)
 
@@ -99,8 +99,11 @@ def real_database(url: str, env_file: Path | None = None) -> bool:
 
 def scrub(text: str, url: str) -> str:
     """`text` without the password of `url` (a message is logged and shown)."""
-    pw = conninfo_to_dict(url).get("password")
-    return text.replace(pw, "***") if pw else text
+    options = conninfo_to_dict(url)
+    for key in ("password", "sslpassword", "oauth_client_secret", "scram_client_key", "scram_server_key"):
+        if value := options.get(key):
+            text = text.replace(value, "***")
+    return text
 
 
 def pg_dump_path(env: Mapping[str, str] | None = None, env_file: Path | None = None) -> str:
@@ -420,21 +423,42 @@ def _run_once(cfg, now, dump, *, force):
     return target
 
 
+@contextmanager
+def pg_tool_connection(url: str):
+    """Keep every libpq option in a private service file, never in process arguments."""
+    options = conninfo_to_dict(url)
+    if "service" in options:
+        # libpq owns service lookup and precedence (user/system files, environment, LDAP).
+        # Resolve through the same live connection the operation already requires.
+        with psycopg.connect(url) as conn:
+            options = {option.keyword.decode(): option.val.decode()
+                       for option in conn.pgconn.info if option.val is not None and option.keyword != b"service"}
+    if any("\n" in v or "\r" in v or v != v.strip() for v in options.values()):
+        raise BackupFailed("connection parameters cannot contain newlines or surrounding whitespace")
+    env = {k: v for k, v in os.environ.items() if not k.startswith("PG")}
+    with tempfile.TemporaryDirectory(prefix="evowiki-pg-") as folder:
+        path = Path(folder) / "pg_service.conf"
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as stream:
+            stream.write("[evowiki_backup]\n")
+            for key, value in options.items():
+                stream.write(f"{key}={value}\n")
+        env.update(PGSERVICEFILE=str(path), PGSERVICE="evowiki_backup")
+        yield env, make_conninfo(**options)
+
+
 def _pg_dump(cfg: BackupConfig, out: Path) -> None:
-    """pg_dump -Fc into `out`. The connection goes in PG* variables, not on the command line (a command line is
-    readable by every process of the machine), and the password is scrubbed from whatever pg_dump says."""
-    c = conninfo_to_dict(cfg.url)
-    pg = {"PGHOST": c.get("host", ""), "PGPORT": c.get("port", "5432"), "PGUSER": c.get("user", ""),
-          "PGPASSWORD": c.get("password", ""), "PGDATABASE": c.get("dbname", "")}
-    env = {**{k: v for k, v in os.environ.items() if not k.startswith("PG")}, **pg}
+    """pg_dump -Fc, preserving libpq settings without secrets in argv."""
+    connection = cfg.url
     try:
-        r = subprocess.run([cfg.pg_dump or pg_dump_path(), "-Fc", *(["--snapshot", cfg.snapshot] if cfg.snapshot else []),
-                            "-f", str(out)], env=env,
-                           capture_output=True, text=True, encoding="utf-8", errors="replace", check=False)
+        with pg_tool_connection(cfg.url) as (env, connection):
+            r = subprocess.run([cfg.pg_dump or pg_dump_path(), "-Fc", *(["--snapshot", cfg.snapshot] if cfg.snapshot else []),
+                                "-f", str(out)], env=env,
+                               capture_output=True, text=True, encoding="utf-8", errors="replace", check=False)
     except OSError as e:
-        raise BackupFailed(scrub(str(e), cfg.url)) from e
+        raise BackupFailed(scrub(str(e), connection)) from e
     if r.returncode != 0:
-        raise BackupFailed(scrub(r.stderr.strip() or f"pg_dump exited with {r.returncode}", cfg.url))
+        raise BackupFailed(scrub(r.stderr.strip() or f"pg_dump exited with {r.returncode}", connection))
 
 
 def start_background(cfg: BackupConfig, clock: Callable[[], datetime]) -> tuple[threading.Thread, threading.Event]:

@@ -203,5 +203,11 @@ export function planHandEdit(text: string, written: Written, sources: PageSource
     if (src.fingerprint) out.fingerprint = src.fingerprint;
     sections.push(out);
   }
-  return { kind: "ok", edit: { sections, removed, summary: editSummary(before, after, written.layout) } };
+  const deletions = [];
+  for (const id of removed) {
+    const s = secs.find((x) => x.id === id)!;
+    if (!s.src?.fingerprint) return { kind: "unsafe", why: "source", label: s.label };
+    deletions.push({ section_id: id, fingerprint: s.src.fingerprint });
+  }
+  return { kind: "ok", edit: { sections, removed: deletions, summary: editSummary(before, after, written.layout) } };
 }

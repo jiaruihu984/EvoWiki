@@ -184,7 +184,7 @@ export function mountExamBlock(parent: HTMLElement, pageId: string, port: ExamPo
 }
 
 /**
- * The quiz asset for the block: `fetchAsset` makes sure `<notes>/Wiki/assets/<id>.json` is in the vault (a failure is logged;
+ * The quiz asset for the block: `fetchAsset` makes sure `<notes>/assets/<id>.json` is in the vault (a failure is logged;
  * the evoui block then offers 取回 itself), then `mount` draws `asset: <id>` into `el`. Returns the cleanup.
  */
 export function mountQuizAsset(el: HTMLElement, assetId: string, fetchAsset: (assetId: string) => Promise<unknown>,

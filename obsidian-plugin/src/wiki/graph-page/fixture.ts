@@ -223,6 +223,7 @@ export class GraphFixture {
   private readonly l2: GroupOut[] = [];
   private readonly goals: GoalRec[] = [];
   private seq = 0;
+  private readonly addedIntents = new Set<string>();
   private readonly removed = new Map<string, { pathId: string; row: PathItemOut; index: number }>();
   private readonly splits = new Map<string, { pathId: string; row: PathItemOut; keys: string[] }>();
 
@@ -347,9 +348,10 @@ export class GraphFixture {
       if (!inRange(edit.from) || !inRange(edit.to)) throw http(422, "位置超出范围");
       const [pg] = P.splice(edit.from, 1); P.splice(edit.to, 0, pg!);
     } else if (edit.op === "remove") {
-      if (!inRange(edit.index)) throw http(422, "位置超出范围");
-      const [gone] = P.splice(edit.index, 1);
-      this.removed.set(gone!.key, { pathId, row: gone!, index: edit.index });
+      const index = P.findIndex((r) => r.key === edit.page_key);
+      if (index < 0) throw http(422, "路径里没有这一页");
+      const [gone] = P.splice(index, 1);
+      this.removed.set(gone!.key, { pathId, row: gone!, index });
     } else if (edit.op === "unremove") {
       const r = this.removed.get(edit.page_key);
       if (!r || r.pathId !== pathId) throw http(422, `这一页不是被删掉的：${edit.page_key}`);
@@ -362,10 +364,13 @@ export class GraphFixture {
     } else {
       const title = edit.title.trim();
       if (!title || title.length > 200) throw http(422, "标题 1–200 字");
+      const intent = JSON.stringify([pathId, edit.request_id]);
+      if (this.addedIntents.has(intent)) return { path: structuredClone(P), undo: null, kept: "" };
       const nodeId = edit.node_id ?? null, toIndex = edit.to_index ?? null;
       if (nodeId !== null) this.node(nodeId);
       const at = toIndex !== null ? Math.min(toIndex, P.length) : P.length;
       P.splice(at, 0, this.mine(title, nodeId !== null ? MINE_SUMMARY : MINE_NEW_SUMMARY, nodeId !== null ? [nodeId] : []));
+      this.addedIntents.add(intent);
     }
     return { path: structuredClone(P), undo: null, kept: "" };
   }

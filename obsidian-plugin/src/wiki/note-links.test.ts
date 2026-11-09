@@ -14,7 +14,7 @@ import { noteLinksExtension, noteLinksPostProcessor, PAGE_LINK_CLASS, pageLinkId
 import type { WikiNoteInput } from "./note/types";
 
 const ctx = (fm: Record<string, unknown> | null, text: string | null = null) =>
-  ({ frontmatter: fm, sourcePath: "EvoWiki/me/Wiki/A.md", getSectionInfo: () => (text === null ? null : { text, lineStart: 0, lineEnd: 0 }) }) as unknown as MarkdownPostProcessorContext;
+  ({ frontmatter: fm, sourcePath: "EvoWiki/A.md", getSectionInfo: () => (text === null ? null : { text, lineStart: 0, lineEnd: 0 }) }) as unknown as MarkdownPostProcessorContext;
 
 /** A rendered paragraph as Obsidian draws it: the `#p:` link is an external link (its href has a colon). */
 function paragraph(): { el: HTMLElement; page: HTMLAnchorElement; web: HTMLAnchorElement; outer: ReturnType<typeof vi.fn> } {
@@ -50,7 +50,7 @@ describe("Reading view", () => {
     expect(page.hasAttribute("target") || page.hasAttribute("aria-label") || page.hasAttribute("rel")).toBe(false);
     const ev = new MouseEvent("click", { bubbles: true, cancelable: true });
     page.dispatchEvent(ev);
-    expect(open).toHaveBeenCalledWith("p3", "EvoWiki/me/Wiki/A.md");
+    expect(open).toHaveBeenCalledWith("p3", "EvoWiki/A.md");
     expect(ev.defaultPrevented).toBe(true);
     expect(outer).not.toHaveBeenCalled();
     // Any other link is Obsidian's.
@@ -64,7 +64,7 @@ describe("Reading view", () => {
     const a = paragraph(), openA = vi.fn();
     noteLinksPostProcessor(openA)(a.el, ctx(null, "%% evowiki:start %%\n…"));
     a.page.click();
-    expect(openA).toHaveBeenCalledWith("p3", "EvoWiki/me/Wiki/A.md");
+    expect(openA).toHaveBeenCalledWith("p3", "EvoWiki/A.md");
     const b = paragraph(), openB = vi.fn();
     noteLinksPostProcessor(openB)(b.el, ctx({ tags: ["x"] }, "plain note"));
     b.page.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));

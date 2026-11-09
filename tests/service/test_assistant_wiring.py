@@ -72,7 +72,7 @@ def test_build_services_wires_the_assistant_only_with_a_gateway(db_url, pool, mo
 
 
 def test_assistant_end_to_end_over_postgres(services, tmp_path):
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(client, "u1")
     repo = PgRepo(services.pool)
     ids = Ids()                     # one id source: the page's events and the assistant's never clash
@@ -174,7 +174,7 @@ def test_attachment_turn_over_postgres(services, tmp_path):
     one is a 409 with the text to show (the session stays)."""
     from evowiki.sources import store
     from evowiki.sources.models import SectionRow, SourceRow
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(client, "u1")
     row = SourceRow(source_id="src1", user_id="u1", kind="md", title="讲义", sha256="x",
                     bytes=10, pages=None, status="ready", error=None, unreadable_pages=(),
@@ -216,7 +216,7 @@ def test_asking_with_an_old_attachment_makes_it_young_again(services, tmp_path):
     from evowiki.sources import store
     from evowiki.sources.cleanup import KEEP_ASK_DAYS
     from evowiki.sources.models import SectionRow, SourceRow
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(client, "u1")
     old = NOW - timedelta(days=40)
     row = SourceRow(source_id="src1", user_id="u1", kind="md", title="讲义", sha256="x",

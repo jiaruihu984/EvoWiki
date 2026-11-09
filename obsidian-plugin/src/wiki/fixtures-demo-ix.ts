@@ -1,7 +1,7 @@
 /**
  * The demo fixture's interactive (fixtures-demo.ts, asset `demo-ix`): app.js `interactive()` of the approved full demo
  * (the product specification) as one standalone page, for the test vault
- * (`EvoWiki/Wiki/assets/demo-ix.html`, the scripts/ demo-vault script) and the fixture's assetHtml.
+ * (`EvoWiki/assets/demo-ix.html`, the scripts/ demo-vault script) and the fixture's assetHtml.
  *
  * Only the inside of the demo's box: the plugin's embedded-html block (embed/embed-block.ts) already draws the `.ix` box
  * (`.evowiki-embed`: border, radius, padding, gap) and its title from the block's `title:` line (`.evowiki-embed-title`

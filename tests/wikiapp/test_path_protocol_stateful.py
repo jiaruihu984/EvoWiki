@@ -56,7 +56,7 @@ def test_path_edit_start_and_undo_sequences():
         @rule(index=st.integers(0, 12))
         def remove(self, index):
             coverage["remove"] += 1
-            call = lambda: edit_path(self.repo, "u1", PATH_ID, PathRemoveIn(op="remove", index=index),
+            call = lambda: edit_path(self.repo, "u1", PATH_ID, PathRemoveIn(op="remove", page_key=self.visible()[index] if index < len(self.visible()) else "missing"),
                                      now=NOW, new_id=self.ids)
             if index >= len(self.visible()):
                 with pytest.raises(WikiInvalid):
@@ -71,7 +71,7 @@ def test_path_edit_start_and_undo_sequences():
             coverage["add"] += 1
             self.sequence += 1
             title = f"new {self.sequence}"
-            out = edit_path(self.repo, "u1", PATH_ID, PathAddIn(op="add", title=title),
+            out = edit_path(self.repo, "u1", PATH_ID, PathAddIn(op="add", request_id=title, title=title),
                             now=NOW, new_id=self.ids)
             key = out.path[-1].key
             self.order.append(key)

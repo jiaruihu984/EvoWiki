@@ -129,13 +129,13 @@ describe("the fake's chat-first blocks (big-goal-demo.html 黑壳虾, useBlocks)
     const pid = ent.path_id!;
     const titles = (o: { path: { title: string }[] }): string[] => o.path.map((p) => p.title);
     expect(titles(await a.editPath(pid, { op: "move", from: 0, to: 2 }))).toEqual(["氨氮、亚硝酸盐和硝化", "怎么测、怎么调", "黑壳虾要什么样的水"]);
-    expect(titles(await a.editPath(pid, { op: "remove", index: 0 }))).toEqual(["怎么测、怎么调", "黑壳虾要什么样的水"]);
+    expect(titles(await a.editPath(pid, { op: "remove", page_key: `${pid}-p2` }))).toEqual(["怎么测、怎么调", "黑壳虾要什么样的水"]);
     expect(titles(await a.editPath(pid, { op: "unremove", page_key: `${pid}-p2` }))).toEqual(["氨氮、亚硝酸盐和硝化", "怎么测、怎么调", "黑壳虾要什么样的水"]);
     const split = await a.splitRow(pid, `${pid}-p3`);
     expect(titles(split)).toEqual(["氨氮、亚硝酸盐和硝化", "怎么测、怎么调是什么", "怎么测、怎么调怎么做", "黑壳虾要什么样的水"]);
     expect(split.undo).not.toBeNull();
     await expect(a.splitRow(pid, split.path[1]!.key)).rejects.toMatchObject({ status: 422 });
     expect(titles(await a.undoSplitRow(pid, `${pid}-p3`, split.undo!))).toEqual(["氨氮、亚硝酸盐和硝化", "怎么测、怎么调", "黑壳虾要什么样的水"]);
-    expect(titles(await a.editPath(pid, { op: "add", title: "造景" })).slice(-1)).toEqual(["造景"]);
+    expect(titles(await a.editPath(pid, { op: "add", request_id: "test-intent", title: "造景" })).slice(-1)).toEqual(["造景"]);
   });
 });

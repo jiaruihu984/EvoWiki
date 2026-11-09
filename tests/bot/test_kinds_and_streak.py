@@ -21,7 +21,7 @@ NOW = datetime(2026, 10, 14, 9, 0, tzinfo=UTC)         # 17:00 in Asia/Shanghai
 
 def test_idle_write_kind_off_stops_the_idle_page_writing(services):
     from evowiki.wikiapp.write_queue import PgIdleEnv
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(client, "u1")
     env = PgIdleEnv(services.pool, UTC, lambda p: p)
     assert env.settings("u1").kinds["idle_write"] is False     # off by default
@@ -67,7 +67,7 @@ def test_streak_uses_the_given_time_zone_for_day_edges():
 
 
 def test_review_today_carries_the_streak_in_the_bot_time_zone(services):
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(client, "u1")
     repo = PgRepo(services.pool)
     now = services.clock()

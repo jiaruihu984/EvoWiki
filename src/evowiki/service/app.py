@@ -10,6 +10,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from starlette.concurrency import run_in_threadpool
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from evowiki.agent.effects import EffectConflict
 from evowiki.agent.lifecycle import DRAINED
@@ -46,6 +47,7 @@ from evowiki.service import (
 )
 from evowiki.service.deps import Services
 from evowiki.service.drain import DrainMiddleware, RequestGate
+from evowiki.service.request_boundary import LOCAL_HOSTS, OriginMiddleware
 from evowiki.service.rsi_runs import CycleBusy, NotUndoable
 from evowiki.service.sse import Answered
 from evowiki.store.trace import PgTraceSink
@@ -231,6 +233,8 @@ def create_app(services: Services) -> FastAPI:
     gate = RequestGate(DRAINED)
     app.state.request_gate = gate
     app.add_middleware(DrainMiddleware, gate=gate)
+    app.add_middleware(OriginMiddleware)
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=LOCAL_HOSTS, www_redirect=False)
     for module in (routes_users, routes_wiki, routes_teach, routes_assistant, routes_usage, routes_rsi, routes_refine,
                    routes_components, routes_bot, routes_reading, routes_prompts, routes_harness,
                    routes_sources, routes_revise, routes_health, routes_exam, routes_setup):

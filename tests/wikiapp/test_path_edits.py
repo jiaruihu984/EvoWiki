@@ -116,8 +116,8 @@ def test_no_edits_shows_the_stored_path(env):
 def test_edits_are_stored_and_replay_equal(env):
     repo, _ = env
     edit(env, PathMoveIn(op="move", **{"from": 2}, to=0))
-    edit(env, PathRemoveIn(op="remove", index=1))
-    shown = edit(env, PathAddIn(op="add", title="自己复习一遍"))
+    edit(env, PathRemoveIn(op="remove", page_key=f"{PATH_ID}-p1"))
+    shown = edit(env, PathAddIn(op="add", request_id="test-1", title="自己复习一遍"))
     assert keys(shown)[:2] == [f"{PATH_ID}-p3", f"{PATH_ID}-p2"]
     assert shown[-1].mine and shown[-1].key.startswith("u-") and len(shown[-1].node_ids) == 1   # its own node (D34)
     log = repo.wiki_log("u1")
@@ -151,20 +151,20 @@ def test_rename_reaches_the_row_the_page_and_its_file_and_the_old_title_takes_it
 
 def test_bad_index_is_invalid_and_unknown_path_lookup(env):
     with pytest.raises(WikiInvalid):
-        edit(env, PathRemoveIn(op="remove", index=3))
+        edit(env, PathRemoveIn(op="remove", page_key="missing"))
     with pytest.raises(WikiInvalid):
         edit(env, PathMoveIn(op="move", **{"from": 0}, to=5))
     with pytest.raises(LookupError):
-        edit(env, PathAddIn(op="add", title="x", node_id="nope"))
+        edit(env, PathAddIn(op="add", request_id="test-2", title="x", node_id="nope"))
     with pytest.raises(LookupError):
-        edit_path(env[0], "u1", "path-nope", PathRemoveIn(op="remove", index=0), now=NOW,
+        edit_path(env[0], "u1", "path-nope", PathRemoveIn(op="remove", page_key="missing"), now=NOW,
                   new_id=env[1])
 
 
 def test_next_page_follows_the_shown_order(env):
     repo, ids = env
     edit(env, PathMoveIn(op="move", **{"from": 2}, to=0))
-    edit(env, PathRemoveIn(op="remove", index=1))            # p1 hidden
+    edit(env, PathRemoveIn(op="remove", page_key=f"{PATH_ID}-p1"))            # p1 hidden
     out = next_path_page(repo, "u1", PATH_ID, now=NOW, new_id=ids)
     assert out.index == 3                                     # stored index of p3
     st = repo.load("u1").state
@@ -208,7 +208,7 @@ def test_want_adds_an_own_page_once_and_it_can_be_started(env):
 
 
 def test_add_with_a_node_is_a_startable_page(env):
-    out = edit(env, PathAddIn(op="add", title="  贝叶斯入门 ", node_id="n5"))
+    out = edit(env, PathAddIn(op="add", request_id="test-3", title="  贝叶斯入门 ", node_id="n5"))
     assert out[-1].title == "贝叶斯入门" and out[-1].node_ids == ["n5"] and out[-1].mine
 
 
@@ -224,7 +224,7 @@ def test_the_idle_pick_follows_the_shown_order(env):
 def test_replan_keeps_the_users_work(env):
     repo, ids = env
     first = next_path_page(repo, "u1", PATH_ID, now=NOW, new_id=ids).page_id    # p1 started
-    edit(env, PathRemoveIn(op="remove", index=1))                               # p2 removed
+    edit(env, PathRemoveIn(op="remove", page_key=f"{PATH_ID}-p2"))                               # p2 removed
     want_node(repo, "u1", "n5", MAP_ID, now=NOW, new_id=ids)
     s = Script()
     # the model now puts n2 alone and n3 / n4 on separate pages (n1 is carried as started)
@@ -242,3 +242,44 @@ def test_replan_keeps_the_users_work(env):
     assert [e.body.action for e in repo.wiki_log("u1") if isinstance(e.body, PathSaved)][-1] \
         == "replanned"
     assert after.path.path_id == PATH_ID and len(after.page_ids) == len(after.path.pages)
+
+
+def test_reversed_stable_removals_delete_only_selected_rows(env):
+    edit(env, PathRemoveIn(op="remove", page_key=f"{PATH_ID}-p3"))
+    result = edit(env, PathRemoveIn(op="remove", page_key=f"{PATH_ID}-p1"))
+    assert keys(result) == [f"{PATH_ID}-p2"]
+
+
+def test_add_retry_after_lost_response_reuses_row_and_node(env):
+    request = PathAddIn(op="add", title="new", request_id="intent-1")
+    first = edit(env, request)
+    node_count = len(env[0].load("u1").state.graph.nodes)
+    second = edit(env, request)
+    assert second == first
+    assert len(env[0].load("u1").state.graph.nodes) == node_count
+    third = edit(env, PathAddIn(op="add", title="new", request_id="intent-2"))
+    assert len(third) == len(first) + 1
+
+
+@pytest.mark.parametrize("same_intent", [False, True])
+def test_two_clients_commit_from_one_snapshot_without_losing_or_duplicating_edits(env, monkeypatch, same_intent):
+    repo, ids = env
+    original = repo.commit
+    interleaved = False
+    def commit(snap, changes, **kwargs):
+        nonlocal interleaved
+        if not interleaved:
+            interleaved = True
+            other = (PathAddIn(op="add", title="new", request_id="shared") if same_intent
+                     else PathRemoveIn(op="remove", page_key=f"{PATH_ID}-p3"))
+            edit_path(repo, "u1", PATH_ID, other, now=NOW, new_id=ids)
+        return original(snap, changes, **kwargs)
+    monkeypatch.setattr(repo, "commit", commit)
+    request = (PathAddIn(op="add", title="new", request_id="shared") if same_intent
+               else PathRemoveIn(op="remove", page_key=f"{PATH_ID}-p1"))
+    result = edit(env, request)
+    if same_intent:
+        assert len(result) == 4
+        assert sum(n.name == "new" for n in repo.load("u1").state.graph.nodes) == 1
+    else:
+        assert keys(result) == [f"{PATH_ID}-p2"]

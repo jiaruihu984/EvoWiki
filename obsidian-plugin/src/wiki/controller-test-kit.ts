@@ -91,7 +91,7 @@ export interface Setup {
 }
 export function setup(o: { api?: FakeWikiApi; demo?: boolean; configured?: boolean; delayMs?: number;
   assets?: { retrieveAll(ids: readonly string[]): Promise<void> }; learnNew?: (topic: string, start?: boolean) => void; sourcePort?: SourcePort; blockEventStore?: WikiControllerDeps["blockEventStore"]; blockProgressStore?: WikiControllerDeps["blockProgressStore"];
-  decisions?: WikiControllerDeps["decisions"]; resolveMemoryConflicts?: () => void } = {}): Setup {
+  decisions?: WikiControllerDeps["decisions"]; continueGoal?: WikiControllerDeps["continueGoal"]; resolveMemoryConflicts?: () => void } = {}): Setup {
   const api = o.api ?? new FakeWikiApi({ delayMs: o.delayMs ?? 0, bot: { settings: { ...structuredClone(DEFAULT_BOT_SETTINGS), timezone: Intl.DateTimeFormat().resolvedOptions().timeZone } } });
   const conn = new FakeConn();
   const sync = new RecSync();
@@ -121,6 +121,7 @@ export function setup(o: { api?: FakeWikiApi; demo?: boolean; configured?: boole
     ...(o.assets ? { assets: o.assets } : {}),
     ...(o.sourcePort ? { sourcePort: o.sourcePort } : {}),
     ...(o.decisions ? { decisions: o.decisions } : {}),
+    ...(o.continueGoal ? { continueGoal: o.continueGoal } : {}),
     ...(o.resolveMemoryConflicts ? { resolveMemoryConflicts: o.resolveMemoryConflicts } : {}),
     learnNew: o.learnNew ?? ((t) => { learned.push(t); }),
   });

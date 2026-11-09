@@ -30,14 +30,14 @@ function memStore(initial: Record<string, string> = {}) {
   return { store, files, folders, writes, binary };
 }
 
-const PATH = "EvoWiki/Wiki/assets/demo-z-steps.html";
+const PATH = "EvoWiki/assets/demo-z-steps.html";
 let warn: ReturnType<typeof vi.spyOn>;
 beforeEach(() => { warn = vi.spyOn(console, "warn").mockImplementation(() => undefined); });
 afterEach(() => { warn.mockRestore(); });
 
 function fetcher(api: AssetSource, initial: Record<string, string> = {}, onWritten = vi.fn()) {
   const m = memStore(initial);
-  return { ...m, onWritten, f: new AssetFetcher(() => api, m.store, () => "EvoWiki/Wiki", onWritten) };
+  return { ...m, onWritten, f: new AssetFetcher(() => api, m.store, () => "EvoWiki", onWritten) };
 }
 const source = (meta: Partial<AssetMeta>, html: string): AssetSource & { assetMeta: ReturnType<typeof vi.fn>; assetHtml: ReturnType<typeof vi.fn> } => ({
   assetGenerated: () => Promise.resolve({ generated: false }),
@@ -58,7 +58,7 @@ describe("assetIdsIn", () => {
   });
 
   it("the assets folder sits under a valid wiki folder only", () => {
-    expect(assetsFolder("EvoWiki/Wiki")).toBe("EvoWiki/Wiki/assets");
+    expect(assetsFolder("EvoWiki")).toBe("EvoWiki/assets");
     expect(assetsFolder("/Wiki")).toBeNull();
     expect(assetsFolder("../Wiki")).toBeNull();
     expect(assetsFolder("")).toBeNull();
@@ -66,13 +66,13 @@ describe("assetIdsIn", () => {
 });
 
 describe("AssetFetcher", () => {
-  it("the fake's demo interactive: meta, html, sha256 matches → written to <notes>/Wiki/assets/<id>.html only", async () => {
+  it("the fake's demo interactive: meta, html, sha256 matches → written to <notes>/assets/<id>.html only", async () => {
     const api = new FakeWikiApi();
     const r = fetcher(api);
     expect(await r.f.retrieve("demo-z-steps")).toBe("written");
     expect(r.writes).toEqual([PATH]);
     expect(r.files.get(PATH)).toBe(DEMO_INTERACTIVE_HTML);
-    expect(r.folders).toEqual(["EvoWiki/Wiki/assets"]);
+    expect(r.folders).toEqual(["EvoWiki/assets"]);
     expect(r.onWritten).toHaveBeenCalledOnce();
     expect(r.onWritten).toHaveBeenCalledWith("demo-z-steps");
     expect(r.f.pathFor("demo-z-steps")).toBe(PATH);
@@ -143,7 +143,7 @@ describe("AssetFetcher", () => {
 
 describe("evoui assets (kind evoui, saved as <id>.json)", () => {
   const BLOCK = JSON.stringify({ type: "evoui", title: "t" });
-  const JSON_PATH = "EvoWiki/Wiki/assets/ia_9.json";
+  const JSON_PATH = "EvoWiki/assets/ia_9.json";
   const evoSource = (kind: "html" | "evoui", text = BLOCK) => source({ asset_id: "ia_9", kind, sha256: sha256Hex(text) }, text);
 
   it("evouiAssetIdsIn lists the asset: references of evoui fences, each once; inline JSON blocks are not assets", () => {
@@ -182,7 +182,7 @@ describe("evoui assets (kind evoui, saved as <id>.json)", () => {
 });
 
 describe("image assets (kind image, saved as the binary <id>.webp)", () => {
-  const IMG_PATH = "EvoWiki/Wiki/assets/ia_7.webp";
+  const IMG_PATH = "EvoWiki/assets/ia_7.webp";
   const imgSource = (kind: "html" | "image", text = DEMO_IMG_B64) => source({ asset_id: "ia_7", kind, sha256: sha256Hex(text) }, text);
   const fence = (asset: string) => "```evowiki-image\nasset: " + asset + "\nalt: a\ntitle: t\nlicense: CC0\nsource: Wikimedia Commons\n"
     + "source_url: https://commons.wikimedia.org/wiki/File:X.png\nwidth: 10\nheight: 10\n```";

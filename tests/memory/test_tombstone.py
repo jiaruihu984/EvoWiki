@@ -126,9 +126,9 @@ def test_restoring_an_old_backup_is_undone_by_reconcile(w, admin_pool):
 
 def test_assistant_is_closed_until_reconcile_passes():
     closed = TestClient(create_app(SimpleNamespace(assistant=None, forget=object(),
-                                                   forget_ledger=None)))
+                                                   forget_ledger=None)), base_url="http://127.0.0.1")
     r = closed.get("/assistant/sessions", headers={"X-EvoWiki-User": "u1"})
     assert r.status_code == 503 and r.json()["detail"] == CLOSED_DETAIL
-    open_ = TestClient(create_app(SimpleNamespace(assistant=None)))
+    open_ = TestClient(create_app(SimpleNamespace(assistant=None)), base_url="http://127.0.0.1")
     assert open_.get("/assistant/sessions",
                      headers={"X-EvoWiki-User": "u1"}).json()["detail"] != CLOSED_DETAIL

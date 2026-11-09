@@ -55,7 +55,7 @@ def make(tmp_path, script, applier=None, assistant=True):
     # create_app only stores the services object and mounts routers, so a namespace with just
     # `assistant` is enough here; this also checks app.py mounts the router and maps errors.
     return TestClient(create_app(SimpleNamespace(
-        assistant=service(tmp_path, script, applier) if assistant else None)))
+        assistant=service(tmp_path, script, applier) if assistant else None)), base_url="http://127.0.0.1")
 
 
 def events(resp):
@@ -223,7 +223,7 @@ def test_second_send_while_a_turn_runs_is_busy(tmp_path):
 
 def test_busy_session_maps_to_409(tmp_path):
     svc = service(tmp_path, [ChatTurn(text="答一")])
-    c = TestClient(create_app(SimpleNamespace(assistant=svc)))
+    c = TestClient(create_app(SimpleNamespace(assistant=svc)), base_url="http://127.0.0.1")
     sid = c.post("/assistant/sessions", json={}, headers=U1).json()["session_id"]
     first = svc.send("u1", sid, MessageIn(text="问一"))
     next(first)
@@ -292,7 +292,7 @@ def test_provider_rejected_error_ends_turn_with_non_retryable_llm_unavailable(tm
 def _fake_turn_client(turn):
     from evowiki.assistant.contracts import SessionCreateOut  # noqa: F401
     fake = SimpleNamespace(send=lambda uid, sid, body: turn)
-    return TestClient(create_app(SimpleNamespace(assistant=fake)))
+    return TestClient(create_app(SimpleNamespace(assistant=fake)), base_url="http://127.0.0.1")
 
 
 def test_turn_iterator_raising_still_ends_with_error_event():
@@ -388,7 +388,7 @@ def test_a_durable_assistant_without_a_launched_dbos_is_503(tmp_path):
     from evowiki.assistant.turn_runs import DbosTurnRuns
     svc = service(tmp_path, [ChatTurn(text="答")])
     svc = AssistantService(svc.turn_deps, Applier(), DbosTurnRuns())
-    c = TestClient(create_app(SimpleNamespace(assistant=svc)))
+    c = TestClient(create_app(SimpleNamespace(assistant=svc)), base_url="http://127.0.0.1")
     sid = c.post("/assistant/sessions", json={"page_id": "p1"}, headers=U1).json()["session_id"]
     r = c.post(f"/assistant/sessions/{sid}/messages", json={"text": "问"}, headers=U1)
     assert r.status_code == 503 and r.json() == {"detail": "请切换模型重试", "code": "AssistantUnavailable", "params": {}}
@@ -434,7 +434,7 @@ def test_a_durable_turn_carries_its_resume_id_and_resumes_from_it():
     live = [(TextDelta(at=0, text="答"), 0), (TextDelta(at=0, text="答案"), 1),
             (Done(message_id="a", tool_calls=0, llm_calls=1), 1)]
     fake = SimpleNamespace(send=lambda uid, sid, body: _Cursored(live), resume=resume)
-    c = TestClient(create_app(SimpleNamespace(assistant=fake)))
+    c = TestClient(create_app(SimpleNamespace(assistant=fake)), base_url="http://127.0.0.1")
     blocks = _blocks(c.post("/assistant/sessions/s/messages", json={"text": "x"}, headers=U1))
     assert [b["id"] for b in blocks] == ["msg_1:0", "msg_1:0", "msg_1:1", "msg_1:2"]   # the resume point at once; live keeps 0
     r = c.get("/assistant/sessions/s/events", params={"last_event_id": "msg_1:1"}, headers=U1)

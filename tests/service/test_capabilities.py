@@ -32,7 +32,7 @@ def test_capabilities_route_handles_an_unconfigured_service(monkeypatch):
     monkeypatch.setattr(module, "wasi_available", lambda: False)
     for key in ("ANTHROPIC_API_KEY", "DEEPSEEK_API_KEY", "TAVILY_API_KEY", "EVOWIKI_LAYOUT_PYTHON"):
         monkeypatch.delenv(key, raising=False)
-    response = TestClient(create_app(SimpleNamespace(durable=None))).get("/health/capabilities")
+    response = TestClient(create_app(SimpleNamespace(durable=None)), base_url="http://127.0.0.1").get("/health/capabilities")
     assert response.status_code == 200
     assert all(not row["configured"] for row in response.json()["features"])
 
@@ -46,7 +46,7 @@ def test_capabilities_api_distinguishes_configuration_from_local_resources_witho
     monkeypatch.setattr(module, "wasi_available", lambda: True)
     monkeypatch.setenv("ANTHROPIC_API_KEY", "new-unverified-key")
     monkeypatch.setenv("TAVILY_API_KEY", "new-unverified-search-key")
-    response = TestClient(create_app(svc)).get("/health/capabilities")
+    response = TestClient(create_app(svc), base_url="http://127.0.0.1").get("/health/capabilities")
     assert response.status_code == 200
     report = response.json()
     rows = {row["name"]: row for row in report["features"]}

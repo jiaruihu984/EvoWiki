@@ -80,12 +80,12 @@ def seen():
 
 def test_add_at_index_via_the_endpoint_function(env):
     repo, ids = env
-    out = edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", title="插在中间", to_index=1),
+    out = edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", request_id="test-1", title="插在中间", to_index=1),
                     now=NOW, new_id=ids)
     assert [i.title for i in out.path][:3] == ["第 1 页", "插在中间", "第 2 页"]
     assert out.path[1].mine
     with pytest.raises(WikiInvalid):
-        edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", title="太远", to_index=9),
+        edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", request_id="test-2", title="太远", to_index=9),
                   now=NOW, new_id=ids)
 
 
@@ -93,7 +93,7 @@ def test_a_title_only_page_the_learner_adds_first_is_written_first(env):
     """D34: 加一页 sent a title and no node; the row was shown but never stored as a page, so
     「下一页」 skipped it. It gets a node of its own (named like the title) in the same commit."""
     repo, ids = env
-    out = edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", title="我自己加的一页", to_index=0),
+    out = edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", request_id="test-3", title="我自己加的一页", to_index=0),
                     now=NOW, new_id=ids)
     assert out.path[0].title == "我自己加的一页" and out.path[0].mine
     st = repo.load("u1").state
@@ -110,8 +110,8 @@ def test_every_page_removed_and_one_added_the_path_writes_it(env):
     from evowiki.wikiapp.wiki_schemas import PathRemoveIn
     repo, ids = env
     for _ in range(len(shown(rec(repo)))):
-        edit_path(repo, "u1", PATH_ID, PathRemoveIn(op="remove", index=0), now=NOW, new_id=ids)
-    edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", title="只剩我这一页"), now=NOW, new_id=ids)
+        edit_path(repo, "u1", PATH_ID, PathRemoveIn(op="remove", page_key=shown(rec(repo))[0].key), now=NOW, new_id=ids)
+    edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", request_id="test-4", title="只剩我这一页"), now=NOW, new_id=ids)
     snap = repo.load("u1")
     view = path_out(snap.state, snap.k, PATH_ID, NOW)
     assert [p.title for p in view.pages] == ["只剩我这一页"] and view.next_index is not None
@@ -121,7 +121,7 @@ def test_every_page_removed_and_one_added_the_path_writes_it(env):
 
 def test_add_with_a_node_at_an_index_is_a_startable_page(env):
     repo, ids = env
-    edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", title="贝叶斯", node_id="n5", to_index=0),
+    edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", request_id="test-5", title="贝叶斯", node_id="n5", to_index=0),
               now=NOW, new_id=ids)
     r = rec(repo)
     assert shown(r)[0].node_ids == ("n5",)
@@ -170,7 +170,7 @@ def test_a_failing_hook_is_logged_and_does_not_undo_the_edit(env, caplog):
 
 def test_every_user_edit_calls_the_hooks_too(env, seen):
     repo, ids = env
-    edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", title="x"), now=NOW, new_id=ids)
+    edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", request_id="test-6", title="x"), now=NOW, new_id=ids)
     assert [c[4] for c in seen] == ["user"]
 
 
@@ -257,7 +257,7 @@ def test_split_row_of_one_node_needs_a_gateway_and_a_shown_row(env):
 
 def test_split_row_works_on_a_row_the_user_added_and_on_a_child(env):
     repo, ids = env
-    edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", title="贝叶斯", node_id="n5"),
+    edit_path(repo, "u1", PATH_ID, PathAddIn(op="add", request_id="test-7", title="贝叶斯", node_id="n5"),
               now=NOW, new_id=ids)
     key = shown(rec(repo))[-1].key
     assert key.startswith("u-")

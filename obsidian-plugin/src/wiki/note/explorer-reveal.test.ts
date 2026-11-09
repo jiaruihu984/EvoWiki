@@ -6,12 +6,12 @@ describe("the file explorer opens down to a page when its writing starts (explor
   it("once per write: the first streamed sync reveals, the next sections do not, a new write does again", () => {
     const reveal = vi.fn();
     const r = new RevealOnce(reveal);
-    r.started("pg1", "EvoWiki/Wiki/网络/度与度分布.md");
-    r.started("pg1", "EvoWiki/Wiki/网络/度与度分布.md");            // section 2, 3 …
+    r.started("pg1", "EvoWiki/目标/网络/度与度分布.md");
+    r.started("pg1", "EvoWiki/目标/网络/度与度分布.md");            // section 2, 3 …
     r.started("pg2", "");                                           // no file yet: nothing
-    expect(reveal.mock.calls).toEqual([["EvoWiki/Wiki/网络/度与度分布.md"]]);
+    expect(reveal.mock.calls).toEqual([["EvoWiki/目标/网络/度与度分布.md"]]);
     r.ended("pg1");
-    r.started("pg1", "EvoWiki/Wiki/网络/度与度分布.md");
+    r.started("pg1", "EvoWiki/目标/网络/度与度分布.md");
     expect(reveal).toHaveBeenCalledTimes(2);
   });
 
@@ -25,13 +25,13 @@ describe("the file explorer opens down to a page when its writing starts (explor
 
   it("opens each collapsed folder down to the file and scrolls its row in; no focus, no tab switch", async () => {
     const folder = (collapsed: boolean) => { const f = { collapsed, setCollapsed: vi.fn((c: boolean) => { f.collapsed = c; }) }; return f; };
-    const items = { EvoWiki: folder(true), "EvoWiki/Wiki": folder(true), "EvoWiki/Wiki/网络": folder(false), "EvoWiki/Wiki/网络/度.md": {} };
+    const items = { EvoWiki: folder(true), "EvoWiki/目标": folder(true), "EvoWiki/目标/网络": folder(false), "EvoWiki/目标/网络/度.md": {} };
     const { a, scroll, setActiveLeaf, revealLeaf } = app(true, items);
-    revealInExplorer(a, "EvoWiki/Wiki/网络/度.md");
-    expect([items.EvoWiki.collapsed, items["EvoWiki/Wiki"].collapsed]).toEqual([false, false]);
-    expect(items["EvoWiki/Wiki/网络"].setCollapsed).not.toHaveBeenCalled();
+    revealInExplorer(a, "EvoWiki/目标/网络/度.md");
+    expect([items.EvoWiki.collapsed, items["EvoWiki/目标"].collapsed]).toEqual([false, false]);
+    expect(items["EvoWiki/目标/网络"].setCollapsed).not.toHaveBeenCalled();
     await new Promise((r) => window.requestAnimationFrame(() => r(null)));
-    expect(scroll).toHaveBeenCalledWith(items["EvoWiki/Wiki/网络/度.md"], 4);
+    expect(scroll).toHaveBeenCalledWith(items["EvoWiki/目标/网络/度.md"], 4);
     expect(setActiveLeaf).not.toHaveBeenCalled();
     expect(revealLeaf).not.toHaveBeenCalled();
   });

@@ -100,8 +100,8 @@ export function learnScene(k: Scene | null, map: GoalMapOut | null, places: Grap
     const cloud = new Map<string, SceneGroup1>();
     for (const r of regions.filter((x) => topOf(x) === x)) {
       const pts = conceptsOf(map, r.id).filter((c) => !byId.has(c.id));
-      const g: SceneGroup1 = { id: r.id, name: r.name, summary: r.scope, x: 0, y: 0, parent: goalId, at: null, members: [], all: [] };
-      l1.push(g); kids.push(g.id); cloud.set(r.id, g);
+      const g: SceneGroup1 = { id: `block-${map.map_id}-${r.id}`, name: r.name, summary: r.scope, x: 0, y: 0, parent: goalId, at: null, members: [], all: [] };
+      l1.push(g); kids.push(g.id); cloud.set(r.id, g); goalOf.set(g.id, r.id);
       // entered: the block's point in the middle of its points, its lines to them a star
       const inside = [...pts, ...regions.filter((x) => topOf(x) === r && x !== r)];
       const mineHere = inside.map((c) => ownDot.get(`${c.id}|${r.id}`) ?? ownDot.get(c.id)).filter((n) => n !== undefined);
@@ -142,7 +142,7 @@ export function learnScene(k: Scene | null, map: GoalMapOut | null, places: Grap
   let l2 = base.l2.filter((g) => !itself.has(g.id)).map((g) => ({ ...g, kids: g.kids.filter((id) => !itself.has(id) && standing.some((x) => x.id === id)) }));
   if (places !== null) {
     l2 = l2.map((g) => ({ ...g, at: places.places[g.id] ?? g.at }));
-    for (const g of standing) g.at = places.places[g.id] ?? g.at;
+    for (const g of standing) g.at = places.places[goalOf.get(g.id) ?? g.id] ?? g.at;
     // a block's links to what is nearest it: from its point to the group's first point, or to the other block's
     const entry = (id: string): string | undefined => first.get(id) ?? standing.find((g) => g.id === id)?.all[0] ?? standing.find((g) => g.parent === id)?.all[0];
     for (const [a, b] of places.links) {
@@ -152,8 +152,8 @@ export function learnScene(k: Scene | null, map: GoalMapOut | null, places: Grap
   }
   if (goalId !== null && kids.length > 0) {
     // where the goal stands: the middle of its blocks' places
-    const at = kids.map((id) => places?.places[id]).filter((p) => p !== undefined);
-    l2 = [...l2, { id: goalId, name: goalTitle, summary: "", x: 0, y: 0, kids, goal: true,
+    const at = kids.map((id) => standing.find((g) => g.id === id)?.at).filter((p) => p !== undefined && p !== null);
+    l2 = [...l2, { id: goalId, name: goalTitle, summary: "", x: 0, y: 0, kids, goal: true, mapId: map!.map_id,
       at: at.length > 0 ? [at.reduce((t, p) => t + p[0], 0) / at.length, at.reduce((t, p) => t + p[1], 0) / at.length] : null }];
   }
   return {

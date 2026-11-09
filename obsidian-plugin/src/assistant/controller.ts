@@ -30,6 +30,7 @@ import { CHECK_KIND, roughReady, roughText } from "./diag-cards";
 import type { LearnDiag, RoughMark } from "../wiki/learn/learn-view";
 import { GoalRun, type FirstPage } from "./goal-run";
 import type { GoalApi } from "../wiki/learn/goal-api";
+import { LEARN_COPY } from "../wiki/learn/copy";
 import { hasNewerRevise, inPageDraft, REVISE_KIND } from "../wiki/revise/rows";
 import {
   MAX_ATTACHMENTS, MAX_MESSAGE_CHARS, type ActionCard, type AssistantEvent, type MessageIn, type MessageOut,
@@ -617,17 +618,16 @@ export class AssistantController {
 
   /**
    * The next block of a goal (a block's last page read, 学点新的's 进入, 今天's 下一块): the run of that map goes on in its
-   * conversation — the block entered, its diagnosis in the chat when it needs one, its first page written. False: no run of
-   * that map here (the goal was not started in this vault).
+   * conversation — restoring the goal first, then entering its requested block and awaiting the result.
    */
-  continueGoal(mapId: string, region: string | null = null): boolean {
-    const mine = (r: GoalRun | null): boolean => r !== null && (r.flow.state.map?.map_id ?? r.mapId) === mapId;
-    const run = [...this.goalRuns.values()].reverse().find(mine) ?? this.keptRunOf(mapId);
-    if (!run) return false;
+  async continueGoal(mapId: string, region: string | null = null): Promise<void> {
+    const run = await this.openGoal(mapId);
+    if (run === null) throw new Error(LEARN_COPY.errGoalLost);
     this.lastRun = run.actionId;
     this.showRun(run.actionId);
-    void run.enterBlock(region);
-    return true;
+    await run.enterBlock(region);
+    const view = run.view();
+    if (view.kind === "failed") throw new Error(view.text);
   }
 
   /** The 助手 shows run `id`'s conversation (`runChat`). A read that fails says so in the history panel's line. */

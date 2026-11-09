@@ -54,11 +54,11 @@ def _around(text: str, words: Sequence[str]) -> str:
 def fact_hits(store: Any, user_id: str, words: Sequence[str]) -> list[FactHit]:
     """What names any of `words`: his items and episodes, newest episodes first."""
     out: list[FactHit] = []
-    for it in store.items(user_id):
+    for it in store.items(user_id, include_hidden=True):
         if _named(it.content, words):
             ids = tuple(e.message_id for e in it.evidence if e.message_id)
             out.append(FactHit(it.item_id, it.kind, ids, it.content))
-    for ep in reversed(store.episodes(user_id)):
+    for ep in reversed(store.episodes(user_id, include_hidden=True)):
         if _named(ep.user_text, words) or _named(ep.answer_text or "", words):
             said = ep.user_text if _named(ep.user_text, words) else ep.answer_text or ""
             out.append(FactHit(episode_key(ep.session_id, ep.message_id), EPISODE,
@@ -84,12 +84,23 @@ class MemoryForgetExecutor:
         words = tuple(action.content.get("words") or ())
         if not words:
             raise ActionRefused("这条记录没有写要忘掉什么")
-        hits, cards = fact_hits(self._store, user_id, words), waiting_cards(self._ledger, user_id, words)
         now = self._clock()
         with self._pool.connection() as conn, conn.transaction():
             from evowiki.memory.forget import suppress_sources
 
             conn.execute("select pg_advisory_xact_lock(hashtext('memory:user:' || %s))", (user_id,))
+            hits = fact_hits(self._store, user_id, words)
+            cards = waiting_cards(self._ledger, user_id, words)
+            # Already rejected cards can still be owned by another reversible forget.
+            owned = conn.execute(
+                "select distinct jsonb_array_elements_text(result -> 'cards') as id "
+                "from agent_action where user_id=%s and kind=%s and status='executed'",
+                (user_id, KIND)).fetchall()
+            for r in owned:
+                card = self._ledger.get(user_id, r["id"])
+                if (card is not None and card.status == "rejected"
+                        and _named(f"{card.summary}\n{card.content.get('text') or ''}", words)):
+                    cards.append(card)
             suppress_sources(conn, user_id, action.action_id,
                              [h.key if h.kind == EPISODE else f"item:{h.key}" for h in hits])
             for h in hits:
@@ -119,9 +130,16 @@ class MemoryForgetExecutor:
                 "delete from memory_suppression_closure where user_id=%s and owner=%s returning node",
                 (user_id, action.action_id))]
             _invalidate_derived(conn, user_id, nodes)
-            conn.execute("delete from memory_suppression where user_id = %s and item_id = any(%s)",
+            conn.execute("delete from memory_suppression s where user_id = %s and item_id = any(%s) "
+                         "and not exists (select 1 from memory_suppression_closure c "
+                         "where c.user_id=s.user_id and c.node = case when s.kind='episode' "
+                         "then s.item_id else 'item:' || s.item_id end)",
                          (user_id, list(res.get("keys") or ())))
             conn.execute("update agent_action set status = 'proposed', decided_at = null "
-                         "where user_id = %s and action_id = any(%s) and status = 'rejected'",
-                         (user_id, list(res.get("cards") or ())))
+                         "where user_id = %s and action_id = any(%s) and status = 'rejected' "
+                         "and not exists (select 1 from agent_action owner "
+                         "where owner.user_id=agent_action.user_id and owner.kind=%s "
+                         "and owner.status='executed' and owner.action_id<>%s "
+                         "and owner.result -> 'cards' ? agent_action.action_id)",
+                         (user_id, list(res.get("cards") or ()), KIND, action.action_id))
         return {"restored": len(res.get("keys") or ())}

@@ -270,7 +270,7 @@ def test_http_409_404_422(tmp_path):
         "u1": {"r": (doc("r", ["x"], status="reading"), None),
                "d": (doc("d", ["x"], deleted=True), None)},
         "u2": {"theirs": (doc("theirs", ["x"], user="u2"), None)}})
-    c = TestClient(create_app(SimpleNamespace(assistant=svc)))
+    c = TestClient(create_app(SimpleNamespace(assistant=svc)), base_url="http://127.0.0.1")
     h = {"X-EvoWiki-User": "u1"}
 
     def send(*ids, session="s1"):

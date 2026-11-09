@@ -664,7 +664,7 @@ def seed_goal(app, user: str) -> dict:
     from fastapi.testclient import TestClient
 
     from tests.wikiapp.goal_script import chat_goal
-    c = TestClient(app)
+    c = TestClient(app, base_url="http://127.0.0.1")
     hdr = {"X-Evowiki-User": user}
 
     def ok(r):
@@ -697,7 +697,7 @@ def seed_network_page(app, pool, user: str, path_id: str) -> str:
     from evowiki.goals.fold import states_for
     from evowiki.wikiapp.events import PageSaved, WikiEvent
     from evowiki.wikiapp.repo import Commit
-    c = TestClient(app)
+    c = TestClient(app, base_url="http://127.0.0.1")
     hdr = {"X-Evowiki-User": user}
     nxt = c.post(f"/wiki/paths/{path_id}/next", headers=hdr).json()
     r = c.post(f"/wiki/pages/{nxt['page_id']}/organize", headers=hdr)

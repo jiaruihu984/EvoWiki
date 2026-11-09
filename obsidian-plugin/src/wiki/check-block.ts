@@ -1,17 +1,23 @@
 import { labelNode } from "../i18n/index";
 /**
  * The `evowiki-check` code block in a wiki note (note/format.ts writes it): the block names only the page and the
- * section; the question, the options and the answer come from the wiki controller's open page and are drawn here,
+ * section; the question, the options and the answer come from the wiki controller and are drawn here,
  * never written to the file. Answering goes through the controller's answerCheck (POST checks/{sid}), exactly like
  * the sidebar. main.ts only registers the processor and feeds the hub the current controller.
  */
 import { btn, el } from "../ui/ew";
+import { ewNotice } from "../ui/ew-notice";
 import { s as svg } from "../ui/svg";
 import { WIKI_COPY } from "./copy";
 import { type FollowupHost, renderCheckFollow } from "./followup";
+import { errorText } from "./format";
+import { isMasteredCheck } from "./goal-checks";
 import { letter } from "./render-common";
 import { type CheckOut, IDK } from "./schema";
 import type { WikiState } from "./state";
+
+type OpenCheckPage = (pageId: string) => void | Promise<void>;
+type OpenPageView = Extract<WikiState["page"], { kind: "open" }>;
 
 /** Where a check block points: the page and the section of its question. */
 export interface CheckRef { pageId: string; sectionId: string }
@@ -49,6 +55,8 @@ export class CheckBlockHub<T extends CheckSource = CheckSource> {
   private source: T | null = null;
   private unsub: (() => void) | null = null;
   private readonly listeners = new Set<() => void>();
+  /** Read views survive navigation and Markdown remounts; account/controller replacement clears them. */
+  private readonly pages = new Map<string, OpenPageView>();
   /** Whether a note (its vault path; null when not known) is the current user's: another user's note gets no blocks (main.ts). */
   owns: (notePath: string | null) => boolean = () => true;
 
@@ -58,6 +66,7 @@ export class CheckBlockHub<T extends CheckSource = CheckSource> {
     if (source === this.source) return;
     this.unsub?.();
     this.unsub = null;
+    this.pages.clear();
     this.source = source;
     if (source) this.unsub = source.subscribe(() => this.emit());
     this.emit();
@@ -68,7 +77,13 @@ export class CheckBlockHub<T extends CheckSource = CheckSource> {
     return () => { this.listeners.delete(fn); };
   }
 
-  private emit(): void { for (const fn of [...this.listeners]) fn(); }
+  page(pageId: string): OpenPageView | null { return this.pages.get(pageId) ?? null; }
+
+  private emit(): void {
+    const p = this.source?.state.page;
+    if (p?.kind === "open") this.pages.set(p.page.page_id, p);
+    for (const fn of [...this.listeners]) fn();
+  }
 }
 
 /** app.js ICON_Q (the question mark in a circle); `.ew-check .ew-h svg` gives it size and stroke. */
@@ -114,34 +129,54 @@ function card(ref: CheckRef, pageTitle: string, c: CheckOut, s: WikiState, error
 /** A plain line in place of the card when the question is not at hand. */
 const line = (text: string): HTMLElement => el("div", "muted", text);
 
-/** The block's content for the current state: the card; while its page loads, a plain line; when another page is open (a note in a side pane), one button that opens this one. */
-export function renderCheckBlock(source: string, from: CheckSource | null, open: (pageId: string) => void = () => undefined): HTMLElement {
+/** A previously read note keeps its question while another page is active. Unread notes offer to load theirs. */
+export function renderCheckBlock(source: string, from: CheckSource | null, open: OpenCheckPage = () => undefined, retained: OpenPageView | null = null): HTMLElement {
   const ref = parseCheckBlock(source);
   if (ref === null) return line(WIKI_COPY.checkUnreadable);
   const opener = (): HTMLElement => {
-    const b = btn(() => (WIKI_COPY.checkOpen), "sm", () => { open(ref.pageId); });
+    const b = btn(() => (WIKI_COPY.checkOpen), "sm", () => { void Promise.resolve(open(ref.pageId)).catch((e: unknown) => ewNotice(errorText(e))); });
     b.dataset.action = "check-open";
     b.disabled = (from?.state.busy ?? null) !== null;
     return b;
   };
   if (from === null) return opener();
   const s = from.state;
-  const p = s.page;
+  const p = s.page.kind === "open" && s.page.page.page_id === ref.pageId ? s.page : retained ?? s.page;
   if (p.kind === "loading" && p.pageId === ref.pageId) return line(WIKI_COPY.checkLoading);
   if (p.kind !== "open" || p.page.page_id !== ref.pageId) return opener();
   const sec = p.page.sections.find((x) => x.id === ref.sectionId);
   if (!sec || sec.check === null) return line(WIKI_COPY.checkGone);
+  if (isMasteredCheck(sec) || sec.folded || (p.page.collapsed && !sec.pinned)) {
+    const hidden = el("span"); hidden.hidden = true; return hidden;
+  }
   const note = p.sectionNotes[ref.sectionId];
-  const error = note && note.tone === "error" ? note.text : null;
-  return card(ref, p.page.title, sec.check, s, error, (choice) => { void from.answerCheck(ref.sectionId, choice); }, followupHostOf(from));
+  const error = s.page.kind === "error" && s.page.pageId === ref.pageId ? s.page.message
+    : note && note.tone === "error" ? note.text : null;
+  const artifact = sec.check.artifact_id;
+  const answer = async (choice: number): Promise<void> => {
+    if (from.state.busy !== null) return;
+    const current = from.state.page;
+    if (current.kind !== "open" || current.page.page_id !== ref.pageId) await open(ref.pageId);
+    const loaded = from.state.page;
+    // Navigation may win while loading, or a rewrite may replace the question: never apply an old choice elsewhere.
+    if (loaded.kind !== "open" || loaded.page.page_id !== ref.pageId
+      || loaded.page.sections.find((x) => x.id === ref.sectionId)?.check?.artifact_id !== artifact) return;
+    await from.answerCheck(ref.sectionId, choice);
+  };
+  return card(ref, p.page.title, sec.check, s, error, (choice) => { void answer(choice).catch((e: unknown) => ewNotice(errorText(e))); }, followupHostOf(from));
 }
 
 /** Draws the block into `host` (inside a `div.ew.ew-inline`) and redraws it on every hub change; returns the cleanup. */
-export function mountCheckBlock(host: HTMLElement, source: string, hub: CheckBlockHub, open: (pageId: string) => void = () => undefined): () => void {
+export function mountCheckBlock(host: HTMLElement, source: string, hub: CheckBlockHub, open: OpenCheckPage = () => undefined): () => void {
   const root = el("div");
   root.className = "ew ew-inline evowiki-check";
   host.replaceChildren(root);
-  const draw = () => root.replaceChildren(renderCheckBlock(source, hub.current, open));
+  const ref = parseCheckBlock(source);
+  const draw = () => {
+    const content = renderCheckBlock(source, hub.current, open, ref === null ? null : hub.page(ref.pageId));
+    host.hidden = content.hidden;
+    root.replaceChildren(...(content.hidden ? [] : [content]));
+  };
   draw();
   return hub.subscribe(draw);
 }

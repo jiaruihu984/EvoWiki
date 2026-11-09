@@ -2,7 +2,7 @@ import { expect, it } from "vitest";
 import { ProfileClient, type WikiHttp, type WikiHttpRequest } from "./api";
 import { PROFILE_SAVE_MS, ProfileNote, profileNoteName, type ProfileVault } from "./profile-note";
 
-const PATH = "EvoWiki/我.md";
+const PATH = "EvoWiki/我的背景.md";
 it("new background file names follow the initial language", () => {
   expect(profileNoteName("zh")).toBe("我的背景.md"); expect(profileNoteName("en")).toBe("My background.md");
 });

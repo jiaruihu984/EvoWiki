@@ -69,8 +69,8 @@ function sameNameOnce(l2: SceneGroup2[], l1: SceneGroup1[]): SceneGroup2[] {
   });
 }
 
-/** `oneDot` (知识图谱, every goal in one view): a point shared by goals is one dot, on the first block holding it. */
-export function buildScene(graph: GraphOut, oneDot = false): Scene {
+/** Each goal keeps its own dot for a shared point, with one learner state. */
+export function buildScene(graph: GraphOut): Scene {
   const byId = new Map(graph.nodes.map((n) => [n.id, n]));
   const kids = new Map<string, string[]>();
   const splitOf = new Set<string>();
@@ -103,7 +103,7 @@ export function buildScene(graph: GraphOut, oneDot = false): Scene {
   const members = new Map(l1src.map((g) => [g.id, new Set(g.members)]));
   const inGroup = (id: string, g: string): boolean => members.get(g)?.has(id) === true;
   for (const g of l1src) for (const m of g.members) if (!firstIn.has(m)) firstIn.set(m, g.id);
-  for (const g of l1src) for (const m of members.get(g.id)!) if (drawn.has(m) && (!oneDot || firstIn.get(m) === g.id)) nodes.set(keyIn(m, g.id), make(m, keyIn(m, g.id), g.id));
+  for (const g of l1src) for (const m of members.get(g.id)!) if (drawn.has(m)) nodes.set(keyIn(m, g.id), make(m, keyIn(m, g.id), g.id));
   for (const id of drawn) if (!firstIn.has(id)) nodes.set(id, make(id, id, null));
   // A child stands beside its parent (graph.html: g = the parent's gid), so it is drawn in the parent's level-1 group
   // whatever clustering made of it. A goal's block is not clustering: its members stay in it.

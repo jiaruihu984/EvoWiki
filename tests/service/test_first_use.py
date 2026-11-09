@@ -20,7 +20,7 @@ def test_first_learning_page_feedback_and_restart_on_empty_database(db_url):
         assert not svc.ctx.graph.concept_ids
         svc.gateway = script.gateway()
         svc.page_writing = writing(PgRepo(svc.pool), script)
-        with TestClient(create_app(svc)) as client:
+        with TestClient(create_app(svc), base_url="http://127.0.0.1") as client:
             pid = new_page((client, script))
             script_page(script)
             assert parse_sse(organize(client, pid).text)[-1][0] == "done"
@@ -33,7 +33,7 @@ def test_first_learning_page_feedback_and_restart_on_empty_database(db_url):
 
     restarted = build_services(env, clock=FixedClock(T0))
     try:
-        with TestClient(create_app(restarted)) as client:
+        with TestClient(create_app(restarted), base_url="http://127.0.0.1") as client:
             assert client.get("/me", headers=H("u1")).status_code == 200
             page = client.post(f"/wiki/pages/{pid}/open", headers=H("u1")).json()
             assert next(s for s in page["sections"] if s["id"] == "s2")["folded"]

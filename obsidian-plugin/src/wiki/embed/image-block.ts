@@ -15,7 +15,7 @@
  *     height: <px>
  *     ```
  *
- * The image is the vault file `<notes>/Wiki/assets/<asset id>.webp` (fetched from the backend as an asset, never from
+ * The image is the vault file `<notes>/assets/<asset id>.webp` (fetched from the backend as an asset, never from
  * the web: nothing remote is ever loaded). Under it one line of small grey text: title · author · licence · source,
  * the licence and the source as links to their pages. A missing file shows one plain line and 「取回」.
  */
@@ -65,7 +65,7 @@ export interface ImagePort {
   /** The vault file's resource URL (app://…) when `path` exists, else null. */
   resource(path: string): string | null;
   canFetch(): boolean;
-  /** Where the image lands (`<notes>/Wiki/assets/<id>.webp`); null for an invalid id or notes folder. */
+  /** Where the image lands (`<notes>/assets/<id>.webp`); null for an invalid id or notes folder. */
   assetPath(assetId: string): string | null;
   /** Fetches the image into the vault; true when the file is there afterwards. */
   retrieve(assetId: string): Promise<boolean>;

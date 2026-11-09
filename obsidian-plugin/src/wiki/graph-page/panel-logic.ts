@@ -46,7 +46,7 @@ export function movedPath(path: readonly PathItemOut[], from: number, to: number
 /** What the page shows at once for an edit (the server's answer replaces it). `add` waits for the server. */
 export function optimisticPath(path: readonly PathItemOut[], edit: PathEditIn): PathItemOut[] | null {
   if (edit.op === "move") return movedPath(path, edit.from, edit.to);
-  if (edit.op === "remove") return path.filter((_, i) => i !== edit.index);
+  if (edit.op === "remove") return path.filter((row) => row.key !== edit.page_key);
   if (edit.op === "retitle") return path.map((p) => (p.key === edit.page_key ? { ...p, title: edit.title } : p));
   return null;
 }

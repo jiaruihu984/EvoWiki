@@ -1,7 +1,7 @@
 /**
  * Fetching interactive assets into the vault (appendix A·6). After a page's note sync, and from a block's 「取回」
  * button: GET /wiki/assets/{id}/meta → GET /wiki/assets/{id} → the HTML's sha256 must equal meta.sha256 and it must be
- * at most INTERACTIVE_MAX_BYTES (deep/contracts.py) → written to `<notes>/Wiki/assets/<id>.html`. Only that folder is ever written; an existing
+ * at most INTERACTIVE_MAX_BYTES (deep/contracts.py) → written to `<notes>/assets/<id>.html`. Only that folder is ever written; an existing
  * file is never fetched again, overwritten or deleted (an asset id's content does not change). A mismatch, an
  * oversized file or a failed request writes nothing (console.warn); 503 (refine is off on the server) is silent.
  * An image (kind "image", an `evowiki-image` fence) comes as its WebP in base64 text: the sha256 is of that text, at

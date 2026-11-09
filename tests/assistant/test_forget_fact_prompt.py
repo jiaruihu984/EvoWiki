@@ -235,3 +235,25 @@ def test_the_open_question_card_does_not_name_it(world):
     world.forget()
     with world.pool.connection() as conn:
         assert [q.text for q in _open_questions(conn, "u1", {})] == ["负的 z"]
+
+
+@pytest.mark.parametrize("second_word", ["年糕", "猫", "三岁"])
+@pytest.mark.parametrize("undo_first", [True, False])
+def test_overlapping_forgets_keep_old_turn_hidden_until_last_undo(pool, tmp_path, monkeypatch,
+                                                                second_word, undo_first):
+    def short_session(store, sid="old"):
+        store.create(_info(sid))
+        _turn(store, sid, 1, "old_m0", SAID, "记住了，年糕很可爱")
+    monkeypatch.setattr(__import__(__name__, fromlist=["_long_session"]), "_long_session", short_session)
+    w = World(pool, tmp_path)
+    first = w.forget()
+    row = w.ledger.propose("u1", kind=KIND, scope="suggestion", source="assistant",
+        summary="忘掉另一处", why="requested", content={"words": [second_word], "quote": "忘掉"},
+        key="forget-second", level="ask")
+    w.ledger.approve("u1", row.action_id)
+    removed, remaining = (first, row.action_id) if undo_first else (row.action_id, first)
+    w.undo(removed)
+    assert w.ledger.get("u1", remaining).status == "executed"
+    assert SAID not in w.turn("old", "讲下一个")
+    w.undo(remaining)
+    assert SAID in w.turn("old", "再讲下一个")

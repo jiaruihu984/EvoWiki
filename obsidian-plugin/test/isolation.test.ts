@@ -51,11 +51,9 @@ it("vault writes, exact per API: note-service.ts (ObsidianNoteVault) → create,
   // Task 13 (assistant-actions): a trashed wiki page's unedited note goes to Obsidian's trash and a title / folder change
   // moves the note; both only in wiki/note/sync.ts (fileManager.trashFile, falling back to vault.trash; fileManager.renameFile).
   expect(using(/vault\.trash\s*\(/)).toEqual(["wiki/note/sync.ts"]);
-  // wiki/note/user-folder.ts: on load, the layout from before per-user folders (<notes folder>/Wiki, /资料, /我.md only)
-  // moves into the user's folder under the notes folder; nothing is overwritten (user-folder.test.ts).
   expect(using(/\.trashFile\s*\(/)).toEqual(["wiki/note/sync.ts"]);
   // The profile path resolver uses main's controlled rename port, covered by profile-path.test.ts.
-  expect(using(/\.renameFile\s*\(/)).toEqual(["main.ts", "wiki/note/sync.ts", "wiki/note/user-folder.ts"]);
+  expect(using(/\.renameFile\s*\(/)).toEqual(["main.ts", "wiki/note/sync.ts"]);
   expect(using(/adapter\.(write|writeBinary|mkdir|rename|append|copy|trashSystem|trashLocal)\s*\(/)).toEqual([]);
   expect(using(/\.(modify|modifyBinary|appendBinary|writeBinary|mkdir)\s*\(/)).toEqual([]);
   // the profile note's backups (profile-backup.ts): one file removed, a folder only while empty, never recursive

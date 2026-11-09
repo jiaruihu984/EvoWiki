@@ -21,6 +21,19 @@ function book(page: PageOut): NameBook {
 }
 
 describe("toWikiNoteInput", () => {
+  it("removes explicitly mastered checks from the note without deleting their server questions", async () => {
+    const { page } = await p1();
+    const check = page.sections.find((s) => s.id === "s5")!;
+    expect(check.cells.length).toBeGreaterThan(0);
+    check.cells = check.cells.map((cell) => ({ ...cell, declared: "know" }));
+    const input = toWikiNoteInput(page, book(page));
+    expect(input.sections.find((s) => s.id === "s5")!.folded).toBe(true);
+    expect(renderWikiNote(input).markdown).not.toContain("section: s5\n");
+    expect(check.check).not.toBeNull();
+    check.pinned = true;
+    expect(renderWikiNote(toWikiNoteInput(page, book(page))).markdown).toContain("section: s5\n");
+  });
+
   it("copies the P1 page field by field; no diff / conflicts → null", async () => {
     const { page: raw } = await p1();
     const page: PageOut = { ...raw, diff: null, unresolved_conflicts: [] };

@@ -41,7 +41,7 @@ export async function harness(o: Parameters<typeof setup>[0] = {}): Promise<Harn
   const vault = new MemVault();
   let n = 0;   // every sync gets its own backup name
   const deps = { store: vault, now: () => new Date(Date.UTC(2026, 9, 9, 8, 0, n)), rand: () => `abcd${String(++n).padStart(4, "0")}` };
-  s.sync.run = async (input: WikiNoteInput) => { s.sync.runs.push(input); return syncWithVault(deps, "Notes/Wiki", input); };
+  s.sync.run = async (input: WikiNoteInput) => { s.sync.runs.push(input); return syncWithVault(deps, "Notes", input); };
   await firstPage(s.c);
   const hub = new CheckBlockHub<WikiController>();
   hub.set(s.c);

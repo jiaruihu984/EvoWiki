@@ -48,8 +48,7 @@ def move_first(repo, ids, path_id, key, source):
 
 def remove(repo, ids, path_id, key, source):
     if source == "user":
-        index = keys(repo, path_id).index(key)
-        edit_path(repo, "u1", path_id, PathRemoveIn(op="remove", index=index), now=NOW, new_id=ids)
+        edit_path(repo, "u1", path_id, PathRemoveIn(op="remove", page_key=key), now=NOW, new_id=ids)
     else:
         commit_path_edit(repo, "u1", path_id, [RemoveEdit(page_key=key, by=source)],
                          now=NOW, new_id=ids, source=source)

@@ -225,7 +225,7 @@ def test_canary_reads_the_real_app_database(ev, tmp_path, pool):
 
     from evowiki.service.app import create_app
 
-    client = TestClient(create_app(SimpleNamespace(pool=pool, durable=None)))
+    client = TestClient(create_app(SimpleNamespace(pool=pool, durable=None)), base_url="http://127.0.0.1")
     seen = []
 
     def http(method, url, *args):

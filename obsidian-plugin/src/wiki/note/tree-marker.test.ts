@@ -12,10 +12,10 @@ afterEach(() => { document.body.replaceChildren(); });
 
 describe("TreeMarker", () => {
   it("marks the row of a writing page with class + 「生成中」, and removes it when done", () => {
-    const a = row("EvoWiki/Wiki/统计/均值.md"), b = row("EvoWiki/Wiki/统计/方差.md");
+    const a = row("EvoWiki/统计/均值.md"), b = row("EvoWiki/统计/方差.md");
     const m = new TreeMarker();
-    m.set("p1", "EvoWiki/Wiki/统计/均值.md");
-    expect(m.marked()).toEqual(["EvoWiki/Wiki/统计/均值.md"]);
+    m.set("p1", "EvoWiki/统计/均值.md");
+    expect(m.marked()).toEqual(["EvoWiki/统计/均值.md"]);
     expect(a.querySelector(".ew-writing-mark")?.textContent).toBe("生成中");
     expect(b.classList.contains("ew-writing")).toBe(false);
     m.clear("p1");

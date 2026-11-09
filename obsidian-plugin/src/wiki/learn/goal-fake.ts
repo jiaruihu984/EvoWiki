@@ -472,7 +472,7 @@ export class FakeGoalApi implements GoalApi {
       rows.splice(rows.indexOf(x), 1);
       rows.splice(rows.indexOf(y) + (edit.to > edit.from ? 1 : 0), 0, x);
     } else if (edit.op === "remove") {
-      const x = shown[edit.index];
+      const x = shown.find((r) => r.key === edit.page_key);
       if (!x) return Promise.reject(new ApiError(422, "no such page"));
       x.removed = true;
     } else if (edit.op === "unremove") {
@@ -484,7 +484,8 @@ export class FakeGoalApi implements GoalApi {
       if (!x) return Promise.reject(new ApiError(422, "no such page"));
       x.title = edit.title;
     } else {
-      rows.push({ key: `u-${pathId}-${rows.length + 1}`, title: edit.title, aim: "", exam: 0, split: true, removed: false, parts: null });
+      if (rows.some((r) => r.key === `u-${edit.request_id}`)) return Promise.resolve(this.rowsOut(pathId));
+      rows.push({ key: `u-${edit.request_id}`, title: edit.title, aim: "", exam: 0, split: true, removed: false, parts: null });
     }
     return Promise.resolve(this.rowsOut(pathId));
   }

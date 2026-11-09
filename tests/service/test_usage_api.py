@@ -23,7 +23,7 @@ def usage_client(services, monkeypatch) -> TestClient:
     monkeypatch.setenv("EVOWIKI_USAGE_TZ", "UTC")
     app = create_app(services)
     app.include_router(routes_usage.router)
-    return TestClient(app)
+    return TestClient(app, base_url="http://127.0.0.1")
 
 
 def _u(cost, inp=100, out=10, read=0, write=0):

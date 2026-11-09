@@ -28,6 +28,7 @@ import logging
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime
+from hashlib import sha256
 from typing import Any
 
 from evowiki.belief.aspects import AddNote, AspectEvent, Declare
@@ -194,8 +195,9 @@ def edited(state: WikiState, rec: PathRecord, edit: PathEditIn) -> PathRecord:
             return _with(state.graph, rec,
                          MoveEdit(page_key=items[edit.from_].key, to_index=edit.to))
         case PathRemoveIn():
-            _index(items, edit.index)
-            return _with(state.graph, rec, RemoveEdit(page_key=items[edit.index].key))
+            if edit.page_key not in {i.key for i in items}:
+                raise WikiInvalid(f"路径里没有这一页：{edit.page_key}")
+            return _with(state.graph, rec, RemoveEdit(page_key=edit.page_key))
         case PathUnremoveIn():
             return _with(state.graph, rec, UnremoveEdit(page_key=edit.page_key))
         case PathAddIn():
@@ -203,8 +205,8 @@ def edited(state: WikiState, rec: PathRecord, edit: PathEditIn) -> PathRecord:
                 _node(state, edit.node_id)
             if edit.to_index is not None and edit.to_index > len(items):
                 raise WikiInvalid(f"路径里放不下第 {edit.to_index + 1} 页的位置")
-            return _add_own(state, rec, edit.title, edit.node_id, want=False,
-                            to_index=edit.to_index)
+            return _with(state.graph, rec, AddEdit(page_key=_request_key(edit, rec.path.path_id), title=edit.title,
+                                                   node_id=edit.node_id, to_index=edit.to_index))
     raise WikiInvalid(f"不认识的路径修改：{edit!r}")
 
 
@@ -327,12 +329,34 @@ def commit_path_edit(repo: Repo, user_id: str, path_id: str, edits: list[PathEdi
     return after[path_id]
 
 
+def _request_key(edit: PathAddIn, path_id: str) -> str:
+    return "u-" + sha256(f"{path_id}:{edit.request_id}".encode()).hexdigest()
+
+
 def edit_path(repo: Repo, user_id: str, path_id: str, edit: PathEditIn, *, now: datetime,
+              new_id: Ids) -> PathEditOut:
+    for attempt in range(3):
+        try:
+            return _edit_path_once(repo, user_id, path_id, edit, now=now, new_id=new_id)
+        except WikiConflict:
+            if attempt == 2:
+                raise
+    raise AssertionError("unreachable")
+
+
+def _edit_path_once(repo: Repo, user_id: str, path_id: str, edit: PathEditIn, *, now: datetime,
               new_id: Ids) -> PathEditOut:
     """POST /wiki/paths/{path_id}/edits. Unknown path → LookupError. A no-op edit commits
     nothing."""
     snap = repo.load(user_id)
     rec = _record(snap.state, path_id)
+    if isinstance(edit, PathAddIn):
+        previous = next((e for e in rec.edits if isinstance(e, AddEdit) and e.page_key == _request_key(edit, path_id)), None)
+        if previous is not None:
+            if (previous.title != edit.title or previous.to_index != edit.to_index
+                    or (edit.node_id is not None and previous.node_id != edit.node_id)):
+                raise WikiInvalid("同一次添加请求不能修改内容")
+            return PathEditOut(path=path_items(snap.state, rec, snap.k, now))
     state, graph = snap.state, snap.state.graph
     aspect: tuple[AspectEvent, ...] = ()
     wiki: tuple[WikiEvent, ...] = ()

@@ -332,6 +332,21 @@ describe("the main button", () => {
     await s.c.finishPage("p1");
     expect(methods(s.api)).toContain("done");
     expect(s.c.endBlockState("p1").phase).toEqual({ kind: "saved", text: WIKI_COPY.endPageDoneLine });
+    expect(s.learned).toEqual([""]);
+  });
+
+  it("after marking learned, follows the refreshed completed goal instead of the old block instruction", async () => {
+    const s = await ready();
+    const p = view(s.c).page;
+    const step: StepOut = { kind: "enter_block", goal_id: "m1", goal: "化学", map_id: "m1", region_id: "r2",
+      region_name: "酸碱", path_id: null, index: null, page_id: null, title: "", draft_id: null, progress: null, failure: null, review_first: null };
+    p.next_step = step;
+    const read = s.api.openPage.bind(s.api);
+    s.api.openPage = async (id) => ({ ...await read(id), next_step: { ...step, kind: "goal_done" } });
+    await s.c.finishPage(p.page_id);
+    expect(s.learned).toEqual([""]);
+    expect(s.notices).toEqual([]);
+    expect(view(s.c).page.done).toBe(true);
   });
 
   it("offline: says so in the block, sends nothing", async () => {

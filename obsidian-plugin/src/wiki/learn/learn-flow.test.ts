@@ -474,3 +474,109 @@ describe("on-demand decomposition (spec 2026-10-28 §2.2): entering shows a node
     expect(partsOf(flow.state.map, "A")).toEqual([]);
   });
 });
+
+
+it("an old map GET cannot overwrite a successful map edit", async () => {
+  const api = new FakeGoalApi({ roundMs: 0 });
+  const { flow } = run(api);
+  await opened(flow, "g"); await flow.skip();
+  const old = structuredClone(flow.state.map!);
+  let release!: (m: GoalMapOut) => void;
+  vi.spyOn(api, "getMap").mockImplementationOnce(() => new Promise((r) => { release = r; }));
+  const reading = flow.refreshMap();
+  await flow.addBlock("Saved topic");
+  const saved = structuredClone(flow.state.map!);
+  release(old); await reading;
+  expect(flow.state.map).toEqual(saved);
+});
+
+
+it("path edits are serialized and delete the selected stable keys", async () => {
+  const api = new FakeGoalApi({ roundMs: 0 });
+  const { flow } = run(api);
+  await opened(flow, "g"); await flow.skip(); await flow.enter("ev");
+  await flow.addPage("B"); await flow.addPage("C");
+  const keys = flow.state.entered!.rows.map((r) => r.key);
+  const original = api.editPath.bind(api);
+  let release!: () => void;
+  const spy = vi.spyOn(api, "editPath").mockImplementationOnce(async (id, edit) => {
+    await new Promise<void>((r) => { release = r; });
+    return original(id, edit);
+  });
+  const first = flow.removePage(0);
+  const second = flow.removePage(1);
+  expect(spy).toHaveBeenCalledTimes(1);
+  expect(spy.mock.calls[0]![1]).toMatchObject({ op: "remove", page_key: keys[0] });
+  release(); await Promise.all([first, second]);
+  expect(flow.state.entered!.rows.map((r) => r.key)).toEqual([keys[1]]);
+});
+
+it("overlapping add submits share one intent and failed response retry reuses its id", async () => {
+  const api = new FakeGoalApi({ roundMs: 0 });
+  const { flow } = run(api);
+  await opened(flow, "g"); await flow.skip(); await flow.enter("ev");
+  let release!: () => void;
+  const spy = vi.spyOn(api, "editPath").mockImplementationOnce(async () => {
+    await new Promise<void>((r) => { release = r; });
+    throw new OfflineError();
+  });
+  const first = flow.addPage("Added"); const second = flow.addPage("Added");
+  expect(spy).toHaveBeenCalledTimes(1);
+  release(); await Promise.all([first, second]);
+  await flow.addPage("Added");
+  const requests = spy.mock.calls.map((c) => c[1]);
+  expect(requests).toHaveLength(2);
+  expect(requests[0]).toHaveProperty("request_id");
+  expect(requests[1]).toEqual(requests[0]);
+});
+
+
+it("a failed first removal rolls back only itself while the next selected removal succeeds", async () => {
+  const api = new FakeGoalApi({ roundMs: 0 }); const { flow } = run(api);
+  await opened(flow, "g"); await flow.skip(); await flow.enter("ev");
+  await flow.addPage("B"); await flow.addPage("C");
+  const keys = flow.state.entered!.rows.map((r) => r.key);
+  let reject!: (e: Error) => void;
+  vi.spyOn(api, "editPath").mockImplementationOnce(() => new Promise((_, r) => { reject = r; }));
+  const a = flow.removePage(0), c = flow.removePage(1);
+  reject(new OfflineError()); await Promise.all([a, c]);
+  expect(flow.state.entered!.rows.map((r) => r.key)).toEqual(keys.slice(0, 2));
+});
+
+it("reverse map refresh responses keep the latest read", async () => {
+  const api = new FakeGoalApi({ roundMs: 0 }); const { flow } = run(api);
+  await opened(flow, "g"); await flow.skip();
+  let release!: (m: GoalMapOut) => void;
+  const old = structuredClone(flow.state.map!);
+  const fresh = { ...old, title: "Newest" };
+  vi.spyOn(api, "getMap").mockImplementationOnce(() => new Promise((r) => { release = r; })).mockResolvedValueOnce(fresh);
+  const first = flow.refreshMap(); await flow.refreshMap(); release(old); await first;
+  expect(flow.state.map).toEqual(fresh);
+});
+
+it.each(["dispose", "switch"])("map refresh is ignored after %s", async (action) => {
+  const api = new FakeGoalApi({ roundMs: 0 }); const { flow } = run(api);
+  await opened(flow, "g"); await flow.skip();
+  let release!: (m: GoalMapOut) => void;
+  const old = { ...structuredClone(flow.state.map!), title: "Obsolete" };
+  vi.spyOn(api, "getMap").mockImplementationOnce(() => new Promise((r) => { release = r; }));
+  const reading = flow.refreshMap();
+  if (action === "dispose") flow.dispose(); else { await opened(flow, "Other goal"); await flow.skip(); }
+  const current = flow.state.map;
+  release(old); await reading;
+  expect(flow.state.map).toEqual(current);
+});
+
+it("refresh during a map write cannot apply an unconfirmed snapshot", async () => {
+  const api = new FakeGoalApi({ roundMs: 0 }); const { flow } = run(api);
+  await opened(flow, "g"); await flow.skip();
+  const original = api.editMap.bind(api);
+  let release!: () => void;
+  vi.spyOn(api, "editMap").mockImplementationOnce(async (id, ops) => {
+    await new Promise<void>((r) => { release = r; }); return original(id, ops);
+  });
+  const get = vi.spyOn(api, "getMap"); const save = flow.addBlock("Saved");
+  await flow.refreshMap(); expect(get).not.toHaveBeenCalled();
+  release(); await save;
+  expect(flow.state.map!.nodes.some((n) => n.name === "Saved")).toBe(true);
+});

@@ -58,7 +58,7 @@ ASK = BotSettings(levels={"page_body": "ask"})
 
 
 def _flow(services, tmp_path, settings):
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(client, "u1")
     with services.pool.connection() as conn:
         store_bot.put_settings(conn, "u1", settings, NOW)

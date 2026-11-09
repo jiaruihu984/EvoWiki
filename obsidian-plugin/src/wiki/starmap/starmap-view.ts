@@ -34,6 +34,10 @@ import { GraphCloud, tipSpot, type GraphCloudHandle, type Hover } from "../graph
 import { GraphStore, type GraphSource } from "../graph-page/store";
 import type { Band, GoalOut, GoalPathOut, GraphOut, PathEditIn, PathItemOut } from "../schema";
 import { offlineBanner } from "../render-common";
+import { learnScene, type LearnScene } from "../learn/learn-scene";
+import { topRegions } from "../learn/learn-flow";
+import type { GoalApi } from "../learn/goal-api";
+import { LEARN_COPY } from "../learn/copy";
 import { STAR_COPY } from "./copy";
 import { LiveRows } from "./live-rows";
 
@@ -44,8 +48,12 @@ const FRESH_MS = 350;
 export interface StarMapHost {
   /** The node graph and the page's actions (the wiki controller's graphSource, resolved per call). */
   source: GraphSource;
+  /** The same read API used by the learning view, including canonical places. */
+  goalApi(): GoalApi;
   /** 去学点新的 (the empty state's link): the 学点新的 tab. */
-  openLearn(): void;
+  openLearn(topic?: string): void;
+  /** Open an existing goal and reveal a node without generating anything. */
+  openGoal(mapId: string, nodeId: string): void;
   /** 看不懂 found a written page: open it, at the section that teaches the node when there is one. */
   showPage(pageId: string, sectionId: string | null): void;
   /** A page got a new title: its note follows. Absent: no note here (the fixture). */
@@ -89,6 +97,12 @@ export class StarMapView extends ItemView {
   private readonly cleanups: (() => void)[] = [];
   private graph: GraphOut | null = null;
   private scene: Scene | null = null;
+  private baseScene: Scene | null = null;
+  private goalScene: LearnScene | null = null;
+  private readonly goalScenes = new Map<string, LearnScene>();
+  private sceneRead = 0;
+  private composedFocus: string | null = null;
+  private sceneKey: GraphOut | null = null;
   private focus: string | null = null;
   private selected: string | null = null;
   private busy = false;
@@ -109,13 +123,16 @@ export class StarMapView extends ItemView {
   private pendingFocus: string | null = null;
   /** The graph shown when a focus asked for a goal it did not have (a re-read was started then); undefined: none. */
   private focusReadFrom: GraphOut | undefined = undefined;
+  private initialFrame = true;
   private readonly addDrafts = new Map<string, string>();
+  private readonly addIntents = new Map<string, { title: string; requestId: string; pending: boolean }>();
   /** The row whose title box is open (⋯ 重命名). */
   private renaming: string | null = null;
   private readonly splitting = new Set<string>();
   /** The drag-reorder instances on the panel's path lists (destroyed when the panel is drawn again or closed). */
   private readonly sorts: (() => void)[] = [];
   private edits: Promise<void> = Promise.resolve();
+  private pendingEdits = 0;
   private listKey = "";
   private rover: string | null = null;
   private wasStale = false;
@@ -143,9 +160,10 @@ export class StarMapView extends ItemView {
   get canvasHandle(): GraphCloudHandle | null { return this.canvasH; }
   get focusGoal(): string | null { return this.focus; }
   get selectedNode(): string | null { return this.selected; }
+  get cloudScene(): LearnScene | null { return this.goalScene; }
 
   override onOpen(): Promise<void> {
-    this.closed = false;
+    this.closed = false; this.initialFrame = true;
     const root = document.createElement("div");
     root.className = "ew ew-graph";
     const app = el("div", "app");
@@ -173,6 +191,9 @@ export class StarMapView extends ItemView {
 
     this.canvasH = GraphCloud(canvas, {
       semantic: true,
+      grows: (id) => this.goalScene?.goalOf.has(id) === true,
+      pinned: (id) => this.goalScene?.goalOf.get(id) === realId(id),
+      onGroup: (id) => { if (this.scene?.nodes.has(id)) { this.select(id); return true; } return false; },
       tokens: root,
       font: () => getComputedStyle(root).fontFamily,
       reduced: () => matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -224,7 +245,7 @@ export class StarMapView extends ItemView {
   }
 
   override onClose(): Promise<void> {
-    this.closed = true;
+    this.closed = true; this.sceneRead++;
     for (const stop of this.sorts.splice(0)) stop();
     this.menuStop?.(); this.menuStop = null;
     this.canvasH?.destroy();
@@ -250,10 +271,17 @@ export class StarMapView extends ItemView {
     const show = s.status === "ready" && s.graph !== null && !empty;
     if (show && s.graph !== this.graph) {
       this.graph = s.graph;
-      this.scene = buildScene(s.graph!, true);
+      this.baseScene = buildScene(s.graph!);
+      this.goalScene = null; this.goalScenes.clear(); this.sceneKey = null;
+      this.scene = this.baseScene;
       this.canvasH?.setScene(this.scene);
+      if (this.initialFrame) {
+        this.initialFrame = false;
+        if (this.pendingFocus === null && this.focus === null && s.graph!.goals.length === 1) this.pendingFocus = s.graph!.goals[0]!.map_id;
+      }
     } else if (!show && this.graph !== null) { this.graph = null; this.scene = null; this.canvasH?.setScene(null); }
     this.applyPendingFocus();
+    void this.readGoalScene();
     if (this.focus !== null && this.focusedGoal() === null && this.pendingFocus === null) this.focus = null;
     this.lit = this.litNodes();
     if (this.selected !== null && !this.scene?.nodes.has(this.selected)) this.selected = null;
@@ -361,14 +389,15 @@ export class StarMapView extends ItemView {
     const S = this.scene;
     if (S === null) return;
     const goal = this.focusedGoal(), inGoal = focusTest(S, goal);
-    this.canvasH?.setState({ sel: this.selected, focus: goal === null ? null : new Set(S.order.filter(inGoal)), lit: this.lit });
+    this.canvasH?.setState({ sel: this.selected, focus: goal === null ? null : this.goalScenes.get(goal.map_id)?.goalDots ?? new Set(S.order.filter(inGoal)), lit: this.lit });
   }
 
   /** Frames the focused goal's points (a goal without points yet: the camera stays). */
   private frameGoal(): void {
     const S = this.scene, goal = this.focusedGoal();
     if (S === null || goal === null) return;
-    this.canvasH?.frame(S.order.filter(focusTest(S, goal)), "block");
+    const own = this.goalScenes.get(goal.map_id);
+    this.canvasH?.frame(own ? [...own.goalDots] : S.order.filter(focusTest(S, goal)), own ? "top" : "block");
   }
 
   /** The hover tip: a point's name and band word, its prerequisites with their phrases, its other related points, its kind;
@@ -411,7 +440,7 @@ export class StarMapView extends ItemView {
     if (app) app.style.gridTemplateColumns = empty ? "minmax(0,1fr)" : "";
   }
 
-  /** graph.html nodeCard: only the learner model's state - this point's band, its group, its prerequisites' bands (no actions). */
+  /** Node state and exact learning-page links; opening a card never generates a page. */
   private nodeCard(S: Scene, id: string): HTMLElement {
     const n = S.nodes.get(id)!, c = el("div", "card"); c.dataset.card = "node";
     const h = el("h2", "nh"); const d = el("span", "dot"); d.style.background = `var(--${n.band})`; h.append(d, n.name);
@@ -431,7 +460,42 @@ export class StarMapView extends ItemView {
       }
       c.append(pr);
     }
+    const matches = this.nodePages(id);
+    const written = [...new Map(matches.filter(({ row }) => row.page_id !== null && !row.trashed && (row.state === "written" || row.state === "read" || row.state === "mastered" || (row.state === "writing" && (row.progress?.section ?? 0) >= 1)))
+      .map((match) => [match.row.page_id!, match] as const)).values()];
+    for (const { row } of written) {
+      const pageId = row.page_id!;
+      const b = btn(written.length === 1 ? () => LEARN_COPY.pageOpen : row.title, "link", () => this.host.showPage(pageId, null));
+      b.dataset.k = "node-page:" + pageId;
+      c.append(b);
+      if (written.length === 1) {
+        const title = btn(n.name, "link", () => this.host.showPage(pageId, null));
+        h.childNodes[1]?.replaceWith(title);
+      }
+    }
+    if (written.length === 0) {
+      const pending = this.focus === null ? matches[0] : matches.find(({ goal }) => goal.map_id === this.focus);
+      const goal = (this.goalScene?.goalOf.has(id) ? this.focusedGoal() : null) ?? this.graph?.goals.find((g) => g.map_id === this.focus && g.nodes.includes(realId(id)))
+        ?? this.graph?.goals.find((g) => g.nodes.includes(realId(id)));
+      const b = btn(() => LEARN_COPY.pathTitle, "link", () => {
+        if (pending) this.host.openRow({ pageId: pending.row.page_id, pathId: pending.pathId, key: pending.row.key, title: pending.row.title, goal: pending.goal.goal });
+        else if (goal) this.host.openGoal(goal.map_id, realId(id));
+        else this.host.openLearn(n.name);
+      });
+      b.dataset.k = "node-path:" + id;
+      c.append(b);
+      const title = btn(n.name, "link", () => b.click());
+      h.childNodes[1]?.replaceWith(title);
+    }
     return c;
+  }
+
+  /** Exact node ids only; the focused goal's paths come first when a point belongs to several goals. */
+  private nodePages(id: string): { row: PathItemOut; pathId: string; goal: GoalOut }[] {
+    const goals = [...(this.graph?.goals ?? [])].sort((a, b) => Number(b.map_id === this.focus) - Number(a.map_id === this.focus));
+    return goals.flatMap((goal) => pathsOf(goal).flatMap((path) => path.path
+      .filter((row) => row.node_ids.includes(realId(id)))
+      .map((row) => ({ row, pathId: path.path_id, goal }))));
   }
 
   /**
@@ -457,12 +521,22 @@ export class StarMapView extends ItemView {
   private edit(pathId: string, e: PathEditIn, focusAt?: number): Promise<boolean> {
     const store = this.store, one = this.graph?.goals.flatMap(pathsOf).find((x) => x.path_id === pathId);
     if (store === null || one === undefined) return Promise.resolve(false);
-    const before = one.path, shown = optimisticPath(before, e);
-    if (shown !== null) store.setPath(pathId, shown);
-    if (focusAt !== undefined) this.focusPage(focusAt);
+    const immediate = this.pendingEdits++ === 0;
+    const before = one.path;
+    const show = (path: PathItemOut[]): void => {
+      const shown = optimisticPath(path, e);
+      if (shown !== null) store.setPath(pathId, shown);
+      if (focusAt !== undefined) this.focusPage(focusAt);
+    };
+    if (immediate) show(before);
     const done = this.edits.then(async (): Promise<boolean> => {
+      if (this.closed) { this.pendingEdits--; return false; }
+      const rollback = immediate ? before : this.graph?.goals.flatMap(pathsOf).find((x) => x.path_id === pathId)?.path;
+      if (rollback === undefined) { this.pendingEdits--; return false; }
+      if (!immediate) show(rollback);
       let ok = true;
-      try { await store.editPath(pathId, e); } catch { ok = false; store.setPath(pathId, before); ewNotice(GRAPH_COPY.actionFailed); }
+      try { await store.editPath(pathId, e); } catch { ok = false; store.setPath(pathId, rollback); ewNotice(GRAPH_COPY.actionFailed); }
+      this.pendingEdits--;
       if (focusAt !== undefined) this.focusPage(focusAt);
       return ok;
     });
@@ -506,7 +580,50 @@ export class StarMapView extends ItemView {
     this.menuKey = null;
     this.lit = this.litNodes();
     this.render();
+    void this.readGoalScene();
     if (mapId !== null) this.frameGoal();
+    else this.canvasH?.fit();
+  }
+
+  /** Compose every goal as 学点新的 does. Focus only filters and frames this shared graph. */
+  private async readGoalScene(): Promise<void> {
+    const graph = this.graph, base = this.baseScene;
+    if (!graph || !base || graph.goals.length === 0) return;
+    if (this.sceneKey === graph) return;
+    this.sceneKey = graph;
+    const version = ++this.sceneRead;
+    try {
+      const api = this.host.goalApi();
+      const maps = await Promise.all(graph.goals.map(async (goal) => {
+        const map = await api.getMap(goal.map_id);
+        const blocks = topRegions(map).map((r) => ({ id: r.id, name: r.name, scope: r.scope }));
+        const places = api.graphPlaces && blocks.length > 0 ? await api.graphPlaces(blocks) : null;
+        return { map, places };
+      }));
+      if (this.closed || version !== this.sceneRead || this.graph !== graph) return;
+      let scene = base;
+      const goalOf = new Map<string, string>(), goalDots = new Set<string>();
+      this.goalScenes.clear();
+      for (const { map, places } of maps) {
+        const own = learnScene(scene, map, places, map.title.trim());
+        scene = own.scene;
+        this.goalScenes.set(map.map_id, own);
+        for (const [id, region] of own.goalOf) if (!goalDots.has(id)) goalOf.set(id, region);
+        for (const id of own.goalDots) {
+          goalDots.add(id);
+          const region = own.goalOf.get(id);
+          if (region !== undefined) goalOf.set(id, region);
+        }
+      }
+      this.goalScene = { scene, goalOf, goalDots };
+      this.scene = scene;
+      this.canvasH?.setScene(this.scene);
+      this.renderList(); this.render();
+      if (this.composedFocus !== this.focus) this.frameGoal();
+      this.composedFocus = this.focus;
+    } catch {
+      if (!this.closed && version === this.sceneRead) ewNotice(GRAPH_COPY.actionFailed);
+    }
   }
 
   /**
@@ -579,8 +696,8 @@ export class StarMapView extends ItemView {
 
   // ---- a row's ⋯ menu ----
 
-  private removeRow(pathId: string, pg: PathItemOut, i: number): void {
-    void this.edit(pathId, { op: "remove", index: i }).then((ok) => {
+  private removeRow(pathId: string, pg: PathItemOut, _i: number): void {
+    void this.edit(pathId, { op: "remove", page_key: pg.key }).then((ok) => {
       if (!ok) return;
       // 撤销 = the inverse edit (the server shows the very row again, where it was)
       ewNotice(GRAPH_COPY.removed(pg.title), { label: GRAPH_COPY.undo, run: () => { void this.edit(pathId, { op: "unremove", page_key: pg.key }); } });
@@ -728,7 +845,23 @@ export class StarMapView extends ItemView {
     const add = el("div", "row"); add.style.flexWrap = "nowrap";
     const inp = el("input"); inp.type = "text"; localizedAttribute(inp, "placeholder", () => (GRAPH_COPY.addPlaceholder)); inp.dataset.k = "add-page"; inp.value = this.addDrafts.get(pathId) ?? "";
     inp.oninput = () => { this.addDrafts.set(pathId, inp.value); };
-    const go = (): void => { const v = inp.value.trim(); if (!v) return; this.addDrafts.delete(pathId); void this.edit(pathId, { op: "add", title: v }); };
+    const go = (): void => {
+      const title = inp.value.trim();
+      if (!title) return;
+      let intent = this.addIntents.get(pathId);
+      if (intent?.pending) return;
+      if (!intent || intent.title !== title) {
+        intent = { title, requestId: crypto.randomUUID(), pending: false };
+        this.addIntents.set(pathId, intent);
+      }
+      const current = intent; current.pending = true;
+      this.addDrafts.set(pathId, title);
+      void this.edit(pathId, { op: "add", title, request_id: current.requestId }).then((ok) => {
+        current.pending = false;
+        if (ok) { this.addIntents.delete(pathId); this.addDrafts.delete(pathId); }
+        if (!this.closed) this.render();
+      });
+    };
     inp.onkeydown = (e) => { if (e.key === "Enter") go(); };      // graph.html: Enter adds
     add.append(inp, btn(() => (GRAPH_COPY.add), "", go));
     c.append(add);

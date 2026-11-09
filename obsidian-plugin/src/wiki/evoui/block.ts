@@ -6,7 +6,7 @@
  *     ```                           ```
  *
  * The left form is what EvoWiki writes into a note (deep/evoui `block_fence`: the block JSON inline); the right one
- * points at an asset (`GET /wiki/assets/{id}`, meta.kind "evoui", cached as `<notes>/Wiki/assets/<id>.json`).
+ * points at an asset (`GET /wiki/assets/{id}`, meta.kind "evoui", cached as `<notes>/assets/<id>.json`).
  * parseEvouiSource is the single place that turns a fence's text into a block (or an asset id); the final fence format is
  * D1's, so a change there lands here only. This file runs in the main window and only parses JSON: the block is validated
  * and evaluated in the sandboxed frame (frame/validate.ts, frame-host.ts).

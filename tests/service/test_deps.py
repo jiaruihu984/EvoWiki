@@ -49,7 +49,7 @@ def test_new_database_can_build_services_and_register_a_user(db_url):
     try:
         assert svc.ctx.content.version_id == "cv_empty"
         # Include real DBOS launch/shutdown, not only isolated route calls.
-        with TestClient(create_app(svc)) as client:
+        with TestClient(create_app(svc), base_url="http://127.0.0.1") as client:
             response = client.post("/users", json={"user_id": "first_user",
                                    "survey": {"math": "none", "ml": "none", "dl": "none"}})
             assert response.status_code == 201, response.text

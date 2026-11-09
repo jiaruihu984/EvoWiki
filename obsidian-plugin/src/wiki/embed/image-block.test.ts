@@ -7,14 +7,14 @@ import { captionEl, type ImagePort, mountImageBlock, parseImageBlock, safeUrl } 
 const SRC = ["asset: ia_7", "alt: 左边是原图，右边是错切以后", "title: Mona Lisa with eigenvector", "author: J. Finkelstein",
   "license: CC BY-SA 4.0", "license_url: https://creativecommons.org/licenses/by-sa/4.0/", "source: Wikimedia Commons",
   "source_url: https://commons.wikimedia.org/wiki/File:Mona_Lisa_with_eigenvector.png", "width: 640", "height: 544"].join("\n");
-const PATH = "EvoWiki/Wiki/assets/ia_7.webp";
+const PATH = "EvoWiki/assets/ia_7.webp";
 
 const flush = () => new Promise((r) => setTimeout(r, 0));
 
 function port(present: boolean, over: Partial<ImagePort> = {}): ImagePort & { files: Set<string> } {
   const files = new Set(present ? [PATH] : []);
   return { files, resource: (p) => (files.has(p) ? `app://local/${p}` : null), canFetch: () => true,
-    assetPath: (id) => `EvoWiki/Wiki/assets/${id}.webp`,
+    assetPath: (id) => `EvoWiki/assets/${id}.webp`,
     retrieve: vi.fn(() => { files.add(PATH); return Promise.resolve(true); }), ...over };
 }
 
@@ -61,7 +61,7 @@ describe("mountImageBlock", () => {
   it("a missing file: one line and 取回; after the fetch the image is drawn", async () => {
     const el = document.createElement("div");
     const p = port(false);
-    const retrieve = vi.fn((id: string) => { p.files.add(`EvoWiki/Wiki/assets/${id}.webp`); return Promise.resolve(true); });
+    const retrieve = vi.fn((id: string) => { p.files.add(`EvoWiki/assets/${id}.webp`); return Promise.resolve(true); });
     mountImageBlock(el, SRC, { ...p, retrieve }, new EmbedHub());
     expect(el.textContent).toContain(WIKI_COPY.imageMissing);
     el.querySelector("button")!.click();

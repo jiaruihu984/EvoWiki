@@ -11,7 +11,7 @@ import type { BlockProgressData } from "./block-event";
 import { type BlockEvent, type EvouiPort, mountEvouiBlock } from "./evoui-block";
 import { resetMathForTests } from "./math";
 
-const ASSET = "EvoWiki/Wiki/assets/ia_1.json";
+const ASSET = "EvoWiki/assets/ia_1.json";
 const frame = (): Promise<void> => new Promise((r) => { requestAnimationFrame(() => { r(); }); });
 const flush = async (): Promise<void> => { for (let i = 0; i < 5; i++) await Promise.resolve(); };
 type TestPort = EvouiPort & { events: [string, BlockEvent][]; retrieved: string[] };
@@ -23,7 +23,7 @@ function port(files: Record<string, string> = {}, over: Partial<EvouiPort> = {})
     events, retrieved,
     read: (p) => Promise.resolve(files[p] ?? null),
     canFetch: () => true,
-    assetPath: (id) => `EvoWiki/Wiki/assets/${id}.json`,
+    assetPath: (id) => `EvoWiki/assets/${id}.json`,
     retrieve: (id) => { retrieved.push(id); return Promise.resolve(false); },
     onEvent: (id, ev) => { events.push([id, ev]); },
     ...over,
@@ -134,7 +134,7 @@ describe("result events", () => {
       r.dispatchEvent(new Event("change"));
     });
   };
-  const asAsset = async (block: unknown, p: TestPort = port({ "EvoWiki/Wiki/assets/ia_q.json": JSON.stringify(block) })) => {
+  const asAsset = async (block: unknown, p: TestPort = port({ "EvoWiki/assets/ia_q.json": JSON.stringify(block) })) => {
     const m = mount("asset: ia_q", p);
     await flush();
     return { ...m, p };
@@ -185,7 +185,7 @@ describe("result events", () => {
   });
 
   it("a listener that throws, or none, never breaks the block", async () => {
-    const files = { "EvoWiki/Wiki/assets/ia_q.json": JSON.stringify(quiz) };
+    const files = { "EvoWiki/assets/ia_q.json": JSON.stringify(quiz) };
     const { el } = await asAsset(quiz, port(files, { onEvent: () => { throw new Error("x"); } }));
     answer(el, correct);
     expect(() => el.querySelector<HTMLButtonElement>(".evoui-check")!.click()).not.toThrow();
@@ -199,7 +199,7 @@ describe("result events", () => {
 
 describe("progress save and restore", () => {
   const quiz = EXAMPLES[1]!;
-  const files = { "EvoWiki/Wiki/assets/ia_q.json": JSON.stringify(quiz) };
+  const files = { "EvoWiki/assets/ia_q.json": JSON.stringify(quiz) };
   const wait = (ms: number): Promise<void> => new Promise((r) => { setTimeout(r, ms); });
 
   it("an asset block reports its progress; a later mount gets it back and shows the saved answers (restore sends no events)", async () => {
@@ -416,7 +416,7 @@ describe("a block with an app node runs by itself only when the server stored it
   it("an asset file is asked about as it is on disk", async () => {
     const text = JSON.stringify(app());
     const asked: string[] = [];
-    const { el } = mount("asset: ia_a", port({ "EvoWiki/Wiki/assets/ia_a.json": text }, { isGenerated: (t) => { asked.push(t); return Promise.resolve(false); } }));
+    const { el } = mount("asset: ia_a", port({ "EvoWiki/assets/ia_a.json": text }, { isGenerated: (t) => { asked.push(t); return Promise.resolve(false); } }));
     await flush(); await flush();
     expect(asked).toEqual([text]);
     expect(run(el)).not.toBeNull();

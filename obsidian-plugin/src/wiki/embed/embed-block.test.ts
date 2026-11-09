@@ -8,8 +8,8 @@ import {
 } from "./embed-block";
 
 const SRC = "type: embedded-html\nid: z-steps\nsrc: assets/demo-z-steps.html\ntitle: 点一下: 看 z\nheight: 400\n";
-const NOTE = "EvoWiki/Wiki/PCA.md";
-const ASSET = "EvoWiki/Wiki/assets/demo-z-steps.html";
+const NOTE = "EvoWiki/PCA.md";
+const ASSET = "EvoWiki/assets/demo-z-steps.html";
 /** The fenced block's inner text, as Obsidian hands it to a code block processor. */
 const inner = (block: string): string => block.split("\n").slice(1, -1).join("\n");
 
@@ -58,7 +58,7 @@ describe("parseEmbedBlock", () => {
 
 describe("paths", () => {
   it("src resolves against the note's folder; the asset id only for assets/<id>.html", () => {
-    expect(resolveSrc("assets/a.html", NOTE)).toBe("EvoWiki/Wiki/assets/a.html");
+    expect(resolveSrc("assets/a.html", NOTE)).toBe("EvoWiki/assets/a.html");
     expect(resolveSrc("assets/a.html", "Top.md")).toBe("assets/a.html");
     expect(resolveSrc("../a.html", NOTE)).toBeNull();
     expect(assetIdOfSrc("assets/demo-z-steps.html")).toBe("demo-z-steps");
@@ -104,7 +104,7 @@ function port(over: Partial<EmbedPort> = {}, files: Record<string, string> = {})
     read: (p) => Promise.resolve(files[p] ?? null),
     isGenerated: () => Promise.resolve(true),
     canFetch: () => true,
-    assetPath: (id) => `EvoWiki/Wiki/assets/${id}.html`,
+    assetPath: (id) => `EvoWiki/assets/${id}.html`,
     retrieve: vi.fn(() => Promise.resolve(true)),
     theme: () => ({ read: (n) => (n === "--text-normal" ? "#ddd" : ""), dark: true }),
     ...over,
@@ -172,7 +172,7 @@ describe("mountEmbedBlock", () => {
       await flush();
       return el;
     };
-    for (const note of ["EvoWiki/Wiki/特征值、特征向量等/节点与边.md", ""]) {
+    for (const note of ["EvoWiki/特征值、特征向量等/节点与边.md", ""]) {
       const el = await draw(note);
       expect(el.querySelector("iframe")).not.toBeNull();
       expect(el.textContent).not.toContain(WIKI_COPY.embedMissing);
@@ -183,7 +183,7 @@ describe("mountEmbedBlock", () => {
 
   it("a missing file is fetched by itself, then drawn; a failed fetch says so and keeps 取回", async () => {
     const files: Record<string, string> = {};
-    const retrieve = vi.fn((id: string) => { files[`EvoWiki/Wiki/assets/${id}.html`] = "<p>got</p>"; return Promise.resolve(true); });
+    const retrieve = vi.fn((id: string) => { files[`EvoWiki/assets/${id}.html`] = "<p>got</p>"; return Promise.resolve(true); });
     const el = document.createElement("div");
     mountEmbedBlock(el, SRC, NOTE, port({ retrieve }, files), new EmbedHub());
     await flush(); await flush(); await flush();
@@ -220,7 +220,7 @@ describe("mountEmbedBlock", () => {
 
   it("an asset written: only blocks waiting for that asset redraw; running interactives are not reset", async () => {
     const hub = new EmbedHub();
-    const files: Record<string, string> = { "EvoWiki/Wiki/assets/other.html": "o" };
+    const files: Record<string, string> = { "EvoWiki/assets/other.html": "o" };
     const p = port({}, files);
     const waiting = document.createElement("div");
     const running = document.createElement("div");

@@ -7,7 +7,7 @@ import type { HandEditIn, PageSourceOut } from "../schema";
 
 const NOW = new Date("2026-11-04T08:00:00Z");
 const sec = (id: string, heading: string, body: string, o: Partial<WikiNoteSection> = {}): WikiNoteSection =>
-  ({ id, heading, role: "explain", cue: "", body, folded: false, ...o });
+  ({ id, heading, role: "explain", cue: "", body, folded: false, fingerprint: `fp-${id}`, ...o });
 const SRC: PageSourceOut = { source_id: "src1", title: "教材", kind: "pdf", origin: "资料/教材.pdf", deleted: false } as unknown as PageSourceOut;
 const WEB: PageSourceOut = { source_id: "src2", title: "网页", kind: "url", origin: "https://x.org", deleted: false } as unknown as PageSourceOut;
 const EMBED = "```embedded-html\ntype: embedded-html\nid: ia1\nsrc: assets/ia1.html\ntitle: 拖一拖\nheight: 400\n```";
@@ -30,7 +30,7 @@ function plan(i: WikiNoteInput, edit: (body: string) => string): HandEditIn {
 }
 /** The input as the server answers after `edit`: the changed sections hold what was sent, the deleted ones are gone. */
 function applied(i: WikiNoteInput, e: HandEditIn): WikiNoteInput {
-  return { ...i, sections: i.sections.filter((s) => !(e.removed ?? []).includes(s.id)).map((s) => {
+  return { ...i, sections: i.sections.filter((s) => !(e.removed ?? []).some((r) => r.section_id === s.id)).map((s) => {
     const x = (e.sections ?? []).find((y) => y.section_id === s.id);
     return x === undefined ? s : { ...s, body: x.body, noteBody: x.note_body, heading: x.heading ?? s.heading, cue: x.cue ?? (x.body === s.body ? s.cue : ""), folded: x.folded ?? s.folded };
   }) };
@@ -54,7 +54,7 @@ describe("the way back from note Markdown", () => {
   it("editing prose preserves completion checks drawn outside the editable body", () => {
     const i = input([...PAGE.sections, sec("goal_check_1", "确认题", "", { role: "check" })]);
     const e = plan(i, (body) => body.replace("第一句。", "改过的第一句。"));
-    expect(e.removed).not.toContain("goal_check_1");
+    expect(e.removed?.map((r) => r.section_id)).not.toContain("goal_check_1");
     expect(e.sections?.map((s) => s.section_id)).toEqual(["s1"]);
   });
   it.each([
@@ -85,7 +85,7 @@ describe("planHandEdit: what goes up", () => {
     const i = input([sec("s1", "一", "第一段。", { fingerprint: "fp-1" }), sec("s2", "二", "第二段。", { fingerprint: "fp-2" })]);
     const e = plan(i, (b) => b.replace("第二段。", "第二段改了。"));
     expect(e.sections!.map((x) => [x.section_id, x.fingerprint])).toEqual([["s2", "fp-2"]]);
-    const old = input([sec("s1", "一", "第一段。"), sec("s2", "二", "第二段。")]);       // a copy from before fingerprints
+    const old = input([sec("s1", "一", "第一段。", { fingerprint: undefined }), sec("s2", "二", "第二段。", { fingerprint: undefined })]);       // a copy from before fingerprints
     expect(plan(old, (b) => b.replace("第二段。", "第二段改了。")).sections![0]!.fingerprint).toBeUndefined();
   });
 
@@ -178,17 +178,17 @@ describe("planHandEdit: the edges", () => {
     const body = renderWikiBody(PAGE);
     const a = body.indexOf("## 均值"), b = body.indexOf("## 方差");
     const e = plan(PAGE, () => body.slice(0, a) + body.slice(b));
-    expect(e).toMatchObject({ sections: [], removed: ["s2"] });
+    expect(e).toMatchObject({ sections: [], removed: [{ section_id: "s2", fingerprint: "fp-s2" }] });
   });
 
   it("all the text of a section deleted, its heading left: the section is deleted", () => {
     const e = plan(PAGE, (b) => b.replace(/均值是总和[\s\S]*?只看离散情形\n/, ""));
-    expect(e.removed).toEqual(["s2"]);
+    expect(e.removed).toEqual([{ section_id: "s2", fingerprint: "fp-s2" }]);
   });
 
   it("a selection deleted across two sections: what is left of the second joins the first", () => {
     const e = plan(PAGE, (b) => b.replace(/要删的一句。[\s\S]*?方差看离散程度。\n/, ""));
-    expect(e.removed).toEqual(["s3"]);
+    expect(e.removed).toEqual([{ section_id: "s3", fingerprint: "fp-s3" }]);
     expect(e.sections!.map((s) => s.section_id)).toEqual(["s2"]);
     expect(e.sections![0]!.body).toContain("均值是总和");
     expect(e.sections![0]!.body).toContain("$$\n\\sigma^2");
@@ -198,7 +198,7 @@ describe("planHandEdit: the edges", () => {
   it("a check section deleted whole is a deletion; changed in part it fails closed", () => {
     const body = renderWikiBody(PAGE);
     const at = body.indexOf("```evowiki-check");
-    expect(plan(PAGE, () => body.slice(0, at))).toMatchObject({ removed: ["q1"] });
+    expect(plan(PAGE, () => body.slice(0, at))).toMatchObject({ removed: [{ section_id: "q1", fingerprint: "fp-q1" }] });
     const p = planHandEdit(edited(PAGE, (b) => b.replace("section: q1", "section: q2")), writtenFrom(PAGE), PAGE.sources);
     expect(p).toMatchObject({ kind: "unsafe", why: "check" });
   });
@@ -258,4 +258,11 @@ describe("planHandEdit: fails closed", () => {
     expect(planHandEdit(renderWikiNote(PAGE, NOW).markdown, writtenFrom(PAGE), PAGE.sources)).toEqual({ kind: "none" });
     expect(planHandEdit(edited(PAGE, (b) => `${b}x\n`), { ...writtenFrom(PAGE), hash: "sha256:0" }, [])).toEqual({ kind: "none" });
   });
+});
+
+
+it("deletion carries the fingerprint of the original section", () => {
+  const i = input([sec("s1", "One", "First.", { fingerprint: "fp1" }), sec("s2", "Two", "Second.", { fingerprint: "fp2" })]);
+  const e = plan(i, (b) => b.slice(0, b.indexOf("## Two")));
+  expect(e.removed).toEqual([{ section_id: "s2", fingerprint: "fp2" }]);
 });

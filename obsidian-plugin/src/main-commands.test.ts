@@ -25,7 +25,7 @@ function rig(opts: { active?: { path: string; pageId: string | null } | null; pa
   rigs.push(p);
   const addCommand = vi.fn();
   const addRibbonIcon = vi.fn();
-  const active = opts.active === undefined ? { path: "EvoWiki/Wiki/z-score.md", pageId: "p1" } : opts.active;
+  const active = opts.active === undefined ? { path: "EvoWiki/z-score.md", pageId: "p1" } : opts.active;
   const file = active === null ? null : Object.assign(new TFile(), { path: active.path, extension: "md" });
   Object.assign(p, {
     manifest: { id: "evowiki" }, loadData: () => Promise.resolve({ bootstrapLanguage: "zh" }), saveData: () => Promise.resolve(),

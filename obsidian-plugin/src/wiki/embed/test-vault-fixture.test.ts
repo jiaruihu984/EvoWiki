@@ -1,7 +1,7 @@
 /**
  * The walkthrough's static interactives note (test/fixtures/embed/interactives.md, src/wiki/WALKTHROUGH.md section O):
  * its blocks parse with the plugin's own parser (the backend's embed_block format) and point at asset files that exist
- * where the fetcher would write them (<notes>/Wiki/assets/<id>.html). The counter asset is the fake's demo interactive.
+ * where the fetcher would write them (<notes>/assets/<id>.html). The counter asset is the fake's demo interactive.
  */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";

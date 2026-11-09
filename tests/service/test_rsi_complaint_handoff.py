@@ -280,7 +280,7 @@ def test_native_chat_tool_immediately_delivers_to_real_dbos_cycle(
     )
     try:
         rsi_feedback.register()
-        api = TestClient(create_app(services))
+        api = TestClient(create_app(services), base_url="http://127.0.0.1")
         headers = {"X-EvoWiki-User": "u1"}
         sid = api.post("/assistant/sessions", json={}, headers=headers).json()["session_id"]
         seen = set()

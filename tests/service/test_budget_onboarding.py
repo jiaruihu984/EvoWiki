@@ -20,7 +20,7 @@ from tests.service.conftest import SURVEY, H
 
 
 def test_new_account_cannot_spend_before_explicit_budget_confirmation(services):
-    c = TestClient(create_app(services))
+    c = TestClient(create_app(services), base_url="http://127.0.0.1")
     assert c.post('/users', json={'user_id': 'new-budget', 'survey': SURVEY}).status_code == 201
     s = c.get('/usage/settings', headers=H('new-budget')).json()
     assert (s['daily_limit_usd'], s['monthly_limit_usd'], s['budget_confirmed']) == (5, 30, False)
@@ -47,7 +47,7 @@ def test_existing_learner_keeps_unlimited_and_needs_no_new_confirmation(services
 def test_every_paid_group_and_both_gateway_paths_wait_for_confirmation(services, tmp_path):
     class Reply(BaseModel):
         value: int
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     assert client.post('/users', json={'user_id': 'paid-gates', 'survey': SURVEY}).status_code == 201
     meter = PgUsageMeter(services.pool, clock=services.clock, tz=UTC)
     provider = ScriptedChatProvider('scripted', lambda *a: ChatTurn(text='fake answer'), lambda *a: '{"value":1}')
@@ -84,7 +84,7 @@ def test_unregistered_uid_cannot_get_unlimited_paid_access_even_with_settings(se
     ('PATCH', '/usage/settings', {'confirm_budget': True}),
 ])
 def test_usage_api_requires_a_registered_identity(services, method, path, body):
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     response = client.request(method, path, headers=H('unknown'), json=body)
     assert response.status_code == 404
     with services.pool.connection() as conn:
@@ -92,7 +92,7 @@ def test_usage_api_requires_a_registered_identity(services, method, path, body):
 
 
 def test_registration_initializes_preexisting_picker_row_and_duplicate_preserves_confirmed_budget(services):
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     with services.pool.connection() as conn:
         update_settings(conn, 'before-signup', now=services.clock(), daily_limit_usd=None)
     body = {'user_id': 'before-signup', 'survey': SURVEY}
@@ -107,7 +107,7 @@ def test_registration_initializes_preexisting_picker_row_and_duplicate_preserves
 
 @pytest.mark.parametrize('value', ['true', 1, None])
 def test_confirmation_requires_an_explicit_json_boolean(services, value):
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     client.post('/users', json={'user_id': 'explicit', 'survey': SURVEY})
     assert client.patch('/usage/settings', headers=H('explicit'), json={'confirm_budget': value}).status_code == 422
     assert client.get('/usage/settings', headers=H('explicit')).json()['budget_confirmed'] is False
@@ -116,7 +116,7 @@ def test_confirmation_requires_an_explicit_json_boolean(services, value):
 def test_confirmation_and_limits_roll_back_together_on_failure(services, monkeypatch):
     from evowiki.service import routes_usage
 
-    client = TestClient(create_app(services), raise_server_exceptions=False)
+    client = TestClient(create_app(services), raise_server_exceptions=False, base_url="http://127.0.0.1")
     client.post('/users', json={'user_id': 'atomic-budget', 'survey': SURVEY})
     def fail(*args):
         raise RuntimeError('simulated response read failure')
@@ -134,7 +134,7 @@ def test_unconfirmed_assistant_stream_explains_budget_without_a_provider_call(se
     from evowiki.service.sse import error_payload
     from tests.assistant.test_loop import INFO, setup
 
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     assert client.post('/users', json={'user_id': INFO.user_id, 'survey': SURVEY}).status_code == 201
     meter = PgUsageMeter(services.pool, clock=services.clock, tz=UTC)
     deps, provider, _ = setup(tmp_path, [ChatTurn(text='must not be called')], meter=meter)

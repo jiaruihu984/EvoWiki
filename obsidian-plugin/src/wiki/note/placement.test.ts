@@ -56,19 +56,19 @@ describe("placement", () => {
   });
   it("legacyPageIds: the pages of notes named （i-n）, read only", async () => {
     const files = new Map([
-      ["EvoWiki/Wiki/pca（1-4）.md", renderWikiNote(input("p1", "pca")).markdown],
-      ["EvoWiki/Wiki/均值.md", renderWikiNote(input("p2", "均值")).markdown],
-      ["EvoWiki/Wiki/我的（1-2）.md", "我自己的\n"],
+      ["EvoWiki/pca（1-4）.md", renderWikiNote(input("p1", "pca")).markdown],
+      ["EvoWiki/均值.md", renderWikiNote(input("p2", "均值")).markdown],
+      ["EvoWiki/我的（1-2）.md", "我自己的\n"],
     ]);
     const store = { listMarkdown: () => [...files.keys()].sort(), read: (p: string) => Promise.resolve(files.get(p)!) };
-    expect(await legacyPageIds(store, "EvoWiki/Wiki")).toEqual(["p1"]);
+    expect(await legacyPageIds(store, "EvoWiki")).toEqual(["p1"]);
   });
   it("writingPageIds: the notes whose status is writing", async () => {
     const files = new Map([
-      ["EvoWiki/Wiki/a.md", renderWikiNote({ ...input("p1", "a"), writing: true }).markdown],
-      ["EvoWiki/Wiki/b.md", renderWikiNote(input("p2", "b")).markdown],
+      ["EvoWiki/a.md", renderWikiNote({ ...input("p1", "a"), writing: true }).markdown],
+      ["EvoWiki/b.md", renderWikiNote(input("p2", "b")).markdown],
     ]);
     const store = { listMarkdown: () => [...files.keys()].sort(), read: (p: string) => Promise.resolve(files.get(p)!) };
-    expect(await writingPageIds(store, "EvoWiki/Wiki")).toEqual(["p1"]);
+    expect(await writingPageIds(store, "EvoWiki")).toEqual(["p1"]);
   });
 });

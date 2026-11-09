@@ -110,7 +110,7 @@ def test_texts_are_the_real_prompts():
     org = rows["列大纲"].text            # the outline part of the writer's first message
     assert org.startswith("# 列大纲\n\n这一页还没有大纲。") and "〈概念〉" in org
     deep = rows["写每一段"].text
-    assert deep.startswith(strip_marks(deep_agent.WRITE_SYSTEM)) and "规划】" not in deep
+    assert deep == strip_marks(deep_agent.WRITE_SYSTEM)
     diag = rows["拆目标和摸底"].text
     v1, v2 = JSON_PROMPT_VERSION["goals.intake"], JSON_PROMPT_VERSION["goals.enter"]
     heads = (f"【{v1} · 分块】", f"【{v2} · 进入一块】")

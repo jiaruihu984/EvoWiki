@@ -1300,7 +1300,7 @@ class PathMoveIn(_In):
 
 class PathRemoveIn(_In):
     op: Literal["remove"]
-    index: int = Field(ge=0)
+    page_key: str = Field(min_length=1)
 
 
 class PathUnremoveIn(_In):
@@ -1312,6 +1312,7 @@ class PathUnremoveIn(_In):
 
 class PathAddIn(_In):
     op: Literal["add"]
+    request_id: str = Field(min_length=1, max_length=128)
     title: str = Field(min_length=1, max_length=120)
     node_id: str | None = None
     to_index: int | None = Field(default=None, ge=0)        # None: the end of the shown path
@@ -1915,12 +1916,17 @@ class HandEditSectionIn(_In):
     fingerprint: str | None = None       # SectionOut.fingerprint of the copy the note was written from
 
 
+class HandEditRemovedIn(_In):
+    section_id: str = Field(min_length=1)
+    fingerprint: str = Field(min_length=1)
+
+
 class HandEditIn(_In):
     """What the user did in the page's note (plugin side): the sections he changed, those he deleted,
     and a short summary of it (the `note_edit` signal's text)."""
 
     sections: list[HandEditSectionIn] = []
-    removed: list[str] = []
+    removed: list[HandEditRemovedIn] = []
     summary: str = Field(min_length=1, max_length=MAX_NOTE_SUMMARY)
 
 

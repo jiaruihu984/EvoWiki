@@ -30,7 +30,6 @@ import { type EvoWikiSettings, loadPluginData, MAX_GOAL_RUNS, MAX_PROFILE_BASES,
 import { EvoWikiSettingTab } from "./settings-tab";
 import { detachRemovedViews } from "./removed-views";
 import { SETTINGS_VIEW_TYPE, type SettingsHost, SettingsView } from "./settings-view";
-import { validateNotesFolder } from "./notes/note-format";
 import { ewNotice } from "./ui/ew-notice";
 import { SettingsUpdater } from "./settings-updater";
 import { CheckBlockHub, mountCheckBlock } from "./wiki/check-block";
@@ -83,7 +82,7 @@ import type { PageLimitHost } from "./wiki/page-limit-setting";
 import type { ReviewLimitHost } from "./wiki/review-limit-setting";
 import type { TeachPort } from "./wiki/teach/model";
 import { UsageClient } from "./wiki/usage";
-import { moveIntoUserFolder, obsidianMoveVault, userFolder } from "./wiki/note/user-folder";
+import { accountFolder, userFolder } from "./wiki/note/user-folder";
 import { renderChatReview } from "./wiki/render-chat-review";
 import { makeAssetFetcher, makeWikiController, wikiActions, wikiNotesFolder } from "./wiki/wiring";
 import { DraftDecisions } from "./wiki/revise/decisions";
@@ -167,7 +166,7 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
   /** 设置 surfaces told after a new server / user id (SettingsHost.onIdentityChange). */
   private readonly identityListeners = new Set<() => void>();
   private budgetSetup: AbortController | null = null;
-  /** Resolves once the old layout was moved into the user's folder (moveOldLayout): no note is read or written before. */
+  /** Notes are indexed before profile or page synchronization starts. */
   private folderReady: Promise<void> = Promise.resolve();
 
   private notStarted = false;
@@ -185,6 +184,8 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
   override async onload(): Promise<void> {
     try {
       this.data = loadPluginData(await this.loadData());
+      this.data.settings = accountFolder(this.data, this.data.settings, (path) => this.app.vault.getAbstractFileByPath(path) !== null);
+      await this.saveData(this.data);
     } catch (e) {
       console.error("EvoWiki: data.json is unreadable; not starting", e);
       this.notStarted = true;
@@ -229,7 +230,7 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
       if (this.account.state.kind === "ready" && this.conn.state === "online") void this.assistant?.resendOffline();
     });
     if (this.fixture === null) {
-      this.folderReady = new Promise((resolve) => { this.app.workspace.onLayoutReady(() => { void this.moveOldLayout().then(resolve, resolve); }); });
+      this.folderReady = new Promise((resolve) => { this.app.workspace.onLayoutReady(resolve); });
       this.profile = new ProfileNote(
         new ProfileClient(() => ({ baseUrl: this.data.settings.serverUrl, userId: this.data.settings.userId }), obsidianWikiHttp),
         obsidianProfileVault(this.app, obsidianBackupStore(this.app)), () => this.resolveProfilePath(), undefined,
@@ -376,7 +377,9 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
     // 知识图谱 (main-area tab, graph.html on GET /wiki/graph). The command comes with the other entry points; the ribbon icon opens it now.
     this.registerView(STARMAP_VIEW_TYPE, (leaf) => new StarMapView(leaf, {
       source: this.graphSource(),
-      openLearn: () => { void this.openLearn("", true); },
+      goalApi: () => this.goalApi(),
+      openLearn: (topic = "") => { void this.openLearn(topic, true); },
+      openGoal: (mapId, nodeId) => { void this.openGoal(mapId, nodeId); },
       // A written page opens (at the section that teaches the node); a page in the trash is written again, not opened.
       showPage: (pageId, sectionId) => {
         const c = this.wikiController();
@@ -491,7 +494,7 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
     this.registerMarkdownCodeBlockProcessor("evowiki-check", (source, el, ctx) => {
       if (!this.checkHub.owns(ctx.sourcePath)) return;
       const child = new MarkdownRenderChild(el);
-      child.register(mountCheckBlock(el, source, this.checkHub, (pageId) => { void this.wikiController().followPage(pageId); }));
+      child.register(mountCheckBlock(el, source, this.checkHub, (pageId) => this.wikiController().followPage(pageId)));
       ctx.addChild(child);
     });
     // An interactive (embedded-html block, appendix A·6) in any note: the vault file in a sandboxed iframe, or 取回.
@@ -743,6 +746,7 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
   private makeSettingsUpdater(): SettingsUpdater {
     return new SettingsUpdater({
       get: () => this.data.settings,
+      prepare: (next) => Promise.resolve(accountFolder(this.data, next, (path) => this.app.vault.getAbstractFileByPath(path) !== null)),
       save: async (next) => { this.data.settings = next; await this.saveData(this.data); },
       reinit: async () => {
         this.budgetSetup?.abort();
@@ -1060,7 +1064,7 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
           }, key);
         },
         learnNew: (topic) => { void this.openLearn(topic, true); },
-        continueGoal: (mapId) => this.continueGoal(mapId),
+        continueGoal: (mapId, region) => this.continueGoal(mapId, region),
         openPrompt: (key) => { void this.openPromptEditor(key); },
         // 「⋯ → 问助手」 on a section: the same explicit-click path as the editor menu's 问陪读助手.
         // The Bot's 问助手 / chips: the 助手 tab, the text sent as a user turn (the draft is left alone).
@@ -1150,31 +1154,14 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
     }
   }
 
-  /** The open notes that belong to another user (in the notes folder, outside this user's folder) are closed. */
+  /** Notes from another identity's independent root close before its content can become context. */
   private closeOtherUsersNotes(): void {
     const s = this.data.settings;
+    const others = Object.values(this.data.noteFolders ?? {}).filter((root) => root !== userFolder(s));
     this.app.workspace.getLeavesOfType("markdown").forEach((l) => {
       const p = (l.view as MarkdownView).file?.path;
-      if (p !== undefined && inFolder(p, s.notesFolder) && !inFolder(p, userFolder(s))) l.detach();
+      if (p !== undefined && others.some((root) => inFolder(p, root))) l.detach();
     });
-  }
-
-  /**
-   * Notes of the layout from before per-user folders (Wiki, 资料, 我.md right under the notes folder) move into the current
-   * user's folder; what could not move stays where it is, and a notice says so.
-   */
-  private async moveOldLayout(): Promise<void> {
-    const s = this.data.settings;
-    if (s.userId === "" || !validateNotesFolder(userFolder(s)).ok) return;
-    let left: string[];
-    try {
-      left = await moveIntoUserFolder(obsidianMoveVault(this.app), s);
-    } catch (e) {
-      // nothing past this point moved: the old layout stays where it is, and it says so (never an unhandled rejection)
-      console.warn("EvoWiki: could not move the old notes into the user's folder", e);
-      left = [s.notesFolder];
-    }
-    if (left.length > 0) ewNotice(WIKI_COPY.oldNotesLeft(left, userFolder(s)));
   }
 
   /**
@@ -1370,10 +1357,13 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
   }
 
   /** An existing goal's persistent path, from Today or a saved goal card. */
-  async openGoal(mapId: string): Promise<void> {
+  async openGoal(mapId: string, nodeId?: string): Promise<void> {
     await this.openLearn("");
     const view = this.app.workspace.getLeavesOfType(LEARN_VIEW_TYPE)[0]?.view;
-    if (view instanceof LearnView) await view.showGoal(mapId);
+    if (view instanceof LearnView) {
+      if (nodeId !== undefined) await view.showGoalNode(mapId, nodeId);
+      else await view.showGoal(mapId);
+    }
   }
 
   /** `fresh`: nothing typed means a new goal (新建目标), not the goal showing. */
@@ -1396,17 +1386,14 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
   }
 
   /** A goal's next block: the chat's run of that map goes on (the 助手 tab shows it). */
-  private continueGoal(mapId: string, region: string | null = null): boolean {
-    const ok = this.assistant.continueGoal(mapId, region);
-    if (ok) {
-      void this.openAssistant().catch((e: unknown) => { console.warn("EvoWiki: could not open the 助手 tab", e); });
-      // what the block opens (its parts to pick from, its pages) is in 学点新的: it shows this goal, whichever it showed
-      void this.openLearn("").then(() => {
-        const view = this.app.workspace.getLeavesOfType(LEARN_VIEW_TYPE)[0]?.view, run = this.assistant.currentGoal();
-        if (view instanceof LearnView && run !== null) view.showRun(run);
-      }).catch((e: unknown) => { console.warn("EvoWiki: could not open 学点新的", e); });
-    } else void this.openStarMap(mapId);
-    return ok;
+  private async continueGoal(mapId: string, region: string | null = null): Promise<void> {
+    const run = await this.assistant.openGoal(mapId);
+    if (run === null) throw new Error(WIKI_COPY.failed);
+    await this.openAssistant();
+    await this.openLearn("");
+    const view = this.app.workspace.getLeavesOfType(LEARN_VIEW_TYPE)[0]?.view;
+    if (view instanceof LearnView) view.showRun(run);
+    await this.assistant.continueGoal(mapId, region);
   }
 
   /** What 今天's goal rows need: the graph, opening 知识图谱 on a goal, opening a page (a plain GET, never a write), the connection. */

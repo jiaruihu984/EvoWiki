@@ -90,22 +90,22 @@ describe("GraphFixture: graph.html's data on the wire contract", () => {
     const fx = new GraphFixture();
     let p = parsePathEdit(fx.editPath("path_math", { op: "move", from: 0, to: 2 })).path;
     expect(p.map((x) => x.title)).toEqual(["特征值与特征向量", "导数和梯度", "向量和矩阵乘法", "条件概率"]);
-    p = fx.editPath("path_math", { op: "remove", index: 3 }).path;
+    p = fx.editPath("path_math", { op: "remove", page_key: p[3]!.key }).path;
     expect(p).toHaveLength(3);
-    p = fx.editPath("path_math", { op: "add", title: " 交叉验证 " }).path;
+    p = fx.editPath("path_math", { op: "add", request_id: "test-intent", title: " 交叉验证 " }).path;
     expect(last(p)).toMatchObject({ title: "交叉验证", question: MINE_NEW_SUMMARY, node_ids: [], mine: true });
     expect(fx.graph().goals[1]!.path).toEqual(p);
     // unremove puts the removed row back where it was
     const key = p[1]!.key, n = p.length;
-    const gone = fx.editPath("path_math", { op: "remove", index: 1 });
+    const gone = fx.editPath("path_math", { op: "remove", page_key: key });
     const back = fx.editPath("path_math", { op: "unremove", page_key: key }).path;
     expect(back.map((r) => r.key).indexOf(key)).toBe(1);
     expect(gone.path).toHaveLength(n - 1);
     expect(back).toHaveLength(n);
     expect(() => fx.editPath("path_math", { op: "unremove", page_key: key })).toThrow(ApiError);
     expect(() => fx.editPath("path_math", { op: "move", from: 0, to: 9 })).toThrow(ApiError);
-    expect(() => fx.editPath("path_math", { op: "add", title: "  " })).toThrow(ApiError);
-    expect(() => fx.editPath("nope", { op: "remove", index: 0 })).toThrow(ApiError);
+    expect(() => fx.editPath("path_math", { op: "add", request_id: "test-intent", title: "  " })).toThrow(ApiError);
+    expect(() => fx.editPath("nope", { op: "remove", page_key: "missing" })).toThrow(ApiError);
   });
 
   it("bandOfShares: nearest score of the evidence; no evidence is none", () => {
@@ -123,7 +123,7 @@ describe("the fakes serve the graph (FakeWikiApi, DemoWikiApi)", () => {
       expect(parseGraph(await api.graph()).goals).toHaveLength(goals);
       expect((await api.splitNode("mul")).children).toEqual(["rc", "dim", "comm"]);
       expect(last((await api.wantNode("py", "map_math")).path).mine).toBe(true);
-      expect((await api.editPath("path_ml", { op: "remove", index: 0 })).path).toHaveLength(rows);
+      expect((await api.editPath("path_ml", { op: "remove", page_key: "path_ml_1" })).path).toHaveLength(rows);
       expect(api.calls.map((c) => c.method)).toEqual(["graph", "splitNode", "wantNode", "editPath"]);
     }
   });
@@ -133,7 +133,7 @@ describe("the fakes serve the graph (FakeWikiApi, DemoWikiApi)", () => {
     api.__budget(true);
     await expect(api.graph()).resolves.toBeTruthy();
     await expect(api.splitNode("mul")).rejects.toMatchObject({ status: 429 });
-    await expect(api.editPath("path_ml", { op: "remove", index: 0 })).resolves.toBeTruthy();
+    await expect(api.editPath("path_ml", { op: "remove", page_key: "path_ml_1" })).resolves.toBeTruthy();
   });
 });
 

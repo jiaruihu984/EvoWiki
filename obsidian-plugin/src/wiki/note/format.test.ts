@@ -80,9 +80,10 @@ describe("renderWikiNote (v2)", () => {
     expect(md).toContain("\n## 标题c\n\n正文c第一行\n\n正文c第二行\n\n```evowiki-check\npage: p_zscore\nsection: k\n```\n");
   });
 
-  it("check block: written also when folded (not counted in 折起), skipped for an id it cannot carry, hashed (R3.1)", () => {
+  it("check block: folded checks leave no placeholder, invalid ids are skipped, visible checks are hashed", () => {
     const folded = renderWikiNote(page({ sections: [sec("k", "check", { folded: true })] }), NOW).markdown;
-    expect(inner(folded)).toBe("```evowiki-check\npage: p_zscore\nsection: k\n```\n");
+    expect(inner(folded)).toBe("");
+    expect(folded).not.toContain("evowiki-check");
     expect(folded).not.toContain("折起");
     expect(folded).not.toContain("evowiki-known");
     for (const id of ["a b", "a`b", "a\nb", ""]) {

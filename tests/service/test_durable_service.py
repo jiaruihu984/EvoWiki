@@ -32,7 +32,7 @@ def durable_svc(services, db_url, pool):
 def test_lifespan_launches_dbos_organize_streams_and_the_run_row_is_done(durable_svc, pool):
     svc, script = durable_svc
     assert not dbos_app.launched()
-    with TestClient(create_app(svc)) as client:
+    with TestClient(create_app(svc), base_url="http://127.0.0.1") as client:
         assert dbos_app.launched()
         pid = new_page((client, script))
         script_page(script)
@@ -143,7 +143,7 @@ def test_lifespan_installs_the_assistant_and_a_turn_streams_on_dbos(durable_svc,
         at_launch["pages"] = page_flows._deps
         return real_launch(*args, **kw)
     monkeypatch.setattr(dbos_app, "launch", spy)
-    with TestClient(create_app(svc)) as client:
+    with TestClient(create_app(svc), base_url="http://127.0.0.1") as client:
         assert at_launch["turns"] is svc.assistant and at_launch["pages"] is not None
         assert turn_runs.installed() is svc.assistant
         sid = client.post("/assistant/sessions", json={"page_id": "p1"},
@@ -192,7 +192,7 @@ def test_lifespan_startup_sweeps_a_writing_row_and_hooks_may_call_sync_dbos(dura
     hooked: list[int] = []
     svc.durable.after_launch.append(lambda: hooked.append(len(DBOS.list_workflows(
         workflow_id_prefix="page:", load_input=False, load_output=False))))
-    with TestClient(create_app(svc)):
+    with TestClient(create_app(svc), base_url="http://127.0.0.1"):
         assert dbos_app.launched()
         # no workflow, older than the grace period: the sweep closed it as failed
         assert store.get(row.run_id).status == "failed"
@@ -206,6 +206,6 @@ def test_lifespan_a_raising_start_aborts_startup_with_the_original_error(durable
     def boom() -> None:
         raise ValueError("hook failed")
     svc.durable.after_launch.append(boom)
-    with pytest.raises(ValueError, match="hook failed"), TestClient(create_app(svc)):
+    with pytest.raises(ValueError, match="hook failed"), TestClient(create_app(svc), base_url="http://127.0.0.1"):
         pass
     assert not dbos_app.launched()

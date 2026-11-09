@@ -4,7 +4,7 @@ import { parseLocalSetup, type LocalSetupMetadata } from "./local-setup";
 
 export interface EvoWikiSettings {
   serverUrl: string; userId: string; allowSelectionContext: boolean;
-  /** Where EvoWiki notes go (each user's under <folder>/<user id>: wiki/user-folder.ts). Not an identity setting. */
+  /** Independent vault root for the active server/user identity. */
   notesFolder: string;
 }
 export const DEFAULT_SETTINGS: EvoWikiSettings =
@@ -30,6 +30,8 @@ export interface PluginData {
   bootstrapLanguage?: "zh" | "en";
   /** JSON [serverUrl, userId] → the actual managed background note path. */
   profilePaths?: Record<string, string>;
+  /** JSON [serverUrl, userId] → independent vault root; never evicted while its files exist. */
+  noteFolders?: Record<string, string>;
   localSetup?: LocalSetupMetadata;
   /** UI bookmark per identity; no credentials or authoritative service settings. */
   setupSteps?: Record<string, string>;
@@ -77,6 +79,7 @@ export function parsePluginData(text: string): Record<string, unknown> {
 export function loadPluginData(raw: unknown): PluginData {
   const r = obj(raw); const s = obj(r.settings);
   const profilePaths = recentStrings(r.profilePaths, MAX_PROFILE_BASES);
+  const noteFolders = recentStrings(r.noteFolders, Number.MAX_SAFE_INTEGER);
   const setupSteps = recentStrings(r.setupSteps, MAX_PROFILE_BASES);
   const localSetup = parseLocalSetup(r.localSetup);
   const settings: EvoWikiSettings = {
@@ -89,6 +92,7 @@ export function loadPluginData(raw: unknown): PluginData {
   return { settings, assistantSessions: recentStrings(r.assistantSessions, MAX_ASSISTANT_SESSIONS),
     ...(r.bootstrapLanguage === "zh" || r.bootstrapLanguage === "en" ? { bootstrapLanguage: r.bootstrapLanguage } : {}),
     ...(Object.keys(profilePaths).length ? { profilePaths } : {}),
+    ...(Object.keys(noteFolders).length ? { noteFolders } : {}),
     ...(localSetup ? { localSetup } : {}),
     ...(Object.keys(setupSteps).length ? { setupSteps } : {}),
     goalRuns: recentStrings(r.goalRuns, MAX_GOAL_RUNS),

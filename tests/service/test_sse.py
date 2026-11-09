@@ -76,7 +76,7 @@ def test_frames_are_event_and_utf8_json_data_lines_with_an_optional_id():
         yield event("token", {"text": "主成分"})
         yield event("done", {"ok": True}, id="m:1")
 
-    r = TestClient(_tiny_app(source)).get("/s")
+    r = TestClient(_tiny_app(source), base_url="http://127.0.0.1").get("/s")
     assert r.headers["content-type"].startswith("text/event-stream")
     assert r.text == ('event: token\ndata: {"text": "主成分"}\n\n'
                       'event: done\ndata: {"ok": true}\nid: m:1\n\n')
@@ -92,7 +92,7 @@ def test_a_silence_gets_keep_alive_comment_frames(monkeypatch):
         time.sleep(0.4)                  # a page write thinking
         yield event("done", {})
 
-    text = TestClient(_tiny_app(source)).get("/s").text
+    text = TestClient(_tiny_app(source), base_url="http://127.0.0.1").get("/s").text
     assert ": ping\n\n" in text
     assert [n for n, _ in parse_sse(text)] == ["planning", "done"]
 

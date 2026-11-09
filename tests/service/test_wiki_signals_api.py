@@ -185,3 +185,21 @@ def test_a_hand_edit_is_a_row_of_the_activity_log_and_its_undo_is_the_edits(wiki
         x["at"] for x in rows() if x["status"] == "personal_accepted"))
     assert client.post(f"/wiki/rsi/patches/{older['patch_id']}/undo", headers=H("u1")).status_code == 409
     assert body()["body"] == "又改了"
+
+
+@pytest.mark.parametrize("operation", ["delete", "edit"])
+def test_stale_hand_edit_version_has_machine_code_and_preserves_current_content(wiki, operation):
+    client, _ = wiki
+    pid = organized_page(wiki)
+    url = f"/wiki/pages/{pid}"
+    before = client.get(url, headers=H("u1")).json()
+    old = next(section for section in before["sections"] if section["id"] == "s3")["fingerprint"]
+    newer = {"section_id": "s3", "body": "NEWER CONTENT", "note_body": "NEWER CONTENT"}
+    assert client.post(f"{url}/hand-edit", headers=H("u1"), json={"sections": [newer], "summary": "new"}).status_code == 200
+    body = ({"removed": [{"section_id": "s3", "fingerprint": old}], "summary": "delete"}
+            if operation == "delete" else {"sections": [{**newer, "body": "stale", "fingerprint": old}], "summary": "edit"})
+    response = client.post(f"{url}/hand-edit", headers=H("u1"), json=body)
+    assert response.status_code == 409, response.text
+    assert response.json().get("code") == "hand_edit_stale", response.text
+    current = client.get(url, headers=H("u1")).json()
+    assert next(section for section in current["sections"] if section["id"] == "s3")["body"] == "NEWER CONTENT"

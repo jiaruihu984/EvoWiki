@@ -31,7 +31,7 @@ def client(services) -> TestClient:
     ledger.register(prompts.KIND, PromptOverrideExecutor(services.pool, services.clock))
     services.actions = ledger
     services.change_sources = (LedgerChangeSource(ledger),)
-    c = TestClient(create_app(services))
+    c = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(c, "u1")
     return c
 

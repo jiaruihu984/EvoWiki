@@ -208,11 +208,11 @@ describe("personal wiki wiring", () => {
     expect(reg.mock.calls.map((c) => c[0] as unknown)).toEqual(["evowiki-check"]);
     const processor = reg.mock.calls[0]![1] as (src: string, el: HTMLElement, ctx: { sourcePath: string; addChild(c: unknown): void }) => void;
     const other = document.createElement("div");
-    processor("page: p1\nsection: s5\n", other, { sourcePath: "EvoWiki/bob/Wiki/P.md", addChild: vi.fn() });
+    processor("page: p1\nsection: s5\n", other, { sourcePath: "EvoWiki (bob)/P.md", addChild: vi.fn() });
     expect(other.childElementCount).toBe(0);                      // another user's note: no block
     const el = document.createElement("div");
     const addChild = vi.fn();
-    processor("page: p1\nsection: s5\n", el, { sourcePath: "EvoWiki/me/Wiki/P.md", addChild });
+    processor("page: p1\nsection: s5\n", el, { sourcePath: "EvoWiki/P.md", addChild });
     expect(el.textContent).toBe("在这里答题");
     expect(addChild).toHaveBeenCalledOnce();
     const child = addChild.mock.calls[0]![0] as { unload(): void };
@@ -233,14 +233,14 @@ describe("personal wiki wiring", () => {
     const fn = (p as { app: { workspace: { onLayoutReady: ReturnType<typeof vi.fn> } } }).app.workspace.onLayoutReady;
     for (const c of fn.mock.calls) (c[0] as () => void)();
   };
-  it("the old-layout move failing on load is caught: a notice says so, notes go on (no unhandled rejection)", async () => {
+  it("claims the first account's flat root before starting synchronization", async () => {
     const r = loadRig({ settings: { serverUrl: "http://x", userId: "me", notesFolder: "EvoWiki" } });
-    Object.assign((r.p as unknown as { app: { vault: object } }).app.vault, { getAbstractFileByPath: () => { throw new Error("vault busy"); } });
     await r.p.onload();
     clearEwNotices();
     layoutReady(r.p);
     await (r.p as unknown as { folderReady: Promise<void> }).folderReady;
-    expect(ewNotices()).toEqual(["EvoWiki 没能挪进「EvoWiki/me」，还在原处。"]);
+    expect((r.p as unknown as { data: { noteFolders: Record<string, string> } }).data.noteFolders[JSON.stringify(["http://x", "me"])]).toBe("EvoWiki");
+    expect(ewNotices()).toEqual([]);
   });
 
   const regOf = (p: unknown) => (p as { registerMarkdownCodeBlockProcessor: ReturnType<typeof vi.fn> }).registerMarkdownCodeBlockProcessor;
@@ -283,8 +283,8 @@ describe("personal wiki wiring", () => {
 
   it("embedded-html: the vault file (found ignoring case, like the fetch check) in a sandboxed iframe; 取回 only for the real, online wiki", async () => {
     const r = loadRig({ settings: { serverUrl: "http://x", userId: "me", notesFolder: "EvoWiki" } });
-    const file = Object.assign(new TFile(), { path: "EvoWiki/me/Wiki/Assets/A1.html", name: "A1.html" });  // differs in case from the block's src
-    const tree = (files: TFile[]) => ({ children: [{ name: "EvoWiki", children: [{ name: "me", children: [{ name: "Wiki", children: [{ name: "Assets", children: files }] }] }] }] });
+    const file = Object.assign(new TFile(), { path: "EvoWiki/Assets/A1.html", name: "A1.html" });  // differs in case from the block's src
+    const tree = (files: TFile[]) => ({ children: [{ name: "EvoWiki", children: [{ name: "Assets", children: files }] }] });
     let exists = false;
     const on = vi.fn(() => ({}));
     Object.assign(r.p.app, { workspace: { getLeavesOfType: () => [], on, onLayoutReady: vi.fn(), getActiveFile: () => null },
@@ -295,7 +295,7 @@ describe("personal wiki wiring", () => {
     const processor = regOf(r.p).mock.calls[1]![1] as (src: string, el: HTMLElement, ctx: { sourcePath: string; addChild(c: unknown): void }) => void;
     const mount = () => {
       const el = document.createElement("div");
-      processor("type: embedded-html\nid: z-1\nsrc: assets/a1.html\ntitle: T\nheight: 400\n", el, { sourcePath: "EvoWiki/me/Wiki/P.md", addChild: vi.fn() });
+      processor("type: embedded-html\nid: z-1\nsrc: assets/a1.html\ntitle: T\nheight: 400\n", el, { sourcePath: "EvoWiki/P.md", addChild: vi.fn() });
       return el;
     };
     Object.assign(r.p, { conn: { state: "online" } });
@@ -377,7 +377,7 @@ describe("personal wiki wiring", () => {
 
   it("openIfExists with a locator (本页 jump): reads the note, reuses its open tab and scrolls there; else opens it at the line", async () => {
     const p = new EvoWikiPlugin(...([] as unknown as ConstructorParameters<typeof EvoWikiPlugin>));
-    const f = Object.assign(new TFile(), { path: "EvoWiki/me/Wiki/A.md" });
+    const f = Object.assign(new TFile(), { path: "EvoWiki/A.md" });
     const openFile = vi.fn(() => Promise.resolve()); const getLeaf = vi.fn(() => ({ openFile }));
     const setActiveLeaf = vi.fn();
     /** A MarkdownView (instanceof holds) showing `file`, recording the ephemeral states set on it. */
@@ -425,7 +425,7 @@ describe("personal wiki wiring", () => {
     const on = (r.p as unknown as { app: { workspace: { on: ReturnType<typeof vi.fn> } } }).app.workspace.on;
     const handler = (name: string) => on.mock.calls.find((c) => c[0] === name)![1] as (x: unknown) => void;
     const file = (path: string) => Object.assign(new TFile(), { path, extension: "md" });
-    const a = file("EvoWiki/me/Wiki/A.md"), b = file("EvoWiki/me/Wiki/B.md"), out = file("Notes/C.md");
+    const a = file("EvoWiki/A.md"), b = file("EvoWiki/B.md"), out = file("Notes/C.md");
     fm[a.path] = { evowiki_page_id: "p2" }; fm[b.path] = { evowiki_page_id: "p3" }; fm[out.path] = { evowiki_page_id: "p4" };
     const leaf = (f: TFile) => ({ view: Object.assign(Object.create(MarkdownView.prototype) as object, { file: f }) });
     const follow = vi.spyOn(WikiController.prototype, "followPage").mockResolvedValue(undefined);
@@ -510,7 +510,7 @@ describe("personal wiki wiring", () => {
 
   it("a wiki note opened while a write runs is followed once the write ends (final review I4)", async () => {
     const { handler, file, leaf, busy } = await followRig();
-    const a = file("EvoWiki/me/Wiki/A.md", "p2"), b = file("EvoWiki/me/Wiki/B.md", "p3"), c = file("EvoWiki/me/Wiki/C.md", "p4");
+    const a = file("EvoWiki/A.md", "p2"), b = file("EvoWiki/B.md", "p3"), c = file("EvoWiki/C.md", "p4");
     const out = file("Notes/X.md", null);
     const follow = vi.spyOn(WikiController.prototype, "followPage").mockResolvedValue(undefined);
     try {
@@ -538,7 +538,7 @@ describe("personal wiki wiring", () => {
 
   it("the hand edit's leave trigger: leaving an EvoWiki note checks it 2 s later; coming back first cancels; never the demo", async () => {
     const { handler, file, leaf, priv } = await followRig();
-    const a = file("EvoWiki/me/Wiki/A.md", "p2"), b = file("EvoWiki/me/Wiki/B.md", "p3"), out = file("Notes/C.md", null);
+    const a = file("EvoWiki/A.md", "p2"), b = file("EvoWiki/B.md", "p3"), out = file("Notes/C.md", null);
     const follow = vi.spyOn(WikiController.prototype, "followPage").mockResolvedValue(undefined);
     const left = vi.spyOn(WikiController.prototype, "noteLeft").mockResolvedValue(undefined);
     vi.useFakeTimers();
@@ -549,13 +549,13 @@ describe("personal wiki wiring", () => {
       vi.advanceTimersByTime(1999);
       expect(left).not.toHaveBeenCalled();
       vi.advanceTimersByTime(1);
-      expect(left.mock.calls).toEqual([["EvoWiki/me/Wiki/A.md", "p2"]]);
+      expect(left.mock.calls).toEqual([["EvoWiki/A.md", "p2"]]);
       handler("file-open")(b);                         // a plain note left: nothing due
       handler("file-open")(a);                         // left B …
       vi.advanceTimersByTime(1000);
       handler("file-open")(b);                         // … and back to B within 2 s: canceled (A is now due)
       vi.advanceTimersByTime(2000);
-      expect(left.mock.calls).toEqual([["EvoWiki/me/Wiki/A.md", "p2"], ["EvoWiki/me/Wiki/A.md", "p2"]]);
+      expect(left.mock.calls).toEqual([["EvoWiki/A.md", "p2"], ["EvoWiki/A.md", "p2"]]);
       priv.wikiDemo = true;
       handler("file-open")(out);                       // left B in demo mode: nothing sent
       vi.advanceTimersByTime(2000);
@@ -574,7 +574,7 @@ describe("personal wiki wiring", () => {
 
   it("an identity change drops a leave report still due (never sent to the new server / user)", async () => {
     const { handler, file, priv } = await followRig();
-    const a = file("EvoWiki/me/Wiki/A.md", "p2"), out = file("Notes/C.md", null);
+    const a = file("EvoWiki/A.md", "p2"), out = file("Notes/C.md", null);
     const follow = vi.spyOn(WikiController.prototype, "followPage").mockResolvedValue(undefined);
     const left = vi.spyOn(WikiController.prototype, "noteLeft").mockResolvedValue(undefined);
     vi.useFakeTimers();
@@ -597,7 +597,7 @@ describe("personal wiki wiring", () => {
 
   it("a wiki note opened while the demo is open is followed when 打开个人 Wiki leaves the demo", async () => {
     const { handler, file, priv } = await followRig();
-    const a = file("EvoWiki/me/Wiki/A.md", "p2");
+    const a = file("EvoWiki/A.md", "p2");
     const follow = vi.spyOn(WikiController.prototype, "followPage").mockResolvedValue(undefined);
     try {
       await priv.openWiki(true);
@@ -618,7 +618,7 @@ describe("personal wiki wiring", () => {
   it("closing the demo wiki's view leaves demo mode; closing the real one changes nothing (final review M8)", async () => {
     const { r, handler, file, leaf, priv } = await followRig();
     const factory = r.registerView.mock.calls.find((c) => c[0] === "evowiki-wiki")![1] as (l: unknown) => { onClose(): Promise<void> };
-    const a = file("EvoWiki/me/Wiki/A.md", "p2");
+    const a = file("EvoWiki/A.md", "p2");
     const follow = vi.spyOn(WikiController.prototype, "followPage").mockResolvedValue(undefined);
     try {
       priv.wikiDemo = true;

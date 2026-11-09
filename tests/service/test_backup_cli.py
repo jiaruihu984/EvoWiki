@@ -80,7 +80,7 @@ def test_pg_restore_keeps_ownership_and_grants_and_never_puts_password_in_argv(t
     seen = {}
 
     def fake_run(cmd, env, **_kwargs):
-        seen.update(cmd=cmd, env=env)
+        seen.update(cmd=cmd, env=env, service=Path(env["PGSERVICEFILE"]).read_text(encoding="utf-8"))
         return subprocess.CompletedProcess(cmd, 1, "", "rejected secret")
 
     monkeypatch.setattr(backup, "pg_dump_path", lambda: "D:/pg/bin/pg_dump.exe")
@@ -89,7 +89,7 @@ def test_pg_restore_keeps_ownership_and_grants_and_never_puts_password_in_argv(t
         cli._pg_restore("postgresql://postgres:secret@localhost:1234/new", tmp_path / "x.dump")
     assert "secret" not in str(exc.value) and "secret" not in " ".join(seen["cmd"])
     assert "--no-owner" not in seen["cmd"] and "--no-privileges" not in seen["cmd"]
-    assert "--exit-on-error" in seen["cmd"] and seen["env"]["PGPASSWORD"] == "secret"
+    assert "--exit-on-error" in seen["cmd"] and "password=secret" in seen["service"]
 
 
 @pytest.mark.parametrize("configured,path_tool,expected", [

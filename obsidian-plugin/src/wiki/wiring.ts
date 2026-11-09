@@ -34,7 +34,7 @@ import { userFolder } from "./note/user-folder";
 export interface WikiWiringDeps {
   app: App;
   settings: () => { serverUrl: string; userId: string; notesFolder: string };
-  /** Resolves once the old layout was moved into the user's folder (main.ts); notes are read and written only after. */
+  /** Resolves once the account root is ready (main.ts); notes are read and written only after. */
   folderReady?: () => Promise<void>;
   conn: WikiControllerDeps["conn"];
   http: WikiHttp;
@@ -70,8 +70,8 @@ export interface WikiWiringDeps {
   fixture?: { api: WikiApi; recommendations: readonly Recommendation[] };
   /** 学点新的 (main.ts: opens the 学点新的 tab with the topic). */
   learnNew?: (topic: string, start?: boolean) => void;
-  /** A goal's next block in the chat's run (main.ts); false: no run of that map here. */
-  continueGoal?: (mapId: string) => boolean;
+  /** Restores and continues a goal's run (main.ts), reporting failure through rejection. */
+  continueGoal?: WikiControllerDeps["continueGoal"];
   /** The file tree's 「正在写」 marks (main.ts owns it and disposes it on unload); absent = one made here. */
   treeMarker?: TreeMarker;
   /** Opens the file explorer down to a path (tests: a spy). Default: explorer-reveal.ts revealInExplorer. */
@@ -88,8 +88,8 @@ const DEMO_CONN: WikiControllerDeps["conn"] = {
   onChange: () => () => undefined,
 };
 
-/** P2: where the wiki notes live: the user's folder under the notes folder setting (user-folder.ts). */
-export const wikiNotesFolder = (s: { notesFolder: string; userId: string }): string => `${userFolder(s)}/Wiki`;
+/** P2: where the wiki notes live: the active account's independent notes root (user-folder.ts). */
+export const wikiNotesFolder = (s: { notesFolder: string; userId: string }): string => userFolder(s);
 
 /** The command T12 registers for the 设置 view (main.ts). */
 export const OPEN_SETTINGS_COMMAND = "evowiki:open-settings";
@@ -133,8 +133,8 @@ export function makeWikiController(d: WikiWiringDeps, demo: boolean): WikiContro
       ...(showSidebar ? { showSidebar } : {}), ...(askAssistant ? { askAssistant } : {}), ...(assistantSend ? { assistantSend } : {}),
       ...(assistantSendFresh ? { assistantSendFresh } : {}), ...(learnNew ? { learnNew } : {}) });
   }
-  // P2: the wiki notes live in <notes folder>/<user>/Wiki. Read per call, like the client's server URL and user id; never
-  // before the old layout was moved into the user's folder (main.ts).
+  // P2: the wiki notes live in the active account's notes root. Read per call, like the client's server URL and user id; never
+  // before the account root is ready (main.ts).
   const folder = async (): Promise<string> => { await d.folderReady?.(); return wikiNotesFolder(d.settings()); };
   const fixture = d.fixture;
   const marker = d.treeMarker ?? new TreeMarker();
@@ -203,7 +203,7 @@ export function makeWikiController(d: WikiWiringDeps, demo: boolean): WikiContro
 
 /**
  * Appendix A·6: the interactive asset fetcher, on its own real client (server URL and user id read per call) and the
- * vault (embed/assets.ts obsidianAssetStore: create never overwrites). It writes only `<notes>/Wiki/assets/<id>.html`.
+ * vault (embed/assets.ts obsidianAssetStore: create never overwrites). It writes only `<notes>/assets/<id>.html`.
  * The demo never gets one: it never writes the vault.
  */
 export function makeAssetFetcher(d: Pick<WikiWiringDeps, "app" | "settings" | "http" | "sse"> & { fixtureApi?: WikiApi },

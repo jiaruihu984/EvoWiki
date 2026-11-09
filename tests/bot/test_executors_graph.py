@@ -24,6 +24,7 @@ from evowiki.wikiapp.node_state import atomic_of
 from evowiki.wikiapp.path_order import shown
 from evowiki.wikiapp.repo import Commit, PgRepo, WikiConflict
 from evowiki.wikiapp.review import card_id, goal_concepts, review_today, sources
+from evowiki.wikiapp.revise import KIND as REVISE_KIND
 from tests.runtime.helpers import make_user
 from tests.wikiapp.partial_write_check import assert_partial_write
 from tests.wikiapp.script import Script
@@ -122,8 +123,8 @@ def go(env, kind, content, *, draft=None, seen=True, **kw):
 # --- scopes, levels, can_undo -----------------------------------------------------------------
 
 def test_every_kind_is_registered_with_the_scope_of_the_spec_table(env):
-    # profile_fact's and profile_forget's executors need the profile store: service/deps registers them
-    assert set(GRAPH_SCOPES) <= set(SCOPES) and set(SCOPES) - {PROFILE_FACT, FORGET_KIND, "memory_forget"} == set(env.ex)
+    # Profile, forgetting and whole-page revise executors are wired separately by service/deps.
+    assert set(GRAPH_SCOPES) <= set(SCOPES) and set(SCOPES) - {PROFILE_FACT, FORGET_KIND, "memory_forget", REVISE_KIND} == set(env.ex)
     for kind in ("card_new", "card_fix", "review_postpone"):
         assert SCOPES[kind] == ("suggestion",)
     assert SCOPES["rule"] == ("teaching_params",) and SCOPES["settings"] == ("preference",)

@@ -91,7 +91,7 @@ def test_the_password_never_reaches_a_message(tmp_path, monkeypatch):
     seen = {}
 
     def fake_run(cmd, env, **_kw):
-        seen.update(cmd=cmd, env=env)
+        seen.update(cmd=cmd, env=env, service=Path(env["PGSERVICEFILE"]).read_text(encoding="utf-8"))
         return subprocess.CompletedProcess(cmd, 1, "", 'FATAL: password "s3cret!" rejected for dbname=evowiki password=s3cret!')
 
     monkeypatch.setattr(backup, "pg_dump_path", lambda: "pg_dump")
@@ -99,7 +99,7 @@ def test_the_password_never_reaches_a_message(tmp_path, monkeypatch):
     with pytest.raises(BackupFailed) as e:
         backup._pg_dump(c, tmp_path / "x.part")
     assert "s3cret" not in str(e.value) and "***" in str(e.value)
-    assert "s3cret" not in " ".join(seen["cmd"]) and seen["env"]["PGPASSWORD"] == "s3cret!"
+    assert "s3cret" not in " ".join(seen["cmd"]) and "password=s3cret!" in seen["service"]
 
 
 def test_pg_dump_is_found_from_config_path_or_the_stable_copy_and_never_by_a_guess(tmp_path, monkeypatch):
@@ -362,3 +362,71 @@ def test_instances_with_separate_control_state_still_share_destination_lock(tmp_
             run_once(other, datetime(2026, 11, 1, tzinfo=UTC), dump)
         assert backup.status(other)["running"]
         assert not other.state_file.exists()
+
+
+@pytest.mark.parametrize("operation", ["dump", "restore"])
+def test_database_tools_preserve_all_libpq_options_without_password_argv(tmp_path, monkeypatch, operation):
+    import subprocess
+
+    import evowiki_backup
+    from psycopg.conninfo import make_conninfo
+
+    from evowiki.service import backup
+
+    options = {"host": "db.example", "hostaddr": "192.0.2.1", "port": "5433", "dbname": "archive",
+                   "user": "backup", "password": "fake-db-secret", "sslmode": "verify-full",
+                   "sslrootcert": "D:/证书/root.pem", "sslcert": "D:/cert/client.pem", "sslkey": "D:/cert/client.key",
+                   "sslpassword": "fake-key-secret", "options": "-c statement_timeout=4321",
+                   "keepalives_idle": "23", "application_name": "backup test"}
+    seen = {}
+    def fake_run(cmd, env, **kwargs):
+        assert "fake-db-secret" not in " ".join(cmd)
+        assert "fake-key-secret" not in " ".join(cmd)
+        if "PGSERVICEFILE" in env:
+            service = Path(env["PGSERVICEFILE"])
+            seen["service"] = service
+            content = service.read_text(encoding="utf-8")
+            seen["options"] = dict(line.split("=", 1) for line in content.splitlines() if "=" in line)
+        else:
+            seen["options"] = {"host": env.get("PGHOST"), "sslmode": env.get("PGSSLMODE")}
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+    monkeypatch.setattr(backup.subprocess, "run", fake_run)
+    monkeypatch.setenv("PGSSLMODE", "disable")
+    url = make_conninfo(**options)
+    if operation == "dump":
+        backup._pg_dump(BackupConfig(url, "archive", tmp_path, tmp_path / "state", pg_dump="pg_dump"), tmp_path / "x")
+    else:
+        evowiki_backup._pg_restore(url, tmp_path / "x", pg_dump="pg_dump")
+    assert seen["options"] == options
+    assert not seen["service"].exists()
+
+
+@pytest.mark.parametrize("operation", ["dump", "restore"])
+def test_database_tools_resolve_named_service_with_libpq(db_url, tmp_path, monkeypatch, operation):
+    import subprocess
+
+    import evowiki_backup
+    from psycopg.conninfo import conninfo_to_dict, make_conninfo
+
+    from evowiki.service import backup
+
+    source = tmp_path / "original-service.conf"
+    original = {**conninfo_to_dict(db_url), "application_name": "named-service-backup",
+                "options": "-c statement_timeout=4321", "password": "fake-test-password"}
+    source.write_text("[test_service]\n" + "".join(f"{k}={v}\n" for k, v in original.items()), encoding="utf-8")
+    monkeypatch.setenv("PGSERVICEFILE", str(source))
+    def fake_run(cmd, env, **kwargs):
+        path = Path(env["PGSERVICEFILE"])
+        assert path != source
+        values = dict(line.split("=", 1) for line in path.read_text(encoding="utf-8").splitlines() if "=" in line)
+        assert "service" not in values
+        assert values.items() >= original.items()
+        assert "fake-test-password" not in " ".join(cmd)
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+    monkeypatch.setattr(backup.subprocess, "run", fake_run)
+    url = make_conninfo(service="test_service")
+    if operation == "dump":
+        backup._pg_dump(BackupConfig(url, original["dbname"], tmp_path, tmp_path / "state", pg_dump="pg_dump"), tmp_path / "x")
+    else:
+        evowiki_backup._pg_restore(url, tmp_path / "x", pg_dump="pg_dump")
+    assert source.exists()

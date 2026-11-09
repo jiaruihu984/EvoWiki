@@ -182,10 +182,6 @@ def _reading_unit() -> str:
 
 
 
-def _deep(system: str) -> str:
-    return deep_agent._system(system, SimpleNamespace(language=LANG))  # type: ignore[arg-type]
-
-
 def _understand() -> str:
     ctx = understand.Context(page_id="page", title=TITLE,
                              sections=(("s1", "〈小节标题〉", "〈小节开头〉"),),
@@ -251,7 +247,7 @@ def steps() -> tuple[Step, ...]:
         # the writer outlines a page in its own loop (plan_page, stage 4): 列大纲 shows the outline
         # part of its first message
         Step("列大纲", (Call("deep.write", deep, "generator", _outline()),), (deep,)),
-        Step("写每一段", (Call("deep.write", deep, "generator", _deep(deep_agent.WRITE_SYSTEM)),),
+        Step("写每一段", (Call("deep.write", deep, "generator", deep_agent.WRITE_SYSTEM),),
              (deep,)),
         Step("出确认题", (
             Call("deep.write", deep, "generator", ""),

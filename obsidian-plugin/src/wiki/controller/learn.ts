@@ -165,6 +165,7 @@ export class Learning {
   async continueLearning(): Promise<void> {
     const step = todayStep(this.core.state);
     if (step !== null) await this.followStep(step);
+    else this.openLearnNew("");
   }
 
   /**
@@ -173,7 +174,17 @@ export class Learning {
    * block to enter or a diagnosis goes on in the chat's run of that goal (continueGoal). Nothing for goal_done / none.
    */
   async followStep(step: StepOut): Promise<void> {
-    if (this.core.disposed || this.core.state.busy) return;
+    if (this.core.disposed) return;
+    if (this.core.state.busy) { this.core.deps.notice?.(WIKI_COPY.reviewBlockedBusy); return; }
+    try { await this.performStep(step); }
+    catch (e) { if (!this.core.disposed) this.core.deps.notice?.(errorText(e)); }
+  }
+
+  private async performStep(step: StepOut): Promise<void> {
+    if (step.kind === "none" || step.kind === "goal_done") {
+      this.openLearnNew("");
+      return;
+    }
     if (step.page_id !== null && (step.kind === "read" || step.kind === "writing")) {
       if (step.map_id !== null) this.core.set({ pageGoal: { pageId: step.page_id, mapId: step.map_id } });
       await this.openPage(step.page_id);
@@ -189,12 +200,20 @@ export class Learning {
     if (step.kind === "start_page" && step.path_id !== null) {
       const ps = this.core.state.path;
       if (ps.pathId !== step.path_id || ps.view.kind !== "ready") await this.openPath(step.path_id);
-      if (this.core.disposed || this.core.state.path.view.kind !== "ready") return;
+      if (this.core.disposed) return;
+      if (this.core.state.path.view.kind !== "ready") {
+        const view = this.core.state.path.view;
+        this.core.deps.notice?.(view.kind === "error" ? view.message : WIKI_COPY.failed);
+        return;
+      }
       await this.pathNext();
       return;
     }
     if ((step.kind === "enter_block" || step.kind === "diagnosis") && step.map_id !== null) {
-      this.core.deps.continueGoal?.(step.map_id, step.region_id);
+      const err = this.core.blocked();
+      if (err) { this.core.deps.notice?.(err); return; }
+      if (!this.core.deps.continueGoal) throw new Error(WIKI_COPY.failed);
+      await this.core.deps.continueGoal(step.map_id, step.region_id);
     }
   }
 

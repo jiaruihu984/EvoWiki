@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { CheckBlockHub, mountCheckBlock, parseCheckBlock, renderCheckBlock } from "./check-block";
-import { firstPage, setup, until, view } from "./controller-test-kit";
+import { firstPage, newGoal, setup, until, view } from "./controller-test-kit";
 import { WIKI_COPY } from "./copy";
 import { btns } from "./render-test-kit";
 import { type CheckOut, IDK } from "./schema";
@@ -42,7 +42,7 @@ describe("renderCheckBlock without the question at hand", () => {
     expect(renderCheckBlock(SRC, c).textContent).toBe(WIKI_COPY.checkOpen); // nothing open
     await firstPage(c);
     const opened: string[] = [];
-    const go = renderCheckBlock("page: p9\nsection: s5", c, (id) => opened.push(id)) as HTMLButtonElement;
+    const go = renderCheckBlock("page: p9\nsection: s5", c, (id) => { opened.push(id); }) as HTMLButtonElement;
     expect(go.textContent).toBe(WIKI_COPY.checkOpen);
     go.click();
     expect(opened).toEqual(["p9"]);                 // one click, no trip to the sidebar
@@ -157,6 +157,90 @@ describe("marks edge cases (a fixed check on the open page)", () => {
 });
 
 describe("CheckBlockHub / mountCheckBlock", () => {
+  it("fully hides an explicitly mastered check, including its host, without an opener or empty card", async () => {
+    const { c } = await opened();
+    const p = view(c);
+    expect(p.page.sections.find((s) => s.id === "s5")!.cells.length).toBeGreaterThan(0);
+    const state: WikiState = { ...c.state, page: { ...p, kind: "open", page: { ...p.page,
+      sections: p.page.sections.map((s) => s.id === "s5" ? { ...s, cells: s.cells.map((cell) => ({ ...cell, declared: "know" as const })) } : s),
+    } } };
+    const hub = new CheckBlockHub();
+    hub.set({ state, subscribe: () => () => undefined, answerCheck: vi.fn() });
+    const host = document.createElement("div");
+    const dispose = mountCheckBlock(host, SRC, hub);
+    expect(host.hidden).toBe(true);
+    expect(host.textContent).toBe("");
+    expect(host.querySelector("button, .ew-check")).toBeNull();
+    dispose();
+  });
+
+  it("keeps an earlier note's question through the next page and a Markdown remount; answers its own page", async () => {
+    const { c, api, hub, el, stop } = await opened();
+    const stem = el.querySelector(".ew-stem")!.textContent;
+    await newGoal(c, "另一页");
+    const otherId = view(c).page.page_id;
+    const otherSections = (await api.getPage(otherId)).sections;
+    expect(otherId).not.toBe("p1");
+    expect(el.querySelector(".ew-stem")?.textContent).toBe(stem);
+    stop();
+    const remount = document.createElement("div");
+    const dispose = mountCheckBlock(remount, SRC, hub, (id) => c.followPage(id));
+    expect(remount.querySelector(".ew-stem")?.textContent).toBe(stem);
+    const start = api.calls.length;
+    options(remount)[1]!.click();
+    await until(() => c.state.busy === null && api.calls.slice(start).some((x) => x.method === "answerCheck"));
+    expect(api.calls.slice(start).filter((x) => x.method === "answerCheck").map((x) => x.args.slice(0, 3)))
+      .toEqual([["p1", "s5", 1]]);
+    expect((await api.getPage(otherId)).sections).toEqual(otherSections);
+    await until(() => remount.querySelectorAll(".ew-right").length === 1);
+    dispose();
+  });
+
+  it("does not submit a retained question if another page wins while its page is being opened", async () => {
+    const { c, api, hub } = await opened();
+    await newGoal(c, "另一页");
+    let release!: () => void;
+    const open = vi.fn(() => new Promise<void>((resolve) => { release = resolve; }));
+    const host = document.createElement("div");
+    const dispose = mountCheckBlock(host, SRC, hub, open);
+    const start = api.calls.length;
+    options(host)[0]!.click();
+    expect(open).toHaveBeenCalledWith("p1");
+    release();
+    await Promise.resolve();
+    expect(api.calls.slice(start).some((x) => x.method === "answerCheck")).toBe(false);
+    dispose();
+  });
+
+  it("keeps answered colours across page switches and clears retained questions when the controller changes", async () => {
+    const { c, hub, el } = await opened();
+    await c.answerCheck("s5", 1);
+    await newGoal(c, "另一页");
+    expect(el.querySelectorAll(".ew-right")).toHaveLength(1);
+    expect(options(el).every((b) => b.disabled)).toBe(true);
+    hub.set(setup().c);
+    expect(el.querySelector(".ew-check")).toBeNull();
+    expect(el.textContent).toBe(WIKI_COPY.checkOpen);
+  });
+
+  it("refreshes a rewritten question before answering and does not submit the old option to its replacement", async () => {
+    const { c, api, hub } = await opened();
+    await newGoal(c, "另一页");
+    const openPage = api.openPage.bind(api);
+    vi.spyOn(api, "openPage").mockImplementation(async (id, opts) => {
+      const page = await openPage(id, opts);
+      return { ...page, sections: page.sections.map((section) => section.id === "s5" && section.check !== null
+        ? { ...section, check: { ...section.check, artifact_id: "art_replaced", stem: "Updated question" } } : section) };
+    });
+    const host = document.createElement("div");
+    const dispose = mountCheckBlock(host, SRC, hub, (id) => c.followPage(id));
+    const start = api.calls.length;
+    options(host)[0]!.click();
+    await until(() => host.querySelector(".ew-stem")?.textContent === "Updated question");
+    expect(api.calls.slice(start).some((x) => x.method === "answerCheck")).toBe(false);
+    dispose();
+  });
+
   it("redraws when the controller arrives, changes or goes away; the cleanup stops redraws", async () => {
     const hub = new CheckBlockHub();
     const el = document.createElement("div");

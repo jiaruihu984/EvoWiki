@@ -560,11 +560,11 @@ describe("a goal confirmed in the chat goes on in the chat (D3a)", () => {
     const mapId = rig.ctl.goalRun("g1")!.mapId!;
     rig.ctl.show({ kind: "page", pageId: "pg_last", title: "分公母" });          // the block's last page is read
     expect(rig.ctl.state.conv!.key).not.toBe(key);
-    expect(rig.ctl.continueGoal(mapId)).toBe(true);
+    await rig.ctl.continueGoal(mapId);
     expect(rig.ctl.state.conv!.key).toBe(key);
     rig.ctl.show({ kind: "page", pageId: "pg_last", title: "分公母" });          // the panel re-reports the open page
     expect(rig.ctl.state.conv!.key).toBe(key);
-    expect(rig.ctl.continueGoal("map-other")).toBe(false);
+    await expect(rig.ctl.continueGoal("map-other")).rejects.toThrow();
     rig.dispose();
   });
 

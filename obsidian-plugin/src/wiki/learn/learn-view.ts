@@ -437,6 +437,23 @@ export class LearnView extends ItemView {
     }
   }
 
+  /** Reveal an existing node and its ancestors using reads only. Learning starts from its own button. */
+  async showGoalNode(mapId: string, nodeId: string): Promise<void> {
+    await this.showGoal(mapId);
+    const flow = this.flow;
+    if (flow?.state.map?.map_id !== mapId) return;
+    const node = nodeOf(flow.state.map, nodeId);
+    if (!node) { ewNotice(LEARN_COPY.errEnterGone); return; }
+    this.collapsedAt = null;
+    const reveal = node.path_id !== null || node.page_id !== null ? node : node.parent === null ? undefined : nodeOf(flow.state.map, node.parent);
+    if (reveal) await flow.showEntered(reveal.id, { draftId: null, pathId: null, pageId: null });
+    if (this.flow !== flow) return;
+    this.render();
+    const row = [...(this.els?.panel.querySelectorAll<HTMLElement>("[data-region], [data-part]") ?? [])]
+      .find((e) => e.dataset.region === nodeId || e.dataset.part === nodeId);
+    row?.scrollIntoView?.({ block: "nearest" });
+  }
+
   showRun(run: LearnRun): void {
     this.goalOpen++; this.pendingMap = null;
     if (this.els === null) { this.pendingRun = run; return; }
@@ -1173,6 +1190,7 @@ export class LearnView extends ItemView {
       const right = el("span", "act");
       if (asked) right.append(this.nodeAct(r, chain));
       const st = this.blockState(r), li = this.blockRow(k, r.name, r.level, r.scope, st, right);
+      li.dataset.region = r.id;
       if (chain.includes(r.id) || st === "asking") li.classList.add("ew-cur");
       if (asked) this.rowClick(li, r, chain);
       const sole = this.soleRow(r);

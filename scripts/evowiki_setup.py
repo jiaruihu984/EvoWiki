@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 from evowiki.llm.catalog import PROVIDERS, configured, model_specs
 from evowiki.llm.prices import load_prices
+from evowiki.service.backup import BackupBusy, _file_lock
 
 FIELDS = {"op", "expected_revision", "language", "provider", "api_key", "clear_key",
           "base_url", "model", "models", "prices_file", "forge_enabled", "backup_directory", "backup_keep"}
@@ -408,12 +409,8 @@ def handle(request: dict, root: Path = ROOT, control=runtime) -> dict:
                 run = root / ".evowiki-run"
                 run.mkdir(exist_ok=True)
                 lock = run / "setup.lock"
-                try:
-                    fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                except FileExistsError:
-                    raise SetupError("setup_busy") from None
-                try:
-                    os.close(fd)
+                with _file_lock(lock):
+                    ensure_integrity(root)
                     if (path.read_bytes() if path.exists() else b"") != raw:
                         raise SetupError("revision_conflict", "expected_revision")
                     payload = render(raw, updates)
@@ -445,11 +442,11 @@ def handle(request: dict, root: Path = ROOT, control=runtime) -> dict:
                     marker.unlink()
                     response.update(revision=revision(payload), **summary(new))
                     response["restart"] = control(root, "restart") if restart["state"] == "running" else restart
-                finally:
-                    lock.unlink()
             else:
                 response.update(**summary(new))
         response.update(ok=True, code="ok")
+    except BackupBusy:
+        response.update(code="setup_busy", errors=[{"field": "configuration", "code": "setup_busy"}])
     except SetupError as exc:
         response.update(code=exc.code, errors=[{"field": exc.field, "code": exc.code}])
         if exc.field == "restart":

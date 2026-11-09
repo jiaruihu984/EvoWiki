@@ -73,7 +73,7 @@ describe("GraphStore", () => {
     const before = store.state.graph!.goals[0]!.path;
     store.setPath("path_ml", before.slice(1));
     expect(store.state.graph!.goals[0]!.path).toHaveLength(8);
-    await store.editPath("path_ml", { op: "remove", index: 0 });
+    await store.editPath("path_ml", { op: "remove", page_key: "path_ml_1" });
     expect(store.state.graph!.goals[0]!.path.map((p) => p.title)).toEqual(before.slice(1).map((p) => p.title));
     expect(store.state.graph!.goals[1]!.path).toHaveLength(4);
   });

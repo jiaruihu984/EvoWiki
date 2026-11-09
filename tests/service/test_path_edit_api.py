@@ -34,12 +34,12 @@ def test_edits_move_remove_add(seeded):
     assert set(r.json()["path"][0]) == {"key", "title", "summary", "question", "node_ids", "status",
                                         "skipped", "mine", "page_id", "trashed", "skippable",
                                         "opened", "sections", "exam", "state", "progress"}
-    r = post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "remove", "index": 1})
+    r = post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "remove", "page_key": f"{PATH_ID}-p1"})
     assert [i["key"] for i in r.json()["path"]] == [f"{PATH_ID}-p3", f"{PATH_ID}-p2"]
-    r = post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "title": "贝叶斯",
+    r = post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "request_id": "api-test-1", "title": "贝叶斯",
                                                       "node_id": "n5"})
     assert r.status_code == 200 and r.json()["path"][-1]["mine"] is True
-    r = post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "title": "读一篇综述"})
+    r = post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "request_id": "api-test-2", "title": "读一篇综述"})
     assert len(r.json()["path"][-1]["node_ids"]) == 1               # a node of its own (D34)
     got = client.get(f"/wiki/paths/{PATH_ID}", headers=H("u1")).json()
     assert [p["index"] for p in got["pages"]] == [3, 2, 4, 5]       # stored indices, shown order
@@ -47,15 +47,15 @@ def test_edits_move_remove_add(seeded):
 
 def test_edit_errors(seeded):
     client, _ = seeded
-    assert post(client, "/wiki/paths/path-nope/edits", {"op": "remove", "index": 0}) \
+    assert post(client, "/wiki/paths/path-nope/edits", {"op": "remove", "page_key": "missing"}) \
         .status_code == 404
-    assert post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "remove", "index": 7}) \
+    assert post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "remove", "page_key": "missing"}) \
         .status_code == 422
     assert post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "jump", "index": 0}) \
         .status_code == 422
-    assert post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "title": " "}) \
+    assert post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "request_id": "api-test-3", "title": " "}) \
         .status_code == 422
-    assert post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "title": "x",
+    assert post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "request_id": "api-test-4", "title": "x",
                                                          "node_id": "zz"}).status_code == 404
 
 
@@ -70,7 +70,7 @@ def test_want(seeded):
 def test_replan_needs_a_gateway_and_keeps_edits(seeded):
     client, services = seeded
     assert post(client, f"/wiki/paths/{PATH_ID}/replan").status_code == 503
-    post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "remove", "index": 1})
+    post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "remove", "page_key": f"{PATH_ID}-p2"})
     s = Script()
     services.gateway = s.gateway()
     s.push("goals.path", {"pages": [
@@ -91,11 +91,11 @@ SPLIT_ANSWER = {"parts": [
 
 def test_add_at_index_and_split_row_with_undo(seeded):
     client, services = seeded
-    r = post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "title": "插入", "to_index": 1})
+    r = post(client, f"/wiki/paths/{PATH_ID}/edits", {"op": "add", "request_id": "api-test-5", "title": "插入", "to_index": 1})
     assert r.status_code == 200 and r.json()["path"][1]["title"] == "插入"
     assert r.json()["undo"] is None
     assert post(client, f"/wiki/paths/{PATH_ID}/edits",
-                {"op": "add", "title": "x", "to_index": 99}).status_code == 422
+                {"op": "add", "request_id": "api-test-6", "title": "x", "to_index": 99}).status_code == 422
     row = f"/wiki/paths/{PATH_ID}/rows/{PATH_ID}-p2/split"
     assert post(client, row).status_code == 503                      # no gateway
     s = Script()
@@ -162,7 +162,7 @@ def test_unremove_puts_a_removed_row_back_where_it_was_and_refuses_others(seeded
     client, _ = seeded
     url = f"/wiki/paths/{PATH_ID}/edits"
     before = [i["key"] for i in post(client, url, {"op": "move", "from": 2, "to": 0}).json()["path"]]
-    gone = post(client, url, {"op": "remove", "index": 1}).json()["path"]
+    gone = post(client, url, {"op": "remove", "page_key": f"{PATH_ID}-p1"}).json()["path"]
     assert len(gone) == 2
     r = post(client, url, {"op": "unremove", "page_key": before[1]})
     assert r.status_code == 200, r.text

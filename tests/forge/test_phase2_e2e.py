@@ -179,7 +179,7 @@ class Crash(BaseException):
 
 
 def test_assistant_request_tool_story(services, tmp_path, monkeypatch):  # noqa: F811
-    client = TestClient(create_app(services))
+    client = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(client, "u1")
     repo, ids = PgRepo(services.pool), Ids()
     pid = organized((repo, Script(), ids))

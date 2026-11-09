@@ -688,7 +688,7 @@ def test_a_page_he_adds_is_a_point_under_the_block(env):
     stop(env, res.draft.draft_id)
     push_pages(s, ["c5"], ["c6"])
     out = enter_region(repo, gw(env), "u1", res.draft.map_id, PR, now=NOW, new_id=ids)
-    edit_path(repo, "u1", out.path_id, PathAddIn(op="add", title="我加的一页"), now=NOW, new_id=ids)
+    edit_path(repo, "u1", out.path_id, PathAddIn(op="add", request_id="test-1", title="我加的一页"), now=NOW, new_id=ids)
     graph = state(env).graph
     added = next(n for n in graph.nodes if n.name == "我加的一页")
     assert graph.parents(added.id) == (PR,) or list(graph.parents(added.id)) == [PR]

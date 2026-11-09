@@ -530,7 +530,7 @@
   "wiki.copy.WIKI_COPY.handEditRefused.79": "Changes were not saved to EvoWiki: {{v0}}. Your note text is still intact.",
   "wiki.copy.WIKI_COPY.handEditRestore.80": "Restore EvoWiki's version",
   "wiki.copy.WIKI_COPY.handEditKeep.81": "Keep my version",
-  "wiki.copy.WIKI_COPY.handEditStaleMark.82": "Changed on the server",
+  "wiki.copy.WIKI_COPY.handEditVersionUnknown": "Unable to confirm this section’s version. Reopen the page and try again",
   "wiki.copy.WIKI_COPY.sectionTag.83": "Updated",
   "wiki.copy.WIKI_COPY.noticeUndone.84": "Restored the previous version",
   "wiki.copy.WIKI_COPY.feedbackPageGone.85": "This page is no longer available.",

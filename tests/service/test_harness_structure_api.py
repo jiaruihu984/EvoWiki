@@ -18,7 +18,7 @@ STEP = {"at": "deep.before_write", "kind": "delegate", "tier": "fast", "tools": 
 
 @pytest.fixture
 def client(services) -> TestClient:
-    c = TestClient(create_app(services))
+    c = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(c, "u1")
     return c
 

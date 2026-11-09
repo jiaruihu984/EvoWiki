@@ -258,7 +258,7 @@ describe("unknown section headings in result lines (controller ruling)", () => {
 });
 
 describe("a hand edit goes up before the sync writes the note", () => {
-  const NOTE = "EvoWiki/Wiki/p1.md";
+  const NOTE = "EvoWiki/p1.md";
   const EDIT = { sections: [{ section_id: "s1", body: "我改的。", note_body: "我改的。" }], removed: [], summary: "【公式】\n删：a\n加：b" };
   const sends = (s: Setup) => s.api.calls.filter((x) => x.method === "handEdit");
   const settle = async (): Promise<void> => { for (let i = 0; i < 5; i++) await flush(); };
@@ -336,6 +336,53 @@ describe("a hand edit goes up before the sync writes the note", () => {
     await until(() => s.c.endBlockState("p1").handFailed === null);
   });
 
+
+  it.each([false, true])("deletion conflict preserves the note; explicit choice checks the latest version (changed again: %s)", async (changedAgain) => {
+    const s = setup(); await firstPage(s.c); await settle();
+    const deletion = { sections: [], removed: [{ section_id: "s1", fingerprint: "old" }], summary: "delete" };
+    s.sync.hand = { path: NOTE, text: "my deletion", plan: { kind: "ok", edit: deletion } };
+    let version = "current", changeAfterRead = false;
+    const get = s.api.getPage.bind(s.api);
+    vi.spyOn(s.api, "getPage").mockImplementation(async (id) => {
+      const page = await get(id), seen = version;
+      if (changeAfterRead) { version = "newer again"; changeAfterRead = false; }
+      return { ...page, sections: page.sections.map((section) => ({ ...section, fingerprint: seen })) };
+    });
+    const original = s.api.handEdit.bind(s.api);
+    const send = vi.spyOn(s.api, "handEdit").mockImplementation(async (id, body) => {
+      if (body.removed?.[0]?.fingerprint !== version) throw new ApiError(409, "Current server version differs", "hand_edit_stale");
+      return original(id, body);
+    });
+    const accepted = s.sync.accepted.length;
+    await s.c.pageEditedElsewhere("p1"); await settle();
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(s.sync.accepted.slice(accepted).every((text) => text === undefined)).toBe(true);
+    expect(s.c.endBlockState("p1").handFailed?.conflict).toBe(true);
+    changeAfterRead = changedAgain;
+    await s.c.keepMine("p1"); await settle();
+    expect(send.mock.calls[1]![1].removed).toEqual([{ section_id: "s1", fingerprint: "current" }]);
+    if (changedAgain) {
+      expect(s.sync.accepted.slice(accepted).every((text) => text === undefined)).toBe(true);
+      expect(s.c.endBlockState("p1").handFailed?.conflict).toBe(true);
+    } else {
+      expect(s.sync.accepted).toContain("my deletion");
+      expect(view(s.c).page.sections.some((section) => section.id === "s1")).toBe(false);
+    }
+  });
+
+
+  it.each([
+    new ApiError(409, "Page is still being written", "wiki_conflict"),
+    new ApiError(409, "服务器上改过"),
+  ])("other conflicts do not offer overwrite, even if the detail resembles a stale edit: %s", async (error) => {
+    const s = setup();
+    s.sync.hand = { path: NOTE, text: "the note", plan: { kind: "ok", edit: EDIT } };
+    s.api.failNext("handEdit", error);
+    await firstPage(s.c); await settle();
+    expect(s.c.endBlockState("p1").handFailed?.conflict).toBe(false);
+    expect(s.sync.accepted.every((text) => text === undefined)).toBe(true);
+  });
+
   it("the server refuses (409): the same line with its reason; the note stays", async () => {
     const s = setup();
     s.sync.hand = { path: NOTE, text: "the note", plan: { kind: "ok", edit: EDIT } };
@@ -343,6 +390,7 @@ describe("a hand edit goes up before the sync writes the note", () => {
     await firstPage(s.c);
     await until(() => s.notices.length === 1);
     expect(s.notices[0]).toContain("这一段已经不在这一页了");
+    expect(s.c.endBlockState("p1").handFailed?.conflict).toBe(false);
     expect(s.sync.accepted.every((x) => x === undefined)).toBe(true);
   });
 

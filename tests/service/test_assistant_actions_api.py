@@ -28,7 +28,7 @@ class FakeAssistant:
 
 def client():
     a = FakeAssistant()
-    return TestClient(create_app(SimpleNamespace(assistant=a))), a
+    return TestClient(create_app(SimpleNamespace(assistant=a)), base_url="http://127.0.0.1"), a
 
 
 def test_known_confirm_routes_never_send_the_answer():

@@ -14,7 +14,7 @@ import { reviewFirstRow, type ReviewFirstChoice } from "../review-first";
 import type { ReviewFirstOut } from "../schema";
 import { endModel } from "./model";
 import { renderCheckBlock } from "../check-block";
-import { isGoalCheck } from "../goal-checks";
+import { isGoalCheck, isMasteredCheck } from "../goal-checks";
 import { tr } from "../../i18n/index";
 
 /** What the block calls: WikiController satisfies it. */
@@ -119,10 +119,11 @@ export function createEndBlock(pageId: string, hub: EndHub): EndBlock {
       startChecks.disabled = m.blocked !== null;
       b.append(startChecks);
     } else startChecks.remove();
-    checks.replaceChildren(...questions.map((section) => renderCheckBlock(
+    const visibleQuestions = questions.filter((section) => !isMasteredCheck(section) && !section.folded && !(page.kind === "open" && page.page.collapsed && !section.pinned));
+    checks.replaceChildren(...visibleQuestions.map((section) => renderCheckBlock(
       `page: ${pageId}\nsection: ${section.id}`, src,
     )));
-    if (questions.length > 0) b.append(checks); else checks.remove();
+    if (visibleQuestions.length > 0) b.append(checks); else checks.remove();
   }
   update();
   return { el: host, update };

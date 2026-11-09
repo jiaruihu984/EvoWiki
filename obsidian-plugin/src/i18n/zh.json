@@ -530,7 +530,7 @@
   "wiki.copy.WIKI_COPY.handEditRefused.79": "改动没有写入 EvoWiki：{{v0}}。笔记里的文字都还在。",
   "wiki.copy.WIKI_COPY.handEditRestore.80": "恢复 EvoWiki 的版本",
   "wiki.copy.WIKI_COPY.handEditKeep.81": "保留我的版本",
-  "wiki.copy.WIKI_COPY.handEditStaleMark.82": "服务器上改过",
+  "wiki.copy.WIKI_COPY.handEditVersionUnknown": "无法确认这一节的版本，请重新打开页面",
   "wiki.copy.WIKI_COPY.sectionTag.83": "已更新",
   "wiki.copy.WIKI_COPY.noticeUndone.84": "已恢复到修改前的版本",
   "wiki.copy.WIKI_COPY.feedbackPageGone.85": "这一页已经不在了。",

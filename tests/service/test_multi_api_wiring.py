@@ -23,7 +23,7 @@ def test_deleted_default_key_can_be_repaired_by_explicitly_selecting_another_ava
     svc = build_services(env, clock=FixedClock(T0))
     try:
         svc.durable = None  # No workflow is invoked; retain the real memory-reconciliation gate.
-        with TestClient(create_app(svc)) as client:
+        with TestClient(create_app(svc), base_url="http://127.0.0.1") as client:
             signup(client, "learner", lang="en")
             account = Account(user_id="learner", group="assistant")
             with pytest.raises(ValueError, match="默认模型"):

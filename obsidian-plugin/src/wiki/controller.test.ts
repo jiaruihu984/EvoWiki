@@ -5,7 +5,7 @@ import { WIKI_COPY } from "./copy";
 import { firstPage, flush, methods, newGoal, setup, until, view } from "./controller-test-kit";
 import { FakeWikiApi } from "./fake";
 import { PCA_GOAL } from "./fixtures";
-import type { OrganizeEvent, PageOut } from "./schema";
+import type { OrganizeEvent, PageOut, StepOut } from "./schema";
 import { noteSyncLine } from "./state";
 
 describe("init / settings", () => {
@@ -256,6 +256,50 @@ describe("organize stream", () => {
 });
 
 describe("open page", () => {
+  const blockStep: StepOut = { kind: "enter_block", goal_id: "m1", goal: "化学", map_id: "m1", region_id: "r2",
+    region_name: "酸碱", path_id: null, index: null, page_id: null, title: "", draft_id: null, progress: null, failure: null, review_first: null };
+
+  it("continuing a block awaits its restored goal run and preserves the requested region", async () => {
+    let release!: () => void;
+    const waiting = new Promise<void>((resolve) => { release = resolve; });
+    const calls: unknown[] = [];
+    const { c } = setup({ continueGoal: async (...args) => { calls.push(args); await waiting; } });
+    let finished = false;
+    const next = c.followStep(blockStep).then(() => { finished = true; });
+    await Promise.resolve();
+    expect(calls).toEqual([["m1", "r2"]]);
+    expect(finished).toBe(false);
+    release();
+    await next;
+    expect(finished).toBe(true);
+  });
+
+  it("a failed continuation reports its error, and offline continuation sends nothing", async () => {
+    let calls = 0;
+    const { c, notices, conn } = setup({ continueGoal: () => { calls++; return Promise.reject(new Error("无法恢复学习目标")); } });
+    await c.followStep(blockStep);
+    expect(notices).toEqual([WIKI_COPY.failed]);
+    conn.state = "offline";
+    await c.followStep(blockStep);
+    expect(calls).toBe(1);
+    expect(notices[notices.length - 1]).toBe(WIKI_COPY.offline);
+  });
+
+  it("continuing while another write is running gives a visible busy reason", async () => {
+    const { c, notices } = setup();
+    c.state.busy = { what: "organize", abortable: true };
+    await c.followStep(blockStep);
+    expect(notices).toEqual([WIKI_COPY.reviewBlockedBusy]);
+  });
+
+  it("continuing without another page opens 学点新的, including completed server steps", async () => {
+    const { c, learned } = setup();
+    await c.continueLearning();
+    await c.followStep({ ...blockStep, kind: "none" });
+    await c.followStep({ ...blockStep, kind: "goal_done" });
+    expect(learned).toEqual(["", "", ""]);
+  });
+
   it("switching pages: the older result never lands", async () => {
     const { opened, c } = setup();
     await firstPage(c);

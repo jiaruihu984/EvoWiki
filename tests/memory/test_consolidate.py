@@ -540,3 +540,74 @@ def test_what_the_turns_remember_tool_wrote_gets_no_card():
     assert _already_landed(cand("about_me", "计算机专业大三学生"), ev, entries)     # another order
     assert not _already_landed(cand("about_me", "每周跑三次步"), ev, entries)        # the message's other fact
     assert not _already_landed(cand("preference", "计算机专业大三学生"), ev, entries)
+
+
+@pytest.mark.parametrize("forget_during_guard", [False, True])
+def test_pending_retry_respects_fact_forget_until_undo(pool, tmp_path, forget_during_guard):
+    from evowiki.bot.actions import ActionLedger
+    from evowiki.memory.forget_fact import KIND, MemoryForgetExecutor
+    from evowiki.memory.lander import S3PreferenceLander
+    from evowiki.wikiapp.preferences import land_preference
+    from tests.assistant.test_stated_preferences import prefs_env
+
+    env = prefs_env(pool)
+    w = World.__new__(World)
+    w.tmp_path, w.sessions, w.mem, w.ids = tmp_path, PgSessionStore(pool), PgMemoryStore(pool), count(1)
+    _session(w.sessions, "s1", "u1", TURNS)
+    if not forget_during_guard:
+        w.run([PREF])
+    w.mem.upsert_episode(Episode(user_id="u1", session_id="s1", message_id="m3",
+        answer_message_id="a3", trace_run_id="test", turn_index=2, page_id="p1", at=T,
+        user_text=TURNS[2][1], answer_text=TURNS[2][3]))
+    ledger = ActionLedger(pool, lambda: T, lambda p: p + "forget", {})
+    ledger.register(KIND, MemoryForgetExecutor(pool, w.mem, ledger, lambda: T))
+    row = ledger.propose("u1", kind=KIND, scope="suggestion", source="assistant",
+        summary="忘掉符号", why="requested", content={"words": ["符号"], "quote": "忘掉符号"},
+        key="forget", level="ask")
+    lander = S3PreferenceLander(land_preference, env.repo, lambda: T, env.ids)
+    if forget_during_guard:
+        class ForgetGuard:
+            def check(self, user_id, content, scope):
+                ledger.approve("u1", row.action_id)
+        w.run([PREF], lander=lander, guard=ForgetGuard())
+    else:
+        ledger.approve("u1", row.action_id)
+    def retry():
+        return retry_pending_landings(w.mem, w.sessions, lander, "u1", T,
+                                      lambda p: f"{p}retry{next(w.ids)}")
+    assert retry() == 0
+    assert not [r for r in env.rows() if r.kind == "rule"]
+    assert not w.mem.items("u1")
+    ledger.undo("u1", row.action_id)
+    assert retry() == 1
+    assert retry() == 0
+    assert len([r for r in env.rows() if r.kind == "rule"]) == 1
+    assert len(w.mem.items("u1")) == 1
+
+
+def test_overlapping_fact_forgets_keep_waiting_rule_rejected(pool, tmp_path):
+    from evowiki.bot.actions import ActionLedger
+    from evowiki.memory.forget_fact import KIND, MemoryForgetExecutor
+    from evowiki.memory.lander import S3PreferenceLander
+    from evowiki.wikiapp.preferences import land_preference
+    from tests.assistant.test_stated_preferences import prefs_env
+
+    env = prefs_env(pool)
+    w = World.__new__(World)
+    w.tmp_path, w.sessions, w.mem, w.ids = tmp_path, PgSessionStore(pool), PgMemoryStore(pool), count(1)
+    _session(w.sessions, "s1", "u1", TURNS)
+    w.run([PREF], lander=S3PreferenceLander(land_preference, env.repo, lambda: T, env.ids))
+    [card] = [r for r in env.rows() if r.kind == "rule"]
+    ledger = ActionLedger(pool, lambda: T, lambda p: f"{p}{next(w.ids)}", {})
+    ledger.register(KIND, MemoryForgetExecutor(pool, w.mem, ledger, lambda: T))
+    acts = []
+    for word in ("符号", "数学"):
+        row = ledger.propose("u1", kind=KIND, scope="suggestion", source="assistant",
+            summary="忘掉", why="requested", content={"words": [word], "quote": "忘掉"},
+            key=f"forget-{word}", level="ask")
+        ledger.approve("u1", row.action_id)
+        acts.append(row.action_id)
+    ledger.undo("u1", acts[0])
+    assert ledger.get("u1", card.action_id).status == "rejected"
+    ledger.undo("u1", acts[1])
+    assert ledger.get("u1", card.action_id).status == "proposed"

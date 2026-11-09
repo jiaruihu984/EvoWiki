@@ -7,6 +7,7 @@ function harness(initial: Partial<EvoWikiSettings> = {}) {
   const log: string[] = [];
   const deps = {
     get: () => current,
+    prepare: vi.fn((s: EvoWikiSettings) => Promise.resolve(s)),
     save: vi.fn((s: EvoWikiSettings) => { log.push(`save ${s.serverUrl} ${s.userId}`); current = s; return Promise.resolve(); }),
     reinit: vi.fn(() => { log.push(`reinit ${current.serverUrl} ${current.userId}`); return Promise.resolve(); }),
   };
@@ -78,4 +79,14 @@ it("normalizes the directory once for all settings entry points", async () => {
   const { u, now } = harness({ notesFolder: "Saved/Notes" });
   await u.update({ notesFolder: " Study//New/ " });
   expect(now().notesFolder).toBe("Study/New");
+});
+it("persists the resolved account root and never switches identity when resolution fails", async () => {
+  const { u, deps, now } = harness();
+  deps.prepare.mockResolvedValueOnce({ ...DEFAULT_SETTINGS, userId: "bob", notesFolder: "EvoWiki (bob)" });
+  await u.update({ userId: "bob" });
+  expect(now().notesFolder).toBe("EvoWiki (bob)");
+  deps.prepare.mockRejectedValueOnce(new Error("account folders overlap"));
+  await expect(u.update({ userId: "charlie" })).rejects.toThrow("overlap");
+  expect(now().userId).toBe("bob");
+  expect(deps.save).toHaveBeenCalledOnce();
 });

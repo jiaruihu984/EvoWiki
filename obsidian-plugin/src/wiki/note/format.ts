@@ -366,12 +366,12 @@ export const checkBlockLines = (pageId: string, sid: string): string[] =>
 
 /**
  * A folded section is a default-folded `evowiki-known` callout: the cue (or, without one, the heading) is its title and
- * the section text is inside. A check section is always its code block (it has no text to fold).
+ * the section text is inside. A hidden check leaves no block or placeholder.
  */
 export function sectionLines(pageId: string, s: WikiNoteSection, sources: PageSourceOut[] = []): string[] {
   // Completion checks are drawn below the footer, outside the editable note body.
   if (isGoalCheck(s)) return [];
-  if (s.role === "check") return checkBlockLines(pageId, s.id);
+  if (s.role === "check") return s.folded ? [] : checkBlockLines(pageId, s.id);
   const heading = oneLine(s.heading);
   // A hand edit shows exactly as it was typed (note/hand-edit.ts).
   const typed = s.noteBody ?? null;

@@ -423,7 +423,7 @@ def client(repo, tmp_path, script):
     deps = TurnDeps(gateway=gw, tools=WikiTools(repo), store=MemorySessionStore(),
                     data=WikiData(repo, clock), new_id=Ids(), clock=clock)
     svc = AssistantService(deps, applier(repo))
-    return TestClient(create_app(SimpleNamespace(assistant=svc)))
+    return TestClient(create_app(SimpleNamespace(assistant=svc)), base_url="http://127.0.0.1")
 
 
 def proposal(c, pid):
@@ -453,7 +453,8 @@ def test_accept_over_http_applies_or_reports_the_reason(env, page, tmp_path):
     assert p.texts[out["applied"][0]].body == "z=-1 表示比均值低一个标准差。"
 
     bad = proposal(c, page)
-    hand_edit_flow(repo, "u1", page, HandEditIn(removed=["s3"], summary="删了"), now=NOW, new_id=env[2])
+    from tests.wikiapp.test_hand_edit import removed
+    hand_edit_flow(repo, "u1", page, HandEditIn(removed=removed(env, page, ["s3"]), summary="删了"), now=NOW, new_id=env[2])
     out = c.post(f"/assistant/proposals/{bad}/accept", headers=U1).json()
     assert out == {"proposal_id": bad, "status": "failed", "applied": [], "detail": "没有这一段：s3",
                    "action_id": "", "can_undo": False}

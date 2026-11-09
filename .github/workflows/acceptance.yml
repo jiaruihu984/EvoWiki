@@ -81,6 +81,15 @@ jobs:
           --log-level=WARNING --allow-hosts=127.0.0.1
       - name: Plugin lint
         run: npm run lint --prefix obsidian-plugin
+      - name: Audit regression checks
+        run: >-
+          uv run pytest
+          tests/wikiapp/test_hand_edit.py tests/wikiapp/test_path_edits.py
+          tests/service/test_wiki_signals_api.py tests/service/test_path_edit_api.py
+          tests/memory/test_consolidate.py tests/assistant/test_forget_fact_prompt.py
+          tests/scripts/test_evowiki_setup.py tests/service/test_backup.py
+          tests/service/test_backup_cli.py tests/service/test_request_boundary.py tests/service/test_sse.py
+          -p no:cacheprovider -rA --tb=short --disable-socket --allow-hosts=127.0.0.1
       # This fails the job/PR check. Requiring this job in branch protection is a repository setting.
       # On master compare with the previous commit, since origin/master already points at HEAD.
       - name: Merge checks

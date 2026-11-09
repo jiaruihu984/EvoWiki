@@ -39,7 +39,7 @@ def client(services) -> TestClient:
     ledger.register(prompts.KIND, PromptOverrideExecutor(services.pool, services.clock))
     services.actions = ledger
     services.change_sources = (LedgerChangeSource(ledger),)
-    c = TestClient(create_app(services))
+    c = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(c, "u1")
     return c
 
@@ -192,7 +192,7 @@ def test_undo_puts_back_the_improvers_text_as_the_improvers(client, services):
 
 
 def test_no_ledger_no_change(services):
-    c = TestClient(create_app(services))                       # services.actions is None
+    c = TestClient(create_app(services), base_url="http://127.0.0.1")                       # services.actions is None
     signup(c, "u1")
     assert put(c, "write", NEW).status_code == 503
     assert c.get("/wiki/prompts", headers=H("u1")).status_code == 200
@@ -262,7 +262,7 @@ def test_malformed_row_undo_is_409(client, services):
 
 
 def test_503_detail_is_plain(services):
-    c = TestClient(create_app(services))
+    c = TestClient(create_app(services), base_url="http://127.0.0.1")
     signup(c, "u1")
     r = put(c, "write", NEW)
     assert r.status_code == 503 and r.json()["detail"] == "现在改不了。"

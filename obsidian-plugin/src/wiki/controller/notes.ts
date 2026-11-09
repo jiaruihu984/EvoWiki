@@ -419,10 +419,23 @@ export class Notes {
     }
     let page: PageOut;
     try {
-      const edit = overServer ? { ...plan.edit, sections: (plan.edit.sections ?? []).map(({ fingerprint: _, ...s }) => s) } : plan.edit;
+      let edit = plan.edit;
+      if (overServer) {
+        const latest = await this.core.call(() => this.core.deps.api.getPage(pageId));
+        const versions = new Map(latest.sections.map((s) => [s.id, s.fingerprint]));
+        const fingerprint = (id: string): string => {
+          const version = versions.get(id);
+          if (!version) throw new ApiError(409, WIKI_COPY.handEditVersionUnknown, "hand_edit_stale");
+          return version;
+        };
+        edit = { ...edit,
+          sections: (edit.sections ?? []).map((s) => ({ ...s, fingerprint: fingerprint(s.section_id) })),
+          removed: (edit.removed ?? []).map((s) => ({ ...s, fingerprint: fingerprint(s.section_id) })),
+        };
+      }
       page = (await this.core.deps.api.handEdit(pageId, edit)).page;
     } catch (e) {
-      if (e instanceof ApiError && e.status >= 400 && e.status < 500) this.handFailed(pageId, { text: WIKI_COPY.handEditRefused(e.detail), note: text, conflict: e.status === 409 && e.detail.includes(WIKI_COPY.handEditStaleMark) });
+      if (e instanceof ApiError && e.status >= 400 && e.status < 500) this.handFailed(pageId, { text: WIKI_COPY.handEditRefused(e.detail), note: text, conflict: e.status === 409 && e.code === "hand_edit_stale" });
       else console.warn("EvoWiki wiki: could not send a hand edit", e);
       return { input };
     }
@@ -470,7 +483,7 @@ export class Notes {
     this.core.set({ pageEnd: { ...this.core.state.pageEnd, [pageId]: { ...cur, ...patch } } });
   }
 
-  /** 保留我的版本 (the line that says the section changed on the server): his click decides, so the edit goes up without the check. */
+  /** 保留我的版本: the explicit choice uses current section versions; a later server change still conflicts. */
   async keepMine(page: PageOut): Promise<void> {
     const sync = this.core.deps.sync;
     if (sync === null) return;

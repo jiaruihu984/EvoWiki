@@ -878,7 +878,8 @@ def post_path_page_done(path_id: str, index: int, svc: Svc, uid: User) -> PathPa
             raise LookupError(f"没有这一页：{path_id} 第 {index} 页")
         page_id = rec.page_ids[index - 1]
         if page_id is None:
-            raise WikiConflict("这一页还没开始")
+            raise WikiConflict("这一页还没开始", code="page_not_started",
+                               public_message="This page has not been started.")
         done = _complete_page(svc, uid, page_id)
         snap = repo.load(uid)
         return PathPageDoneOut(path=path_out(snap.state, snap.k, path_id, svc.clock(), user_id=uid),

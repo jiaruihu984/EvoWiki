@@ -1,7 +1,7 @@
 import type { ProfileOut } from "../generated/wiki";
 import type { ProfileClient } from "./api";
 
-/** The learner profile 「我」 (server: evowiki.profile): `<notes folder>/我.md`, the server's canonical copy in the vault. */
+/** The learner background (server: evowiki.profile): `<notes folder>/我的背景.md`, the server's canonical copy in the vault. */
 export const profileNoteName = (language: "zh" | "en"): string => language === "zh" ? "我的背景.md" : "My background.md";
 /** A save of the note is sent once typing pauses this long (ms). */
 export const PROFILE_SAVE_MS = 1500;

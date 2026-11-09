@@ -3,15 +3,15 @@ import { firstPage, setup } from "./controller-test-kit";
 import { inFolder, pageToFollow } from "./follow-note";
 import { INITIAL_WIKI_STATE, type WikiState } from "./state";
 
-const F = "EvoWiki/Wiki";
-const note = (pageId: string | null, path = "EvoWiki/Wiki/A.md") => ({ path, pageId });
+const F = "EvoWiki";
+const note = (pageId: string | null, path = "EvoWiki/A.md") => ({ path, pageId });
 const st = (o: Partial<WikiState> = {}): WikiState => ({ ...INITIAL_WIKI_STATE, ...o });
 
 describe("inFolder", () => {
   it("at or below the folder, case-insensitive; not a sibling with the same prefix", () => {
-    expect(inFolder("EvoWiki/Wiki/A.md", F)).toBe(true);
-    expect(inFolder("evowiki/wiki/sub/A.md", F)).toBe(true);
-    expect(inFolder("EvoWiki/WikiX/A.md", F)).toBe(false);
+    expect(inFolder("EvoWiki/A.md", F)).toBe(true);
+    expect(inFolder("evowiki/sub/A.md", F)).toBe(true);
+    expect(inFolder("EvoWikiX/A.md", F)).toBe(false);
     expect(inFolder("Other/A.md", F)).toBe(false);
     expect(inFolder("A.md", "")).toBe(false);
   });

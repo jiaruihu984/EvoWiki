@@ -95,7 +95,8 @@ def _applied(rec: PageRecord, body: HandEditIn, edit_id: str, now: datetime,
     if any(by_id[sid].role is SectionRole.CHECK for sid in edits):
         raise WikiInvalid(CHECK_EDIT)
     # a section with no text yet (a run stopped part-way) is not in the note: its absence there is no deletion
-    removed = {sid for sid in body.removed if sid in by_id and (
+    deletions = {e.section_id: e for e in body.removed}
+    removed = {sid for sid in deletions if sid in by_id and (
         by_id[sid].role is SectionRole.CHECK or ((t := page.texts.get(sid)) is not None and t.body.strip()))}
     if len(removed) == len(by_id):
         raise WikiInvalid(ALL_GONE)
@@ -107,6 +108,8 @@ def _applied(rec: PageRecord, body: HandEditIn, edit_id: str, now: datetime,
         t, st = page.texts.get(s.id), page.state(s.id)
         e = edits.get(s.id)
         if s.id in removed:
+            if deletions[s.id].fingerprint != text_fingerprint(s.heading, t.body if t is not None else ""):
+                raise WikiConflict(STALE, code="hand_edit_stale")
             changes.append(HandEditChange(section_id=s.id, before_section=s, before_text=t,
                                           before_state=st, after_section=prev))
             texts.pop(s.id, None)
@@ -116,7 +119,7 @@ def _applied(rec: PageRecord, body: HandEditIn, edit_id: str, now: datetime,
         if e is not None and not _same(s, t, e, st.pinned, st.folded):
             if e.fingerprint is not None and e.fingerprint != text_fingerprint(
                     s.heading, t.body if t is not None else ""):
-                raise WikiConflict(STALE)
+                raise WikiConflict(STALE, code="hand_edit_stale")
             new = _written(edit_id, s, t, e)
             changes.append(HandEditChange(section_id=s.id, before_section=s, before_text=t,
                                           before_state=st, after_section=prev, after_text=new))

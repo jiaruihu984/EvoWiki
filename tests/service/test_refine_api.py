@@ -87,7 +87,7 @@ def test_a_run_that_does_not_start_ends_its_queued_job_failed(wiki, services, de
 
     services.runs = Broken()
     with pytest.raises(RuntimeError, match="not launched"):
-        TestClient(create_app(services), raise_server_exceptions=True).post(
+        TestClient(create_app(services), raise_server_exceptions=True, base_url="http://127.0.0.1").post(
             f"/wiki/pages/{pid}/refine", headers=H("u1"))
     out = RefineJobOut.model_validate(client.get(f"/wiki/pages/{pid}/refine",
                                                  headers=H("u1")).json())

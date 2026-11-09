@@ -76,7 +76,7 @@ export const WIKI_COPY = {
   handEditRefused: (detail: string): string => tr("wiki.copy.WIKI_COPY.handEditRefused.79", { v0: detail }),
   get handEditRestore() { return tr("wiki.copy.WIKI_COPY.handEditRestore.80"); },
   get handEditKeep() { return tr("wiki.copy.WIKI_COPY.handEditKeep.81"); },
-  get handEditStaleMark() { return tr("wiki.copy.WIKI_COPY.handEditStaleMark.82"); },
+  get handEditVersionUnknown() { return tr("wiki.copy.WIKI_COPY.handEditVersionUnknown"); },
   get sectionTag() { return tr("wiki.copy.WIKI_COPY.sectionTag.83"); },
   // corner notices
   get noticeUndone() { return tr("wiki.copy.WIKI_COPY.noticeUndone.84"); },

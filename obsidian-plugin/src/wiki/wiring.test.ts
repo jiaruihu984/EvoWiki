@@ -79,9 +79,9 @@ describe("the note's tree row", () => {
     document.body.replaceChildren();
     const row = document.createElement("div");
     row.className = "nav-file-title";
-    row.dataset.path = "EvoWiki/jerry/Wiki/T.md";
+    row.dataset.path = "EvoWiki/T.md";
     document.body.append(row);
-    const r = rig({ files: { "EvoWiki/jerry/Wiki/T.md": "---\nevowiki_page_id: p1\n---\n" } });
+    const r = rig({ files: { "EvoWiki/T.md": "---\nevowiki_page_id: p1\n---\n" } });
     const c = makeWikiController(r.d, false);
     const sync = depsOf(c).sync!;
     const run = (i: WikiNoteInput, o?: { partial?: boolean }) => sync.run(i, o);
@@ -97,12 +97,12 @@ describe("the note's tree row", () => {
 });
 
 describe("makeAssetFetcher", () => {
-  it("writes under <notes folder>/<user>/Wiki/assets (read per call); the real controller gets it, the demo never does", () => {
+  it("writes under <resolved account root>/assets (read per call); the real controller gets it, the demo never does", () => {
     const r = rig();
     const fetcher = makeAssetFetcher(r.d, () => undefined);
-    expect(fetcher.pathFor("a1")).toBe("EvoWiki/jerry/Wiki/assets/a1.html");
+    expect(fetcher.pathFor("a1")).toBe("EvoWiki/assets/a1.html");
     r.settings.notesFolder = "Notes";
-    expect(fetcher.pathFor("a1")).toBe("Notes/jerry/Wiki/assets/a1.html");
+    expect(fetcher.pathFor("a1")).toBe("Notes/assets/a1.html");
     expect(fetcher.pathFor("../x")).toBeNull();
     expect(depsOf(makeWikiController({ ...r.d, assets: fetcher }, false)).assets).toBe(fetcher);
     expect(depsOf(makeWikiController({ ...r.d, assets: fetcher }, true)).assets).toBeUndefined();
@@ -212,18 +212,18 @@ describe("makeWikiController", () => {
     expect(depsOf(c).configured()).toBe(true); // read per call
   });
 
-  it("real: sync.run calls the injected syncWikiNote with the app and folder = <notes folder>/<user>/Wiki", async () => {
+  it("real: sync.run calls the injected syncWikiNote with the app and folder = <resolved account root>", async () => {
     const r = rig({ settings: { notesFolder: "Notes/Evo" } });
     const sync = depsOf(makeWikiController(r.d, false)).sync!;
     await expect(sync.run(INPUT)).resolves.toBe("created");
-    expect(r.syncWikiNote).toHaveBeenCalledWith(r.d.app, "Notes/Evo/jerry/Wiki", INPUT, expect.any(Function), undefined, undefined);
+    expect(r.syncWikiNote).toHaveBeenCalledWith(r.d.app, "Notes/Evo", INPUT, expect.any(Function), undefined, undefined);
     r.settings.notesFolder = "Later";
     r.settings.userId = "amy";
     await sync.run(INPUT);
-    expect(r.syncWikiNote).toHaveBeenLastCalledWith(r.d.app, "Later/amy/Wiki", INPUT, expect.any(Function), undefined, undefined);
+    expect(r.syncWikiNote).toHaveBeenLastCalledWith(r.d.app, "Later", INPUT, expect.any(Function), undefined, undefined);
   });
 
-  it("real: no note is read or written before the old layout was moved into the user's folder (folderReady)", async () => {
+  it("real: no note is read or written before the vault is indexed (folderReady)", async () => {
     const r = rig();
     let ready!: () => void;
     const sync = depsOf(makeWikiController({ ...r.d, folderReady: () => new Promise<void>((res) => { ready = res; }) }, false)).sync!;
@@ -232,32 +232,32 @@ describe("makeWikiController", () => {
     expect(r.syncWikiNote).not.toHaveBeenCalled();
     ready();
     await run;
-    expect(r.syncWikiNote).toHaveBeenCalledWith(r.d.app, "EvoWiki/jerry/Wiki", INPUT, expect.any(Function), undefined, undefined);
+    expect(r.syncWikiNote).toHaveBeenCalledWith(r.d.app, "EvoWiki", INPUT, expect.any(Function), undefined, undefined);
   });
 
-  it("real: sync.find looks in <notes folder>/<user>/Wiki and returns the one note claiming the page", async () => {
+  it("real: sync.find looks in <resolved account root> and returns the one note claiming the page", async () => {
     const r = rig({ files: {
-      "EvoWiki/jerry/Wiki/A.md": claim("p1"), "EvoWiki/jerry/Wiki/B.md": claim("p2"), "EvoWiki/Other.md": claim("p3"),
-      "EvoWiki/jerry/Wiki/C.md": "page_id=p4\n", "EvoWiki/jerry/Wiki/D.md": claim("p4x"),
+      "EvoWiki/A.md": claim("p1"), "EvoWiki/B.md": claim("p2"), "EvoWiki (bob)/Other.md": claim("p3"),
+      "EvoWiki/C.md": "page_id=p4\n", "EvoWiki/D.md": claim("p4x"),
     } });
     const sync = depsOf(makeWikiController(r.d, false)).sync!;
-    await expect(sync.find("p1")).resolves.toBe("EvoWiki/jerry/Wiki/A.md");
-    await expect(sync.find("p2")).resolves.toBe("EvoWiki/jerry/Wiki/B.md");
+    await expect(sync.find("p1")).resolves.toBe("EvoWiki/A.md");
+    await expect(sync.find("p2")).resolves.toBe("EvoWiki/B.md");
     await expect(sync.find("p3")).resolves.toBeNull(); // outside the wiki folder
     await expect(sync.find("p4")).resolves.toBeNull(); // a page_id line that is not a claim
     expect(r.syncWikiNote).not.toHaveBeenCalled();
   });
 
-  it("real: sync.handEdit reads the one note claiming the page in <notes folder>/<user>/Wiki", async () => {
+  it("real: sync.handEdit reads the one note claiming the page in <resolved account root>", async () => {
     const input: WikiNoteInput = { ...INPUT, sections: [{ id: "s1", heading: "公式", role: "explain", cue: "", body: "原文。", folded: false }] };
     const note = renderWikiNote(input).markdown.replace(`原文。\n${WIKI_END}`, `我改的。\n${WIKI_END}`);
-    const r = rig({ files: { "EvoWiki/jerry/Wiki/T.md": note, "EvoWiki/T.md": note.replace("我改的", "别处") } });
+    const r = rig({ files: { "EvoWiki/T.md": note, "EvoWiki (bob)/T.md": note.replace("我改的", "别处") } });
     const sync = depsOf(makeWikiController(r.d, false)).sync!;
     const got = await sync.handEdit(input);
-    expect(got).toMatchObject({ path: "EvoWiki/jerry/Wiki/T.md", text: note, plan: { kind: "ok" } });
+    expect(got).toMatchObject({ path: "EvoWiki/T.md", text: note, plan: { kind: "ok" } });
     await expect(sync.handEdit({ ...input, pageId: "zz" })).resolves.toBeNull(); // no note claims it
-    await expect(sync.edited("EvoWiki/jerry/Wiki/T.md", input.pageId)).resolves.toBe(true);
-    await expect(sync.edited("EvoWiki/T.md", input.pageId)).resolves.toBe(false);
+    await expect(sync.edited("EvoWiki/T.md", input.pageId)).resolves.toBe(true);
+    await expect(sync.edited("EvoWiki (bob)/T.md", input.pageId)).resolves.toBe(false);
     expect(r.syncWikiNote).not.toHaveBeenCalled();
   });
 

@@ -58,7 +58,7 @@ class FakeForget:
 
 def client(tmp_path, forget):
     return TestClient(create_app(SimpleNamespace(assistant=service(tmp_path, [ChatTurn(text="答")]),
-                                                 forget=forget)))
+                                                 forget=forget)), base_url="http://127.0.0.1")
 
 
 def _open(c):

@@ -24,7 +24,7 @@ GLM = "glm/glm-5.3"
 def api(services):
     catalog = model_specs({"EVOWIKI_COMPATIBLE_MODEL": "test-model"})
     services.models = ModelChoice({DS: {}, CLAUDE: {}, OPENAI: {}, CUSTOM: {}, GLM: {}}, DS, catalog)
-    return TestClient(create_app(services))
+    return TestClient(create_app(services), base_url="http://127.0.0.1")
 
 
 def _attempt(pool, provider, model, error_type, message, n):
@@ -146,7 +146,7 @@ def test_configuration_restart_releases_old_bad_key_but_new_refusal_still_blocks
 
     # Native key save restarts build_services, capturing a new health epoch. Audit rows stay intact.
     services.models = replace(services.models, health_since=T0.replace(minute=2))
-    restarted = TestClient(create_app(services))
+    restarted = TestClient(create_app(services), base_url="http://127.0.0.1")
     assert _by_id(restarted.get("/assistant/models", headers=H("u1")).json())[CLAUDE]["available"]
     picked = restarted.post("/assistant/model", json={"model": CLAUDE}, headers=H("u1"))
     assert picked.status_code == 200 and picked.json()["current"] == CLAUDE

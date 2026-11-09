@@ -1,5 +1,6 @@
 /** PageOut → E3a's WikiNoteInput. Pure; the note never carries check answers. */
 import { diffNote } from "./format";
+import { isMasteredCheck } from "./goal-checks";
 import type { Names } from "./names";
 import type { WikiNoteInput, WikiNoteSection } from "./note-port";
 import type { PageOut, SectionOut } from "./schema";
@@ -17,7 +18,7 @@ export function toWikiNoteInput(page: PageOut, names: Names): WikiNoteInput {
   const sections: WikiNoteSection[] = page.sections.map((s) => ({
     id: s.id, heading: s.heading, role: s.role, cue: s.cue, body: sectionBody(s),
     // a collapsed page folds everything but a locked section
-    folded: page.collapsed && !s.pinned ? true : s.folded,
+    folded: (page.collapsed && !s.pinned) || s.folded || isMasteredCheck(s),
     ...(s.note_body ? { noteBody: s.note_body } : {}),
     ...(s.artifact_id ? { artifactId: s.artifact_id } : {}),
     ...(s.fingerprint ? { fingerprint: s.fingerprint } : {}),

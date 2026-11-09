@@ -163,7 +163,7 @@ describe("the rows follow graph changes at once (no 20 s wait)", () => {
     await page.refresh();
     await flush();
     expect(m.loads()).toBe(2);                         // the page's first read tells 今天 too
-    await page.editPath("path_ml", { op: "remove", index: 0 });
+    await page.editPath("path_ml", { op: "remove", page_key: "path_ml_1" });
     await flush();
     expect(m.loads()).toBe(3);                         // within the freshness window: no tick() at all
     const quiet = new GraphStore(pageSource);          // a store that does not announce (today's own) never loops

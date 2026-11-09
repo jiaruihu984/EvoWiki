@@ -383,6 +383,25 @@ describe("学点新的 uses the chosen topic (user review)", () => {
     await m.view.onClose(); run.dispose();
   });
 
+  it("reveals a graph node through its existing ancestors using reads, keeping unstarted nodes actionable", async () => {
+    const api = new NestedGoalApi();
+    await api.enterRegion(NESTED_MAP, "A");
+    const flow = new LearnFlow(api, { fail: (text) => { throw new Error(text); } }, "");
+    await flow.openGoal({ draftId: null, mapId: NESTED_MAP });
+    const enter = vi.spyOn(api, "enterRegion");
+    const run = { actionId: "saved", flow, enterBlock: vi.fn(() => Promise.resolve()) };
+    const view = new LearnView({} as WorkspaceLeaf, { api: () => api, onCssChange: () => () => {}, assistant: {
+      start: () => null, run: () => null, onGoalRow: () => () => {}, openGoal: () => Promise.resolve(run),
+    } });
+    document.body.append(view.contentEl); await view.onOpen();
+    await view.showGoalNode(NESTED_MAP, "A1");
+    const row = view.contentEl.querySelector<HTMLElement>('[data-part="A1"]')!;
+    expect(row).not.toBeNull(); expect(row.textContent).toContain(LEARN_COPY.startLearn);
+    expect(scrolled).toContain(row);
+    expect(enter).not.toHaveBeenCalled(); expect(run.enterBlock).not.toHaveBeenCalled();
+    await view.onClose(); flow.dispose();
+  });
+
   it("restores the workspace's saved map into the same path view after closing and restarting", async () => {
     const api = new FakeGoalApi({ roundMs: 0 });
     const source = make({ api, run: true });
@@ -473,7 +492,7 @@ describe("学点新的's cloud: the existing map (知识图谱's graph) and the 
     resolve({ places, links: [] }); await flush();
     expect(m.view.cloudScene!.goalDots.size).toBeGreaterThan(0);
     for (const [id, at] of Object.entries(places)) {
-      expect(m.view.cloudScene!.scene.l1.find((g) => g.id === id)?.at).toEqual(at);
+      expect(m.view.cloudScene!.scene.l1.find((g) => m.view.cloudScene!.goalOf.get(g.id) === id)?.at).toEqual(at);
     }
     expect(graphPlaces).toHaveBeenCalledTimes(1);
     await m.view.onClose();

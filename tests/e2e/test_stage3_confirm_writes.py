@@ -60,7 +60,7 @@ def _opened(client, page_id: str) -> None:
 def test_a_split_confirmed_in_chat_writes_nothing_until_a_page_is_opened(db_url, pool):
     sb.prepare(pool)
     app, _svc, _script = sb.build(db_url, pool)
-    with TestClient(app) as client:
+    with TestClient(app, base_url="http://127.0.0.1") as client:
         before = _runs(pool)
         done = _confirmed(client, pool, sb.SPLIT, "page_split")
         result = done["result"] or {}
@@ -75,7 +75,7 @@ def test_a_split_confirmed_in_chat_writes_nothing_until_a_page_is_opened(db_url,
 def test_a_split_approved_on_its_card_writes_nothing_until_a_page_is_opened(db_url, pool):
     sb.prepare(pool)
     app, _svc, _script = sb.build(db_url, pool)
-    with TestClient(app) as client:
+    with TestClient(app, base_url="http://127.0.0.1") as client:
         before = _runs(pool)
         _sid, action_id = _proposed(client, pool, sb.SPLIT, "page_split")
         r = client.post(f"/wiki/bot/actions/{action_id}/approve", headers=H)
@@ -93,7 +93,7 @@ def test_a_split_approved_on_its_card_writes_nothing_until_a_page_is_opened(db_u
 def test_write_page_confirmed_in_chat_still_starts_its_write(db_url, pool):
     sb.prepare(pool)
     app, _svc, _script = sb.build(db_url, pool)
-    with TestClient(app) as client:
+    with TestClient(app, base_url="http://127.0.0.1") as client:
         done = _confirmed(client, pool, sb.WRITE, "page_new")
         result = done["result"] or {}
         assert done["status"] == "executed", done

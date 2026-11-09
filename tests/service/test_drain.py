@@ -31,7 +31,7 @@ def test_drain_waits_for_stream_body_and_refuses_new_business_requests():
             yield b"last"
         return StreamingResponse(body())
 
-    client = TestClient(app, client=("127.0.0.1", 5000))
+    client = TestClient(app, client=("127.0.0.1", 5000), base_url="http://127.0.0.1")
     with ThreadPoolExecutor(max_workers=1) as executor:
         running = executor.submit(client.get, "/work")
         try:
@@ -57,6 +57,6 @@ def test_request_failure_releases_the_admission_counter():
     def broken():
         raise RuntimeError("broken")
 
-    client = TestClient(app, raise_server_exceptions=False)
+    client = TestClient(app, raise_server_exceptions=False, base_url="http://127.0.0.1")
     assert client.get("/broken").status_code == 500
     assert client.get("/health").json()["in_flight"] == 0

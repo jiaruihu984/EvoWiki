@@ -4,6 +4,8 @@ import type { EvoWikiSettings } from "./settings";
 export interface SettingsUpdaterDeps {
   /** The settings in force right now (the API client reads these at call time). */
   get(): EvoWikiSettings;
+  /** Resolve the destination identity's independent vault root before switching settings. */
+  prepare(s: EvoWikiSettings): Promise<EvoWikiSettings>;
   /** Make `s` the settings in force and persist them. */
   save(s: EvoWikiSettings): Promise<void>;
   /** Fresh controller/state for a new identity. */
@@ -32,7 +34,7 @@ export class SettingsUpdater {
     if (!folder.ok) throw new Error(folder.reason);
     next.notesFolder = folder.folder;
     const identityChanged = next.userId !== prev.userId || next.serverUrl !== prev.serverUrl;
-    await this.d.save(next);
+    await this.d.save(await this.d.prepare(next));
     if (identityChanged) await this.d.reinit();
   }
 }

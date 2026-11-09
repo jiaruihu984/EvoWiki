@@ -40,7 +40,7 @@ def client(services):
     ledger.register("rsi_method", rsi)
     services.actions = ledger
     services.change_sources = (LedgerChangeSource(ledger),)
-    return TestClient(create_app(services))
+    return TestClient(create_app(services), base_url="http://127.0.0.1")
 
 
 def _ask(client, uid="u1", **levels):

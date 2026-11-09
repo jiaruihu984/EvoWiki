@@ -63,16 +63,13 @@ def merge_ledger(archived: Path, latest: Path, target: Path) -> None:
 
 
 def _pg_restore(url: str, path: Path, *, pg_dump: str | None = None) -> None:
-    c = conninfo_to_dict(url)
-    pg = {"PGHOST": c.get("host", ""), "PGPORT": c.get("port", "5432"),
-          "PGUSER": c.get("user", ""), "PGPASSWORD": c.get("password", ""), "PGDATABASE": c["dbname"]}
     tool = Path(pg_dump or backup.pg_dump_path()).with_name("pg_restore.exe" if sys.platform == "win32" else "pg_restore")
-    r = subprocess.run([str(tool), "--exit-on-error", "--dbname", c["dbname"], str(path)],
-                       env={**{k: v for k, v in os.environ.items() if not k.startswith("PG")}, **pg},
-                       capture_output=True, text=True,
-                       encoding="utf-8", errors="replace", check=False)
+    with backup.pg_tool_connection(url) as (env, connection):
+        r = subprocess.run([str(tool), "--exit-on-error", "--dbname", "service=evowiki_backup", str(path)],
+                           env=env, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", check=False)
     if r.returncode:
-        raise backup.BackupFailed(backup.scrub(r.stderr.strip() or "pg_restore failed", url))
+        raise backup.BackupFailed(backup.scrub(r.stderr.strip() or "pg_restore failed", connection))
 
 
 def validate_application(env: dict[str, str], admin: str, ledger: Path) -> dict:
@@ -98,7 +95,7 @@ def validate_application(env: dict[str, str], admin: str, ledger: Path) -> dict:
     svc.durable = None
     try:
         app = create_app(svc)
-        with TestClient(app) as client:
+        with TestClient(app, base_url="http://127.0.0.1") as client:
             ready = client.get("/health/ready")
             if ready.status_code != 200 or not app.state.memory_ready:
                 raise backup.BackupFailed("restored application is not ready, including forget reconciliation")

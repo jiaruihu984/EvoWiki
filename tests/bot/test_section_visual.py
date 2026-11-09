@@ -99,7 +99,7 @@ def test_the_revision_asset_is_readable_over_http_before_approval(service_fixtur
     draft = RevisionDraft.model_validate(data)
     row = env.propose(draft=draft)
     service_fixture.deep = SimpleNamespace(assets=env.ex._assets)
-    client = TestClient(create_app(service_fixture))
+    client = TestClient(create_app(service_fixture), base_url="http://127.0.0.1")
     asset_id = re.search(r"src: assets/([^\s.]+)\.html", draft.preview["s2"])[1]
     headers = {"X-EvoWiki-User": "u1"}
     meta = client.get(f"/wiki/assets/{asset_id}/meta", headers=headers)

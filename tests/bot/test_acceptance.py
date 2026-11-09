@@ -146,7 +146,7 @@ def world(services, db_url, tmp_path):
                           {"preference": PreferenceExecutor(pool, services.clock)})
     services.actions = ledger
     services.change_sources = (LedgerChangeSource(ledger),)
-    w = World(services, TestClient(create_app(services)), tmp_path)
+    w = World(services, TestClient(create_app(services), base_url="http://127.0.0.1"), tmp_path)
     dbos_app.launch(db_url, app_version=dbos_app.APP_VERSION)
     durable.register(BotRuntime(pool, services.clock, services.new_id,
                                 rsi=bot_rsi_runner(services)), schedule=False)
