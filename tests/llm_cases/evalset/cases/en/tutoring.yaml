@@ -1,0 +1,26 @@
+- id: en-tutor-negative-zscore
+  language: en
+  translated_from: tutor-wrong-zscore
+  kind: act
+  topic: Interpreting a z score
+  source: {ref: "Public tutoring rubric translated to English"}
+  steps: [{say: "I answered that z = -1 means one standard deviation above the mean. That was marked wrong. Explain where my reasoning went wrong, using a small example."}]
+  grade:
+    - rubric:
+        items:
+          - {text: "The answer identifies the reversed direction: z = -1 is one standard deviation below the mean, and gives a correct numeric example.", critical: true}
+    - no_change_calls: {}
+    - turn_ok: {}
+- id: en-tutor-derivative-mistake
+  language: en
+  translated_from: tutor-wrong-derivative
+  kind: control
+  topic: Differentiation
+  source: {ref: "Public exponent-error tutoring rubric translated to English"}
+  steps: [{say: "For the derivative of x cubed I chose 3x cubed instead of 3x squared. Explain my mistake without marking me as having mastered derivatives."}]
+  grade:
+    - tool_not_called: {names: [record_evidence, mark_known]}
+    - rubric:
+        items:
+          - {text: "The answer explains that the exponent must decrease by one and gives the correct derivative 3x squared, without claiming mastery.", critical: true}
+    - turn_ok: {}

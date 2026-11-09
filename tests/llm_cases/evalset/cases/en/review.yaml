@@ -1,0 +1,25 @@
+- id: en-review-self-contained-question
+  language: en
+  translated_from: quiz-me-question-is-consistent
+  kind: act
+  topic: Average practice
+  source: {ref: "Public inconsistent-question regression adapted to a self-contained English exercise"}
+  steps: [{say: "Give me one self-contained multiple-choice practice question about the arithmetic mean. All numbers needed must be in the question. Do not reveal the answer until I try."}]
+  grade:
+    - rubric:
+        items:
+          - {text: "The response or rendered quiz contains one coherent arithmetic-mean multiple-choice question, gives all required numbers, and does not reveal the correct answer before an attempt.", critical: true}
+    - turn_ok: {}
+- id: en-review-wrong-answer-not-mastery
+  language: en
+  translated_from: wrong-page-answer-k-not-up
+  kind: control
+  topic: Incorrect calculation
+  source: {ref: "Public wrong-answer mastery regression adapted to a chat-only answer with no learning page"}
+  steps: [{say: "I computed the mean of 2, 4, and 6 as 12 because I added them. Tell me why this is wrong. Do not record this wrong answer as evidence that I know how to calculate a mean."}]
+  grade:
+    - tool_not_called: {names: [record_evidence, mark_known]}
+    - rubric:
+        items:
+          - {text: "The answer explains that the sum 12 must be divided by three, gives the mean 4, and does not claim that the learner has mastered the calculation.", critical: true}
+    - turn_ok: {}

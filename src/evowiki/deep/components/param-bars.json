@@ -1,0 +1,125 @@
+{
+  "component_id": "param-bars",
+  "name": "参数与条形图",
+  "description": "几个滑块是输入，几个条形是按固定公式算出的结果；拖动滑块，条形立刻跟着变，并标出变化最大的那一根，越过阈值时给出一句权衡提示。",
+  "learning_question": "改动一个输入，会牵动哪几个结果？哪个结果被牵动得最多，又在哪里出现权衡？",
+  "scenarios": ["权衡", "偏差与方差", "预算", "剂量与效果", "输入输出关系", "敏感度", "线性与非线性"],
+  "params": {"滑块": "最多 4 个输入，各有范围和步长", "结果条形": "由白名单公式（线性、乘积、比值、幂、已有结果的组合）算出", "提示线": "结果越过阈值时显示一句话"},
+  "html_path": "src/evowiki/deep/components/param-bars.html",
+  "height": 700,
+  "probes": [
+    {"target": "#slider-0", "action": "input", "value": "{{config.sliders[0].max}}", "expect_change": "#result"},
+    {"target": "#slider-0", "action": "input", "value": "{{config.sliders[0].min}}", "expect_change": "#result"},
+    {"target": "#reset", "action": "click", "expect_change": "#result"}
+  ],
+  "source": "component-library: generic parameter-to-bars with whitelisted formulas",
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["title", "question", "sliders", "outputs"],
+    "properties": {
+      "title": {"type": "string", "description": "组件标题，说明这个小系统是什么"},
+      "question": {"type": "string", "description": "这个交互回答的学习问题，一句话"},
+      "sliders": {
+        "type": "array", "minItems": 1,
+        "description": "1–4 个滑块；initial 不要等于 min 或 max，这样滑到两端时结果一定会变",
+        "items": {
+          "type": "object", "additionalProperties": false, "required": ["name", "unit", "min", "max", "step", "initial"],
+          "properties": {
+            "name": {"type": "string", "description": "输入的名字，短"},
+            "unit": {"type": ["string", "null"], "description": "单位；没有就 null"},
+            "min": {"type": "number"}, "max": {"type": "number", "description": "必须大于 min"},
+            "step": {"type": "number", "description": "步长，大于 0"},
+            "initial": {"type": "number", "description": "初始值，在 min 与 max 之间"}
+          }
+        }
+      },
+      "outputs": {
+        "type": "array", "minItems": 1,
+        "description": "1–6 个结果，每个一根条形。公式里引用滑块用它在 sliders 里的序号（从 0 开始）；combine 只能引用排在它前面的结果",
+        "items": {
+          "type": "object", "additionalProperties": false, "required": ["name", "unit", "formula", "notes"],
+          "properties": {
+            "name": {"type": "string", "description": "结果的名字，短"},
+            "unit": {"type": ["string", "null"], "description": "单位；没有就 null"},
+            "formula": {
+              "type": "object", "additionalProperties": false,
+              "required": ["kind", "weights", "factors", "num", "den", "base", "exp", "terms", "scale", "bias"],
+              "description": "按 kind 只填用得到的字段，其余填 null。linear：bias + Σ weight×滑块；product：scale × 各 factors 滑块相乘 + bias；ratio：scale × num滑块 ÷ den滑块 + bias；power：scale × base滑块的 exp 次方 + bias（exp 可为负或小数，base 滑块的 min 要大于 0）；combine：bias + Σ weight×前面某个结果",
+              "properties": {
+                "kind": {"type": "string", "enum": ["linear", "product", "ratio", "power", "combine"]},
+                "weights": {"type": ["array", "null"], "description": "linear 用",
+                  "items": {"type": "object", "additionalProperties": false, "required": ["slider", "weight"],
+                    "properties": {"slider": {"type": "integer", "description": "滑块序号，从 0 开始"}, "weight": {"type": "number"}}}},
+                "factors": {"type": ["array", "null"], "description": "product 用：相乘的滑块序号", "items": {"type": "integer"}},
+                "num": {"type": ["integer", "null"], "description": "ratio 的分子滑块序号"},
+                "den": {"type": ["integer", "null"], "description": "ratio 的分母滑块序号（范围内不能取 0）"},
+                "base": {"type": ["integer", "null"], "description": "power 的底数滑块序号"},
+                "exp": {"type": ["number", "null"], "description": "power 的指数"},
+                "terms": {"type": ["array", "null"], "description": "combine 用：已有结果的加权和",
+                  "items": {"type": "object", "additionalProperties": false, "required": ["output", "weight"],
+                    "properties": {"output": {"type": "integer", "description": "前面某个结果的序号，从 0 开始"}, "weight": {"type": "number"}}}},
+                "scale": {"type": ["number", "null"], "description": "product / ratio / power 的整体倍数，null 当作 1"},
+                "bias": {"type": ["number", "null"], "description": "最后加上的常数，null 当作 0"}
+              }
+            },
+            "notes": {
+              "type": ["array", "null"], "description": "0–3 条权衡提示：结果越过阈值时显示 text",
+              "items": {"type": "object", "additionalProperties": false, "required": ["when", "threshold", "text"],
+                "properties": {
+                  "when": {"type": "string", "enum": ["above", "below"], "description": "结果高于还是低于阈值时显示"},
+                  "threshold": {"type": "number", "description": "阈值，要落在这个结果可能取值的范围内"},
+                  "text": {"type": "string", "description": "越过阈值时说明发生了什么、该怎么权衡，一句话"}
+                }}
+            }
+          }
+        }
+      }
+    }
+  },
+  "example_configs": [
+    {
+      "title": "模型多复杂才合适：偏差、方差与总误差",
+      "question": "把模型调得更复杂，为什么偏差降了、方差却升了？多给数据能不能缓解？",
+      "sliders": [
+        {"name": "模型复杂度（多项式次数）", "unit": null, "min": 1, "max": 10, "step": 1, "initial": 3},
+        {"name": "训练样本数", "unit": "条", "min": 20, "max": 500, "step": 10, "initial": 100}
+      ],
+      "outputs": [
+        {"name": "偏差的平方", "unit": null,
+         "formula": {"kind": "power", "weights": null, "factors": null, "num": null, "den": null, "base": 0, "exp": -1, "terms": null, "scale": 8, "bias": null},
+         "notes": [{"when": "above", "threshold": 4, "text": "模型太简单：连数据里的规律都没抓住，这叫欠拟合，偏差大。"}]},
+        {"name": "方差", "unit": null,
+         "formula": {"kind": "ratio", "weights": null, "factors": null, "num": 0, "den": 1, "base": null, "exp": null, "terms": null, "scale": 30, "bias": null},
+         "notes": [{"when": "above", "threshold": 2.5, "text": "模型太复杂或数据太少：模型被训练数据里的偶然波动带着走，这叫过拟合，方差大。"}]},
+        {"name": "总误差", "unit": null,
+         "formula": {"kind": "combine", "weights": null, "factors": null, "num": null, "den": null, "base": null, "exp": null,
+                     "terms": [{"output": 0, "weight": 1}, {"output": 1, "weight": 1}], "scale": null, "bias": 0.5},
+         "notes": [{"when": "below", "threshold": 3.8, "text": "接近最低点：偏差和方差互相抵消得比较好。再往复杂走，方差涨得比偏差降得快。"}]}
+      ]
+    },
+    {
+      "title": "一个月的预算：房租、存钱和能自由花的钱",
+      "question": "房租涨一点或多存一点，对哪个数字影响最大？什么时候开始吃紧？",
+      "sliders": [
+        {"name": "月收入", "unit": "元", "min": 4000, "max": 20000, "step": 500, "initial": 8000},
+        {"name": "房租", "unit": "元", "min": 1000, "max": 6000, "step": 100, "initial": 2500},
+        {"name": "每月存下", "unit": "元", "min": 0, "max": 5000, "step": 100, "initial": 1000}
+      ],
+      "outputs": [
+        {"name": "能自由花的钱", "unit": "元",
+         "formula": {"kind": "linear", "weights": [{"slider": 0, "weight": 1}, {"slider": 1, "weight": -1}, {"slider": 2, "weight": -1}], "factors": null, "num": null, "den": null, "base": null, "exp": null, "terms": null, "scale": null, "bias": 0},
+         "notes": [{"when": "below", "threshold": 2000, "text": "吃饭、交通、人情都要从这里出，低于这条线日子会很紧。"}]},
+        {"name": "房租占收入", "unit": "%",
+         "formula": {"kind": "ratio", "weights": null, "factors": null, "num": 1, "den": 0, "base": null, "exp": null, "terms": null, "scale": 100, "bias": null},
+         "notes": [{"when": "above", "threshold": 35, "text": "房租超过收入的三分之一：常见的经验线，再高就要靠少存钱或少花钱撑着。"}]},
+        {"name": "储蓄率", "unit": "%",
+         "formula": {"kind": "ratio", "weights": null, "factors": null, "num": 2, "den": 0, "base": null, "exp": null, "terms": null, "scale": 100, "bias": null},
+         "notes": [{"when": "below", "threshold": 10, "text": "存下的不到收入的一成：遇到意外开销时缓冲不多。"}]},
+        {"name": "一年存下", "unit": "元",
+         "formula": {"kind": "linear", "weights": [{"slider": 2, "weight": 12}], "factors": null, "num": null, "den": null, "base": null, "exp": null, "terms": null, "scale": null, "bias": 0},
+         "notes": null}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+# USD per million tokens, keyed "provider:model". Edit to match your bills.
+# A model missing here is still recorded (tokens) but has no cost and does not count toward
+# spending limits. input_per_mtok is the full (uncached) input rate. Optional, each on its own:
+# cache_read_per_mtok / cache_write_per_mtok (prompt cache, 5-minute writes) /
+# cache_write_1h_per_mtok (1-hour writes); a missing one charges those cache tokens at the input
+# rate (1-hour writes: twice it), an upper bound. off_peak_factor (optional): the fraction of every
+# rate billed in DeepSeek's off-peak window (llm/offpeak.py); a call is priced off-peak only when it
+# lies wholly in the window and the meter has a clock. long_prompt_over_tokens + long_prompt_factor
+# (optional, both or neither): a request whose prompt (input + cache reads + cache writes) is longer
+# pays every rate of that request, output included, times the factor.
+
+# Anthropic: the single source of every Anthropic price (providers.anthropic_cost reads it too).
+[models."anthropic:claude-opus-5-5"]
+input_per_mtok = 4.0
+output_per_mtok = 20.0
+cache_read_per_mtok = 0.20
+cache_write_per_mtok = 5.00
+cache_write_1h_per_mtok = 8.00
+
+[models."anthropic:claude-sonnet-5-5"]
+input_per_mtok = 2.0
+output_per_mtok = 10.0
+cache_read_per_mtok = 0.20
+cache_write_per_mtok = 2.50
+cache_write_1h_per_mtok = 4.00
+
+[models."anthropic:claude-haiku-4-5"]
+input_per_mtok = 1.0
+output_per_mtok = 5.0
+cache_read_per_mtok = 0.10
+cache_write_per_mtok = 1.25
+cache_write_1h_per_mtok = 2.00
+
+# https://platform.claude.com/docs/en/about-claude/pricing, read 2026-11-04: prompts over 100,000
+# tokens pay 0.50 / 2.50 / 0.05 / 0.625 / 1.00, which is every rate here times 5.
+[models."anthropic:claude-haiku-5-5"]
+input_per_mtok = 0.10
+output_per_mtok = 0.50
+cache_read_per_mtok = 0.01
+cache_write_per_mtok = 0.125
+cache_write_1h_per_mtok = 0.20
+long_prompt_over_tokens = 100000
+long_prompt_factor = 5.0
+
+# The same Claude models at the composer's 思考 level (provider "anthropic-think" in
+# evowiki.runtime.llm: a higher effort, the same API and rates).
+[models."anthropic-think:claude-opus-5-5"]
+input_per_mtok = 4.0
+output_per_mtok = 20.0
+cache_read_per_mtok = 0.20
+cache_write_per_mtok = 5.00
+cache_write_1h_per_mtok = 8.00
+
+[models."anthropic-think:claude-sonnet-5-5"]
+input_per_mtok = 2.0
+output_per_mtok = 10.0
+cache_read_per_mtok = 0.20
+cache_write_per_mtok = 2.50
+cache_write_1h_per_mtok = 4.00
+
+[models."anthropic-think:claude-haiku-5-5"]
+input_per_mtok = 0.10
+output_per_mtok = 0.50
+cache_read_per_mtok = 0.01
+cache_write_per_mtok = 0.125
+cache_write_1h_per_mtok = 0.20
+long_prompt_over_tokens = 100000
+long_prompt_factor = 5.0
+
+# DeepSeek V4, published peak rates, from https://api-docs.deepseek.com/quick_start/pricing, as of
+# 2026-10-14, rechecked 2026-10-21 (unchanged; off-peak = half, off_peak_factor 0.5). input_per_mtok is the
+# cache-miss rate; cache_read_per_mtok the context-cache hit rate (the cache is on by default and
+# the API reports prompt_cache_hit_tokens / prompt_cache_miss_tokens). There is no cache write
+# charge: DeepSeek reports no written tokens (always 0), so no cache_write_per_mtok.
+[models."deepseek:deepseek-v4-pro"]
+input_per_mtok = 1.32
+output_per_mtok = 3.96
+cache_read_per_mtok = 0.044
+off_peak_factor = 0.5
+
+[models."deepseek:deepseek-v4-flash"]
+input_per_mtok = 0.3
+output_per_mtok = 1.2
+cache_read_per_mtok = 0.006
+off_peak_factor = 0.5
+
+# Same models with DeepSeek's thinking mode switched off (runtime fast tier in DeepSeek mode;
+# provider "deepseek-nothink" in evowiki.runtime.llm). Same rates: the API bills both alike.
+[models."deepseek-nothink:deepseek-v4-pro"]
+input_per_mtok = 1.32
+output_per_mtok = 3.96
+cache_read_per_mtok = 0.044
+off_peak_factor = 0.5
+
+[models."deepseek-nothink:deepseek-v4-flash"]
+input_per_mtok = 0.3
+output_per_mtok = 1.2
+cache_read_per_mtok = 0.006
+off_peak_factor = 0.5
+[models."openai:gpt-5.2"]
+# https://developers.openai.com/api/docs/models/gpt-5.2 (verified 2026-11-09)
+input_per_mtok = 1.75
+cache_read_per_mtok = 0.175
+output_per_mtok = 14.0
+
+[models."gemini:gemini-2.5-flash"]
+# https://ai.google.dev/gemini-api/docs/pricing.md (text/image, verified 2026-11-09)
+input_per_mtok = 0.30
+cache_read_per_mtok = 0.03
+output_per_mtok = 2.50
+
+[models."glm:glm-5.3"]
+# https://docs.z.ai/guides/overview/pricing (verified 2026-11-09)
+input_per_mtok = 1.4
+cache_read_per_mtok = 0.26
+output_per_mtok = 4.4

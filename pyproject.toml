@@ -1,0 +1,104 @@
+[project]
+name = "evowiki"
+version = "0.1.0"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+requires-python = ">=3.13"
+dependencies = [
+    "pydantic>=2.12",
+    "networkx>=3.7",
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+    "psycopg[binary]>=3.2",
+    "psycopg-pool>=3.2",
+    "dbos>=3.2,<4",
+    "pgvector>=0.3",
+    "numpy>=2.5.3",
+    "pypdfium2>=4.30",
+    "markitdown[pptx,docx,xlsx]>=0.1",
+    "python-pptx>=1.0",
+    "trafilatura>=2.0",
+    "bm25s>=0.2",
+    "jieba>=0.42",
+    "python-multipart>=0.0.20",
+    "pillow>=12.0",   # page images for vision (parse_pdf.render_pages)
+    "wasmtime>=25",
+    "jsonschema>=4.23",
+    "regex>=2024.11.6",
+    "python-dotenv>=1.0",   # scripts/envfile.py: the one .env reader of the scripts
+    "httpx>=0.28",          # deep/images.py: image search/download at runtime
+    "pywin32>=308 ; sys_platform == 'win32'",
+    "holidays>=0.107",
+    "fsrs>=6.3",            # belief/memory.py: K's FSRS-6 memory (MIT, pure-Python wheel)
+    "pyyaml>=6.0",          # agent/skills.py: SKILL.md frontmatter (already locked, transitively)
+    "opentelemetry-sdk>=1.45",                     # obs/export.py: spans to a local Phoenix (off unless configured)
+    "opentelemetry-exporter-otlp-proto-http>=1.45",
+]
+
+[project.optional-dependencies]
+llm = [  # openai SDK = client for DeepSeek (OpenAI-compatible)
+    "anthropic>=1.11.0",
+    "openai>=3.22.1",
+]
+embed = [
+    "fastembed>=0.5",
+]
+embed-gpu = [  # GPU embeddings (CUDA 13; set EVOWIKI_EMBED_PROVIDERS=cuda); conflicts with `embed`
+    "fastembed-gpu>=0.8,<0.9",
+    "onnxruntime-gpu==1.31.*",   # built for CUDA 13: the cu12 wheels make it fall back to CPU
+    "nvidia-cuda-runtime>=13.4,<14",
+    "nvidia-cublas>=13.8,<14",
+    "nvidia-cudnn-cu13>=9.27,<10",
+    "nvidia-cufft>=12.4,<13",
+    "nvidia-curand>=10.4,<11",
+    "nvidia-cuda-nvrtc>=13.4,<14",
+    "nvidia-nvjitlink>=13.4,<14",
+]
+fit = [  # local FSRS cross-check in scripts/rsi/fit_priors.py only (no license on PyPI: never imported by the product)
+    "fsrs-rs-python>=0.9.3",
+]
+deep = [  # deep refine render check (headless Chromium): `uv run playwright install chromium`
+    "playwright>=1.50",
+]
+
+[dependency-groups]
+dev = [
+    "babel>=2.17",
+    "pytest>=8.3",
+    "hypothesis>=6.120",
+    "ruff>=0.8",
+    "pixeltable-pgserver>=0.3",
+    "httpx>=0.28",
+    "reportlab>=4.2",
+    "pytest-socket>=0.7",
+]
+
+[tool.uv]
+# fastembed (onnxruntime) and fastembed-gpu (onnxruntime-gpu) both ship the `onnxruntime` module
+conflicts = [[{ extra = "embed" }, { extra = "embed-gpu" }]]
+# keep the Windows resolution of markitdown's magika as before the forks (0.6.3 pins onnxruntime
+# 1.20 on Windows)
+constraint-dependencies = ["magika<0.6.3 ; sys_platform == 'win32'"]
+# the dev machine: every locked package must have a Windows wheel (some nvidia-* releases do not);
+# a future dependency without a win-AMD64 wheel or sdist makes `uv lock` fail for everyone
+required-environments = ["sys_platform == 'win32' and platform_machine == 'AMD64'"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/evowiki"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = [".", "scripts"]   # scripts/ siblings (envfile) import when a test loads a script
+markers = [
+    "live: real paid LLM calls (tests/llm_cases/live); skipped unless EVOWIKI_LIVE=1, never in CI",
+    "browser: launches headless Chromium (Playwright); set by tests/conftest.py, about 8 min of the full run; deselect with -m 'not browser'",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"

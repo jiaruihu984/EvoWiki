@@ -1,0 +1,6 @@
+timestamp_TW,uuid,ucid,upid,problem_type,attempt_count,used_hint_cnt,is_correct,is_hint_used,is_downgrade,is_upgrade,level
+2018-09-28 18:00:00 UTC,u1,c1,p1,0,1,0,true,false,,,0
+2018-09-28 17:00:00 UTC,u1,c2,p2,0,1,0,false,false,,,0
+2018-09-28 19:00:00 UTC,u1,c1,p3,0,1,0,true,false,,,0
+2018-09-29 10:00:00 UTC,u2,c1,p1,0,2,1,false,true,,,0
+2018-09-29 11:00:00 UTC,u2,c2,p2,0,1,0,true,false,,,0

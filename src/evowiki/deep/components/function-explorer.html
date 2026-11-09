@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E5%87%BD%E6%95%B0%E6%8E%A2%E7%B4%A2%22-->函数探索</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+.axis{stroke:var(--tx-3);stroke-width:1}
+.grid{stroke:var(--line);stroke-width:1}
+.tick{fill:var(--tx-3);font:12px var(--font);font-variant-numeric:tabular-nums}
+.axTx{fill:var(--tx-2);font:12.5px var(--font)}
+.curve{fill:none;stroke:var(--accent);stroke-width:2.75;stroke-linejoin:round}
+.curve2{fill:none;stroke:var(--tx-2);stroke-width:2.25;stroke-dasharray:7 5}
+.lgTx{fill:var(--tx-2);font:12.5px var(--font)}
+.asy{stroke:var(--tx-3);stroke-width:1.25;stroke-dasharray:2 5}
+.asyTx{fill:var(--tx-3);font:12px var(--font)}
+.mk{fill:var(--bg);stroke:var(--tx);stroke-width:2}
+.mkTx{fill:var(--tx);font:600 12px var(--font)}
+.xcur{stroke:var(--warn);stroke-width:1.5}
+.xdot{fill:var(--warn);stroke:var(--bg);stroke-width:2}
+.pc{display:flex;align-items:center;gap:6px}
+.pc input{flex:1;min-width:0}
+.pc button{min-width:36px;padding:4px 0;font-size:16px;line-height:1}
+</style>
+<script data-evowiki-locale="function-explorer"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage"><svg id="plot" viewBox="0 0 560 340" role="img" aria-labelledby="plotDesc"><desc id="plotDesc"></desc></svg></div>
+    <div class="side">
+      <div id="pcs" class="side" style="gap:10px"></div>
+      <label class="check" id="cmpRow" hidden><input type="checkbox" id="compare"><span id="cmpTx"></span></label>
+      <div class="ctl">
+        <label for="xs"><!--ew-t:%22%E8%AF%BB%E5%8F%96%E4%B8%80%E7%82%B9%EF%BC%9A%22-->读取一点：<span id="xsTx"></span></label>
+        <input id="xs" type="range" min="0" max="1000" value="500">
+      </div>
+      <div class="read" id="read" aria-label="公式与关键点" data-ew-attrs='{"aria-label":"公式与关键点"}'></div>
+      <div class="row"><button type="button" id="reset"><!--ew-t:%22%E8%BF%98%E5%8E%9F%E5%8F%82%E6%95%B0%22-->还原参数</button></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("细菌在培养皿里的增长：为什么先快后慢"),"question": ewt("增长率和环境容纳量各自改变曲线的哪一部分？“拐点”意味着什么？"),"family":"logistic","x_label": ewt("培养时间"),"y_label": ewt("菌落数量"),"x_unit": ewt("小时"),"y_unit": ewt("个"),"x_min":0,"x_max":20,"y_min":0,"y_max":1200,"params":[{"key":"L","label": ewt("环境容纳量"),"value":1000,"min":400,"max":1200,"step":50,"adjustable":true,"unit": ewt("个"),"effect": ewt("容纳量越大，曲线最终停在越高的位置，但前期几乎一样。")},{"key":"k","label": ewt("增长率"),"value":0.6,"min":0.1,"max":1.5,"step":0.05,"adjustable":true,"unit":null,"effect": ewt("增长率越大，从“慢”到“饱和”的转折越陡。")},{"key":"x0","label": ewt("到达一半的时间"),"value":10,"min":4,"max":16,"step":0.5,"adjustable":true,"unit": ewt("小时"),"effect": ewt("这个值把整条曲线向右或向左平移，拐点也跟着走。")}],"marks":["asymptote","inflection"],"compare":{"label": ewt("增长较慢的种群"),"params":[{"key":"k","value":0.25}]}};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?(Math.abs(x)>=1000?x.toFixed(0):x.toFixed(d)):'—';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+
+const num=(v,d)=>v!==null&&v!==undefined&&Number.isFinite(Number(v))?Number(v):d;
+const FAMS={linear:['a','b'],quadratic:['a','b','c'],exponential:['a','b'],logarithm:['a','b'],logistic:['L','k','x0'],normal:['mu','sigma'],sine:['A','omega','phi','d']};
+const DEF={a:1,b:0,c:0,L:1,k:1,x0:0,mu:0,sigma:1,A:1,omega:1,phi:0,d:0};
+const fam=FAMS[C.family]?C.family:'linear';
+const keys=FAMS[fam];
+const SYM={a:'a',b:'b',c:'c',L:'L',k:'k',x0:'x₀',mu:'μ',sigma:'σ',A:'A',omega:'ω',phi:'φ',d:'d'};
+let xlo=num(C.x_min,0),xhi=num(C.x_max,10),ylo=num(C.y_min,-5),yhi=num(C.y_max,5);
+if(xhi<=xlo)xhi=xlo+1;if(yhi<=ylo)yhi=ylo+1;
+const xu=C.x_unit?EvoWikiLocale.string(C.x_unit):'',yu=C.y_unit?EvoWikiLocale.string(C.y_unit):'';
+const xl=EvoWikiLocale.string(C.x_label||'x'),yl=EvoWikiLocale.string(C.y_label||'y');
+// parameter specs: one per key of the family, taken from config (extra / duplicate keys ignored)
+const specs=keys.map(k=>{const q=(C.params||[]).find(p=>p&&p.key===k)||{};
+  let mn=num(q.min,DEF[k]-1),mx=num(q.max,DEF[k]+1);if(mx<=mn)mx=mn+1;
+  let st=num(q.step,(mx-mn)/100);if(!(st>0))st=(mx-mn)/100;
+  const v=Math.min(mx,Math.max(mn,num(q.value,DEF[k])));
+  return {key:k,label:EvoWikiLocale.string(q.label||SYM[k]).slice(0,40),v0:v,min:mn,max:mx,step:st,adj:q.adjustable===true,unit:q.unit?EvoWikiLocale.string(q.unit):'',effect:q.effect?EvoWikiLocale.string(q.effect).slice(0,200):''}});
+if(!specs.some(s=>s.adj))specs[0].adj=true;
+const adjs=specs.filter(s=>s.adj);
+const P={};specs.forEach(s=>P[s.key]=s.v0);
+const cmpCfg=C.compare&&Array.isArray(C.compare.params)?C.compare:null;
+let showCmp=false;
+const cmpP=cmpCfg?(()=>{const o={...P};cmpCfg.params.forEach(q=>{if(q&&keys.includes(q.key))o[q.key]=num(q.value,o[q.key])});return o})():null;
+const marksOn=(C.marks||[]);
+const has=m=>marksOn.includes(m);
+const dec=s=>{const t=EvoWikiLocale.string(s.step);const i=t.indexOf('.');return Math.min(4,i<0?0:t.length-i-1)};
+const num3=v=>{if(!Number.isFinite(v))return '—';const r=Number(v.toPrecision(3));return Math.abs(r)<1e-3&&r!==0?r.toExponential(1):EvoWikiLocale.string(r)};
+const sg=v=>v<0?' − '+num3(-v):' + '+num3(v);
+function f(p,x){switch(fam){
+  case 'linear':return p.a*x+p.b;
+  case 'quadratic':return p.a*x*x+p.b*x+p.c;
+  case 'exponential':return p.a*Math.pow(Math.max(p.b,1e-3),x);
+  case 'logarithm':{if(x<=0)return NaN;let b=Math.max(p.b,1e-3);if(Math.abs(b-1)<1e-3)b=1.001;return p.a*Math.log(x)/Math.log(b)}
+  case 'logistic':return p.L/(1+Math.exp(-p.k*(x-p.x0)));
+  case 'normal':{const s=Math.max(p.sigma,1e-3);return Math.exp(-((x-p.mu)**2)/(2*s*s))/(s*Math.sqrt(2*Math.PI))}
+  case 'sine':return p.A*Math.sin(p.omega*x+p.phi)+p.d}}
+function formula(p){switch(fam){
+  case 'linear':return `y = ${num3(p.a)}·x${sg(p.b)}`;
+  case 'quadratic':return `y = ${num3(p.a)}·x²${sg(p.b)}·x${sg(p.c)}`;
+  case 'exponential':return `y = ${num3(p.a)}·${num3(p.b)}^x`;
+  case 'logarithm':return `y = ${num3(p.a)}·log_${num3(p.b)}(x)`;
+  case 'logistic':return `y = ${num3(p.L)} / (1 + e^(−${num3(p.k)}·(x ${p.x0<0?'+ '+num3(-p.x0):'− '+num3(p.x0)})))`;
+  case 'normal':return  ewt("密度 = 1/({0}·√(2π)) · e^(−(x {1})² / (2·{2}²))", [num3(p.sigma),p.mu<0?'+ '+num3(-p.mu):'− '+num3(p.mu),num3(p.sigma)]);
+  case 'sine':return `y = ${num3(p.A)}·sin(${num3(p.omega)}·x${sg(p.phi)})${sg(p.d)}`}}
+// key points: {pts:[{shape,name,x,y}], h:[{v,name}], v:[{v,name}]}
+function marks(p){const o={pts:[],h:[],v:[]};const inX=x=>x>=xlo-1e-9&&x<=xhi+1e-9;
+  const pt=(shape,name,x,y)=>{if(Number.isFinite(x)&&Number.isFinite(y)&&inX(x))o.pts.push({shape,name,x,y})};
+  if(fam==='linear'){if(has('zeros')&&Math.abs(p.a)>1e-9)pt('o', ewt("零点"),-p.b/p.a,0);if(has('y_intercept'))pt('s', ewt("与 y 轴交点"),0,p.b)}
+  if(fam==='quadratic'){const a=p.a;
+    if(has('vertex')&&Math.abs(a)>1e-9){const x=-p.b/(2*a);pt('d',a<0? ewt("最高点"): ewt("最低点"),x,f(p,x))}
+    if(has('zeros')&&Math.abs(a)>1e-9){const D=p.b*p.b-4*a*p.c;if(D>=0){const r=Math.sqrt(D);const z=[(-p.b-r)/(2*a),(-p.b+r)/(2*a)].sort((u,v)=>u-v);pt('o', ewt("零点"),z[0],0);if(D>0)pt('o', ewt("零点"),z[1],0)}}
+    if(has('y_intercept'))pt('s', ewt("与 y 轴交点"),0,p.c)}
+  if(fam==='exponential'){if(has('y_intercept'))pt('s', ewt("与 y 轴交点"),0,p.a);if(has('asymptote'))o.h.push({v:0,name: ewt("渐近线 y = 0")})}
+  if(fam==='logarithm'){if(has('zeros'))pt('o', ewt("零点"),1,0);if(has('asymptote'))o.v.push({v:0,name: ewt("渐近线 x = 0")})}
+  if(fam==='logistic'){if(has('asymptote')){o.h.push({v:0,name: ewt("下限 y = 0")});o.h.push({v:p.L,name: ewt("上限 y = L")})}
+    if(has('inflection'))pt('t', ewt("拐点"),p.x0,p.L/2);if(has('y_intercept'))pt('s', ewt("与 y 轴交点"),0,f(p,0))}
+  if(fam==='normal'){const s=Math.max(p.sigma,1e-3);
+    if(has('vertex'))pt('d', ewt("峰值"),p.mu,f(p,p.mu));
+    if(has('mean_sd')){o.v.push({v:p.mu,name:'μ'});o.v.push({v:p.mu-s,name:'μ−σ'});o.v.push({v:p.mu+s,name:'μ+σ'})}
+    if(has('inflection')){pt('t', ewt("拐点"),p.mu-s,f(p,p.mu-s));pt('t', ewt("拐点"),p.mu+s,f(p,p.mu+s))}}
+  if(fam==='sine'){const w=Math.abs(p.omega)>1e-9?p.omega:1e-9,A=p.A;
+    if(has('midline'))o.h.push({v:p.d,name: ewt("中线 y = d")});
+    if(has('y_intercept'))pt('s', ewt("与 y 轴交点"),0,f(p,0));
+    if(has('vertex')&&Math.abs(A)>1e-9){let n=0;const k0=Math.floor((w*xlo+p.phi-Math.PI/2)/Math.PI)-1,k1=Math.ceil((w*xhi+p.phi-Math.PI/2)/Math.PI)+1;
+      for(let k=Math.min(k0,k1);k<=Math.max(k0,k1)&&n<6;k++){const x=(Math.PI/2+k*Math.PI-p.phi)/w;if(inX(x)){const y=f(p,x);pt('d',y>=p.d? ewt("最高点"): ewt("最低点"),x,y);n++}}}
+    if(has('zeros')&&Math.abs(A)>Math.abs(p.d)){const s=Math.asin(-p.d/A);let n=0;const ks=[];
+      for(let k=-30;k<=30;k++){ks.push((s+2*Math.PI*k-p.phi)/w);ks.push((Math.PI-s+2*Math.PI*k-p.phi)/w)}
+      ks.filter(inX).sort((u,v)=>u-v).slice(0,8).forEach(x=>pt('o', ewt("零点"),x,0))}}
+  return o}
+function niceStep(raw){const p=Math.pow(10,Math.floor(Math.log10(raw||1))),f=raw/p;return (f<1.5?1:f<3?2:f<7?5:10)*p}
+const tf=(t,s)=>{const d=s>=1?0:Math.min(4,Math.ceil(-Math.log10(s)));return t.toFixed(d)};
+let geo={},last='',xs=0.5;
+function shape(k,x,y){switch(k){
+  case 'd':return el('path',{d:`M${x} ${y-7}L${x+7} ${y}L${x} ${y+7}L${x-7} ${y}Z`,class:'mk'});
+  case 's':return el('rect',{x:x-5.5,y:y-5.5,width:11,height:11,class:'mk'});
+  case 't':return el('path',{d:`M${x} ${y-7}L${x+7} ${y+5}L${x-7} ${y+5}Z`,class:'mk'});
+  default:return el('circle',{cx:x,cy:y,r:5.5,class:'mk'})}}
+function draw(announce){
+  const W=Math.max(280,Math.round($('stage').clientWidth-16)),H=W<420?300:360;
+  const L=48,R=W-14,T=28,B=H-40;
+  const X=v=>L+(v-xlo)/(xhi-xlo)*(R-L),Y=v=>B-(v-ylo)/(yhi-ylo)*(B-T);
+  geo={L,R,T,B};
+  const svg=$('plot');EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} ${H}`);svg.querySelectorAll(':scope > :not(desc)').forEach(c=>c.remove());
+  const sx=niceStep((xhi-xlo)/Math.max(3,Math.floor((R-L)/80))),sy=niceStep((yhi-ylo)/Math.max(3,Math.floor((B-T)/55)));
+  for(let t=Math.ceil(xlo/sx-1e-9)*sx;t<=xhi+1e-9;t+=sx){svg.append(el('line',{x1:X(t),y1:T,x2:X(t),y2:B,class:'grid'}));svg.append(el('text',{x:X(t),y:B+16,'text-anchor':'middle',class:'tick'},tf(t,sx)))}
+  for(let t=Math.ceil(ylo/sy-1e-9)*sy;t<=yhi+1e-9;t+=sy){svg.append(el('line',{x1:L,y1:Y(t),x2:R,y2:Y(t),class:'grid'}));svg.append(el('text',{x:L-6,y:Y(t)+4,'text-anchor':'end',class:'tick'},tf(t,sy)))}
+  const cid='clip'+(draw.n=(draw.n||0)+1);
+  const defs=el('defs',{});const cp=el('clipPath',{id:cid});cp.append(el('rect',{x:L,y:T-2,width:R-L,height:B-T+4}));defs.append(cp);svg.append(defs);
+  svg.append(el('line',{x1:L,y1:B,x2:R,y2:B,class:'axis'}));svg.append(el('line',{x1:L,y1:T,x2:L,y2:B,class:'axis'}));
+  if(xlo<0&&xhi>0)svg.append(el('line',{x1:X(0),y1:T,x2:X(0),y2:B,class:'axis'}));
+  if(ylo<0&&yhi>0)svg.append(el('line',{x1:L,y1:Y(0),x2:R,y2:Y(0),class:'axis'}));
+  svg.append(el('text',{x:R,y:B+34,'text-anchor':'end',class:'axTx'},xl+(xu?'（'+xu+'）':'')));
+  svg.append(el('text',{x:L,y:14,'text-anchor':'start',class:'axTx'},yl+(yu?'（'+yu+'）':'')));
+  const g=el('g',{'clip-path':`url(#${cid})`});svg.append(g);
+  const mk=marks(P);
+  mk.h.forEach(h=>{if(h.v>=ylo&&h.v<=yhi){g.append(el('line',{x1:L,y1:Y(h.v),x2:R,y2:Y(h.v),class:'asy'}));svg.append(el('text',{x:R-4,y:Y(h.v)-5,'text-anchor':'end',class:'asyTx'},h.name))}});
+  mk.v.forEach(v=>{if(v.v>=xlo&&v.v<=xhi){g.append(el('line',{x1:X(v.v),y1:T,x2:X(v.v),y2:B,class:'asy'}));svg.append(el('text',{x:X(v.v),y:T+11,'text-anchor':'middle',class:'asyTx'},v.name))}});
+  const path=(p,cls)=>{const N=Math.max(60,Math.floor(R-L));let d='',pen=false;
+    for(let i=0;i<=N;i++){const x=xlo+(xhi-xlo)*i/N,y=f(p,x);if(!Number.isFinite(y)||Math.abs(y)>1e9){pen=false;continue}
+      const py=Math.max(T-1000,Math.min(B+1000,Y(y)));d+=(pen?'L':'M')+X(x).toFixed(1)+' '+py.toFixed(1);pen=true}
+    g.append(el('path',{d,class:cls}))};
+  if(cmpP&&showCmp)path(cmpP,'curve2');
+  path(P,'curve');
+  let lg=R;const leg=(t,cls)=>{const w=t.length*13;svg.append(el('text',{x:lg,y:14,'text-anchor':'end',class:'lgTx'},t));svg.append(el('line',{x1:lg-w-30,y1:10,x2:lg-w-6,y2:10,class:cls}));lg-=w+44};
+  if(cmpP&&showCmp)leg( ewt("对比：")+EvoWikiLocale.string(cmpCfg.label||'').slice(0,12),'curve2');
+  leg( ewt("当前曲线"),'curve');
+  const seen={};mk.pts.forEach(q=>{svg.append(shape(q.shape,X(q.x),Y(q.y)));if(!seen[q.name]){seen[q.name]=1;svg.append(el('text',{x:Math.min(R-30,X(q.x)+9),y:Math.max(T+10,Y(q.y)-9),class:'mkTx'},q.name))}});
+  const xv=xlo+(xhi-xlo)*xs,yv=f(P,xv);
+  if(Number.isFinite(yv)&&yv>=ylo&&yv<=yhi){svg.append(el('line',{x1:X(xv),y1:Y(yv),x2:X(xv),y2:B,class:'xcur'}));svg.append(el('circle',{cx:X(xv),cy:Y(yv),r:5,class:'xdot'}))}
+  EvoWikiLocale.prop($('plotDesc'),"textContent",()=>formula(P));
+  EvoWikiLocale.prop($('xsTx'),"innerHTML",()=>`x = <b>${num3(xv)}</b>${esc(xu)}`);
+  const row=(k,v)=>`<div><span class="k">${k}</span>${v}</div>`;
+  let rd=row( ewt("当前公式"),`<b>${esc(formula(P))}</b>`);
+  rd+=row( ewt("读取点：x = {0}{1}", [num3(xv),esc(xu)]),Number.isFinite(yv)?`y = <b>${num3(yv)}</b>${esc(yu?' '+yu:'')}`: ewt("这里没有定义"));
+  const names={};mk.pts.forEach(q=>{(names[q.name]=names[q.name]||[]).push(`(${num3(q.x)}, ${num3(q.y)})`)});
+  Object.keys(names).forEach(n=>rd+=row(n,names[n].join('，')));
+  if(mk.h.length+mk.v.length)rd+=row( ewt("渐近线 / 参考线"),mk.h.concat(mk.v).map(a=>esc(a.name)).join('，'));
+  if(cmpP&&showCmp)rd+=row( ewt("对比曲线"),esc(formula(cmpP)));
+  EvoWikiLocale.prop($('read'),"innerHTML",()=>rd);
+  if(announce)say(mk,xv,yv)}
+function say(mk,xv,yv){let m=last;
+  const q=mk.pts[0];
+  if(q)m+= ewt(" {0}在 ({1}, {2})。", [q.name,num3(q.x),num3(q.y)]);
+  else if(mk.pts.length===0&&(has('vertex')||has('zeros'))&&['quadratic','sine','linear','normal'].includes(fam))m+= ewt(" 在当前范围里这类关键点不存在或不在图内。");
+  if(Number.isFinite(yv))m+= ewt(" x = {0} 时 y = {1}。", [num3(xv),num3(yv)]);
+  EvoWikiLocale.prop($('result'),"textContent",()=>m.trim())}
+// controls
+specs.filter(s=>s.adj).forEach((s,i)=>{const d=document.createElement('div');d.className='ctl';
+  EvoWikiLocale.prop(d,"innerHTML",()=> ewt("<label for=\"p{0}\">{1}（{2}）：<b id=\"p{3}v\"></b></label><div class=\"pc\"><button type=\"button\" id=\"p{4}-dec\" aria-label=\"减小{5}\">−</button><input id=\"p{6}\" type=\"range\" min=\"{7}\" max=\"{8}\" step=\"{9}\" value=\"{10}\"><button type=\"button\" id=\"p{11}-inc\" aria-label=\"增大{12}\">+</button></div>", [i,esc(s.label),esc(SYM[s.key]),i,i,esc(s.label),i,s.min,s.max,s.step,s.v0,i,esc(s.label)]));
+  $('pcs').append(d);s.i=i;
+  const set=(v,how)=>{v=Math.min(s.max,Math.max(s.min,Number(v.toFixed(dec(s)))));const old=P[s.key];P[s.key]=v;$(`p${i}`).value=v;
+    last= ewt("{0}从 {1} {2}到 {3}{4}。{5}", [s.label,num3(old),v>old? ewt("调大"):v<old? ewt("调小"): ewt("保持"),num3(v),s.unit?s.unit:'',s.effect?' '+s.effect:'']);sync();draw(true)};
+  $(`p${i}`).addEventListener('input',e=>set(Number(e.target.value)));
+  $(`p${i}-inc`).onclick=()=>{let v=P[s.key]+s.step;if(v>s.max+1e-9)v=P[s.key]-s.step;set(v)};
+  $(`p${i}-dec`).onclick=()=>{let v=P[s.key]-s.step;if(v<s.min-1e-9)v=P[s.key]+s.step;set(v)}});
+function sync(){specs.filter(s=>s.adj).forEach(s=>{EvoWikiLocale.prop($(`p${s.i}v`),"textContent",()=>num3(P[s.key])+(s.unit?' '+s.unit:''))})}
+if(cmpP){$('cmpRow').hidden=false;EvoWikiLocale.prop($('cmpTx'),"textContent",()=> ewt("叠加对比曲线：")+EvoWikiLocale.string(cmpCfg.label||''));
+  $('compare').addEventListener('change',e=>{showCmp=e.target.checked;last=showCmp? ewt("叠加了对比曲线“{0}”，虚线是它。", [cmpCfg.label]): ewt("去掉了对比曲线。");draw(true)})}
+$('xs').addEventListener('input',e=>{xs=Number(e.target.value)/1000;last= ewt("读取点移动了。");draw(true)});
+$('reset').onclick=()=>{specs.forEach(s=>{P[s.key]=s.v0;if(s.adj)$(`p${s.i}`).value=s.v0});sync();last= ewt("参数还原成初始值。");draw(true)};
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title||'');EvoWikiLocale.prop($('question'),"textContent",()=>C.question||'');
+sync();last= ewt("初始状态。");
+new ResizeObserver(()=>draw(false)).observe($('stage'));
+draw(true);
+
+EvoWikiLocale.onChange(()=>{draw()});</script>
+</body>
+</html>

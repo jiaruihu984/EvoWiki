@@ -1,0 +1,38 @@
+{
+  "concepts": [
+    {"id": "linear_algebra", "name_en": "Linear Algebra", "name_zh": "线性代数", "domain": "la", "difficulty": 1},
+    {"id": "vector", "name_en": "Vector", "name_zh": "向量", "domain": "la", "difficulty": 1},
+    {"id": "matrix", "name_en": "Matrix", "name_zh": "矩阵", "domain": "la", "difficulty": 1},
+    {"id": "linear_transformation", "name_en": "Linear Transformation", "name_zh": "线性变换", "domain": "la", "difficulty": 2},
+    {"id": "eigenvalue", "name_en": "Eigenvalue", "name_zh": "特征值", "domain": "la", "difficulty": 3},
+    {"id": "variance", "name_en": "Variance", "name_zh": "方差", "domain": "prob", "difficulty": 2},
+    {"id": "covariance", "name_en": "Covariance Matrix", "name_zh": "协方差矩阵", "domain": "prob", "difficulty": 3},
+    {"id": "svd", "name_en": "SVD", "name_zh": "奇异值分解", "domain": "la", "difficulty": 4},
+    {"id": "pca", "name_en": "PCA", "name_zh": "主成分分析", "domain": "ml", "difficulty": 4},
+    {"id": "neural_network", "name_en": "Neural Network", "name_zh": "神经网络", "domain": "dl", "difficulty": 3},
+    {"id": "autoencoder", "name_en": "Autoencoder", "name_zh": "自编码器", "domain": "dl", "difficulty": 4},
+    {"id": "lora", "name_en": "LoRA", "name_zh": "低秩适配", "domain": "dl", "difficulty": 5}
+  ],
+  "edges": [
+    {"src": "vector", "dst": "matrix", "relation": "prerequisite_of", "kind": "formal", "strength": 0.95},
+    {"src": "matrix", "dst": "linear_transformation", "relation": "prerequisite_of", "kind": "formal", "strength": 0.9},
+    {"src": "linear_transformation", "dst": "eigenvalue", "relation": "prerequisite_of", "kind": "formal", "strength": 0.9},
+    {"src": "matrix", "dst": "eigenvalue", "relation": "prerequisite_of", "kind": "formal", "strength": 0.95},
+    {"src": "variance", "dst": "covariance", "relation": "prerequisite_of", "kind": "formal", "strength": 0.9},
+    {"src": "eigenvalue", "dst": "pca", "relation": "prerequisite_of", "kind": "formal", "strength": 0.95},
+    {"src": "covariance", "dst": "pca", "relation": "prerequisite_of", "kind": "formal", "strength": 0.9},
+    {"src": "eigenvalue", "dst": "svd", "relation": "prerequisite_of", "kind": "pedagogical", "strength": 0.6},
+    {"src": "neural_network", "dst": "autoencoder", "relation": "prerequisite_of", "kind": "formal", "strength": 0.9},
+    {"src": "svd", "dst": "lora", "relation": "prerequisite_of", "kind": "pedagogical", "strength": 0.7},
+    {"src": "pca", "dst": "svd", "relation": "related_to", "strength": 0.8},
+    {"src": "pca", "dst": "autoencoder", "relation": "related_to", "strength": 0.7},
+    {"src": "vector", "dst": "linear_algebra", "relation": "part_of", "strength": 1.0},
+    {"src": "neural_network", "dst": "linear_algebra", "relation": "part_of", "strength": 1.0}
+  ],
+  "quiz_items": [
+    {"id": "q_eig_1", "concept_ids": ["eigenvalue"], "difficulty": 3, "kind": "recall", "answer_verified_by_human": true},
+    {"id": "q_pca_1", "concept_ids": ["pca"], "difficulty": 4, "kind": "application", "answer_verified_by_human": true},
+    {"id": "q_pca_eig", "concept_ids": ["pca", "eigenvalue"], "difficulty": 4, "kind": "transfer", "answer_verified_by_human": true},
+    {"id": "q_cov_1", "concept_ids": ["covariance"], "difficulty": 3, "kind": "recall", "answer_verified_by_human": true}
+  ]
+}

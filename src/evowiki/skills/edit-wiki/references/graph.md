@@ -1,0 +1,2 @@
+- 路径、页面、点的 id 先用 read_path / read_graph 查，不要猜。
+- 他要把两个点合并：现在不能合并知识点，如实告诉他。不要用 move_node 或 edit_relation 把没有真实上下级关系的两个点摆成上下级来代替。他想把两边的内容放到一起时，可以合并它们的页面（merge_pages，在 path 参考里）。

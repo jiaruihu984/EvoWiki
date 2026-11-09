@@ -1,0 +1,382 @@
+{
+  "component_id": "sort-match",
+  "name": "分类与配对",
+  "description": "把项目拖进类别（分类），或把左边的项目配给右边唯一的对象（配对）；每放一个立刻说明对错和原因，也可以点选加按钮完成，最后检查全部或显示答案。",
+  "learning_question": "这些东西各自属于哪一类？它们之间谁和谁一一对应，为什么？",
+  "scenarios": [
+    "分类",
+    "配对",
+    "概念辨析",
+    "统计量的类型",
+    "互补配对",
+    "算法分类",
+    "术语与定义"
+  ],
+  "params": {
+    "mode": "classify（分类）或 match（一对一配对）",
+    "targets": "类别或配对对象",
+    "items": "要放的项目，每个带正确答案、理由和常见错误的说明"
+  },
+  "html_path": "src/evowiki/deep/components/sort-match.html",
+  "height": 640,
+  "probes": [
+    {
+      "target": "[data-probe=item-0]",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "[data-probe=cat-0]",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "#check",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "#show",
+      "action": "click",
+      "expect_change": "#result"
+    }
+  ],
+  "source": "component-library: classify / match practice with per-item feedback",
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "title",
+      "question",
+      "mode",
+      "targets",
+      "items"
+    ],
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "组件标题，说明这组东西要分类或配对什么"
+      },
+      "question": {
+        "type": "string",
+        "description": "学习问题，一句话"
+      },
+      "mode": {
+        "type": "string",
+        "enum": [
+          "classify",
+          "match"
+        ],
+        "description": "classify：把项目放进 2–5 个类别；match：左边每个项目配给右边唯一的一个对象（一对一）"
+      },
+      "targets": {
+        "type": "array",
+        "minItems": 1,
+        "description": "classify：2–5 个类别；match：右边的配对对象，数量等于 items 的数量",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "label",
+            "hint"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "短标识，如 c1，在 targets 内不重复"
+            },
+            "label": {
+              "type": "string",
+              "description": "类别名或配对对象的名字（短）"
+            },
+            "hint": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "一句提示，帮助判断（不要直接泄露哪个项目属于它）；没有就 null"
+            }
+          }
+        }
+      },
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "description": "4–14 个要放的项目",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "label",
+            "answer",
+            "explain",
+            "wrong_reasons",
+            "cell"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "短标识，不重复"
+            },
+            "label": {
+              "type": "string",
+              "description": "项目名（短）"
+            },
+            "answer": {
+              "type": "string",
+              "description": "正确的 targets[].id；match 模式下每个 target 只能被一个项目选中"
+            },
+            "explain": {
+              "type": "string",
+              "description": "一两句：为什么它属于这里（放对时显示）"
+            },
+            "wrong_reasons": {
+              "type": "array",
+              "description": "放错时的反馈：只为常见的错误选择写，没有就空数组",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "target",
+                  "why"
+                ],
+                "properties": {
+                  "target": {
+                    "type": "string",
+                    "description": "被误选的 targets[].id"
+                  },
+                  "why": {
+                    "type": "string",
+                    "description": "为什么放这里不对（一句话）"
+                  }
+                }
+              }
+            },
+            "cell": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "这一项考的知识格子 id（如 c1.interpret），只能用这一页给出的格子；学习者第一次放这一项的对错记进这个格子。这一页没有格子才给 null"
+            }
+          }
+        }
+      }
+    }
+  },
+  "example_configs": [
+    {
+      "title": "统计量：它描述“中心”还是“分散”？",
+      "question": "把每个统计量放进它回答的问题：数据大概在哪里，还是数据有多散？",
+      "mode": "classify",
+      "targets": [
+        {
+          "id": "c",
+          "label": "集中趋势",
+          "hint": "数据大概落在哪里"
+        },
+        {
+          "id": "d",
+          "label": "离散程度",
+          "hint": "数据有多分散"
+        }
+      ],
+      "items": [
+        {
+          "id": "1",
+          "label": "平均数",
+          "answer": "c",
+          "explain": "平均数把所有数合成一个“典型值”，描述中心位置，不描述散布。",
+          "wrong_reasons": [
+            {
+              "target": "d",
+              "why": "平均数只给出一个中心位置；同一个平均数可以来自很集中、也可以来自很分散的数据。"
+            }
+          ],
+          "cell": null
+        },
+        {
+          "id": "2",
+          "label": "方差",
+          "answer": "d",
+          "explain": "方差是偏差平方的平均，数据越分散它越大，回答的是“有多散”。",
+          "wrong_reasons": [
+            {
+              "target": "c",
+              "why": "方差不告诉你数据在哪里：把所有数都加 10，平均数变了，方差一点没变。"
+            }
+          ],
+          "cell": null
+        },
+        {
+          "id": "3",
+          "label": "中位数",
+          "answer": "c",
+          "explain": "中位数是排好序后正中间的那个数，也是描述中心，而且不容易被极端值带偏。",
+          "wrong_reasons": [
+            {
+              "target": "d",
+              "why": "中位数是一个位置，不衡量散布。"
+            }
+          ],
+          "cell": null
+        },
+        {
+          "id": "4",
+          "label": "标准差",
+          "answer": "d",
+          "explain": "标准差是方差开方，单位和原数据相同，衡量典型的偏离距离。",
+          "wrong_reasons": [
+            {
+              "target": "c",
+              "why": "标准差衡量偏离均值有多远，它不是中心本身。"
+            }
+          ],
+          "cell": null
+        },
+        {
+          "id": "5",
+          "label": "众数",
+          "answer": "c",
+          "explain": "众数是出现次数最多的值，是另一种“最典型”的值，属于集中趋势。",
+          "wrong_reasons": [
+            {
+              "target": "d",
+              "why": "众数只看哪个值最常见，和散布无关。"
+            }
+          ],
+          "cell": null
+        },
+        {
+          "id": "6",
+          "label": "极差",
+          "answer": "d",
+          "explain": "极差 = 最大值 − 最小值，一眼看出数据铺开的范围，是最简单的离散程度。",
+          "wrong_reasons": [
+            {
+              "target": "c",
+              "why": "极差是两端之间的距离，不是中心的位置。"
+            }
+          ],
+          "cell": null
+        },
+        {
+          "id": "7",
+          "label": "四分位距",
+          "answer": "d",
+          "explain": "四分位距 = Q3 − Q1，是中间一半数据铺开的宽度，不受极端值影响。",
+          "wrong_reasons": [
+            {
+              "target": "c",
+              "why": "四分位距衡量中间一半数据的宽度，不是中心。"
+            }
+          ],
+          "cell": null
+        }
+      ]
+    },
+    {
+      "title": "DNA 碱基互补配对",
+      "question": "DNA 双链里，每个碱基只和一个固定的碱基配对。把左边的碱基配给它的互补碱基。",
+      "mode": "match",
+      "targets": [
+        {
+          "id": "T",
+          "label": "胸腺嘧啶 T",
+          "hint": "单环，与配偶形成 2 个氢键"
+        },
+        {
+          "id": "G",
+          "label": "鸟嘌呤 G",
+          "hint": "双环，与配偶形成 3 个氢键"
+        },
+        {
+          "id": "C",
+          "label": "胞嘧啶 C",
+          "hint": "单环，与配偶形成 3 个氢键"
+        },
+        {
+          "id": "A",
+          "label": "腺嘌呤 A",
+          "hint": "双环，与配偶形成 2 个氢键"
+        }
+      ],
+      "items": [
+        {
+          "id": "a",
+          "label": "腺嘌呤 A",
+          "answer": "T",
+          "explain": "A 与 T 之间形成 2 个氢键，一个双环嘌呤配一个单环嘧啶，宽度才匹配。",
+          "wrong_reasons": [
+            {
+              "target": "A",
+              "why": "同一种碱基不会配成一对，双链上的位置也对不上。"
+            },
+            {
+              "target": "G",
+              "why": "两个嘌呤（双环）并排太宽，双链的宽度就不均匀了。"
+            },
+            {
+              "target": "C",
+              "why": "A 和 C 的氢键位置对不上，形成不了稳定的配对。"
+            }
+          ],
+          "cell": null
+        },
+        {
+          "id": "t",
+          "label": "胸腺嘧啶 T",
+          "answer": "A",
+          "explain": "T 与 A 配对（2 个氢键），一个嘧啶配一个嘌呤。",
+          "wrong_reasons": [
+            {
+              "target": "G",
+              "why": "T 和 G 的氢键位置对不上。"
+            },
+            {
+              "target": "C",
+              "why": "两个嘧啶（单环）凑在一起太窄，配不上。"
+            }
+          ],
+          "cell": null
+        },
+        {
+          "id": "g",
+          "label": "鸟嘌呤 G",
+          "answer": "C",
+          "explain": "G 与 C 之间有 3 个氢键，比 A–T 更牢固，所以 GC 含量高的 DNA 更耐热。",
+          "wrong_reasons": [
+            {
+              "target": "A",
+              "why": "两个嘌呤（双环）并排太宽。"
+            },
+            {
+              "target": "T",
+              "why": "G 和 T 的氢键位置对不上。"
+            }
+          ],
+          "cell": null
+        },
+        {
+          "id": "c",
+          "label": "胞嘧啶 C",
+          "answer": "G",
+          "explain": "C 与 G 配对（3 个氢键）：嘧啶配嘌呤。",
+          "wrong_reasons": [
+            {
+              "target": "A",
+              "why": "C 和 A 的氢键位置对不上。"
+            },
+            {
+              "target": "T",
+              "why": "两个嘧啶（单环）凑在一起太窄。"
+            }
+          ],
+          "cell": null
+        }
+      ]
+    }
+  ]
+}

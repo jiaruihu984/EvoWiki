@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E4%BA%8C%E7%BB%B4%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2%22-->二维线性变换</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+.axis{stroke:var(--tx-3);stroke-width:1.25}
+.g0{stroke:var(--line);stroke-width:1}
+.g1{stroke:var(--accent);stroke-opacity:.35;stroke-width:1.25}
+.tick{fill:var(--tx-3);font:12px var(--font);font-variant-numeric:tabular-nums}
+.axTx{fill:var(--tx-2);font:12.5px var(--font)}
+.sq0{fill:none;stroke:var(--tx-3);stroke-width:1.25;stroke-dasharray:4 4}
+.sq1{fill:var(--warn);fill-opacity:.16;stroke:var(--warn);stroke-width:1.5}
+.vi{stroke:var(--accent);stroke-width:3}.vi-h{fill:var(--accent)}
+.vj{stroke:var(--good);stroke-width:3}.vj-h{fill:var(--good)}
+.vv{stroke:var(--tx-3);stroke-width:2.5;stroke-dasharray:6 4}.vv-h{fill:var(--tx-3)}
+.vw{stroke:var(--tx);stroke-width:3}.vw-h{fill:var(--tx)}
+.eig{stroke:var(--bad);stroke-width:1.75;stroke-dasharray:9 5}
+.eigTx{fill:var(--bad);font:600 12.5px var(--font)}
+.lbTx{font:600 13px var(--font)}
+.pc{display:flex;align-items:center;gap:6px}
+.pc input{flex:1;min-width:0}
+.mx{display:inline-grid;grid-template-columns:auto auto;gap:2px 14px;border-left:2px solid var(--tx-3);border-right:2px solid var(--tx-3);padding:0 8px;border-radius:4px;color:var(--tx);font-weight:600}
+</style>
+<script data-evowiki-locale="linear-transform-2d"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage"><svg id="plot" viewBox="0 0 400 400" role="img" aria-labelledby="plotDesc"><desc id="plotDesc"></desc></svg></div>
+    <div class="side">
+      <div class="row" id="mats" role="group" aria-label="选择矩阵" hidden data-ew-attrs='{"aria-label":"选择矩阵"}'></div>
+      <div class="ctl">
+        <label for="t"><!--ew-t:%22%E4%BB%8E%E5%8D%95%E4%BD%8D%E7%9F%A9%E9%98%B5%E5%88%B0%20A%EF%BC%9At%20%3D%22-->从单位矩阵到 A：t = <b id="tTx"></b></label>
+        <input id="t" type="range" min="0" max="100" value="100">
+      </div>
+      <div class="ctl">
+        <label for="ang"><!--ew-t:%22%E5%90%91%E9%87%8F%20v%20%E7%9A%84%E6%96%B9%E5%90%91%EF%BC%9A%22-->向量 v 的方向：<b id="angTx"></b></label>
+        <input id="ang" type="range" min="0" max="359" value="0">
+        <div class="row"><button type="button" id="rot-cw" aria-label="v 顺时针转 15 度" data-ew-attrs='{"aria-label":"v 顺时针转 15 度"}'><!--ew-t:%22%E9%A1%BA%E6%97%B6%E9%92%88%E8%BD%AC%2015%C2%B0%22-->顺时针转 15°</button><button type="button" id="rot-ccw" aria-label="v 逆时针转 15 度" data-ew-attrs='{"aria-label":"v 逆时针转 15 度"}'><!--ew-t:%22%E9%80%86%E6%97%B6%E9%92%88%E8%BD%AC%2015%C2%B0%22-->逆时针转 15°</button></div>
+      </div>
+      <div class="row" id="snaps"></div>
+      <div class="read" id="read" aria-label="读数" data-ew-attrs='{"aria-label":"读数"}'></div>
+      <div class="row"><button type="button" id="reset"><!--ew-t:%22%E8%BF%98%E5%8E%9F%22-->还原</button></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("剪切、拉伸和旋转：网格被矩阵怎样变形"),"question": ewt("拖动 t，看方格怎样从原样变成 A 的样子；哪些方向在变换后仍然指向原来的方向？"),"axis_x":"x","axis_y":"y","view":3,"matrices":[{"name": ewt("剪切"),"a":1,"b":1,"c":0,"d":1,"meaning": ewt("横向错切：y 越大，点被推得越远；面积不变，只有横轴方向没被转动。")},{"name": ewt("拉伸"),"a":2,"b":0,"c":0,"d":0.5,"meaning": ewt("x 方向拉长 2 倍、y 方向压到一半；坐标轴方向保持不变，面积还是 1。")},{"name": ewt("旋转 90°"),"a":0,"b":-1,"c":1,"d":0,"meaning": ewt("整体逆时针转 90°；任何方向都被转走了，所以没有实特征方向。")}],"vector":{"x":0.5,"y":1.5},"show_square":true,"show_eigen":true};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?(Math.abs(x)>=1000?x.toFixed(0):x.toFixed(d)):'—';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+
+const num=(v,d)=>v!==null&&v!==undefined&&Number.isFinite(Number(v))?Number(v):d;
+const cl=(v,m)=>Math.max(-m,Math.min(m,v));
+const VIEW=Math.min(8,Math.max(1.5,num(C.view,3)));
+const ax=EvoWikiLocale.string(C.axis_x||'x').slice(0,16),ay=EvoWikiLocale.string(C.axis_y||'y').slice(0,16);
+const mats=(C.matrices||[]).slice(0,4).map((m,i)=>({name:EvoWikiLocale.string(m.name||( ewt("矩阵 ")+(i+1))).slice(0,20),a:cl(num(m.a,1),4),b:cl(num(m.b,0),4),c:cl(num(m.c,0),4),d:cl(num(m.d,1),4),meaning:m.meaning?EvoWikiLocale.string(m.meaning).slice(0,240):''}));
+if(!mats.length)mats.push({name: ewt("单位矩阵"),a:1,b:0,c:0,d:1,meaning:''});
+const v0=C.vector||{};let vx0=num(v0.x,1),vy0=num(v0.y,0);if(Math.hypot(vx0,vy0)<0.2){vx0=1;vy0=0}
+const vlen=Math.min(VIEW*0.9,Math.hypot(vx0,vy0));
+const ang0=((Math.atan2(vy0,vx0)*180/Math.PI)%360+360)%360;
+let mi=0,t=1,ang=Math.round(ang0),last='';
+const showSq=C.show_square!==false,showEig=C.show_eigen!==false;
+const fm=(v,d=2)=>{const r=Number(v.toFixed(d));return Object.is(r,-0)?'0':EvoWikiLocale.string(r)};
+function eigen(m){const {a,b,c,d}=m,tr=a+d,det=a*d-b*c,disc=tr*tr/4-det;
+  if(Math.abs(b)<1e-9&&Math.abs(c)<1e-9&&Math.abs(a-d)<1e-9)return {all:true,lam:a,list:[]};
+  if(disc<-1e-9)return {complex:true,list:[],det,tr};
+  const s=Math.sqrt(Math.max(0,disc)),ls=s<1e-9?[tr/2]:[tr/2+s,tr/2-s];
+  const list=ls.map(l=>{let x,y;if(Math.abs(b)>1e-9){x=b;y=l-a}else if(Math.abs(c)>1e-9){x=l-d;y=c}else{x=Math.abs(l-a)<1e-9?1:0;y=x?0:1}
+    const n=Math.hypot(x,y);return {lam:l,x:x/n,y:y/n}});
+  return {list,det,tr}}
+const cur=()=>mats[mi];
+const Mt=()=>{const m=cur();return {a:1+(m.a-1)*t,b:m.b*t,c:m.c*t,d:1+(m.d-1)*t}};
+const app=(m,x,y)=>[m.a*x+m.b*y,m.c*x+m.d*y];
+const vec=()=>{const r=ang*Math.PI/180;return [vlen*Math.cos(r),vlen*Math.sin(r)]};
+const angDiff=(p,q)=>{let d=(Math.atan2(q[1],q[0])-Math.atan2(p[1],p[0]))*180/Math.PI;d=((d+180)%360+360)%360-180;return d};
+const parallel=(p,q)=>{const cr=Math.abs(p[0]*q[1]-p[1]*q[0])/(Math.hypot(...p)*Math.hypot(...q)||1);return cr<Math.sin(2*Math.PI/180)};
+function niceStep(raw){const p=Math.pow(10,Math.floor(Math.log10(raw||1))),f=raw/p;return (f<1.5?1:f<3?2:f<7?5:10)*p}
+function arrow(svg,x0,y0,x1,y1,cls,hcls){const dx=x1-x0,dy=y1-y0,len=Math.hypot(dx,dy);if(len<2)return;const ux=dx/len,uy=dy/len,h=Math.min(11,len*.5);
+  svg.append(el('line',{x1:x0,y1:y0,x2:x1-ux*h*.6,y2:y1-uy*h*.6,class:cls}));
+  svg.append(el('path',{d:`M${x1} ${y1}L${x1-ux*h-uy*h*.5} ${y1-uy*h+ux*h*.5}L${x1-ux*h+uy*h*.5} ${y1-uy*h-ux*h*.5}Z`,class:hcls}))}
+function draw(announce){
+  const W=Math.max(280,Math.min(520,Math.round($('stage').clientWidth-16))),S=W;
+  const c=S/2,k=(S/2-18)/VIEW;
+  const X=v=>c+v*k,Y=v=>c-v*k;
+  const svg=$('plot');EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${S} ${S}`);svg.style.maxWidth=S+'px';svg.style.margin='0 auto';
+  svg.querySelectorAll(':scope > :not(desc)').forEach(n=>n.remove());
+  const cid='clip'+(draw.n=(draw.n||0)+1);
+  const defs=el('defs',{});const cp=el('clipPath',{id:cid});cp.append(el('rect',{x:0,y:0,width:S,height:S}));defs.append(cp);svg.append(defs);
+  const g=el('g',{'clip-path':`url(#${cid})`});svg.append(g);
+  const m=Mt(),A=cur(),N=Math.ceil(VIEW*3)+2,R=VIEW*6;
+  const tr=(x,y)=>{const [u,w]=app(m,x,y);return [X(u),Y(w)]};
+  for(let i=-Math.ceil(VIEW);i<=Math.ceil(VIEW);i++){
+    g.append(el('line',{x1:X(i),y1:0,x2:X(i),y2:S,class:'g0'}));g.append(el('line',{x1:0,y1:Y(i),x2:S,y2:Y(i),class:'g0'}))}
+  for(let i=-N;i<=N;i++){
+    let p=tr(i,-R),q=tr(i,R);g.append(el('line',{x1:p[0],y1:p[1],x2:q[0],y2:q[1],class:'g1'}));
+    p=tr(-R,i);q=tr(R,i);g.append(el('line',{x1:p[0],y1:p[1],x2:q[0],y2:q[1],class:'g1'}))}
+  g.append(el('line',{x1:0,y1:Y(0),x2:S,y2:Y(0),class:'axis'}));g.append(el('line',{x1:X(0),y1:0,x2:X(0),y2:S,class:'axis'}));
+  const e=eigen(A);
+  if(showEig)e.list.forEach(q=>{const L=VIEW*4;g.append(el('line',{x1:X(-q.x*L),y1:Y(-q.y*L),x2:X(q.x*L),y2:Y(q.y*L),class:'eig'}))});
+  if(showSq){g.append(el('rect',{x:X(0),y:Y(1),width:k,height:k,class:'sq0'}));
+    const pp=[[0,0],[1,0],[1,1],[0,1]].map(p=>tr(p[0],p[1]));g.append(el('path',{d:'M'+pp.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L')+'Z',class:'sq1'}))}
+  const [iu,iw]=app(m,1,0),[ju,jw]=app(m,0,1);
+  const v=vec(),[wu,ww]=app(m,v[0],v[1]);
+  arrow(g,X(0),Y(0),X(v[0]),Y(v[1]),'vv','vv-h');
+  arrow(g,X(0),Y(0),X(iu),Y(iw),'vi','vi-h');arrow(g,X(0),Y(0),X(ju),Y(jw),'vj','vj-h');
+  arrow(g,X(0),Y(0),X(wu),Y(ww),'vw','vw-h');
+  // labels (outside the clip group)
+  const lab=(x,y,txt,col,dx=8,dy=-6)=>{const px=Math.max(6,Math.min(S-6,X(x)+dx)),py=Math.max(14,Math.min(S-6,Y(y)+dy));
+    const t1=el('text',{x:px,y:py,class:'lbTx','text-anchor':px>S-60?'end':'start'},txt);EvoWikiLocale.attr(t1,'style',()=>'fill:'+col);EvoWikiLocale.attr(t1,'paint-order',()=>'stroke');EvoWikiLocale.attr(t1,'stroke',()=>'var(--bg-1)');EvoWikiLocale.attr(t1,'stroke-width',()=>'3');svg.append(t1)};
+  lab(iu,iw,t>=.99?'Ai': ewt("变换后的 i"),'var(--accent)');lab(ju,jw,t>=.99?'Aj': ewt("变换后的 j"),'var(--good)',8,-6);
+  lab(v[0],v[1],'v','var(--tx-2)',8,-6);lab(wu,ww,t>=.99?'Av': ewt("变换后的 v"),'var(--tx)',8,14);
+  if(showEig)e.list.forEach((q,i)=>{const sgn=q.x<-1e-9||(Math.abs(q.x)<1e-9&&q.y<0)?-1:1;const L=VIEW*.93/Math.max(Math.abs(q.x),Math.abs(q.y));
+    const ex=q.x*L*sgn,ey=q.y*L*sgn;const right=X(ex)>S/2;
+    svg.append(el('text',{x:Math.max(6,Math.min(S-6,X(ex)+(right?-4:4))),y:Math.max(14,Math.min(S-6,Y(ey)+(ey>0?14:-6))),class:'eigTx','text-anchor':right?'end':'start'}, ewt("特征方向 λ = ")+fm(q.lam)))});
+  for(let i=-Math.floor(VIEW);i<=Math.floor(VIEW);i++)if(i!==0){svg.append(el('text',{x:X(i),y:Y(0)+15,'text-anchor':'middle',class:'tick'},i));svg.append(el('text',{x:X(0)-5,y:Y(i)+4,'text-anchor':'end',class:'tick'},i))}
+  svg.append(el('text',{x:S-6,y:Y(0)-7,'text-anchor':'end',class:'axTx'},ax));svg.append(el('text',{x:X(0)+7,y:14,class:'axTx'},ay));
+  EvoWikiLocale.prop($('plotDesc'),"textContent",()=> ewt("矩阵 {0}，t = {1}，行列式 {2}", [cur().name,fm(t),fm(A.a*A.d-A.b*A.c)]));
+  EvoWikiLocale.prop($('tTx'),"textContent",()=>fm(t));EvoWikiLocale.prop($('angTx'),"textContent",()=>fm(ang,0)+'°');
+  // readout
+  const det=A.a*A.d-A.b*A.c,dt=m.a*m.d-m.b*m.c;
+  const [Au,Aw]=app(A,v[0],v[1]);
+  const row=(k2,val)=>`<div><span class="k">${k2}</span>${val}</div>`;
+  let rd=row( ewt("矩阵 A（")+esc(cur().name)+'）',`<span class="mx"><span>${fm(A.a)}</span><span>${fm(A.b)}</span><span>${fm(A.c)}</span><span>${fm(A.d)}</span></span>`);
+  rd+=row( ewt("向量"),`v = (${fm(v[0])}, ${fm(v[1])})　→　Av = (<b>${fm(Au)}</b>, <b>${fm(Aw)}</b>)`);
+  rd+=row( ewt("行列式 = 面积倍数"), ewt("<b>{0}</b>{1}", [fm(det),t<.99? ewt("（现在 t = {0}：{1}）", [fm(t),fm(dt)]):'']));
+  if(e.all)rd+=row( ewt("特征方向"), ewt("每个方向都是（A 只是把所有向量放大 {0} 倍）", [fm(e.lam)]));
+  else if(e.complex)rd+=row( ewt("特征方向"), ewt("没有实的特征方向（所有方向都被转动）"));
+  else rd+=row( ewt("特征值与方向"),e.list.map(q=> ewt("λ = <b>{0}</b>，方向 ({1}, {2})", [fm(q.lam),fm(q.x),fm(q.y)])).join('<br>'));
+  EvoWikiLocale.prop($('read'),"innerHTML",()=>rd);
+  // snap buttons
+  const sn=$('snaps');const key=e.list.map(q=>q.x.toFixed(3)+q.y.toFixed(3)).join('|')+mi;
+  if(sn.dataset.key!==key){sn.dataset.key=key;EvoWikiLocale.prop(sn,"innerHTML",()=>'');
+    e.list.forEach((q,i)=>{const b=document.createElement('button');b.type='button';b.id='snap-'+i;EvoWikiLocale.prop(b,"textContent",()=> ewt("把 v 转到特征方向（λ = ")+fm(q.lam)+'）');
+      b.onclick=()=>{let a=Math.atan2(q.y,q.x)*180/Math.PI;a=((a%360)+360)%360;ang=Math.round(a);$('ang').value=ang;last= ewt("把 v 转到特征方向 λ = {0}。", [fm(q.lam)]);draw(true)};sn.append(b)})}
+  if(announce)say(A,e,det,v,[Au,Aw])}
+function say(A,e,det,v,w){let m=last;const A_=cur();
+  const dd=Math.abs(det);
+  let area=dd<1e-9? ewt("行列式为 0：整个平面被压成一条线（或一个点），面积没了。"):det<0? ewt("行列式 {0}：面积变为 {1} 倍，并且方向翻转（镜像）。", [fm(det),fm(dd)]): ewt("行列式 {0}：单位方块的面积变为 {1} 倍。", [fm(det),fm(det)]);
+  let verdict;
+  const lv=Math.hypot(v[0],v[1]),lw=Math.hypot(w[0],w[1]);
+  const onEig=!e.complex&&(e.all||e.list.find(q=>parallel(v,[q.x,q.y])));
+  if(e.all)verdict= ewt("A 对每个方向一视同仁：任何 v 都只是被放大，不会转动。");
+  else if(e.complex)verdict= ewt("v 被转了 {0}°，这个矩阵找不到只伸缩不转动的方向。", [fm(Math.abs(angDiff(v,w)),0)]);
+  else if(onEig){const q=e.list.find(q=>parallel(v,[q.x,q.y]));verdict= ewt("v 正好落在特征方向上：Av 和 v 在同一条直线上，只是长度变成 {0} 倍（特征值 λ = {1}）。", [fm(lv>0?lw/lv:0),fm(q.lam)])}
+  else verdict= ewt("v 不在特征方向上：Av 比 v 转了 {0}°，长度变成 {1} 倍。", [fm(Math.abs(angDiff(v,w)),0),fm(lv>0?lw/lv:0)]);
+  const mean=(m.includes( ewt("矩阵"))&&A_.meaning)?(' '+A_.meaning):'';
+  EvoWikiLocale.prop($('result'),"textContent",()=>(m+mean+' '+area+' '+verdict+(t<.99? ewt(" （现在只变了 t = {0} 的程度，Av 是 t = 1 时的结果。）", [fm(t)]):'')).trim())}
+// controls
+const mr=$('mats');
+if(mats.length>1){mr.hidden=false;mats.forEach((q,i)=>{const b=document.createElement('button');b.type='button';b.id='mat-'+i;EvoWikiLocale.prop(b,"textContent",()=>q.name);EvoWikiLocale.attr(b,'aria-pressed',()=>i===0);mr.append(b);
+  b.onclick=()=>{mi=i;mats.forEach((_,j)=>EvoWikiLocale.attr($('mat-'+j),'aria-pressed',()=>j===i));last= ewt("换成“{0}”矩阵。", [q.name]);draw(true)}})}
+$('t').addEventListener('input',e=>{t=Number(e.target.value)/100;last= ewt("t 调到 {0}：网格从原样变了 {1}% 的程度。", [fm(t),fm(t*100,0)]);draw(true)});
+$('ang').addEventListener('input',e=>{ang=Number(e.target.value);last= ewt("把 v 转到 {0}°。", [ang]);draw(true)});
+const rot=d=>{ang=((ang+d)%360+360)%360;$('ang').value=ang;last= ewt("把 v {0}时针转了 15°，现在在 {1}°。", [d>0? ewt("逆"): ewt("顺"),ang]);draw(true)};
+$('rot-ccw').onclick=()=>rot(15);$('rot-cw').onclick=()=>rot(-15);
+$('reset').onclick=()=>{t=1;ang=Math.round(ang0);mi=0;$('t').value=100;$('ang').value=ang;if(mats.length>1)mats.forEach((_,j)=>EvoWikiLocale.attr($('mat-'+j),'aria-pressed',()=>j===0));last= ewt("全部还原。");draw(true)};
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title||'');EvoWikiLocale.prop($('question'),"textContent",()=>C.question||'');
+$('ang').value=ang;last= ewt("矩阵“{0}”。", [cur().name]);
+new ResizeObserver(()=>draw(false)).observe($('stage'));
+draw(true);
+
+EvoWikiLocale.onChange(()=>{draw()});</script>
+</body>
+</html>

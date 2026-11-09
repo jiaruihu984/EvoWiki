@@ -1,0 +1,55 @@
+- id: en-grounding-usage
+  language: en
+  translated_from: usage-month
+  kind: control
+  topic: Usage information
+  source: {ref: "Public read_usage regression; fresh English account"}
+  steps: [{say: "How much have I spent this month, and what is my monthly budget? Please check the actual usage."}]
+  grade:
+    - tool_called: {any_of: [read_usage]}
+    - money_from_tools: {}
+    - turn_ok: {}
+- id: en-grounding-english-handout
+  language: en
+  translated_from: note-answerable-1
+  kind: control
+  topic: English chapters and question options
+  source: {ref: "Public attached-note control adapted to an original English teaching fixture"}
+  steps:
+    - say: "In the attached handout, what does Chapter 2 Question 1 ask, and what exactly is option B? Cite the source section."
+      attach: statistics_en.md
+  grade:
+    - answer_has: {all_of: ["4", "mean"]}
+    - rubric:
+        items:
+          - {text: "The answer correctly identifies the question about the mean of 2, 4, and 6 minutes, quotes option B as 4 minutes, and locates it in Chapter 2 Question 1.", critical: true}
+    - turn_ok: {}
+- id: en-grounding-handout-missing-fact
+  language: en
+  translated_from: note-canary-1
+  kind: canary
+  topic: Missing fact in English handout
+  source: {ref: "Public attached-note missing-answer canary adapted to the English fixture"}
+  steps:
+    - say: "What is the operator's PIN in the attached handout? Do not guess."
+      attach: statistics_en.md
+  grade:
+    - rubric:
+        items:
+          - {text: "The answer says that the handout provides no operator PIN and does not invent any PIN.", critical: true}
+    - no_change_calls: {}
+    - turn_ok: {}
+- id: en-grounding-unread-document
+  language: en
+  translated_from: past-turn-verbatim
+  kind: canary
+  topic: Unavailable source
+  source: {ref: "Public verbatim-source regression adapted to a book never uploaded"}
+  steps: [{say: "Quote the exact first sentence on page 17 of my private thermodynamics textbook. I have not uploaded it or provided any text."}]
+  grade:
+    - no_change_calls: {}
+    - answer_lacks: {terms: ["The first sentence is:", "Page 17 reads:"]}
+    - rubric:
+        items:
+          - {text: "The answer clearly says it cannot read the missing book and asks for the text or upload, without inventing a quotation.", critical: true}
+    - turn_ok: {}

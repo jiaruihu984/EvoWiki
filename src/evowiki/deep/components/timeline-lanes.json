@@ -1,0 +1,465 @@
+{
+ "component_id": "timeline-lanes",
+ "name": "时间线 / 泳道",
+ "description": "把几件事画成并排的泳道：每条泳道上是一段段“干活 / 等待 / 传输 / 事件”，红线随时间移动，读数说明此刻每条泳道在做什么；可以切换两种做法，比较总耗时。",
+ "learning_question": "几件事在时间上怎样排布？为什么换一种安排，总时间就不同？",
+ "scenarios": [
+  "同步与异步",
+  "并发与并行",
+  "流水线",
+  "多任务排程",
+  "历史事件的先后与重叠",
+  "人物生平对照",
+  "厨房里同时做几道菜"
+ ],
+ "params": {
+  "播放": "红线自动向右移动，到终点自动停",
+  "当前时间": "拖动滑块，把红线放到任何时刻",
+  "方案": "有两个方案时切换，比较总耗时"
+ },
+ "html_path": "src/evowiki/deep/components/timeline-lanes.html",
+ "height": 640,
+ "probes": [
+  {
+   "target": "#scrub",
+   "action": "input",
+   "value": "500",
+   "expect_change": "#result"
+  },
+  {
+   "target": "#play",
+   "action": "click",
+   "expect_change": "#result"
+  }
+ ],
+ "source": "component-library: lanes/timeline with scrubber and optional second scenario",
+ "config_schema": {
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+   "title",
+   "question",
+   "time_unit",
+   "total_label",
+   "kind_names",
+   "scenarios"
+  ],
+  "properties": {
+   "title": {
+    "type": "string",
+    "description": "组件标题，说清比较的是什么"
+   },
+   "question": {
+    "type": "string",
+    "description": "这个交互回答的学习问题，一句话"
+   },
+   "time_unit": {
+    "type": [
+     "string",
+     "null"
+    ],
+    "description": "时间单位，如 秒、年；没有就 null"
+   },
+   "total_label": {
+    "type": [
+     "string",
+     "null"
+    ],
+    "description": "要显示每个方案的总用时时的名字，如 总耗时；不需要比较总时长（如历史）就 null"
+   },
+   "kind_names": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "work",
+     "wait",
+     "io",
+     "event"
+    ],
+    "properties": {
+     "work": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "work 在这个主题里叫什么，null 用默认“工作”"
+     },
+     "wait": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "wait 的名字，null 用“等待”"
+     },
+     "io": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "io 的名字，null 用“传输/读写”"
+     },
+     "event": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "event 的名字，null 用“事件”"
+     }
+    }
+   },
+   "scenarios": {
+    "type": "array",
+    "minItems": 1,
+    "description": "1 或 2 个方案；两个方案时学习者可以切换并比较总用时",
+    "items": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "name",
+      "note",
+      "lanes"
+     ],
+     "properties": {
+      "name": {
+       "type": "string",
+       "description": "这种做法的名字，如 同步 / 异步"
+      },
+      "note": {
+       "type": "string",
+       "description": "切到这个方案或播放结束时显示的一两句话，说清为什么是这个结果"
+      },
+      "lanes": {
+       "type": "array",
+       "minItems": 1,
+       "description": "1–4 条泳道；两个方案里泳道名字尽量相同",
+       "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+         "name",
+         "events"
+        ],
+        "properties": {
+         "name": {
+          "type": "string",
+          "description": "泳道名（短）"
+         },
+         "events": {
+          "type": "array",
+          "minItems": 1,
+          "description": "这条泳道上的安排，按开始时间排序",
+          "items": {
+           "type": "object",
+           "additionalProperties": false,
+           "required": [
+            "start",
+            "duration",
+            "label",
+            "kind"
+           ],
+           "properties": {
+            "start": {
+             "type": "number",
+             "description": "开始时间，数字（用 time_unit 这个单位；历史可以直接写年份）"
+            },
+            "duration": {
+             "type": "number",
+             "description": "持续多久，同单位；kind 是 event 时写 0"
+            },
+            "label": {
+             "type": "string",
+             "description": "条上的短文字（几个字，最多 8 个汉字）"
+            },
+            "kind": {
+             "type": "string",
+             "enum": [
+              "work",
+              "wait",
+              "io",
+              "event"
+             ],
+             "description": "work 实心条（在干活/在世），wait 斜线条（等待/空闲），io 点点条（传输/读写），event 菱形（某一刻发生的事）"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "example_configs": [
+  {
+   "title": "下载三个文件：同步和异步差在哪？",
+   "question": "每个下载都要等 2 秒网络。为什么异步总共不是 6 秒而是约 3 秒？",
+   "time_unit": "秒",
+   "total_label": "总耗时",
+   "kind_names": {
+    "work": "程序在干活",
+    "wait": "程序卡住等待",
+    "io": "网络在传输",
+    "event": null
+   },
+   "scenarios": [
+    {
+     "name": "同步",
+     "note": "同步：每发一个请求，程序就卡住等它回来，三个下载一个接一个排队，等待时间全部加在一起。",
+     "lanes": [
+      {
+       "name": "主线程",
+       "events": [
+        {
+         "start": 0.0,
+         "duration": 0.2,
+         "label": "发请求A",
+         "kind": "work"
+        },
+        {
+         "start": 0.2,
+         "duration": 2.0,
+         "label": "卡住等 A",
+         "kind": "wait"
+        },
+        {
+         "start": 2.2,
+         "duration": 0.3,
+         "label": "处理A",
+         "kind": "work"
+        },
+        {
+         "start": 2.5,
+         "duration": 0.2,
+         "label": "发请求B",
+         "kind": "work"
+        },
+        {
+         "start": 2.7,
+         "duration": 2.0,
+         "label": "卡住等 B",
+         "kind": "wait"
+        },
+        {
+         "start": 4.7,
+         "duration": 0.3,
+         "label": "处理B",
+         "kind": "work"
+        },
+        {
+         "start": 5.0,
+         "duration": 0.2,
+         "label": "发请求C",
+         "kind": "work"
+        },
+        {
+         "start": 5.2,
+         "duration": 2.0,
+         "label": "卡住等 C",
+         "kind": "wait"
+        },
+        {
+         "start": 7.2,
+         "duration": 0.3,
+         "label": "处理C",
+         "kind": "work"
+        },
+        {
+         "start": 7.5,
+         "duration": 0,
+         "label": "全部完成",
+         "kind": "event"
+        }
+       ]
+      },
+      {
+       "name": "下载 A",
+       "events": [
+        {
+         "start": 0.2,
+         "duration": 2.0,
+         "label": "传输",
+         "kind": "io"
+        }
+       ]
+      },
+      {
+       "name": "下载 B",
+       "events": [
+        {
+         "start": 2.7,
+         "duration": 2.0,
+         "label": "传输",
+         "kind": "io"
+        }
+       ]
+      },
+      {
+       "name": "下载 C",
+       "events": [
+        {
+         "start": 5.2,
+         "duration": 2.0,
+         "label": "传输",
+         "kind": "io"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "异步",
+     "note": "异步：发出请求后不卡住，立刻去发下一个；三个下载在网络上同时进行，等待时间重叠，总共只比最长的一次多一点。",
+     "lanes": [
+      {
+       "name": "主线程",
+       "events": [
+        {
+         "start": 0,
+         "duration": 0.2,
+         "label": "发请求A",
+         "kind": "work"
+        },
+        {
+         "start": 0.2,
+         "duration": 0.2,
+         "label": "发请求B",
+         "kind": "work"
+        },
+        {
+         "start": 0.4,
+         "duration": 0.2,
+         "label": "发请求C",
+         "kind": "work"
+        },
+        {
+         "start": 2.2,
+         "duration": 0.3,
+         "label": "处理A",
+         "kind": "work"
+        },
+        {
+         "start": 2.5,
+         "duration": 0.3,
+         "label": "处理B",
+         "kind": "work"
+        },
+        {
+         "start": 2.8,
+         "duration": 0.3,
+         "label": "处理C",
+         "kind": "work"
+        },
+        {
+         "start": 3.1,
+         "duration": 0,
+         "label": "全部完成",
+         "kind": "event"
+        }
+       ]
+      },
+      {
+       "name": "下载 A",
+       "events": [
+        {
+         "start": 0.2,
+         "duration": 2.0,
+         "label": "传输",
+         "kind": "io"
+        }
+       ]
+      },
+      {
+       "name": "下载 B",
+       "events": [
+        {
+         "start": 0.4,
+         "duration": 2.0,
+         "label": "传输",
+         "kind": "io"
+        }
+       ]
+      },
+      {
+       "name": "下载 C",
+       "events": [
+        {
+         "start": 0.6,
+         "duration": 2.0,
+         "label": "传输",
+         "kind": "io"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "牛顿和莱布尼茨：两个人几乎同时发明了微积分",
+   "question": "两个人的一生大部分重叠，谁先发表、谁先想到？时间线上能看出争论为什么会发生吗？",
+   "time_unit": "年",
+   "total_label": null,
+   "kind_names": {
+    "work": "在世",
+    "wait": "优先权争论",
+    "io": null,
+    "event": "发表"
+   },
+   "scenarios": [
+    {
+     "name": "两人的时间线",
+     "note": "两人活在同一时期，各自独立发展出微积分；莱布尼茨 1684 年先发表，牛顿的方法写得更早，却到 1687 年才随《原理》公开，后来演变成 1711 年前后的优先权争论。",
+     "lanes": [
+      {
+       "name": "牛顿",
+       "events": [
+        {
+         "start": 1643,
+         "duration": 84,
+         "label": "牛顿在世",
+         "kind": "work"
+        },
+        {
+         "start": 1687,
+         "duration": 0,
+         "label": "《原理》",
+         "kind": "event"
+        }
+       ]
+      },
+      {
+       "name": "莱布尼茨",
+       "events": [
+        {
+         "start": 1646,
+         "duration": 70,
+         "label": "莱布尼茨在世",
+         "kind": "work"
+        },
+        {
+         "start": 1684,
+         "duration": 0,
+         "label": "微积分论文",
+         "kind": "event"
+        }
+       ]
+      },
+      {
+       "name": "争论",
+       "events": [
+        {
+         "start": 1711,
+         "duration": 5,
+         "label": "优先权争论",
+         "kind": "wait"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

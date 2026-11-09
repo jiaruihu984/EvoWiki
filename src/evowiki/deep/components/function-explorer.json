@@ -1,0 +1,432 @@
+{
+  "component_id": "function-explorer",
+  "name": "函数探索",
+  "description": "选定一个函数族（一次、二次、指数、对数、逻辑斯蒂、正态密度、正弦），用滑块改变参数，看曲线、公式和关键点（顶点、零点、渐近线、拐点、μ±σ）怎么变化，可叠加一条对比曲线。",
+  "learning_question": "每个参数改变曲线的哪一部分？关键点的位置由哪些参数决定？",
+  "scenarios": [
+    "函数图像",
+    "参数的意义",
+    "二次函数",
+    "指数增长",
+    "逻辑斯蒂增长",
+    "对数",
+    "正态分布",
+    "正弦与周期",
+    "拐点与渐近线"
+  ],
+  "params": {
+    "参数滑块": "改变函数的参数",
+    "对比曲线": "叠加一条固定参数的同族曲线",
+    "读取 x": "沿 x 轴取一点读函数值"
+  },
+  "html_path": "src/evowiki/deep/components/function-explorer.html",
+  "height": 700,
+  "probes": [
+    {
+      "target": "#p0-inc",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "#p0-dec",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "#reset",
+      "action": "click",
+      "expect_change": "#result"
+    }
+  ],
+  "source": "component-library: generic function family explorer",
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "title",
+      "question",
+      "family",
+      "x_label",
+      "y_label",
+      "x_unit",
+      "y_unit",
+      "x_min",
+      "x_max",
+      "y_min",
+      "y_max",
+      "params",
+      "marks",
+      "compare"
+    ],
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "组件标题，说明函数描述的是什么"
+      },
+      "question": {
+        "type": "string",
+        "description": "学习问题，一句话"
+      },
+      "family": {
+        "type": "string",
+        "enum": [
+          "linear",
+          "quadratic",
+          "exponential",
+          "logarithm",
+          "logistic",
+          "normal",
+          "sine"
+        ],
+        "description": "函数族：linear a·x+b；quadratic a·x²+b·x+c；exponential a·b^x；logarithm a·log_b(x)；logistic L/(1+e^(−k(x−x0)))；normal 正态密度（mu, sigma）；sine A·sin(ω·x+φ)+d"
+      },
+      "x_label": {
+        "type": "string",
+        "description": "横轴名字，如 时间"
+      },
+      "y_label": {
+        "type": "string",
+        "description": "纵轴名字，如 种群数量"
+      },
+      "x_unit": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "y_unit": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "x_min": {
+        "type": "number"
+      },
+      "x_max": {
+        "type": "number",
+        "description": "大于 x_min"
+      },
+      "y_min": {
+        "type": "number",
+        "description": "纵轴固定下限（滑块移动时坐标不动）"
+      },
+      "y_max": {
+        "type": "number",
+        "description": "纵轴固定上限，要容纳滑块范围内的曲线"
+      },
+      "params": {
+        "type": "array",
+        "minItems": 1,
+        "description": "该函数族的全部参数，每个一项",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "key",
+            "label",
+            "value",
+            "min",
+            "max",
+            "step",
+            "adjustable",
+            "unit",
+            "effect"
+          ],
+          "properties": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "a",
+                "b",
+                "c",
+                "L",
+                "k",
+                "x0",
+                "mu",
+                "sigma",
+                "A",
+                "omega",
+                "phi",
+                "d"
+              ],
+              "description": "参数符号。linear: a,b；quadratic: a,b,c；exponential: a,b；logarithm: a,b；logistic: L,k,x0；normal: mu,sigma；sine: A,omega,phi,d（d 是上下平移）"
+            },
+            "label": {
+              "type": "string",
+              "description": "滑块的名字，用问题里的词，如 环境容纳量、初速度"
+            },
+            "value": {
+              "type": "number",
+              "description": "初始值"
+            },
+            "min": {
+              "type": "number",
+              "description": "滑块下限"
+            },
+            "max": {
+              "type": "number",
+              "description": "滑块上限，大于 min"
+            },
+            "step": {
+              "type": "number",
+              "description": "滑块步长，大于 0"
+            },
+            "adjustable": {
+              "type": "boolean",
+              "description": "true 给滑块；false 固定为 value（至少一个 true）"
+            },
+            "unit": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "该参数的单位，没有就 null"
+            },
+            "effect": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "一句话：这个参数变大会让曲线怎样（用于结果句），没有就 null"
+            }
+          }
+        }
+      },
+      "marks": {
+        "type": "array",
+        "minItems": 0,
+        "description": "要标出的关键点：vertex 顶点/峰值/最值，zeros 零点，y_intercept 与 y 轴交点，asymptote 渐近线，inflection 拐点，mean_sd 均值与±σ，midline 正弦中线；不适用于该函数族的会被忽略",
+        "items": {
+          "type": "string",
+          "enum": [
+            "vertex",
+            "zeros",
+            "y_intercept",
+            "asymptote",
+            "inflection",
+            "mean_sd",
+            "midline"
+          ]
+        }
+      },
+      "compare": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "label",
+              "params"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "description": "对比曲线的名字"
+              },
+              "params": {
+                "type": "array",
+                "minItems": 1,
+                "description": "对比曲线中与主曲线不同的参数（同一个函数族），没写的参数取主曲线初始值",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "key",
+                    "value"
+                  ],
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "enum": [
+                        "a",
+                        "b",
+                        "c",
+                        "L",
+                        "k",
+                        "x0",
+                        "mu",
+                        "sigma",
+                        "A",
+                        "omega",
+                        "phi",
+                        "d"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "description": "可选的第二条固定参数曲线，没有就 null"
+      }
+    }
+  },
+  "example_configs": [
+    {
+      "title": "细菌在培养皿里的增长：为什么先快后慢",
+      "question": "增长率和环境容纳量各自改变曲线的哪一部分？“拐点”意味着什么？",
+      "family": "logistic",
+      "x_label": "培养时间",
+      "y_label": "菌落数量",
+      "x_unit": "小时",
+      "y_unit": "个",
+      "x_min": 0,
+      "x_max": 20,
+      "y_min": 0,
+      "y_max": 1200,
+      "params": [
+        {
+          "key": "L",
+          "label": "环境容纳量",
+          "value": 1000,
+          "min": 400,
+          "max": 1200,
+          "step": 50,
+          "adjustable": true,
+          "unit": "个",
+          "effect": "容纳量越大，曲线最终停在越高的位置，但前期几乎一样。"
+        },
+        {
+          "key": "k",
+          "label": "增长率",
+          "value": 0.6,
+          "min": 0.1,
+          "max": 1.5,
+          "step": 0.05,
+          "adjustable": true,
+          "unit": null,
+          "effect": "增长率越大，从“慢”到“饱和”的转折越陡。"
+        },
+        {
+          "key": "x0",
+          "label": "到达一半的时间",
+          "value": 10,
+          "min": 4,
+          "max": 16,
+          "step": 0.5,
+          "adjustable": true,
+          "unit": "小时",
+          "effect": "这个值把整条曲线向右或向左平移，拐点也跟着走。"
+        }
+      ],
+      "marks": [
+        "asymptote",
+        "inflection"
+      ],
+      "compare": {
+        "label": "增长较慢的种群",
+        "params": [
+          {
+            "key": "k",
+            "value": 0.25
+          }
+        ]
+      }
+    },
+    {
+      "title": "抛出的球：高度随时间的抛物线",
+      "question": "初速度和出手高度怎么改变最高点和落地时刻？",
+      "family": "quadratic",
+      "x_label": "时间",
+      "y_label": "高度",
+      "x_unit": "秒",
+      "y_unit": "米",
+      "x_min": 0,
+      "x_max": 5,
+      "y_min": 0,
+      "y_max": 30,
+      "params": [
+        {
+          "key": "a",
+          "label": "二次项系数",
+          "value": -4.9,
+          "min": -9.8,
+          "max": -2,
+          "step": 0.1,
+          "adjustable": false,
+          "unit": null,
+          "effect": null
+        },
+        {
+          "key": "b",
+          "label": "初速度",
+          "value": 18,
+          "min": 6,
+          "max": 25,
+          "step": 0.5,
+          "adjustable": true,
+          "unit": "米/秒",
+          "effect": "初速度越大，球飞得越高、落地越晚。"
+        },
+        {
+          "key": "c",
+          "label": "出手高度",
+          "value": 1.5,
+          "min": 0,
+          "max": 6,
+          "step": 0.5,
+          "adjustable": true,
+          "unit": "米",
+          "effect": "出手高度只把整条抛物线向上平移，不改变形状。"
+        }
+      ],
+      "marks": [
+        "vertex",
+        "zeros",
+        "y_intercept"
+      ],
+      "compare": null
+    },
+    {
+      "title": "一次考试的分数分布：均值和标准差",
+      "question": "均值移动、标准差变大，钟形曲线分别发生什么？为什么曲线下的面积不变？",
+      "family": "normal",
+      "x_label": "分数",
+      "y_label": "密度",
+      "x_unit": "分",
+      "y_unit": null,
+      "x_min": 30,
+      "x_max": 110,
+      "y_min": 0,
+      "y_max": 0.11,
+      "params": [
+        {
+          "key": "mu",
+          "label": "平均分 μ",
+          "value": 70,
+          "min": 50,
+          "max": 90,
+          "step": 1,
+          "adjustable": true,
+          "unit": "分",
+          "effect": "μ 只让钟形曲线左右平移。"
+        },
+        {
+          "key": "sigma",
+          "label": "标准差 σ",
+          "value": 10,
+          "min": 4,
+          "max": 20,
+          "step": 0.5,
+          "adjustable": true,
+          "unit": "分",
+          "effect": "σ 越大，曲线越矮越宽；越小，越高越窄。"
+        }
+      ],
+      "marks": [
+        "vertex",
+        "mean_sd",
+        "inflection"
+      ],
+      "compare": null
+    }
+  ]
+}

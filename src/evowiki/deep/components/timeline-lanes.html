@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E6%97%B6%E9%97%B4%E7%BA%BF%E4%B8%8E%E6%B3%B3%E9%81%93%22-->时间线与泳道</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+.lab{grid-template-columns:minmax(0,1fr) minmax(0,270px)}
+@media (max-width:700px){.lab{grid-template-columns:minmax(0,1fr)}}
+.laneName{fill:var(--tx-2);font:600 12.5px var(--font)}
+.tick{fill:var(--tx-3);font:12px var(--font);font-variant-numeric:tabular-nums}
+.axis{stroke:var(--tx-3);stroke-width:1}
+.grid{stroke:var(--line);stroke-width:1}
+.bar{stroke:var(--tx-3);stroke-width:1}
+.bar.work{fill:var(--accent);stroke:var(--accent)}
+.bar.wait{stroke:var(--tx-2);stroke-dasharray:4 3}
+.bar.io{stroke:var(--warn)}
+.bar.on{stroke:var(--tx);stroke-width:2.5;stroke-dasharray:none}
+.pbg{fill:var(--bg)}
+.pln{stroke:var(--tx-3);stroke-width:1.5}
+.pdot{fill:var(--warn)}
+.evt{fill:var(--tx);stroke:var(--bg);stroke-width:1.5}
+.evt.on{fill:var(--bad)}
+.barTx{fill:var(--tx);font:12px var(--font)}
+.barTx.work{fill:var(--accent-tx)}
+.underTx{fill:var(--tx-2);font:12px var(--font)}
+.head{stroke:var(--bad);stroke-width:2}
+.headTx{fill:var(--bad);font:600 12px var(--mono)}
+.legTx{fill:var(--tx-2);font:12px var(--font)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.read .ln{display:block;font-family:var(--font);font-size:13.5px}
+.barTx.wait,.barTx.io{paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round}
+.tot{font-family:var(--font);font-size:13.5px;color:var(--tx)}
+</style>
+<script data-evowiki-locale="timeline-lanes"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage"><svg id="plot" viewBox="0 0 560 300" role="img" aria-labelledby="plotDesc"><desc id="plotDesc"></desc></svg></div>
+    <div class="side">
+      <div class="ctl" id="scenCtl" hidden><span class="lb"><!--ew-t:%22%E7%9C%8B%E5%93%AA%E4%B8%80%E7%A7%8D%E5%81%9A%E6%B3%95%22-->看哪一种做法</span><div class="seg" id="seg"></div></div>
+      <div class="row"><button type="button" id="play"><!--ew-t:%22%E6%92%AD%E6%94%BE%22-->播放</button><button type="button" id="rewind"><!--ew-t:%22%E5%9B%9E%E5%88%B0%E8%B5%B7%E7%82%B9%22-->回到起点</button></div>
+      <div class="ctl">
+        <label for="scrub"><!--ew-t:%22%E5%BD%93%E5%89%8D%E6%97%B6%E9%97%B4%EF%BC%9A%22-->当前时间：<b id="tNow">0</b></label>
+        <input id="scrub" type="range" min="0" max="1000" value="0">
+      </div>
+      <div class="read" id="read" aria-label="此刻每条泳道在做什么" data-ew-attrs='{"aria-label":"此刻每条泳道在做什么"}'></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("下载三个文件：同步和异步差在哪？"),"question": ewt("每个下载都要等 2 秒网络。为什么异步总共不是 6 秒而是约 3 秒？"),"time_unit": ewt("秒"),"total_label": ewt("总耗时"),"kind_names":{"work": ewt("程序在干活"),"wait": ewt("程序卡住等待"),"io": ewt("网络在传输"),"event":null},"scenarios":[{"name": ewt("同步"),"note": ewt("同步：每发一个请求，程序就卡住等它回来，三个下载一个接一个排队，等待时间全部加在一起。"),"lanes":[{"name": ewt("主线程"),"events":[{"start":0.0,"duration":0.2,"label": ewt("发请求A"),"kind":"work"},{"start":0.2,"duration":2.0,"label": ewt("卡住等 A"),"kind":"wait"},{"start":2.2,"duration":0.3,"label": ewt("处理A"),"kind":"work"},{"start":2.5,"duration":0.2,"label": ewt("发请求B"),"kind":"work"},{"start":2.7,"duration":2.0,"label": ewt("卡住等 B"),"kind":"wait"},{"start":4.7,"duration":0.3,"label": ewt("处理B"),"kind":"work"},{"start":5.0,"duration":0.2,"label": ewt("发请求C"),"kind":"work"},{"start":5.2,"duration":2.0,"label": ewt("卡住等 C"),"kind":"wait"},{"start":7.2,"duration":0.3,"label": ewt("处理C"),"kind":"work"},{"start":7.5,"duration":0,"label": ewt("全部完成"),"kind":"event"}]},{"name": ewt("下载 A"),"events":[{"start":0.2,"duration":2.0,"label": ewt("传输"),"kind":"io"}]},{"name": ewt("下载 B"),"events":[{"start":2.7,"duration":2.0,"label": ewt("传输"),"kind":"io"}]},{"name": ewt("下载 C"),"events":[{"start":5.2,"duration":2.0,"label": ewt("传输"),"kind":"io"}]}]},{"name": ewt("异步"),"note": ewt("异步：发出请求后不卡住，立刻去发下一个；三个下载在网络上同时进行，等待时间重叠，总共只比最长的一次多一点。"),"lanes":[{"name": ewt("主线程"),"events":[{"start":0,"duration":0.2,"label": ewt("发请求A"),"kind":"work"},{"start":0.2,"duration":0.2,"label": ewt("发请求B"),"kind":"work"},{"start":0.4,"duration":0.2,"label": ewt("发请求C"),"kind":"work"},{"start":2.2,"duration":0.3,"label": ewt("处理A"),"kind":"work"},{"start":2.5,"duration":0.3,"label": ewt("处理B"),"kind":"work"},{"start":2.8,"duration":0.3,"label": ewt("处理C"),"kind":"work"},{"start":3.1,"duration":0,"label": ewt("全部完成"),"kind":"event"}]},{"name": ewt("下载 A"),"events":[{"start":0.2,"duration":2.0,"label": ewt("传输"),"kind":"io"}]},{"name": ewt("下载 B"),"events":[{"start":0.4,"duration":2.0,"label": ewt("传输"),"kind":"io"}]},{"name": ewt("下载 C"),"events":[{"start":0.6,"duration":2.0,"label": ewt("传输"),"kind":"io"}]}]}]};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?(Math.abs(x)>=1000?x.toFixed(0):x.toFixed(d)):'—';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+const KINDS=['work','wait','io','event'];
+const KN0={work: ewt("工作"),wait: ewt("等待"),io: ewt("传输/读写"),event: ewt("事件")};
+const num=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+const kn=C.kind_names||{};const KN={};KINDS.forEach(k=>KN[k]=EvoWikiLocale.string(kn[k]||KN0[k]));
+const unit=C.time_unit?EvoWikiLocale.string(C.time_unit):'';
+const scens=(Array.isArray(C.scenarios)?C.scenarios:[]).slice(0,2).map(s=>({
+  name:EvoWikiLocale.string((s&&s.name)|| ewt("方案")),note:EvoWikiLocale.string((s&&s.note)||''),
+  lanes:(Array.isArray(s&&s.lanes)?s.lanes:[]).slice(0,4).map(l=>({name:EvoWikiLocale.string((l&&l.name)||''),
+    events:(Array.isArray(l&&l.events)?l.events:[]).slice(0,40).map(e=>{const kind=KINDS.includes(e&&e.kind)?e.kind:'work';
+      const st=num(e&&e.start);return {start:st,end:kind==='event'?st:st+Math.max(0,num(e&&e.duration)),kind,label:EvoWikiLocale.string((e&&e.label)||'')}})}))}));
+if(!scens.length)scens.push({name: ewt("方案"),note:'',lanes:[{name:'',events:[]}]});
+let T0=Infinity,T1=-Infinity;
+scens.forEach(s=>s.lanes.forEach(l=>l.events.forEach(e=>{T0=Math.min(T0,e.start);T1=Math.max(T1,e.end)})));
+if(!Number.isFinite(T0)){T0=0;T1=1}if(T1<=T0)T1=T0+1;
+scens.forEach(s=>{let a=Infinity,b=-Infinity;s.lanes.forEach(l=>l.events.forEach(e=>{a=Math.min(a,e.start);b=Math.max(b,e.end)}));s.total=Number.isFinite(a)?b-a:0});
+const showTotal=!!C.total_label;
+const tf=x=>Number.isInteger(x)?EvoWikiLocale.string(x):(Math.abs(x)>=1000?x.toFixed(0):(Math.round(x*10)/10).toFixed(1));
+const tu=x=>tf(x)+(unit?' '+unit:'');
+let sc=0,t=T0,timer=null,last=0;
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title||'');EvoWikiLocale.prop($('question'),"textContent",()=>C.question||'');
+const seg=$('seg');
+if(scens.length>1){$('scenCtl').hidden=false;scens.forEach((s,k)=>{const b=document.createElement('button');b.type='button';EvoWikiLocale.prop(b,"textContent",()=>s.name);b.dataset.k=k;EvoWikiLocale.attr(b,'aria-pressed',()=>k===0);
+  b.addEventListener('click',()=>{sc=k;[...seg.children].forEach((c,j)=>EvoWikiLocale.attr(c,'aria-pressed',()=>j===k));draw();say('switch')});seg.append(b)})}
+
+const nice=r=>{const p=Math.pow(10,Math.floor(Math.log10(r||1))),f=r/p;return (f<1.5?1:f<3?2:f<7?5:10)*p};
+function activeIn(l,tt){return l.events.filter(e=>e.kind!=='event'&&tt>=e.start&&tt<e.end)}
+function lastEvt(l,tt){let b=null;l.events.forEach(e=>{if(e.kind==='event'&&e.start<=tt&&(!b||e.start>=b.start))b=e});return b}
+function laneNow(l,tt){const a=activeIn(l,tt);const le=lastEvt(l,tt);let s;
+  if(a.length)s= ewt("正在「")+a.map(e=>e.label).join('」「')+'」（'+a.map(e=>KN[e.kind]).join('、')+'）';
+  else s= ewt("此刻没有安排");
+  if(le)s+= ewt("；最近的事件：")+le.label+'（'+tu(le.start)+'）';return s}
+
+function draw(){
+  const S=scens[sc];const W=Math.max(280,Math.round($('stage').clientWidth-16));const L=12,R=W-16;
+  const X=v=>L+(v-T0)/(T1-T0)*(R-L);
+  const svg=$('plot');svg.querySelectorAll(':scope > :not(desc)').forEach(c=>c.remove());
+  const defs=el('defs',{});
+  const pw=el('pattern',{id:'pWait',width:6,height:6,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'});pw.append(el('rect',{width:6,height:6,class:'pbg'}),el('line',{x1:0,y1:0,x2:0,y2:6,class:'pln'}));
+  const pi=el('pattern',{id:'pIo',width:6,height:6,patternUnits:'userSpaceOnUse'});pi.append(el('rect',{width:6,height:6,class:'pbg'}),el('circle',{cx:3,cy:3,r:1.5,class:'pdot'}));
+  defs.append(pw,pi);svg.append(defs);
+  const meas=(s,cls)=>{const n=el('text',{class:cls},s);svg.append(n);const w=n.getComputedTextLength();n.remove();return w};
+  const LH=78,top=8,nL=S.lanes.length,AY=top+nL*LH+4;
+  // grid + axis
+  const step=nice((T1-T0)/Math.max(3,Math.floor(W/90)));
+  svg.append(el('line',{x1:L,y1:AY,x2:R,y2:AY,class:'axis'}));
+  for(let v=Math.ceil(T0/step)*step;v<=T1+1e-9;v+=step){const x=X(v);svg.append(el('line',{x1:x,y1:top,x2:x,y2:AY,class:'grid'}));svg.append(el('line',{x1:x,y1:AY,x2:x,y2:AY+5,class:'axis'}));
+    svg.append(el('text',{x,y:AY+19,'text-anchor':'middle',class:'tick'},tf(Math.round(v*100)/100)))}
+  if(unit)svg.append(el('text',{x:R,y:AY+36,'text-anchor':'end',class:'tick'}, ewt("单位：")+unit));
+  const used=new Set();
+  S.lanes.forEach((l,li)=>{const y=top+li*LH;
+    svg.append(el('text',{x:L,y:y+13,class:'laneName'},l.name));
+    const by=y+20,bh=24;const rowEnd=[-1e9,-1e9];
+    const bars=l.events.filter(e=>e.kind!=='event'),evs=l.events.filter(e=>e.kind==='event');
+    const ex=evs.map(e=>X(e.start));
+    const under=(label,x0,w)=>{for(let r=0;r<2;r++){if(x0>rowEnd[r]+4){svg.append(el('text',{x:x0,y:by+bh+15+r*14,class:'underTx'},label));rowEnd[r]=x0+w;return true}}return false};
+    bars.forEach(e=>{used.add(e.kind);const x=X(e.start),w=Math.max(2,X(e.end)-x);const on=t>=e.start&&t<e.end;
+      const fill=e.kind==='wait'?'url(#pWait)':e.kind==='io'?'url(#pIo)':null;
+      const r=el('rect',{x,y:by,width:w,height:bh,rx:4,class:'bar '+e.kind+(on?' on':'')});if(fill)EvoWikiLocale.attr(r,'fill',()=>fill);svg.append(r)});
+    evs.forEach((e,k)=>{used.add('event');const x=ex[k],on=t>=e.start&&(t-e.start)<=(T1-T0)*0.03;
+      svg.append(el('path',{d:`M${x} ${by-3}l8 ${bh/2+3}l-8 ${bh/2+3}l-8 -${bh/2+3}z`,class:'evt'+(on?' on':'')}));
+      const tw=meas(e.label,'underTx');under(e.label,Math.min(Math.max(x-tw/2,L),R-tw),tw)});
+    bars.forEach(e=>{const x=X(e.start),w=Math.max(2,X(e.end)-x);const tw=meas(e.label,'barTx');
+      let segs=[[x,x+w]];ex.forEach(c=>{segs=segs.flatMap(([s,f])=>c+11<s||c-11>f?[[s,f]]:[[s,c-11],[c+11,f]])});
+      segs.sort((p,q)=>(q[1]-q[0])-(p[1]-p[0]));const g=segs[0];
+      if(g&&g[1]-g[0]>=tw+6){svg.append(el('text',{x:(g[0]+g[1])/2,y:by+bh/2+4.5,'text-anchor':'middle',class:'barTx '+e.kind},e.label))}
+      else under(e.label,Math.min(x,R-tw),tw)});
+  });
+  // playhead
+  const hx=X(t);svg.append(el('line',{x1:hx,y1:top-2,x2:hx,y2:AY,class:'head'}));
+  svg.append(el('path',{d:`M${hx-5} ${top-4}h10l-5 7z`,fill:'var(--bad)'}));
+  // legend
+  let ly=AY+48,lx=L;
+  KINDS.filter(k=>used.has(k)).forEach(k=>{const w=KN[k].length*12.5+34;if(lx+w>R+16&&lx>L){lx=L;ly+=20}
+    if(k==='event')svg.append(el('path',{d:`M${lx+8} ${ly-5}l7 7l-7 7l-7 -7z`,class:'evt'}));
+    else{const r=el('rect',{x:lx,y:ly-1,width:18,height:12,rx:3,class:'bar '+k});if(k==='wait')EvoWikiLocale.attr(r,'fill',()=>'url(#pWait)');if(k==='io')EvoWikiLocale.attr(r,'fill',()=>'url(#pIo)');svg.append(r)}
+    svg.append(el('text',{x:lx+24,y:ly+10,class:'legTx'},KN[k]));lx+=w});
+  const H=ly+22;EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} ${H}`);EvoWikiLocale.attr(svg,'height',()=>H);
+  EvoWikiLocale.prop($('plotDesc'),"textContent",()=>S.name+'：'+S.lanes.map(l=>l.name+ ewt(" 有 ")+l.events.length+ ewt(" 个安排")).join('；')+(showTotal?'，'+C.total_label+' '+tu(S.total):''));
+  // readout
+  const r=$('read');EvoWikiLocale.prop(r,"textContent",()=>'');
+  S.lanes.forEach(l=>{const d=document.createElement('span');d.className='ln';const b=document.createElement('b');EvoWikiLocale.prop(b,"textContent",()=>l.name+'：');d.append(b,document.createTextNode(laneNow(l,t)));r.append(d)});
+  if(showTotal){const d=document.createElement('span');d.className='ln tot';
+    EvoWikiLocale.prop(d,"textContent",()=>scens.map(s=>s.name+' '+C.total_label+' '+tu(s.total)).join('；'));r.append(d)}
+  EvoWikiLocale.prop($('tNow'),"textContent",()=>tu(t));$('scrub').value=Math.round((t-T0)/(T1-T0)*1000);
+}
+function say(why){const S=scens[sc];const parts=S.lanes.map(l=>l.name+'：'+laneNow(l,t));
+  const pre={scrub: ewt("拖到 "),pause: ewt("暂停在 "),rewind: ewt("回到起点 "),end: ewt("播放结束，停在 ")}[why]|| ewt("现在是 ");
+  let s=why==='switch'? ewt("切换到「")+S.name+ ewt("」，当前时间 ")+tu(t)+'：':pre+tu(t)+'：';
+  s+=parts.join('；')+'。';
+  if(showTotal){if(scens.length>1){const o=scens[1-sc];const dif=S.total-o.total;
+      s+=' '+S.name+C.total_label+' '+tu(S.total)+'，'+o.name+' '+tu(o.total)+(Math.abs(dif)<1e-9? ewt("，一样长。"):'，'+(dif>0? ewt("慢"): ewt("快"))+' '+tu(Math.abs(dif))+'。')}
+    else s+=' '+C.total_label+' '+tu(S.total)+'。'}
+  if(S.note&&(why==='switch'||why==='end'||t>=T1))s+=' '+S.note;
+  EvoWikiLocale.prop($('result'),"textContent",()=>s)}
+function stop(){if(timer){cancelAnimationFrame(timer);timer=null}EvoWikiLocale.prop($('play'),"textContent",()=> ewt("播放"))}
+function frame(ts){const dt=Math.min(100,ts-last);last=ts;t=Math.min(T1,t+dt/9000*(T1-T0));draw();
+  if(t>=T1){stop();say('end')}else timer=requestAnimationFrame(frame)}
+$('play').addEventListener('click',()=>{
+  if(timer){stop();say('pause');return}
+  if(t>=T1)t=T0;EvoWikiLocale.prop($('play'),"textContent",()=> ewt("暂停"));last=performance.now();timer=requestAnimationFrame(frame);draw();
+  EvoWikiLocale.prop($('result'),"textContent",()=> ewt("播放中：红线往右走，看每条泳道此刻在做什么；拖动滑块可以随时停下来看。"))});
+$('rewind').addEventListener('click',()=>{stop();t=T0;draw();say('rewind')});
+$('scrub').addEventListener('input',()=>{stop();t=T0+$('scrub').value/1000*(T1-T0);draw();say('scrub')});
+new ResizeObserver(()=>draw()).observe($('stage'));
+draw();say('');
+
+EvoWikiLocale.onChange(()=>{draw()});</script>
+</body>
+</html>

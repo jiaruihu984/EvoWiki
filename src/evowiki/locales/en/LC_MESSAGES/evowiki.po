@@ -1,0 +1,5052 @@
+# English translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-09 16:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+msgid "Switch models and try again."
+msgstr "Switch models and try again."
+
+msgid "This content changed elsewhere. Refresh and try again."
+msgstr "This content changed elsewhere. Refresh and try again."
+
+msgid "Could not save. Check the content and try again."
+msgstr "Could not save. Check the content and try again."
+
+msgid "This rule cannot be changed now. Refresh to check its status."
+msgstr "This rule cannot be changed now. Refresh to check its status."
+
+msgid "This user already exists."
+msgstr "This user already exists."
+
+msgid "The previous turn is still running."
+msgstr "The previous turn is still running."
+
+msgid "This change cannot be undone now."
+msgstr "This change cannot be undone now."
+
+msgid "An adjustment is running."
+msgstr "An adjustment is running."
+
+msgid "This action was already handled. Refresh to check its status."
+msgstr "This action was already handled. Refresh to check its status."
+
+msgid "This change cannot be accepted or rejected now."
+msgstr "This change cannot be accepted or rejected now."
+
+msgid "You do not have permission for this action."
+msgstr "You do not have permission for this action."
+
+msgid "This feature is not available yet."
+msgstr "This feature is not available yet."
+
+msgid "This item was not found. It may have been deleted."
+msgstr "This item was not found. It may have been deleted."
+
+msgid "Memory is temporarily unavailable. Try again later."
+msgstr "Memory is temporarily unavailable. Try again later."
+
+msgid "The action failed. Try again."
+msgstr "The action failed. Try again."
+
+msgid "The model service is busy. Try again."
+msgstr "The model service is busy. Try again."
+
+msgid "The model service timed out. Try again."
+msgstr "The model service timed out. Try again."
+
+msgid "(Nothing was changed in this turn.)"
+msgstr "(Nothing was changed in this turn.)"
+
+msgid "(This was not checked in this turn.)"
+msgstr "(This was not checked in this turn.)"
+
+msgid "(Only a draft was created in this turn. It takes effect after confirmation.)"
+msgstr "(Only a draft was created in this turn. It takes effect after confirmation.)"
+
+msgid "没有配置密钥"
+msgstr "No API key configured"
+
+msgid "余额不足，充值后可用"
+msgstr "Insufficient balance. Add credit to use this model."
+
+msgid "密钥无效，换一个密钥后可用"
+msgstr "Invalid API key. Replace it to use this model."
+
+msgid "没有使用权限"
+msgstr "You do not have access to this model."
+
+msgid "默认"
+msgstr "Default"
+
+msgid "关闭"
+msgstr "Off"
+
+msgid "极低"
+msgstr "Minimal"
+
+msgid "低"
+msgstr "Low"
+
+msgid "中"
+msgstr "Medium"
+
+msgid "高"
+msgstr "High"
+
+msgid "很高"
+msgstr "Extra high"
+
+msgid "最高"
+msgstr "Maximum"
+
+#, python-brace-format
+msgid "{line} (Not recorded: {reason})"
+msgstr "{line} (Not recorded: {reason})"
+
+msgid "Only record aspects you explicitly say you know."
+msgstr "Only record aspects you explicitly say you know."
+
+#, python-brace-format
+msgid "This line is too long (maximum {limit} characters)."
+msgstr "This line is too long (maximum {limit} characters)."
+
+msgid "还没有知识点，先学一个目标再写"
+msgstr "There are no concepts yet. Start a learning goal first."
+
+msgid "没找到这个知识点，要用知识点的名字"
+msgstr "Concept not found. Use its name."
+
+msgid "一行只写一个知识点"
+msgstr "Write one concept per line."
+
+#, python-brace-format
+msgid "Specify which aspect you know, for example: {name}: I know {aspect}."
+msgstr "Specify which aspect you know, for example: {name}: I know {aspect}."
+
+msgid "是什么"
+msgstr "what it is"
+
+msgid "什么时候用"
+msgstr "when to use it"
+
+msgid "公式和记号"
+msgstr "formulas and notation"
+
+msgid "怎么算"
+msgstr "how to calculate it"
+
+msgid "结果怎么看"
+msgstr "how to interpret the result"
+
+msgid "为什么成立"
+msgstr "why it works"
+
+#, python-brace-format
+msgid "You wrote in your background: {line} (can use)"
+msgstr "You wrote in your background: {line} (can use)"
+
+msgid "未配置价格"
+msgstr "Pricing is not configured"
+
+msgid "模型接口未就绪，请检查密钥配置和 SDK 安装"
+msgstr "The model connection is not ready. Check the API key and SDK installation."
+
+msgid "写法不能是空的。"
+msgstr "Guidance cannot be empty."
+
+msgid "写法太长了，最多 4000 个字。"
+msgstr "Guidance is too long (maximum 4000 characters)."
+
+msgid "写法里不能有 ⟦ 或 ⟧。"
+msgstr "Guidance cannot contain ⟦ or ⟧."
+
+msgid "这里只写怎么做；输出的格式是固定的，不能在这里改。"
+msgstr "Describe how to explain. The output format is fixed and cannot be changed here."
+
+#, python-brace-format
+msgid "「{name}」的写法后来又改过了，先撤销后来的那次"
+msgstr "Guidance for {name} changed again. Undo the later change first."
+
+msgid "这条修改的记录不完整，不能撤销"
+msgstr "This change has an incomplete record and cannot be undone."
+
+#, python-brace-format
+msgid "「{name}」的输出格式改了，这条旧写法已经存档清掉，不能再撤销"
+msgstr ""
+"The output format for {name} changed. This obsolete guidance was archived and removed and cannot "
+"be undone."
+
+#, python-brace-format
+msgid ""
+"Today's spending reached the ${limit} limit. This action was not completed. You can raise the "
+"limit in settings."
+msgstr ""
+"Today's spending reached the ${limit} limit. This action was not completed. You can raise the "
+"limit in settings."
+
+#, python-brace-format
+msgid ""
+"This month's spending reached the ${limit} limit. This action was not completed. You can raise "
+"the limit in settings."
+msgstr ""
+"This month's spending reached the ${limit} limit. This action was not completed. You can raise "
+"the limit in settings."
+
+#, python-brace-format
+msgid ""
+"Spending on this page reached the ${limit} limit. This action was not completed. You can raise "
+"the limit in settings."
+msgstr ""
+"Spending on this page reached the ${limit} limit. This action was not completed. You can raise "
+"the limit in settings."
+
+msgctxt "seed:pairing-practice"
+msgid "第"
+msgstr "Position "
+
+msgctxt "seed:pairing-practice"
+msgid "位还没选"
+msgstr " is not selected"
+
+msgctxt "seed:pairing-practice"
+msgid "位：模板 "
+msgstr ": template "
+
+msgctxt "seed:pairing-practice"
+msgid " 应该配 "
+msgstr " should pair with "
+
+msgctxt "seed:pairing-practice"
+msgid "，你选了 "
+msgstr "; you chose "
+
+msgctxt "seed:pairing-practice"
+msgid "互补链：<span class=\"ok\">T A C G</span>（从 3′ 端读到 5′ 端）。四个位置都满足 A-T、C-G，两条链能稳定扣在一起。"
+msgstr ""
+"Complementary strand: <span class=\"ok\">T A C G</span> (read from 3′ to 5′). All four positions "
+"follow A–T and C–G pairing."
+
+msgctxt "seed:pairing-practice"
+msgid "你的互补链：<span class=\"bad\">"
+msgstr "Your complementary strand: <span class=\"bad\">"
+
+msgctxt "seed:pairing-practice"
+msgid "</span>。还没稳定：<br>"
+msgstr "</span>. Pairing is incomplete:<br>"
+
+msgctxt "seed:pairing-practice"
+msgid "当前互补链："
+msgstr "Current complementary strand: "
+
+msgctxt "seed:pairing-practice"
+msgid "继续把四个位置选完。"
+msgstr "Select a letter at all four positions."
+
+msgctxt "seed:pairing-practice"
+msgid "配对练习"
+msgstr "Pairing practice"
+
+msgctxt "seed:pairing-practice"
+msgid "模板链：5′ A T G C 3′"
+msgstr "Template strand: 5′ A T G C 3′"
+
+msgctxt "seed:pairing-practice"
+msgid "在四个位置各点一个字母，组成对面的互补链。选错没关系，看结果区的提示再改。"
+msgstr ""
+"Choose one letter at each position to build the complementary strand. Use the feedback to revise "
+"incorrect choices."
+
+msgctxt "seed:pairing-practice"
+msgid "第1位"
+msgstr "Position 1"
+
+msgctxt "seed:pairing-practice"
+msgid "A 配 ?"
+msgstr "A pairs with ?"
+
+msgctxt "seed:pairing-practice"
+msgid "第2位"
+msgstr "Position 2"
+
+msgctxt "seed:pairing-practice"
+msgid "T 配 ?"
+msgstr "T pairs with ?"
+
+msgctxt "seed:pairing-practice"
+msgid "第3位"
+msgstr "Position 3"
+
+msgctxt "seed:pairing-practice"
+msgid "G 配 ?"
+msgstr "G pairs with ?"
+
+msgctxt "seed:pairing-practice"
+msgid "第4位"
+msgstr "Position 4"
+
+msgctxt "seed:pairing-practice"
+msgid "C 配 ?"
+msgstr "C pairs with ?"
+
+msgctxt "seed:pairing-practice"
+msgid "还没选字母：请在四个位置各点一个字母。"
+msgstr "No letters selected. Choose one at each position."
+
+msgctxt "seed:pairing-practice"
+msgid "清空重来"
+msgstr "Clear and restart"
+
+msgctxt "seed:replication-sim"
+msgid "<div class=\"pair\"><p class=\"caption\">原始双链：两条旧链靠配对扣在一起</p>"
+msgstr ""
+"<div class=\"pair\"><p class=\"caption\">Original double strand: the two existing strands are "
+"paired</p>"
+
+msgctxt "seed:replication-sim"
+msgid "旧链 5′"
+msgstr "Existing strand 5′"
+
+msgctxt "seed:replication-sim"
+msgid "旧链 3′"
+msgstr "Existing strand 3′"
+
+msgctxt "seed:replication-sim"
+msgid "现在是一个完整的双链 DNA。两条旧链面对面，碱基按 A-T、C-G 扣在一起。"
+msgstr "This is one double-stranded DNA molecule. The existing strands pair through A–T and C–G."
+
+msgctxt "seed:replication-sim"
+msgid "<div class=\"pair\"><p class=\"caption\">第一步：双链解开</p>"
+msgstr "<div class=\"pair\"><p class=\"caption\">Step 1: separate the strands</p>"
+
+msgctxt "seed:replication-sim"
+msgid "双链分开了，两条旧链的碱基都露出来，等待新伙伴补上。"
+msgstr "The strands separate, exposing their bases for complementary pairing."
+
+msgctxt "seed:replication-sim"
+msgid "<div class=\"pair\"><p class=\"caption\">第二步：每条旧链当模板，新链按规则补上</p>"
+msgstr "<div class=\"pair\"><p class=\"caption\">Step 2: use each existing strand as a template</p>"
+
+msgctxt "seed:replication-sim"
+msgid "新链 3′"
+msgstr "New strand 3′"
+
+msgctxt "seed:replication-sim"
+msgid "新链 5′"
+msgstr "New strand 5′"
+
+msgctxt "seed:replication-sim"
+msgid "旧链上是 A 就补 T，是 T 就补 A，是 C 就补 G，是 G 就补 C。每条旧链都配出了一条新链。"
+msgstr ""
+"Add T opposite A, A opposite T, G opposite C, and C opposite G. Each template now has a new "
+"complementary strand."
+
+msgctxt "seed:replication-sim"
+msgid "<div class=\"pair\"><p class=\"caption\">第三步：得到两个相同的双链</p>"
+msgstr "<div class=\"pair\"><p class=\"caption\">Step 3: two identical double strands</p>"
+
+msgctxt "seed:replication-sim"
+msgid "<div class=\"pair\"><p class=\"caption\">双链 1（旧 + 新）</p>"
+msgstr "<div class=\"pair\"><p class=\"caption\">Double strand 1 (existing + new)</p>"
+
+msgctxt "seed:replication-sim"
+msgid "<div class=\"pair\"><p class=\"caption\">双链 2（新 + 旧）</p>"
+msgstr "<div class=\"pair\"><p class=\"caption\">Double strand 2 (new + existing)</p>"
+
+msgctxt "seed:replication-sim"
+msgid "复制完成：两个双链的序列都和原来一模一样，各含一条旧链和一条新链。"
+msgstr ""
+"Replication complete: both double strands have the original sequence, each with one existing "
+"strand and one new strand."
+
+msgctxt "seed:replication-sim"
+msgid "DNA 复制模拟"
+msgstr "DNA replication simulation"
+
+msgctxt "seed:replication-sim"
+msgid "下一步"
+msgstr "Next step"
+
+msgctxt "seed:replication-sim"
+msgid "重新开始"
+msgstr "Restart"
+
+msgctxt "seed:pairing-lab"
+msgid "✔ 配对正确：一大一小正好填满"
+msgstr "✔ Correct pair: one large and one small base fit"
+
+msgctxt "seed:pairing-lab"
+msgid "✘ 两个大的并排，挤不下"
+msgstr "✘ Two large bases do not fit"
+
+msgctxt "seed:pairing-lab"
+msgid "✘ 两个小的并排，中间留缝"
+msgstr "✘ Two small bases leave a gap"
+
+msgctxt "seed:pairing-lab"
+msgid "✘ 大小搭得上，但氢键对不上，扣不稳"
+msgstr "✘ The sizes fit, but the hydrogen bonds do not match"
+
+msgctxt "seed:pairing-lab"
+msgid "请为每个位置选一个字母。"
+msgstr "Choose a letter at each position."
+
+msgctxt "seed:pairing-lab"
+msgid "有 "
+msgstr "There are "
+
+msgctxt "seed:pairing-lab"
+msgid " 处配错，看每列下方的原因，改选其他字母。"
+msgstr " incorrect pairs. Read the reasons below each column and try another letter."
+
+msgctxt "seed:pairing-lab"
+msgid "全对！互补链是 "
+msgstr "All correct! The complementary strand is "
+
+msgctxt "seed:pairing-lab"
+msgid "。它由上链唯一决定。"
+msgstr ". The template determines it uniquely."
+
+msgctxt "seed:pairing-lab"
+msgid "已选 "
+msgstr "Selected "
+
+msgctxt "seed:pairing-lab"
+msgid " 个，目前都对，继续。"
+msgstr " positions; all correct so far. Continue."
+
+msgctxt "seed:pairing-lab"
+msgid "上面这条链是 A-G-C-T。▣ 表示个头大（A、G），▫ 表示个头小（T、C）。"
+msgstr "The template is A–G–C–T. ▣ marks large bases (A, G); ▫ marks small bases (T, C)."
+
+msgctxt "seed:pairing-lab"
+msgid "重来"
+msgstr "Restart"
+
+msgctxt "seed:pairing-builder"
+msgid "大块"
+msgstr "Large block"
+
+msgctxt "seed:pairing-builder"
+msgid "小块"
+msgstr "Small block"
+
+msgctxt "seed:pairing-builder"
+msgid "配得上"
+msgstr "Fits"
+
+msgctxt "seed:pairing-builder"
+msgid "太挤"
+msgstr "Too crowded"
+
+msgctxt "seed:pairing-builder"
+msgid "有空隙"
+msgstr "Gap"
+
+msgctxt "seed:pairing-builder"
+msgid "吸点对不上"
+msgstr "Bond sites do not match"
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid "第 {0} 格：上面是 {1}（{2}，需要 {3} 个吸点）。请在下面放一种积木。"
+msgstr "Position {0}: the upper base is {1} ({2}, requiring {3} bond sites). Place a block below it."
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid "第 {0} 格：上 {1}（{2}，{3} 个吸点），下 {4}（{5}，{6} 个吸点）。"
+msgstr "Position {0}: upper {1} ({2}, {3} sites), lower {4} ({5}, {6} sites)."
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid "一大一小，两块加起来刚好撑满两条链之间的距离；吸点 {0} 对 {1}，对得上。✓ 配得上。"
+msgstr "One large and one small block fill the gap; {0} and {1} bond sites match. ✓ Fits."
+
+msgctxt "seed:pairing-builder"
+msgid "两块都是大块，加起来比两条链之间的距离还高，下面那块会挤进上面那块。✗ 太挤，放不下。"
+msgstr "Two large blocks overlap: their combined height exceeds the gap. ✗ They do not fit."
+
+msgctxt "seed:pairing-builder"
+msgid "两块都是小块，加起来不够高，中间留下空隙，吸点够不着对方。✗ 有空隙，吸不住。"
+msgstr "Two small blocks leave a gap, so their bond sites cannot meet. ✗ They do not fit."
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid "一大一小，宽度刚好；但 {0} 需要 {1} 个吸点，{2} 只能提供 {3} 个，吸点对不上。✗ 吸不住。"
+msgstr "The sizes fit, but {0} needs {1} bond sites and {2} provides {3}. ✗ The sites do not match."
+
+msgctxt "seed:pairing-builder"
+msgid "上链（固定）"
+msgstr "Upper strand (fixed)"
+
+msgctxt "seed:pairing-builder"
+msgid "下链（由你放）"
+msgstr "Lower strand (your blocks)"
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid "选第 {0} 格"
+msgstr "Select position {0}"
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid "第 {0} 格已放 {1}，点击重选"
+msgstr "Position {0} contains {1}; click to replace"
+
+msgctxt "seed:pairing-builder"
+msgid "✓ 配得上"
+msgstr "✓ Fits"
+
+msgctxt "seed:pairing-builder"
+msgid "✗ 太挤"
+msgstr "✗ Too crowded"
+
+msgctxt "seed:pairing-builder"
+msgid "✗ 有空隙"
+msgstr "✗ Gap"
+
+msgctxt "seed:pairing-builder"
+msgid "✗ 吸点"
+msgstr "✗ Bond sites"
+
+msgctxt "seed:pairing-builder"
+msgid " 个吸点"
+msgstr " bond sites"
+
+msgctxt "seed:pairing-builder"
+msgid "对不上"
+msgstr "Does not match"
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid ""
+"上链　　　　　　　　{0}\n"
+"你放的下链　　　　　{1}\n"
+"下链再配一遍　　　　{2}\n"
+"与上链相同吗　　　　{3}\n"
+"\n"
+"已放 {4}/{5} 格，其中配得上 {6} 格。\n"
+msgstr ""
+"Upper strand: {0} | Your lower strand: {1} | Complement of lower strand: {2} | Matches upper "
+"strand: {3} | Filled {4}/{5}, with {6} matching pairs."
+
+msgctxt "seed:pairing-builder"
+msgid "全部配对正确：把下链再配一遍，得到的正好是上链。一条链决定了另一条，所以丢了一条也能重建。"
+msgstr ""
+"All pairs match. Complementing the lower strand reconstructs the upper strand. Either strand "
+"determines the other."
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid "有 {0} 格配错：再配一遍后，这些格子和上链不同（✗）。配错的那一格里，原来的信息丢了。"
+msgstr "{0} pairs are incorrect. Complementing them produces positions that differ from the original (✗)."
+
+msgctxt "seed:pairing-builder"
+msgid "放满所有格子后，这里会告诉你能不能回到上链。"
+msgstr "Fill all positions to check whether the upper strand can be reconstructed."
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid "{0}<small>{1}·{2}吸点</small>"
+msgstr "{0}<small>{1} · {2} bond sites</small>"
+
+#, python-brace-format
+msgctxt "seed:pairing-builder"
+msgid "放 {0}，{1}，{2}个吸点"
+msgstr "Place {0}, {1}, {2} bond sites"
+
+msgctxt "seed:pairing-builder"
+msgid "拼出对面那条链"
+msgstr "Build the complementary strand"
+
+msgctxt "seed:pairing-builder"
+msgid "拼出对面那条链：每一格只有一种积木放得上"
+msgstr "Build the complementary strand: only one block fits each position"
+
+msgctxt "seed:pairing-builder"
+msgid "学习问题：上面这条链每一格都固定了，对面这一格放哪种积木才能配上？放错了，到底卡在哪里？"
+msgstr "Which block fits opposite each fixed base? What prevents an incorrect block from fitting?"
+
+msgctxt "seed:pairing-builder"
+msgid "选一条上链"
+msgstr "Select an upper strand"
+
+msgctxt "seed:pairing-builder"
+msgid "自己输入…"
+msgstr "Enter your own…"
+
+msgctxt "seed:pairing-builder"
+msgid "自己输入（A T G C，最多 8 个）"
+msgstr "Your sequence (A T G C, up to 8 letters)"
+
+msgctxt "seed:pairing-builder"
+msgid "显示正确答案"
+msgstr "Show correct answer"
+
+msgctxt "seed:pairing-builder"
+msgid "清空下链"
+msgstr "Clear lower strand"
+
+msgctxt "seed:pairing-builder"
+msgid "1. 先选一格，再放积木"
+msgstr "1. Select a position, then place a block"
+
+msgctxt "seed:pairing-builder"
+msgid "点下链的虚线空位选格（带粗边框的是当前格），再点下面的积木。大块＝高 2 格的积木（A、G）；小块＝高 1 格的积木（T、C）。每种积木还有不同的纹理，不只靠颜色或字母。"
+msgstr ""
+"Click a dashed position, then choose a block. Large blocks (A, G) are two units high; small "
+"blocks (T, C) are one. Textures distinguish blocks as well as colors and letters."
+
+msgctxt "seed:pairing-builder"
+msgid "2. 两条链面对面"
+msgstr "2. The strands face each other"
+
+msgctxt "seed:pairing-builder"
+msgid "中间的短竖线＝很弱的吸引力（吸点）。✓＝配得上，✗＝配不上；配不上的格子用虚线框，并写明原因。"
+msgstr ""
+"Short vertical marks represent weak bonds. ✓ means a matching pair; ✗ marks a mismatch with a "
+"dashed outline and a reason."
+
+msgctxt "seed:pairing-builder"
+msgid "3. 这一格为什么能（不能）配上"
+msgstr "3. Why does this pair fit or fail?"
+
+msgctxt "seed:pairing-builder"
+msgid "先选一个空位，再放一种积木试试。"
+msgstr "Select an empty position and try a block."
+
+msgctxt "seed:pairing-builder"
+msgid "4. 结果：把你拼的下链再配一遍，能回到上链吗？"
+msgstr "4. Does complementing your lower strand reconstruct the upper one?"
+
+msgctxt "seed:pairing-builder"
+msgid "可放入的积木"
+msgstr "Available blocks"
+
+msgctxt "seed:pairing-builder"
+msgid "上链固定，下链由你放置的积木，中间显示是否配得上"
+msgstr "Fixed upper strand and your lower strand, with pairing feedback"
+
+msgctxt "seed:replication-lab"
+msgid "新"
+msgstr "New"
+
+msgctxt "seed:replication-lab"
+msgid "✗ 配不上"
+msgstr "✗ Mismatch"
+
+msgctxt "seed:replication-lab"
+msgid "第 0 步：原来的一份 DNA"
+msgstr "Step 0: the original DNA molecule"
+
+msgctxt "seed:replication-lab"
+msgid "第 1 步：把两条链拉开"
+msgstr "Step 1: separate the two strands"
+
+msgctxt "seed:replication-lab"
+msgid "第 2 步：每条旧链当模板，对面配上新积木"
+msgstr "Step 2: complement each template with new blocks"
+
+msgctxt "seed:replication-lab"
+msgid "原来的 DNA：上链＋下链"
+msgstr "Original DNA: upper + lower strand"
+
+msgctxt "seed:replication-lab"
+msgid "旧上链（单独一条）"
+msgstr "Existing upper strand"
+
+msgctxt "seed:replication-lab"
+msgid "旧下链（单独一条）"
+msgstr "Existing lower strand"
+
+msgctxt "seed:replication-lab"
+msgid "吸点已断开，两条链分开"
+msgstr "Bonds released; strands separated"
+
+msgctxt "seed:replication-lab"
+msgid "分子 1＝旧上链＋新下链"
+msgstr "Molecule 1 = existing upper + new lower"
+
+msgctxt "seed:replication-lab"
+msgid "分子 2＝新上链＋旧下链"
+msgstr "Molecule 2 = new upper + existing lower"
+
+msgctxt "seed:replication-lab"
+msgid "这是一份 DNA：上链固定，下链是按规则配出来的对应链，两条链靠中间的吸点贴在一起。下链的每一格都能由上链推出来，反过来也成立。"
+msgstr ""
+"This DNA molecule contains two complementary strands held together by bonds. Either strand "
+"determines the other."
+
+msgctxt "seed:replication-lab"
+msgid "复制从拉开两条链开始（细胞里有专门的“小工具”做这件事）。现在每条链都只剩一半，但各自仍带着完整的信息：只要知道一条，就知道对面该放什么。"
+msgstr ""
+"Replication begins by separating the strands. Each strand retains the information needed to "
+"construct its complement."
+
+msgctxt "seed:replication-lab"
+msgid "每条旧链当模板，对面一格一格放上新积木，规则不变：A 对 T，G 对 C。上面的旧链得到一条新下链，下面的旧链得到一条新上链，于是有了两份 DNA。"
+msgstr ""
+"Each existing strand serves as a template. A pairs with T and G with C, producing two DNA "
+"molecules."
+
+#, python-brace-format
+msgctxt "seed:replication-lab"
+msgid ""
+"\n"
+"注意：你让分子 1 的第 {0} 格放了 {1}（该放 {2}），所以这一格配不上。"
+msgstr "Notice: position {0} of molecule 1 contains {1} instead of {2}, creating a mismatch."
+
+msgctxt "seed:replication-lab"
+msgid "到第 2 步才会产生两份新分子。"
+msgstr "Two new molecules appear at step 2."
+
+#, python-brace-format
+msgctxt "seed:replication-lab"
+msgid "原来的 DNA　上链 {0}　下链 {1}\n"
+msgstr "Original DNA: upper {0}, lower {1}"
+
+#, python-brace-format
+msgctxt "seed:replication-lab"
+msgid "分子 1　　　上链 {0}　下链 {1}　{2}\n"
+msgstr "Molecule 1: upper {0}, lower {1}, {2}"
+
+msgctxt "seed:replication-lab"
+msgid "✓ 与原来完全相同"
+msgstr "✓ Identical to original"
+
+msgctxt "seed:replication-lab"
+msgid "✗ 与原来不同"
+msgstr "✗ Different from original"
+
+#, python-brace-format
+msgctxt "seed:replication-lab"
+msgid ""
+"分子 2　　　上链 {0}　下链 {1}　{2}\n"
+"\n"
+msgstr "Molecule 2: upper {0}, lower {1}, {2}"
+
+msgctxt "seed:replication-lab"
+msgid "两份都和原来一模一样：每份是“一条旧链＋一条新链”。因为每一格都只有一种积木放得上，新链是被旧链“决定”出来的，不是随便生成的。"
+msgstr ""
+"Both copies match the original, each containing one existing and one new strand. Base pairing "
+"determines the new sequence."
+
+#, python-brace-format
+msgctxt "seed:replication-lab"
+msgid ""
+"分子 1 的第 {0} 格配不上，吸不稳。\n"
+"如果这里没被修好，下一次复制时带错的新下链会当模板：它对面会放 {1}，而原来这一格是 {2}。\n"
+"下一代的上链：{3}　与最初的 {4} 在第 {5} 格不同。\n"
+"一格放错，后代的序列就改变了（这是突变的来源之一）。真实细胞有检查和修复机制，这里不展示。"
+msgstr ""
+"Molecule 1 has a mismatch at position {0}. If unrepaired, its new lower strand becomes a "
+"template: it pairs with {1}, whereas the original had {2}. The next upper strand {3} differs from"
+" {4} at position {5}. This illustrates one source of mutation; cellular checking and repair are "
+"not shown."
+
+msgctxt "seed:replication-lab"
+msgid "不放错（按规则配）"
+msgstr "No mistake (follow pairing rules)"
+
+#, python-brace-format
+msgctxt "seed:replication-lab"
+msgid "第 {0} 格（该放 {1}，故意放 {2}）"
+msgstr "Position {0}: place {2} instead of {1}"
+
+msgctxt "seed:replication-lab"
+msgid "复制：拉开、各自当模板、再配对"
+msgstr "Replicate: separate, use templates, pair"
+
+msgctxt "seed:replication-lab"
+msgid "复制一份 DNA：拉开，各自当模板，每格按规则配"
+msgstr "Replicate DNA: separate the strands and complement each template"
+
+msgctxt "seed:replication-lab"
+msgid "学习问题：只靠“每一格对面放特定积木”这一条规则，为什么就能得到两份和原来一样的 DNA？如果有一格放错，后果是什么？"
+msgstr "Why does complementary pairing produce two copies? What happens if one position is mismatched?"
+
+msgctxt "seed:replication-lab"
+msgid "原来这份 DNA 的上链"
+msgstr "Original DNA upper strand"
+
+msgctxt "seed:replication-lab"
+msgid "自己输入…"
+msgstr "Enter your own…"
+
+msgctxt "seed:replication-lab"
+msgid "自己输入（A T G C，最多 8 个）"
+msgstr "Your sequence (A T G C, up to 8 letters)"
+
+msgctxt "seed:replication-lab"
+msgid "故意放错一格"
+msgstr "Introduce one mismatch"
+
+msgctxt "seed:replication-lab"
+msgid "上一步"
+msgstr "Previous step"
+
+msgctxt "seed:replication-lab"
+msgid "下一步"
+msgstr "Next step"
+
+msgctxt "seed:replication-lab"
+msgid "回到第 0 步"
+msgstr "Back to step 0"
+
+msgctxt "seed:replication-lab"
+msgid "标“新”的是刚配上的新链，没有标的是旧链。中间的绿色短竖线＝吸点（✓ 配得上）；红色虚线框和红色虚线＝配不上（✗）。大块高 2 格（A、G），小块高 1 格（T、C），纹理也各不相同。"
+msgstr ""
+"“New” marks newly paired strands. Green marks show matching bonds; red dashed outlines show "
+"mismatches. Large blocks (A, G) are two units high; small blocks (T, C) are one, with distinct "
+"textures."
+
+msgctxt "seed:replication-lab"
+msgid "这一步发生了什么"
+msgstr "What happens at this step"
+
+msgctxt "seed:replication-lab"
+msgid "结果对照"
+msgstr "Compare results"
+
+msgctxt "seed:replication-lab"
+msgid "DNA 复制过程示意"
+msgstr "DNA replication diagram"
+
+msgctxt "seed:before-after"
+msgid "在有序的数里找一个数：从头找，还是对半找？"
+msgstr "Finding 27 in sorted numbers: scan or halve the search range?"
+
+msgctxt "seed:before-after"
+msgid "数据变多时，两种查找各要看多少个数？"
+msgstr "How many numbers does each method inspect as the data grows?"
+
+msgctxt "seed:before-after"
+msgid "一排从小到大排好的数，要找到其中的 27。"
+msgstr "Find 27 in a sorted row of numbers."
+
+msgctxt "seed:before-after"
+msgid "线性查找"
+msgstr "Linear search"
+
+msgctxt "seed:before-after"
+msgid "从最左边开始"
+msgstr "Start at the left"
+
+msgctxt "seed:before-after"
+msgid "一个一个和 27 比"
+msgstr "Compare each number with 27"
+
+msgctxt "seed:before-after"
+msgid "找到就停；找到头还没有就是没有"
+msgstr "Stop when found, or when the row ends"
+
+msgctxt "seed:before-after"
+msgid "依次看了 6 个数才找到 27。"
+msgstr "Inspected six numbers before finding 27."
+
+msgctxt "seed:before-after"
+msgid "第1次"
+msgstr "Check 1"
+
+msgctxt "seed:before-after"
+msgid "第2次"
+msgstr "Check 2"
+
+msgctxt "seed:before-after"
+msgid "第3次"
+msgstr "Check 3"
+
+msgctxt "seed:before-after"
+msgid "第4次"
+msgstr "Check 4"
+
+msgctxt "seed:before-after"
+msgid "第5次"
+msgstr "Check 5"
+
+msgctxt "seed:before-after"
+msgid "第6次"
+msgstr "Check 6"
+
+msgctxt "seed:before-after"
+msgid "没看"
+msgstr "Not inspected"
+
+msgctxt "seed:before-after"
+msgid "二分查找"
+msgstr "Binary search"
+
+msgctxt "seed:before-after"
+msgid "看正中间那个数"
+msgstr "Inspect the middle number"
+
+msgctxt "seed:before-after"
+msgid "比 27 小就丢掉左半边，比 27 大就丢掉右半边"
+msgstr "Discard the left half if it is below 27, or the right half if above 27"
+
+msgctxt "seed:before-after"
+msgid "在剩下的一半里重复，直到找到"
+msgstr "Repeat on the remaining half"
+
+msgctxt "seed:before-after"
+msgid "只看了 2 个数：15 比 27 小，丢掉左半边，再看中间的 27。"
+msgstr "Inspected only two numbers: 15, then 27."
+
+msgctxt "seed:before-after"
+msgid "丢掉"
+msgstr "Discarded"
+
+msgctxt "seed:before-after"
+msgid "最坏要比较的次数"
+msgstr "Worst-case comparisons"
+
+msgctxt "seed:before-after"
+msgid "次"
+msgstr "comparisons"
+
+msgctxt "seed:before-after"
+msgid "线性查找最坏要从头看到尾，次数和 n 一样多；二分每次丢掉一半，次数只有大约 log2 n。"
+msgstr ""
+"Linear search may inspect all n numbers; binary search halves the range, needing roughly log2 n "
+"comparisons."
+
+msgctxt "seed:before-after"
+msgid "平均要比较的次数"
+msgstr "Average comparisons"
+
+msgctxt "seed:before-after"
+msgid "线性查找平均要看一半的数；二分的次数增长得慢得多，n 越大差距越夸张。"
+msgstr "Linear search inspects about half the row on average. Binary search grows much more slowly."
+
+msgctxt "seed:before-after"
+msgid "数的个数 n"
+msgstr "Number of values n"
+
+msgctxt "seed:before-after"
+msgid "甲"
+msgstr "A"
+
+msgctxt "seed:before-after"
+msgid "乙"
+msgstr "B"
+
+msgctxt "seed:before-after"
+msgid "并排看"
+msgstr "Side by side"
+
+msgctxt "seed:before-after"
+msgid "情形"
+msgstr "Scenario"
+
+msgctxt "seed:before-after"
+msgid "情形 "
+msgstr "Scenario "
+
+msgctxt "seed:before-after"
+msgid "越低越好"
+msgstr "Lower is better"
+
+msgctxt "seed:before-after"
+msgid "越高越好"
+msgstr "Higher is better"
+
+msgctxt "seed:before-after"
+msgid " · 更好"
+msgstr " · Better"
+
+msgctxt "seed:before-after"
+msgid "两种持平"
+msgstr "Equal"
+
+msgctxt "seed:before-after"
+msgid "并排看："
+msgstr "Side by side: "
+
+#, python-brace-format
+msgctxt "seed:before-after"
+msgid "正在看「{0}」{1}。"
+msgstr "Viewing {0}{1}."
+
+msgctxt "seed:before-after"
+msgid " 步）"
+msgstr " steps)"
+
+#, python-brace-format
+msgctxt "seed:before-after"
+msgid "在「{0}」这种情形下，"
+msgstr "For scenario {0}, "
+
+#, python-brace-format
+msgctxt "seed:before-after"
+msgid "「{0}」两种持平（{1}{2}）。"
+msgstr "{0}: both equal ({1}{2})."
+
+#, python-brace-format
+msgctxt "seed:before-after"
+msgid "「{0}」{1}更好（{2}{3} 对 {4}{5}）{6}"
+msgstr "{0}: {1} performs better ({2}{3} vs {4}{5}){6}"
+
+msgctxt "seed:before-after"
+msgid "前后对比"
+msgstr "Before and after"
+
+msgctxt "seed:before-after"
+msgid "看哪一种"
+msgstr "View"
+
+msgctxt "seed:code-trace"
+msgid "用循环求和：total 每一轮怎么变？"
+msgstr "Summing in a loop: how does total change?"
+
+msgctxt "seed:code-trace"
+msgid "跟着每一行看：循环变量 n 和累加器 total 在每一轮里分别是多少？"
+msgstr "Follow each line to see n and total during every iteration."
+
+msgctxt "seed:code-trace"
+msgid "创建一个列表 nums，里面有三个数。"
+msgstr "Create a list nums containing three numbers."
+
+msgctxt "seed:code-trace"
+msgid "累加器 total 从 0 开始，之后每个数都加到它上面。"
+msgstr "Initialize total to 0; each number will be added to it."
+
+msgctxt "seed:code-trace"
+msgid "进入循环：n 取列表的第一个数 3。"
+msgstr "Enter the loop: n takes the first value, 3."
+
+msgctxt "seed:code-trace"
+msgid "total = 0 + 3，所以 total 变成 3。"
+msgstr "total = 0 + 3, so total becomes 3."
+
+msgctxt "seed:code-trace"
+msgid "回到循环开头：n 取下一个数 5，total 暂时还是 3。"
+msgstr "Return to the loop: n becomes 5; total is still 3."
+
+msgctxt "seed:code-trace"
+msgid "total = 3 + 5，变成 8。"
+msgstr "total = 3 + 5, giving 8."
+
+msgctxt "seed:code-trace"
+msgid "n 取最后一个数 2。"
+msgstr "n takes the last value, 2."
+
+msgctxt "seed:code-trace"
+msgid "total = 8 + 2，变成 10。"
+msgstr "total = 8 + 2, giving 10."
+
+msgctxt "seed:code-trace"
+msgid "列表里没有下一个数了，循环结束；n 还保留着最后一次的值 2。"
+msgstr "No values remain, so the loop ends; n retains its last value, 2."
+
+msgctxt "seed:code-trace"
+msgid "循环之外，打印 total：输出 10，等于 3 + 5 + 2。"
+msgstr "Outside the loop, print total: 10 = 3 + 5 + 2."
+
+msgctxt "seed:code-trace"
+msgid "（没有追踪步骤）"
+msgstr "(No trace steps)"
+
+msgctxt "seed:code-trace"
+msgid "代码"
+msgstr "Code"
+
+msgctxt "seed:code-trace"
+msgid " · 只显示，不会被运行"
+msgstr " · Display only; not executed"
+
+#, python-brace-format
+msgctxt "seed:code-trace"
+msgid "<tr class=\"{0}\"><td class=\"n\">{1}</td><td class=\"v\">{2}{3}</td></tr>"
+msgstr "<tr class=\"{0}\"><td class=\"n\">{1}</td><td class=\"v\">{2}{3}</td></tr>"
+
+msgctxt "seed:code-trace"
+msgid "<span class=\"chg\">新增</span>"
+msgstr "<span class=\"chg\">New</span>"
+
+#, python-brace-format
+msgctxt "seed:code-trace"
+msgid "<span class=\"chg\">已改 <span class=\"was\">原为 {0}</span></span>"
+msgstr "<span class=\"chg\">Changed <span class=\"was\">was {0}</span></span>"
+
+#, python-brace-format
+msgctxt "seed:code-trace"
+msgid ""
+"<table><thead><tr><th scope=\"col\">名字</th><th "
+"scope=\"col\">值（变了的会标出）</th></tr></thead><tbody>{0}</tbody></table>"
+msgstr ""
+"<table><thead><tr><th scope=\"col\">Name</th><th scope=\"col\">Value (changes "
+"highlighted)</th></tr></thead><tbody>{0}</tbody></table>"
+
+msgctxt "seed:code-trace"
+msgid "<p class=\"muted\" style=\"margin:0\">这一步还没有变量。</p>"
+msgstr "<p class=\"muted\" style=\"margin:0\">No variables at this step.</p>"
+
+#, python-brace-format
+msgctxt "seed:code-trace"
+msgid "第 {0} / {1} 步"
+msgstr "Step {0} / {1}"
+
+#, python-brace-format
+msgctxt "seed:code-trace"
+msgid "第 {0}/{1} 步（第 {2} 行）：{3}"
+msgstr "Step {0}/{1} (line {2}): {3}"
+
+msgctxt "seed:code-trace"
+msgid "代码追踪"
+msgstr "Code trace"
+
+msgctxt "seed:code-trace"
+msgid "上一步"
+msgstr "Previous step"
+
+msgctxt "seed:code-trace"
+msgid "下一步"
+msgstr "Next step"
+
+msgctxt "seed:code-trace"
+msgid "重置"
+msgstr "Reset"
+
+msgctxt "seed:code-trace"
+msgid "变量"
+msgstr "Variables"
+
+msgctxt "seed:code-trace"
+msgid "输出"
+msgstr "Output"
+
+msgctxt "seed:code-trace"
+msgid "拖动查看任意一步"
+msgstr "Drag to inspect any step"
+
+msgctxt "seed:code-trace"
+msgid "代码（只显示，不会运行）"
+msgstr "Code (display only; not executed)"
+
+msgctxt "seed:distribution-line"
+msgid "同一个班的五次测验：分数有多散？"
+msgstr "Five test scores: how spread out are they?"
+
+msgctxt "seed:distribution-line"
+msgid "把分数拉开或收拢，看偏差的平方和方差怎么跟着变。"
+msgstr "Spread the scores apart or bring them together to see squared deviations and variance change."
+
+msgctxt "seed:distribution-line"
+msgid "分"
+msgstr "points"
+
+msgctxt "seed:distribution-line"
+msgid "分数拉开的程度"
+msgstr "Score spread"
+
+msgctxt "seed:distribution-line"
+msgid "大家分数差不多：方块都很小，方差小。"
+msgstr "Similar scores have small squared deviations and low variance."
+
+msgctxt "seed:distribution-line"
+msgid "分数拉得很开：离均值远的人，方块面积按距离的平方变大，方差跟着变大。"
+msgstr "Widely separated scores have large squared deviations and greater variance."
+
+msgctxt "seed:distribution-line"
+msgid "分散程度"
+msgstr "Spread"
+
+msgctxt "seed:distribution-line"
+msgid "离群"
+msgstr "Outlier"
+
+msgctxt "seed:distribution-line"
+msgid "加入 "
+msgstr "Add "
+
+msgctxt "seed:distribution-line"
+msgid "均值 "
+msgstr "Mean "
+
+#, python-brace-format
+msgctxt "seed:distribution-line"
+msgid "{0} 个数，均值 {1}，方差 {2}，标准差 {3}"
+msgstr "{0} values, mean {1}, variance {2}, standard deviation {3}"
+
+msgctxt "seed:distribution-line"
+msgid "数"
+msgstr "Value"
+
+msgctxt "seed:distribution-line"
+msgid "偏差（数 − 均值）"
+msgstr "Deviation (value − mean)"
+
+msgctxt "seed:distribution-line"
+msgid "偏差的平方"
+msgstr "Squared deviation"
+
+msgctxt "seed:distribution-line"
+msgid "方差 = 平方的平均"
+msgstr "Variance = average squared deviation"
+
+msgctxt "seed:distribution-line"
+msgid "标准差 = √方差"
+msgstr "Standard deviation = √variance"
+
+msgctxt "seed:distribution-line"
+msgid "全部挤在均值上：每个偏差都是 0，方差是 0。"
+msgstr "All values equal the mean: every deviation and the variance are zero."
+
+#, python-brace-format
+msgctxt "seed:distribution-line"
+msgid "加入 {0} 之后，它离均值很远，一个方块就占了大头：方差变成 {1}。平方让远处的点影响特别大。"
+msgstr ""
+"Adding {0}, far from the mean, makes its square dominate: variance becomes {1}. Squaring gives "
+"distant values more influence."
+
+msgctxt "seed:distribution-line"
+msgid "收得很紧：偏差小，方块小，方差小。"
+msgstr "Tightly grouped: small deviations, small squares, low variance."
+
+msgctxt "seed:distribution-line"
+msgid "拉得很开：方块按距离的平方变大，方差跟着变大。"
+msgstr "Widely spread: squared deviations and variance grow."
+
+msgctxt "seed:distribution-line"
+msgid "方差就是这些方块面积的平均；标准差把它换回原来的单位。"
+msgstr "Variance averages these square areas; standard deviation restores the original units."
+
+#, python-brace-format
+msgctxt "seed:distribution-line"
+msgid " 现在方差 {0}，标准差 {1}{2}。"
+msgstr " Current variance {0}, standard deviation {1}{2}."
+
+msgctxt "seed:distribution-line"
+msgid " （方块已隐藏）"
+msgstr " (Squares hidden)"
+
+msgctxt "seed:distribution-line"
+msgid "数轴上的分布"
+msgstr "Distribution on a number line"
+
+msgctxt "seed:distribution-line"
+msgid "倍"
+msgstr "×"
+
+msgctxt "seed:distribution-line"
+msgid "画出每个偏差的平方"
+msgstr "Show each squared deviation"
+
+msgctxt "seed:distribution-line"
+msgid "计算过程"
+msgstr "Calculation"
+
+msgctxt "seed:function-explorer"
+msgid "细菌在培养皿里的增长：为什么先快后慢"
+msgstr "Population growth: why does it speed up, then slow down?"
+
+msgctxt "seed:function-explorer"
+msgid "增长率和环境容纳量各自改变曲线的哪一部分？“拐点”意味着什么？"
+msgstr "How do growth rate and carrying capacity change the curve? What does the inflection point mean?"
+
+msgctxt "seed:function-explorer"
+msgid "培养时间"
+msgstr "Time"
+
+msgctxt "seed:function-explorer"
+msgid "菌落数量"
+msgstr "Population size"
+
+msgctxt "seed:function-explorer"
+msgid "小时"
+msgstr "hours"
+
+msgctxt "seed:function-explorer"
+msgid "个"
+msgstr "individuals"
+
+msgctxt "seed:function-explorer"
+msgid "环境容纳量"
+msgstr "Carrying capacity"
+
+msgctxt "seed:function-explorer"
+msgid "容纳量越大，曲线最终停在越高的位置，但前期几乎一样。"
+msgstr "A higher capacity raises the final plateau while leaving early growth almost unchanged."
+
+msgctxt "seed:function-explorer"
+msgid "增长率"
+msgstr "Growth rate"
+
+msgctxt "seed:function-explorer"
+msgid "增长率越大，从“慢”到“饱和”的转折越陡。"
+msgstr "A higher rate makes the transition to saturation steeper."
+
+msgctxt "seed:function-explorer"
+msgid "到达一半的时间"
+msgstr "Time to half capacity"
+
+msgctxt "seed:function-explorer"
+msgid "这个值把整条曲线向右或向左平移，拐点也跟着走。"
+msgstr "This shifts the curve and its inflection point left or right."
+
+msgctxt "seed:function-explorer"
+msgid "增长较慢的种群"
+msgstr "Slower-growing population"
+
+#, python-brace-format
+msgctxt "seed:function-explorer"
+msgid "密度 = 1/({0}·√(2π)) · e^(−(x {1})² / (2·{2}²))"
+msgstr "Density = 1/({0}·√(2π)) · e^(−(x {1})² / (2·{2}²))"
+
+msgctxt "seed:function-explorer"
+msgid "零点"
+msgstr "Zero"
+
+msgctxt "seed:function-explorer"
+msgid "与 y 轴交点"
+msgstr "Y-intercept"
+
+msgctxt "seed:function-explorer"
+msgid "最高点"
+msgstr "Maximum"
+
+msgctxt "seed:function-explorer"
+msgid "最低点"
+msgstr "Minimum"
+
+msgctxt "seed:function-explorer"
+msgid "渐近线 y = 0"
+msgstr "Asymptote y = 0"
+
+msgctxt "seed:function-explorer"
+msgid "渐近线 x = 0"
+msgstr "Asymptote x = 0"
+
+msgctxt "seed:function-explorer"
+msgid "下限 y = 0"
+msgstr "Lower bound y = 0"
+
+msgctxt "seed:function-explorer"
+msgid "上限 y = L"
+msgstr "Upper bound y = L"
+
+msgctxt "seed:function-explorer"
+msgid "拐点"
+msgstr "Inflection point"
+
+msgctxt "seed:function-explorer"
+msgid "峰值"
+msgstr "Peak"
+
+msgctxt "seed:function-explorer"
+msgid "中线 y = d"
+msgstr "Midline y = d"
+
+msgctxt "seed:function-explorer"
+msgid "对比："
+msgstr "Compare: "
+
+msgctxt "seed:function-explorer"
+msgid "当前曲线"
+msgstr "Current curve"
+
+msgctxt "seed:function-explorer"
+msgid "当前公式"
+msgstr "Current formula"
+
+#, python-brace-format
+msgctxt "seed:function-explorer"
+msgid "读取点：x = {0}{1}"
+msgstr "Reading at x = {0}{1}"
+
+msgctxt "seed:function-explorer"
+msgid "这里没有定义"
+msgstr "Undefined here"
+
+msgctxt "seed:function-explorer"
+msgid "渐近线 / 参考线"
+msgstr "Asymptotes / reference lines"
+
+msgctxt "seed:function-explorer"
+msgid "对比曲线"
+msgstr "Comparison curve"
+
+#, python-brace-format
+msgctxt "seed:function-explorer"
+msgid " {0}在 ({1}, {2})。"
+msgstr " {0} at ({1}, {2})."
+
+msgctxt "seed:function-explorer"
+msgid " 在当前范围里这类关键点不存在或不在图内。"
+msgstr " No such key point exists in the current range or view."
+
+#, python-brace-format
+msgctxt "seed:function-explorer"
+msgid " x = {0} 时 y = {1}。"
+msgstr " At x = {0}, y = {1}."
+
+#, python-brace-format
+msgctxt "seed:function-explorer"
+msgid ""
+"<label for=\"p{0}\">{1}（{2}）：<b id=\"p{3}v\"></b></label><div class=\"pc\"><button "
+"type=\"button\" id=\"p{4}-dec\" aria-label=\"减小{5}\">−</button><input id=\"p{6}\" type=\"range\" "
+"min=\"{7}\" max=\"{8}\" step=\"{9}\" value=\"{10}\"><button type=\"button\" id=\"p{11}-inc\" "
+"aria-label=\"增大{12}\">+</button></div>"
+msgstr ""
+"<label for=\"p{0}\">{1} ({2}): <b id=\"p{3}v\"></b></label><div class=\"pc\"><button "
+"type=\"button\" id=\"p{4}-dec\" aria-label=\"Decrease {5}\">−</button><input id=\"p{6}\" "
+"type=\"range\" min=\"{7}\" max=\"{8}\" step=\"{9}\" value=\"{10}\"><button type=\"button\" "
+"id=\"p{11}-inc\" aria-label=\"Increase {12}\">+</button></div>"
+
+#, python-brace-format
+msgctxt "seed:function-explorer"
+msgid "{0}从 {1} {2}到 {3}{4}。{5}"
+msgstr "{0} from {1} {2} to {3}{4}. {5}"
+
+msgctxt "seed:function-explorer"
+msgid "调大"
+msgstr "Increased"
+
+msgctxt "seed:function-explorer"
+msgid "调小"
+msgstr "Decreased"
+
+msgctxt "seed:function-explorer"
+msgid "保持"
+msgstr "Kept"
+
+msgctxt "seed:function-explorer"
+msgid "叠加对比曲线："
+msgstr "Overlay comparison curve: "
+
+#, python-brace-format
+msgctxt "seed:function-explorer"
+msgid "叠加了对比曲线“{0}”，虚线是它。"
+msgstr "Added comparison curve {0}, shown dashed."
+
+msgctxt "seed:function-explorer"
+msgid "去掉了对比曲线。"
+msgstr "Removed the comparison curve."
+
+msgctxt "seed:function-explorer"
+msgid "读取点移动了。"
+msgstr "Moved the reading point."
+
+msgctxt "seed:function-explorer"
+msgid "参数还原成初始值。"
+msgstr "Restored initial parameters."
+
+msgctxt "seed:function-explorer"
+msgid "初始状态。"
+msgstr "Initial state."
+
+msgctxt "seed:function-explorer"
+msgid "函数探索"
+msgstr "Function explorer"
+
+msgctxt "seed:function-explorer"
+msgid "读取一点："
+msgstr "Read a point: "
+
+msgctxt "seed:function-explorer"
+msgid "还原参数"
+msgstr "Restore parameters"
+
+msgctxt "seed:function-explorer"
+msgid "公式与关键点"
+msgstr "Formula and key points"
+
+msgctxt "seed:graph-walk"
+msgid "社交网络里，小明离小芳隔几个人？"
+msgstr "How many connections separate two people in a network?"
+
+msgctxt "seed:graph-walk"
+msgid "广度优先搜索（BFS）为什么一层一层往外找，就能得到最少的“中间人”？"
+msgstr "Why does breadth-first search find the fewest intermediate connections?"
+
+msgctxt "seed:graph-walk"
+msgid "小明"
+msgstr "Ming"
+
+msgctxt "seed:graph-walk"
+msgid "阿杰"
+msgstr "Jie"
+
+msgctxt "seed:graph-walk"
+msgid "小红"
+msgstr "Hong"
+
+msgctxt "seed:graph-walk"
+msgid "老王"
+msgstr "Wang"
+
+msgctxt "seed:graph-walk"
+msgid "小李"
+msgstr "Li"
+
+msgctxt "seed:graph-walk"
+msgid "阿美"
+msgstr "Mei"
+
+msgctxt "seed:graph-walk"
+msgid "小芳"
+msgstr "Fang"
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "从「{0}」出发：先把它放进队列。"
+msgstr "Start at {0}: add it to the queue."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "取出队首「{0}」并访问它。"
+msgstr "Remove {0} from the front of the queue and visit it."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "它的新邻居 {0} 排到队尾。"
+msgstr "Append its new neighbors {0} to the queue."
+
+msgctxt "seed:graph-walk"
+msgid "它没有新邻居（都见过了）。"
+msgstr "No new neighbors; all were already seen."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "到达终点。路径 {0}，共 {1} 条边。BFS 一层一层向外找，所以第一次碰到终点时走的边数最少。"
+msgstr ""
+"Reached the target. Path {0}, with {1} edges. BFS expands one layer at a time, so the first "
+"arrival uses the fewest edges."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "从「{0}」出发：先把它压进栈。"
+msgstr "Start at {0}: push it onto the stack."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "弹出栈顶「{0}」，它已经访问过，直接跳过。"
+msgstr "Pop {0}; it was already visited, so skip it."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "弹出栈顶「{0}」并访问它。"
+msgstr "Pop {0} and visit it."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "把没访问过的邻居 {0} 压栈，最先要走的放在栈顶。"
+msgstr "Push unvisited neighbors {0}; place the next one on top."
+
+msgctxt "seed:graph-walk"
+msgid "没有新邻居，下一步退回到栈里剩下的节点。"
+msgstr "No new neighbors; return to a remaining node on the stack."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "到达终点。路径 {0}，共 {1} 条边。DFS 沿一条路走到底才回头，所以找到的路径不一定最短。"
+msgstr ""
+"Reached the target. Path {0}, with {1} edges. DFS follows a path before backtracking, so this "
+"need not be the shortest path."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "从「{0}」出发：它到自己的距离是 0，其余都还是 ∞。"
+msgstr "Start at {0}: its distance is 0; all others are ∞."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "在待处理的节点里取距离最小的「{0}」（{1}{2}），它的最短距离就此确定。"
+msgstr "Take pending node {0} with the smallest distance ({1}{2}); its shortest distance is now final."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "再看它的出边，更近的就更新：{0}。"
+msgstr "Check outgoing edges and update shorter routes: {0}."
+
+msgctxt "seed:graph-walk"
+msgid "它的出边没有带来更近的路。"
+msgstr "No outgoing edge provides a shorter route."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "终点「{0}」的最短距离是 {1}{2}，路径 {3}。"
+msgstr "Shortest distance to {0} is {1}{2}; path {3}."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "没有路可以到达「{0}」。"
+msgstr "No route reaches {0}."
+
+msgctxt "seed:graph-walk"
+msgid "所有能到的节点都确定了最短距离，结束。"
+msgstr "All reachable nodes have final shortest distances. Finished."
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "{0}空了，遍历结束。访问顺序：{1}。"
+msgstr "{0} is empty. Traversal complete. Visit order: {1}."
+
+msgctxt "seed:graph-walk"
+msgid "队列"
+msgstr "Queue"
+
+msgctxt "seed:graph-walk"
+msgid "栈"
+msgstr "Stack"
+
+msgctxt "seed:graph-walk"
+msgid "起点 / 终点"
+msgstr "Start / target"
+
+msgctxt "seed:graph-walk"
+msgid "起点"
+msgstr "Start"
+
+msgctxt "seed:graph-walk"
+msgid "终点"
+msgstr "Target"
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "{0}，第 {1} 步：当前{2}；已访问 {3}"
+msgstr "{0}, step {1}: current {2}; visited {3}"
+
+msgctxt "seed:graph-walk"
+msgid "无"
+msgstr "None"
+
+msgctxt "seed:graph-walk"
+msgid "队列（前 → 后）"
+msgstr "Queue (front → back)"
+
+msgctxt "seed:graph-walk"
+msgid "栈（栈顶在最右）"
+msgstr "Stack (top at right)"
+
+msgctxt "seed:graph-walk"
+msgid "待处理（距离小的在前）"
+msgstr "Pending (smallest distance first)"
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "第 {0} / {1} 步"
+msgstr "Step {0} / {1}"
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "还没开始 · 共 {0} 步"
+msgstr "Not started · {0} steps"
+
+msgctxt "seed:graph-walk"
+msgid "当前"
+msgstr "Current"
+
+msgctxt "seed:graph-walk"
+msgid "（空）"
+msgstr "(Empty)"
+
+msgctxt "seed:graph-walk"
+msgid "已访问（按顺序）"
+msgstr "Visited (in order)"
+
+msgctxt "seed:graph-walk"
+msgid "已知的最短距离"
+msgstr "Known shortest distances"
+
+msgctxt "seed:graph-walk"
+msgid "找到的路径"
+msgstr "Path found"
+
+#, python-brace-format
+msgctxt "seed:graph-walk"
+msgid "第 {0} 步："
+msgstr "Step {0}: "
+
+msgctxt "seed:graph-walk"
+msgid "自动播放"
+msgstr "Auto play"
+
+msgctxt "seed:graph-walk"
+msgid "暂停"
+msgstr "Pause"
+
+msgctxt "seed:graph-walk"
+msgid "已重置。"
+msgstr "Reset."
+
+msgctxt "seed:graph-walk"
+msgid "实心 = 已访问；虚线圈 = 在"
+msgstr "Filled = visited; dashed ring = waiting in the "
+
+msgctxt "seed:graph-walk"
+msgid "待处理名单"
+msgstr "pending list"
+
+msgctxt "seed:graph-walk"
+msgid "里等着；双层圈 = 当前节点；粗虚线边 = 刚发现的边；实线 = 走过的路"
+msgstr "; double ring = current node; thick dashed edge = newly discovered; solid = traversed"
+
+msgctxt "seed:graph-walk"
+msgid "；节点下方的数字 = 目前已知的最短距离（粗体 = 已确定）"
+msgstr "; numbers below nodes = shortest known distance (bold = final)"
+
+msgctxt "seed:graph-walk"
+msgid "；节点下方的数字 = 访问顺序"
+msgstr "; numbers below nodes = visit order"
+
+msgctxt "seed:graph-walk"
+msgid "图的遍历"
+msgstr "Graph traversal"
+
+msgctxt "seed:graph-walk"
+msgid "下一步"
+msgstr "Next step"
+
+msgctxt "seed:graph-walk"
+msgid "重置"
+msgstr "Reset"
+
+msgctxt "seed:graph-walk"
+msgid "遍历状态"
+msgstr "Traversal state"
+
+msgctxt "seed:linear-transform-2d"
+msgid "剪切、拉伸和旋转：网格被矩阵怎样变形"
+msgstr "Shear, scale and rotate: how does a matrix transform a grid?"
+
+msgctxt "seed:linear-transform-2d"
+msgid "拖动 t，看方格怎样从原样变成 A 的样子；哪些方向在变换后仍然指向原来的方向？"
+msgstr "Move t from the identity to A. Which directions remain unchanged?"
+
+msgctxt "seed:linear-transform-2d"
+msgid "剪切"
+msgstr "Shear"
+
+msgctxt "seed:linear-transform-2d"
+msgid "横向错切：y 越大，点被推得越远；面积不变，只有横轴方向没被转动。"
+msgstr ""
+"Horizontal shear moves points farther as y increases; area stays constant and the horizontal "
+"direction is unchanged."
+
+msgctxt "seed:linear-transform-2d"
+msgid "拉伸"
+msgstr "Scale"
+
+msgctxt "seed:linear-transform-2d"
+msgid "x 方向拉长 2 倍、y 方向压到一半；坐标轴方向保持不变，面积还是 1。"
+msgstr "Stretch x by 2 and halve y; coordinate-axis directions and area are preserved."
+
+msgctxt "seed:linear-transform-2d"
+msgid "旋转 90°"
+msgstr "Rotate 90°"
+
+msgctxt "seed:linear-transform-2d"
+msgid "整体逆时针转 90°；任何方向都被转走了，所以没有实特征方向。"
+msgstr "Rotate counterclockwise by 90°. Every direction changes, so there are no real eigendirections."
+
+msgctxt "seed:linear-transform-2d"
+msgid "矩阵 "
+msgstr "Matrix "
+
+msgctxt "seed:linear-transform-2d"
+msgid "单位矩阵"
+msgstr "Identity matrix"
+
+msgctxt "seed:linear-transform-2d"
+msgid "变换后的 i"
+msgstr "Transformed i"
+
+msgctxt "seed:linear-transform-2d"
+msgid "变换后的 j"
+msgstr "Transformed j"
+
+msgctxt "seed:linear-transform-2d"
+msgid "变换后的 v"
+msgstr "Transformed v"
+
+msgctxt "seed:linear-transform-2d"
+msgid "特征方向 λ = "
+msgstr "Eigendirection λ = "
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "矩阵 {0}，t = {1}，行列式 {2}"
+msgstr "Matrix {0}, t = {1}, determinant {2}"
+
+msgctxt "seed:linear-transform-2d"
+msgid "矩阵 A（"
+msgstr "Matrix A ("
+
+msgctxt "seed:linear-transform-2d"
+msgid "向量"
+msgstr "Vector"
+
+msgctxt "seed:linear-transform-2d"
+msgid "行列式 = 面积倍数"
+msgstr "Determinant = area scale factor"
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "<b>{0}</b>{1}"
+msgstr "<b>{0}</b>{1}"
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "（现在 t = {0}：{1}）"
+msgstr " (At t = {0}: {1})"
+
+msgctxt "seed:linear-transform-2d"
+msgid "特征方向"
+msgstr "Eigendirection"
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "每个方向都是（A 只是把所有向量放大 {0} 倍）"
+msgstr "Every direction (A scales every vector by {0})"
+
+msgctxt "seed:linear-transform-2d"
+msgid "没有实的特征方向（所有方向都被转动）"
+msgstr "No real eigendirection (every direction rotates)"
+
+msgctxt "seed:linear-transform-2d"
+msgid "特征值与方向"
+msgstr "Eigenvalues and directions"
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "λ = <b>{0}</b>，方向 ({1}, {2})"
+msgstr "λ = <b>{0}</b>, direction ({1}, {2})"
+
+msgctxt "seed:linear-transform-2d"
+msgid "把 v 转到特征方向（λ = "
+msgstr "Align v with eigendirection (λ = "
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "把 v 转到特征方向 λ = {0}。"
+msgstr "Aligned v with eigendirection λ = {0}."
+
+msgctxt "seed:linear-transform-2d"
+msgid "行列式为 0：整个平面被压成一条线（或一个点），面积没了。"
+msgstr "Determinant 0: the plane collapses to a line or point, so its area vanishes."
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "行列式 {0}：面积变为 {1} 倍，并且方向翻转（镜像）。"
+msgstr "Determinant {0}: area is multiplied by {1}, with orientation reversed (a reflection)."
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "行列式 {0}：单位方块的面积变为 {1} 倍。"
+msgstr "Determinant {0}: unit-square area is multiplied by {1}."
+
+msgctxt "seed:linear-transform-2d"
+msgid "A 对每个方向一视同仁：任何 v 都只是被放大，不会转动。"
+msgstr "A treats every direction alike: it scales v without rotating it."
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "v 被转了 {0}°，这个矩阵找不到只伸缩不转动的方向。"
+msgstr "v rotates by {0}°; this matrix has no real direction that only scales."
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "v 正好落在特征方向上：Av 和 v 在同一条直线上，只是长度变成 {0} 倍（特征值 λ = {1}）。"
+msgstr "v is on an eigendirection: Av is collinear with v, with scale factor {0} (eigenvalue λ = {1})."
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "v 不在特征方向上：Av 比 v 转了 {0}°，长度变成 {1} 倍。"
+msgstr "v is not on an eigendirection: Av rotates by {0}° and scales by {1}."
+
+msgctxt "seed:linear-transform-2d"
+msgid "矩阵"
+msgstr "Matrix"
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid " （现在只变了 t = {0} 的程度，Av 是 t = 1 时的结果。）"
+msgstr " (Currently interpolated to t = {0}; Av shows the result at t = 1.)"
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "换成“{0}”矩阵。"
+msgstr "Selected matrix {0}."
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "t 调到 {0}：网格从原样变了 {1}% 的程度。"
+msgstr "t = {0}: the grid is {1}% of the way from the identity to A."
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "把 v 转到 {0}°。"
+msgstr "Rotated v to {0}°."
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "把 v {0}时针转了 15°，现在在 {1}°。"
+msgstr "Rotated v 15° {0}clockwise; now at {1}°."
+
+msgctxt "seed:linear-transform-2d"
+msgid "逆"
+msgstr "counter"
+
+msgctxt "seed:linear-transform-2d"
+msgid "顺"
+msgstr " "
+
+msgctxt "seed:linear-transform-2d"
+msgid "全部还原。"
+msgstr "Restored all values."
+
+#, python-brace-format
+msgctxt "seed:linear-transform-2d"
+msgid "矩阵“{0}”。"
+msgstr "Matrix {0}."
+
+msgctxt "seed:linear-transform-2d"
+msgid "二维线性变换"
+msgstr "2D linear transformation"
+
+msgctxt "seed:linear-transform-2d"
+msgid "从单位矩阵到 A：t ="
+msgstr "From identity to A: t ="
+
+msgctxt "seed:linear-transform-2d"
+msgid "向量 v 的方向："
+msgstr "Direction of v: "
+
+msgctxt "seed:linear-transform-2d"
+msgid "顺时针转 15°"
+msgstr "Rotate clockwise 15°"
+
+msgctxt "seed:linear-transform-2d"
+msgid "逆时针转 15°"
+msgstr "Rotate counterclockwise 15°"
+
+msgctxt "seed:linear-transform-2d"
+msgid "还原"
+msgstr "Restore"
+
+msgctxt "seed:linear-transform-2d"
+msgid "选择矩阵"
+msgstr "Select matrix"
+
+msgctxt "seed:linear-transform-2d"
+msgid "v 顺时针转 15 度"
+msgstr "Rotate v clockwise 15 degrees"
+
+msgctxt "seed:linear-transform-2d"
+msgid "v 逆时针转 15 度"
+msgstr "Rotate v counterclockwise 15 degrees"
+
+msgctxt "seed:linear-transform-2d"
+msgid "读数"
+msgstr "Readings"
+
+msgctxt "seed:param-bars"
+msgid "模型多复杂才合适：偏差、方差与总误差"
+msgstr "How complex should a model be? Bias, variance and total error"
+
+msgctxt "seed:param-bars"
+msgid "把模型调得更复杂，为什么偏差降了、方差却升了？多给数据能不能缓解？"
+msgstr "Why does greater complexity reduce bias but increase variance? Can more data help?"
+
+msgctxt "seed:param-bars"
+msgid "模型复杂度（多项式次数）"
+msgstr "Model complexity (polynomial degree)"
+
+msgctxt "seed:param-bars"
+msgid "训练样本数"
+msgstr "Training samples"
+
+msgctxt "seed:param-bars"
+msgid "条"
+msgstr "samples"
+
+msgctxt "seed:param-bars"
+msgid "偏差的平方"
+msgstr "Squared bias"
+
+msgctxt "seed:param-bars"
+msgid "模型太简单：连数据里的规律都没抓住，这叫欠拟合，偏差大。"
+msgstr "An overly simple model misses the pattern: underfitting gives high bias."
+
+msgctxt "seed:param-bars"
+msgid "方差"
+msgstr "Variance"
+
+msgctxt "seed:param-bars"
+msgid "模型太复杂或数据太少：模型被训练数据里的偶然波动带着走，这叫过拟合，方差大。"
+msgstr ""
+"Too much complexity or too little data makes the model follow incidental fluctuations: "
+"overfitting gives high variance."
+
+msgctxt "seed:param-bars"
+msgid "总误差"
+msgstr "Total error"
+
+msgctxt "seed:param-bars"
+msgid "接近最低点：偏差和方差互相抵消得比较好。再往复杂走，方差涨得比偏差降得快。"
+msgstr ""
+"Near the minimum, bias and variance are well balanced. More complexity increases variance faster "
+"than it reduces bias."
+
+msgctxt "seed:param-bars"
+msgid "参数"
+msgstr "Parameters"
+
+msgctxt "seed:param-bars"
+msgid "结果"
+msgstr "Results"
+
+#, python-brace-format
+msgctxt "seed:param-bars"
+msgid "{0}{1} 的 {2} 次方{3}"
+msgstr "{0}{1} to the power {2}{3}"
+
+#, python-brace-format
+msgctxt "seed:param-bars"
+msgid "把「{0}」调到 {1}{2}，所有结果都没变：这个参数在算法里没有起作用，或者这一步太小。"
+msgstr "Set {0} to {1}{2}; no result changed. This parameter has no effect here, or the step is too small."
+
+#, python-brace-format
+msgctxt "seed:param-bars"
+msgid "把「{0}」调到 {1}{2}：「{3}」变化最大，从 {4} 变成 {5}{6}。{7}"
+msgstr "Set {0} to {1}{2}: {3} changed most, from {4} to {5}{6}. {7}"
+
+msgctxt "seed:param-bars"
+msgid "已回到初始值："
+msgstr "Restored initial values: "
+
+msgctxt "seed:param-bars"
+msgid "。再拖一个滑块，看哪个结果变得最多。"
+msgstr ". Move a slider to see which result changes most."
+
+msgctxt "seed:param-bars"
+msgid "这次变化最大"
+msgstr "Largest change"
+
+#, python-brace-format
+msgctxt "seed:param-bars"
+msgid "<b>{0}</b>（{1} {2}）：{3}"
+msgstr "<b>{0}</b> ({1} {2}): {3}"
+
+msgctxt "seed:param-bars"
+msgid "高于"
+msgstr "Above"
+
+msgctxt "seed:param-bars"
+msgid "低于"
+msgstr "Below"
+
+msgctxt "seed:param-bars"
+msgid "现在没有结果越过提示线（条形里的虚线）。"
+msgstr "No result currently crosses a threshold (dashed line inside a bar)."
+
+msgctxt "seed:param-bars"
+msgid "<span class=\"k\">每个结果怎么算</span><div class=\"formulas\">"
+msgstr "<span class=\"k\">How each result is calculated</span><div class=\"formulas\">"
+
+msgctxt "seed:param-bars"
+msgid "拖动任何一个滑块，看哪个结果变化最大、有没有越过虚线的提示线。"
+msgstr "Move a slider to see which result changes most and whether it crosses a threshold."
+
+msgctxt "seed:param-bars"
+msgid "参数与条形图"
+msgstr "Parameters and bars"
+
+msgctxt "seed:param-bars"
+msgid "恢复初始值"
+msgstr "Restore initial values"
+
+msgctxt "seed:param-bars"
+msgid "提示"
+msgstr "Hints"
+
+msgctxt "seed:param-bars"
+msgid "每个结果的算法"
+msgstr "Result calculations"
+
+msgctxt "seed:random-sim"
+msgid "抛硬币：次数多了，正面的比例会怎样？"
+msgstr "Coin tosses: how does the heads proportion change with more trials?"
+
+msgctxt "seed:random-sim"
+msgid "一枚均匀硬币，每次正面的概率是 50%。抛 10 次、100 次、1000 次，正面的比例离 50% 有多远？"
+msgstr ""
+"A fair coin has a 50% chance of heads each time. How far from 50% is the proportion after 10, 100"
+" or 1000 tosses?"
+
+msgctxt "seed:random-sim"
+msgid "正面"
+msgstr "Heads"
+
+msgctxt "seed:random-sim"
+msgid "这就是大数定律：次数越多，频率越靠近概率；但这不代表下一次更可能出反面，每一次仍然是 50% 对 50%。"
+msgstr ""
+"The law of large numbers: frequencies approach probabilities with more trials. This does not make"
+" tails more likely next; each toss still has a 50% chance."
+
+msgctxt "seed:random-sim"
+msgid "结果"
+msgstr "Result"
+
+msgctxt "seed:random-sim"
+msgid "反面"
+msgstr "Tails"
+
+msgctxt "seed:random-sim"
+msgid "平均数 "
+msgstr "Mean "
+
+msgctxt "seed:random-sim"
+msgid " 次"
+msgstr " trials"
+
+msgctxt "seed:random-sim"
+msgid "做 "
+msgstr "Run "
+
+msgctxt "seed:random-sim"
+msgid " 个"
+msgstr " values"
+
+msgctxt "seed:random-sim"
+msgid "柱高 = 各结果占的比例；柱顶数字 = 出现次数"
+msgstr "Bar height = observed proportion; number above bar = count"
+
+msgctxt "seed:random-sim"
+msgid "虚线 = 期望比例"
+msgstr "Dashed line = expected proportion"
+
+msgctxt "seed:random-sim"
+msgid "柱状图："
+msgstr "Bar chart: "
+
+msgctxt "seed:random-sim"
+msgid "总体均值 "
+msgstr "Population mean "
+
+msgctxt "seed:random-sim"
+msgid "每个样本 "
+msgstr "Each sample: "
+
+msgctxt "seed:random-sim"
+msgid " 个数的平均"
+msgstr " values averaged"
+
+msgctxt "seed:random-sim"
+msgid "虚线 = 期望：总体均值，和理论上的钟形"
+msgstr "Dashed lines = population mean and theoretical bell curve"
+
+msgctxt "seed:random-sim"
+msgid "样本均值的直方图，已有 "
+msgstr "Histogram of sample means, with "
+
+msgctxt "seed:random-sim"
+msgid " 个样本"
+msgstr " samples"
+
+msgctxt "seed:random-sim"
+msgid "累计试验次数"
+msgstr "Cumulative trials"
+
+msgctxt "seed:random-sim"
+msgid "虚线 = 期望"
+msgstr "Dashed line = expected"
+
+msgctxt "seed:random-sim"
+msgid "期望 "
+msgstr "Expected "
+
+msgctxt "seed:random-sim"
+msgid "已有样本均值的平均"
+msgstr "Mean of observed sample means"
+
+msgctxt "seed:random-sim"
+msgid "」占已做次数的比例"
+msgstr " as a proportion of trials"
+
+msgctxt "seed:random-sim"
+msgid "折线图："
+msgstr "Line chart: "
+
+msgctxt "seed:random-sim"
+msgid "最新值 "
+msgstr "Latest value "
+
+msgctxt "seed:random-sim"
+msgid "还没有数据"
+msgstr "No data yet"
+
+msgctxt "seed:random-sim"
+msgid "还没有做试验，点“做 1 次”开始"
+msgstr "No trials yet. Select “Run 1 trial” to begin."
+
+msgctxt "seed:random-sim"
+msgid "已做"
+msgstr "Completed"
+
+msgctxt "seed:random-sim"
+msgid "样本均值的平均"
+msgstr "Mean of sample means"
+
+msgctxt "seed:random-sim"
+msgid "（总体均值 "
+msgstr " (Population mean "
+
+msgctxt "seed:random-sim"
+msgid "样本均值的标准差"
+msgstr "Standard deviation of sample means"
+
+msgctxt "seed:random-sim"
+msgid "（理论 σ/√n = "
+msgstr " (Theoretical σ/√n = "
+
+msgctxt "seed:random-sim"
+msgid " 次，"
+msgstr " trials, "
+
+msgctxt "seed:random-sim"
+msgid "，期望 "
+msgstr ", expected "
+
+msgctxt "seed:random-sim"
+msgid "比值"
+msgstr "Ratio"
+
+msgctxt "seed:random-sim"
+msgid "（期望 "
+msgstr " (Expected "
+
+msgctxt "seed:random-sim"
+msgid "已清零。随机数的种子没变，所以再做一遍会得到一模一样的结果。"
+msgstr "Cleared. The seed is unchanged, so repeating the trials reproduces the same results."
+
+msgctxt "seed:random-sim"
+msgid "换成每个样本抽 "
+msgstr "Changed sample size to "
+
+msgctxt "seed:random-sim"
+msgid " 个数，已清零重来：平均的数越多，样本均值越集中在总体均值附近。"
+msgstr ""
+" values and cleared the results. Larger samples concentrate their means nearer the population "
+"mean."
+
+msgctxt "seed:random-sim"
+msgid "这次得到「"
+msgstr "This trial produced "
+
+msgctxt "seed:random-sim"
+msgid "又做了 "
+msgstr "Ran another "
+
+msgctxt "seed:random-sim"
+msgid " 次。"
+msgstr " trials."
+
+msgctxt "seed:random-sim"
+msgid " 累计 "
+msgstr " Total "
+
+msgctxt "seed:random-sim"
+msgid " 个样本均值，平均 "
+msgstr " sample means, average "
+
+msgctxt "seed:random-sim"
+msgid "，总体均值是 "
+msgstr "; population mean "
+
+msgctxt "seed:random-sim"
+msgid "，差 "
+msgstr "; difference "
+
+msgctxt "seed:random-sim"
+msgid " 次，「"
+msgstr " trials; "
+
+msgctxt "seed:random-sim"
+msgid "」占 "
+msgstr " accounts for "
+
+msgctxt "seed:random-sim"
+msgid " 个百分点。"
+msgstr " percentage points."
+
+msgctxt "seed:random-sim"
+msgid " 次数还少，比例摇摆得厉害，多做几次就不同了。"
+msgstr " With few trials, proportions fluctuate considerably. Run more trials to compare."
+
+msgctxt "seed:random-sim"
+msgid " 次数多了，偶然的偏差被大量试验摊薄，结果越来越靠近期望。"
+msgstr " With more trials, random deviations average out and results approach their expected values."
+
+msgctxt "seed:random-sim"
+msgid " 已到上限 "
+msgstr " Reached the limit of "
+
+msgctxt "seed:random-sim"
+msgid " 次，请清零重来。"
+msgstr " trials. Clear the results to restart."
+
+msgctxt "seed:random-sim"
+msgid "每做 1 次，就从总体里随机抽 "
+msgstr "Each trial randomly samples "
+
+msgctxt "seed:random-sim"
+msgid " 个数，把它们的平均数记下来。点“做 1 次”或“做 "
+msgstr " values and records their mean. Select “Run 1 trial” or “Run "
+
+msgctxt "seed:random-sim"
+msgid " 次”。"
+msgstr " trials”."
+
+msgctxt "seed:random-sim"
+msgid "每做 1 次，就按设定的概率随机得到一个结果。先点“做 1 次”，再试试一次做很多次。"
+msgstr ""
+"Each trial randomly selects an outcome using the configured probabilities. Start with one trial, "
+"then try a larger batch."
+
+msgctxt "seed:random-sim"
+msgid "随机模拟"
+msgstr "Random simulation"
+
+msgctxt "seed:random-sim"
+msgid "每次连做"
+msgstr "Trials per batch"
+
+msgctxt "seed:random-sim"
+msgid "每个样本抽几个数"
+msgstr "Values per sample"
+
+msgctxt "seed:random-sim"
+msgid "做 1 次"
+msgstr "Run 1 trial"
+
+msgctxt "seed:random-sim"
+msgid "做 10 次"
+msgstr "Run 10 trials"
+
+msgctxt "seed:random-sim"
+msgid "清零重来"
+msgstr "Clear and restart"
+
+msgctxt "seed:random-sim"
+msgid "计数与期望"
+msgstr "Counts and expectations"
+
+msgctxt "seed:scatter-line"
+msgid "学习时间和测验分数：点越像一条线，相关越强"
+msgstr "Study time and scores: a straighter pattern means stronger correlation"
+
+msgctxt "seed:scatter-line"
+msgid "移动一个点，直线、相关系数 r 和残差怎么跟着变？一个离群点能把 r 拉多少？"
+msgstr ""
+"Move a point to see the fitted line, correlation r and residuals change. How much can an outlier "
+"alter r?"
+
+msgctxt "seed:scatter-line"
+msgid "每周学习时间"
+msgstr "Weekly study time"
+
+msgctxt "seed:scatter-line"
+msgid "测验分数"
+msgstr "Test score"
+
+msgctxt "seed:scatter-line"
+msgid "小时"
+msgstr "hours"
+
+msgctxt "seed:scatter-line"
+msgid "分"
+msgstr "points"
+
+msgctxt "seed:scatter-line"
+msgid "学得少却考高分"
+msgstr "High score with little study"
+
+msgctxt "seed:scatter-line"
+msgid "直线是让竖直残差平方和最小的那一条。"
+msgstr "The line minimizes the sum of squared vertical residuals."
+
+msgctxt "seed:scatter-line"
+msgid "r 只衡量“像不像一条直线”，不说明谁导致谁。"
+msgstr "r measures linear association; it does not establish causation."
+
+msgctxt "seed:scatter-line"
+msgid "协方差的正负看点落在均值十字的哪几个象限。"
+msgstr "The sign of covariance depends on which quadrants around the means contain the points."
+
+msgctxt "seed:scatter-line"
+msgid "最小二乘直线"
+msgstr "Least-squares line"
+
+msgctxt "seed:scatter-line"
+msgid "竖直残差"
+msgstr "Vertical residuals"
+
+msgctxt "seed:scatter-line"
+msgid "主方向"
+msgstr "Principal direction"
+
+msgctxt "seed:scatter-line"
+msgid "相关系数 r"
+msgstr "Correlation r"
+
+msgctxt "seed:scatter-line"
+msgid "协方差与象限"
+msgstr "Covariance and quadrants"
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid "打开了“{0}”。"
+msgstr "Enabled {0}."
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid "关掉了“{0}”。"
+msgstr "Disabled {0}."
+
+msgctxt "seed:scatter-line"
+msgid "加入："
+msgstr "Add: "
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid "加入了点“{0}”。"
+msgstr "Added point {0}."
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid "拿掉了点“{0}”。"
+msgstr "Removed point {0}."
+
+msgctxt "seed:scatter-line"
+msgid "无法计算"
+msgstr "Cannot calculate"
+
+msgctxt "seed:scatter-line"
+msgid "正"
+msgstr "Positive"
+
+msgctxt "seed:scatter-line"
+msgid "负"
+msgstr "Negative"
+
+msgctxt "seed:scatter-line"
+msgid "很强的"
+msgstr "Strong "
+
+msgctxt "seed:scatter-line"
+msgid "相关"
+msgstr "correlation"
+
+msgctxt "seed:scatter-line"
+msgid "中等的"
+msgstr "Moderate "
+
+msgctxt "seed:scatter-line"
+msgid "较弱的"
+msgstr "Weak "
+
+msgctxt "seed:scatter-line"
+msgid "几乎看不出相关"
+msgstr "Little visible correlation"
+
+msgctxt "seed:scatter-line"
+msgid "回归线"
+msgstr "Regression line"
+
+msgctxt "seed:scatter-line"
+msgid "乘积为正（+）"
+msgstr "Positive product (+)"
+
+msgctxt "seed:scatter-line"
+msgid "乘积为负（−）"
+msgstr "Negative product (−)"
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid "{0} 个点"
+msgstr "{0} points"
+
+msgctxt "seed:scatter-line"
+msgid "选中："
+msgstr "Selected: "
+
+msgctxt "seed:scatter-line"
+msgid "均值"
+msgstr "Mean"
+
+msgctxt "seed:scatter-line"
+msgid "协方差（样本，除以 n−1）"
+msgstr "Sample covariance (divide by n−1)"
+
+msgctxt "seed:scatter-line"
+msgid "x 完全相同，斜率不存在"
+msgstr "All x values are equal; slope is undefined"
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid "与横轴夹角 <b>{0}°</b>，占总方差 <b>{1}%</b>"
+msgstr "Angle to horizontal <b>{0}°</b>; <b>{1}%</b> of total variance"
+
+msgctxt "seed:scatter-line"
+msgid " 至少要两个点才能算相关和直线。"
+msgstr " At least two points are needed to calculate correlation and a line."
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid " 回归线斜率 {0}：{1}每多 1{2}，{3}平均{4} {5}{6}。"
+msgstr " Regression slope {0}: for each additional 1{2} of {1}, {3} averages {4} {5}{6}."
+
+msgctxt "seed:scatter-line"
+msgid "多"
+msgstr "more"
+
+msgctxt "seed:scatter-line"
+msgid "少"
+msgstr "less"
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid " 协方差 {0}（{1}）。"
+msgstr " Covariance {0} ({1})."
+
+msgctxt "seed:scatter-line"
+msgid "同向变化的点占优"
+msgstr "Same-direction deviations dominate"
+
+msgctxt "seed:scatter-line"
+msgid "反向变化的点占优"
+msgstr "Opposite-direction deviations dominate"
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid " 点云最长的方向与横轴成 {0}°，承载了 {1}% 的总方差。"
+msgstr " The longest direction of the cloud is {0}° to horizontal and carries {1}% of total variance."
+
+msgctxt "seed:scatter-line"
+msgid " 现在没有打开任何叠加，只看点的位置。"
+msgstr " No overlays are enabled; only point positions are shown."
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid "把“{0}”移到 ({1}, {2})。"
+msgstr "Moved {0} to ({1}, {2})."
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid "选中了“{0}”。"
+msgstr "Selected {0}."
+
+msgctxt "seed:scatter-line"
+msgid "所有点都还原了。"
+msgstr "Restored all points."
+
+#, python-brace-format
+msgctxt "seed:scatter-line"
+msgid "把“{0}”拖到 ({1}, {2})。"
+msgstr "Dragged {0} to ({1}, {2})."
+
+msgctxt "seed:scatter-line"
+msgid "初始状态。"
+msgstr "Initial state."
+
+msgctxt "seed:scatter-line"
+msgid "散点与直线"
+msgstr "Scatter and line"
+
+msgctxt "seed:scatter-line"
+msgid "拖动圆点，或在右边选一个点用按钮移动。"
+msgstr "Drag a point, or select one and use the movement buttons."
+
+msgctxt "seed:scatter-line"
+msgid "选中的点"
+msgstr "Selected point"
+
+msgctxt "seed:scatter-line"
+msgid "向左"
+msgstr "Left"
+
+msgctxt "seed:scatter-line"
+msgid "向右"
+msgstr "Right"
+
+msgctxt "seed:scatter-line"
+msgid "向上"
+msgstr "Up"
+
+msgctxt "seed:scatter-line"
+msgid "向下"
+msgstr "Down"
+
+msgctxt "seed:scatter-line"
+msgid "还原所有点"
+msgstr "Restore all points"
+
+msgctxt "seed:scatter-line"
+msgid "移动选中的点"
+msgstr "Move the selected point"
+
+msgctxt "seed:scatter-line"
+msgid "向左移"
+msgstr "Move left"
+
+msgctxt "seed:scatter-line"
+msgid "向右移"
+msgstr "Move right"
+
+msgctxt "seed:scatter-line"
+msgid "向上移"
+msgstr "Move up"
+
+msgctxt "seed:scatter-line"
+msgid "向下移"
+msgstr "Move down"
+
+msgctxt "seed:scatter-line"
+msgid "叠加"
+msgstr "Overlays"
+
+msgctxt "seed:scatter-line"
+msgid "读数"
+msgstr "Readings"
+
+msgctxt "seed:sort-match"
+msgid "统计量：它描述“中心”还是“分散”？"
+msgstr "Statistics: does each describe center or spread?"
+
+msgctxt "seed:sort-match"
+msgid "把每个统计量放进它回答的问题：数据大概在哪里，还是数据有多散？"
+msgstr "Place each statistic under the question it answers: where the data lies or how spread out it is."
+
+msgctxt "seed:sort-match"
+msgid "集中趋势"
+msgstr "Central tendency"
+
+msgctxt "seed:sort-match"
+msgid "数据大概落在哪里"
+msgstr "Where the data typically lies"
+
+msgctxt "seed:sort-match"
+msgid "离散程度"
+msgstr "Dispersion"
+
+msgctxt "seed:sort-match"
+msgid "数据有多分散"
+msgstr "How spread out the data is"
+
+msgctxt "seed:sort-match"
+msgid "平均数"
+msgstr "Mean"
+
+msgctxt "seed:sort-match"
+msgid "平均数把所有数合成一个“典型值”，描述中心位置，不描述散布。"
+msgstr "The mean combines values into a typical central location; it does not measure spread."
+
+msgctxt "seed:sort-match"
+msgid "平均数只给出一个中心位置；同一个平均数可以来自很集中、也可以来自很分散的数据。"
+msgstr "The same mean can arise from tightly grouped or widely spread data."
+
+msgctxt "seed:sort-match"
+msgid "方差"
+msgstr "Variance"
+
+msgctxt "seed:sort-match"
+msgid "方差是偏差平方的平均，数据越分散它越大，回答的是“有多散”。"
+msgstr "Variance averages squared deviations and grows with dispersion."
+
+msgctxt "seed:sort-match"
+msgid "方差不告诉你数据在哪里：把所有数都加 10，平均数变了，方差一点没变。"
+msgstr "Variance does not locate the data: adding 10 changes the mean but leaves variance unchanged."
+
+msgctxt "seed:sort-match"
+msgid "中位数"
+msgstr "Median"
+
+msgctxt "seed:sort-match"
+msgid "中位数是排好序后正中间的那个数，也是描述中心，而且不容易被极端值带偏。"
+msgstr "The median is the middle sorted value, a measure of center less affected by extreme values."
+
+msgctxt "seed:sort-match"
+msgid "中位数是一个位置，不衡量散布。"
+msgstr "The median is a location, not a measure of spread."
+
+msgctxt "seed:sort-match"
+msgid "标准差"
+msgstr "Standard deviation"
+
+msgctxt "seed:sort-match"
+msgid "标准差是方差开方，单位和原数据相同，衡量典型的偏离距离。"
+msgstr ""
+"Standard deviation is the square root of variance, measuring typical deviation in the original "
+"units."
+
+msgctxt "seed:sort-match"
+msgid "标准差衡量偏离均值有多远，它不是中心本身。"
+msgstr "Standard deviation measures distance from the mean, not the center itself."
+
+msgctxt "seed:sort-match"
+msgid "众数"
+msgstr "Mode"
+
+msgctxt "seed:sort-match"
+msgid "众数是出现次数最多的值，是另一种“最典型”的值，属于集中趋势。"
+msgstr "The mode is the most frequent value, another measure of central tendency."
+
+msgctxt "seed:sort-match"
+msgid "众数只看哪个值最常见，和散布无关。"
+msgstr "The mode identifies the most common value, not dispersion."
+
+msgctxt "seed:sort-match"
+msgid "极差"
+msgstr "Range"
+
+msgctxt "seed:sort-match"
+msgid "极差 = 最大值 − 最小值，一眼看出数据铺开的范围，是最简单的离散程度。"
+msgstr "Range = maximum − minimum, a simple measure of the data's extent."
+
+msgctxt "seed:sort-match"
+msgid "极差是两端之间的距离，不是中心的位置。"
+msgstr "Range measures distance between extremes, not central location."
+
+msgctxt "seed:sort-match"
+msgid "四分位距"
+msgstr "Interquartile range"
+
+msgctxt "seed:sort-match"
+msgid "四分位距 = Q3 − Q1，是中间一半数据铺开的宽度，不受极端值影响。"
+msgstr "IQR = Q3 − Q1, the width of the middle half of the data, resistant to extreme values."
+
+msgctxt "seed:sort-match"
+msgid "四分位距衡量中间一半数据的宽度，不是中心。"
+msgstr "IQR measures the width of the middle half, not its center."
+
+msgctxt "seed:sort-match"
+msgid "第 "
+msgstr "Group "
+
+msgctxt "seed:sort-match"
+msgid " 组"
+msgstr " "
+
+msgctxt "seed:sort-match"
+msgid "其他"
+msgstr "Other"
+
+msgctxt "seed:sort-match"
+msgid "待配对的项目（点选后点对应对象的“配到这里”，或拖过去）"
+msgstr "Items to match: select one, then choose “Match here”, or drag it."
+
+msgctxt "seed:sort-match"
+msgid "待分类的项目（点选后点某一类的“放入这一类”，或拖过去）"
+msgstr "Items to classify: select one, then choose “Place in this category”, or drag it."
+
+msgctxt "seed:sort-match"
+msgid "正确"
+msgstr "Correct"
+
+msgctxt "seed:sort-match"
+msgid "不对"
+msgstr "Incorrect"
+
+msgctxt "seed:sort-match"
+msgid "还没放"
+msgstr "Not placed"
+
+msgctxt "seed:sort-match"
+msgid "<p class=\"empty\">都放好了。可以点“检查全部”。</p>"
+msgstr "<p class=\"empty\">All placed. Select “Check all”.</p>"
+
+#, python-brace-format
+msgctxt "seed:sort-match"
+msgid ""
+"<section class=\"tg\" data-t=\"{0}\" aria-label=\"{1}\"><div class=\"tg-h\"><h2>{2}</h2>{3}</div>"
+"\n"
+"      <button type=\"button\" class=\"put\" data-probe=\"cat-{4}\" data-put=\"{5}\" aria-"
+"label=\"{6}{7}\">{8}</button>{9}</section>"
+msgstr ""
+"<section class=\"tg\" data-t=\"{0}\" aria-label=\"{1}\"><div class=\"tg-h\"><h2>{2}</h2>{3}</div>"
+" <button type=\"button\" class=\"put\" data-probe=\"cat-{4}\" data-put=\"{5}\" aria-"
+"label=\"{6}{7}\">{8}</button>{9}</section>"
+
+msgctxt "seed:sort-match"
+msgid "把选中的项目配给"
+msgstr "Match selected item to "
+
+msgctxt "seed:sort-match"
+msgid "把选中的项目放入"
+msgstr "Place selected item in "
+
+msgctxt "seed:sort-match"
+msgid "配到这里"
+msgstr "Match here"
+
+msgctxt "seed:sort-match"
+msgid "放入这一类"
+msgstr "Place in this category"
+
+#, python-brace-format
+msgctxt "seed:sort-match"
+msgid "已放 {0}/{1}，正确 {2}"
+msgstr "Placed {0}/{1}; {2} correct"
+
+msgctxt "seed:sort-match"
+msgid "这一对不成立，换一个再试。"
+msgstr "This pair does not match. Try another."
+
+msgctxt "seed:sort-match"
+msgid "它不属于这一类，换一类再试。"
+msgstr "It does not belong in this category. Try another."
+
+#, python-brace-format
+msgctxt "seed:sort-match"
+msgid "{0}{1}{2}是对的。{3}"
+msgstr "{0}{1}{2} is correct. {3}"
+
+msgctxt "seed:sort-match"
+msgid "配"
+msgstr " matched with "
+
+msgctxt "seed:sort-match"
+msgid "放进"
+msgstr " placed in "
+
+#, python-brace-format
+msgctxt "seed:sort-match"
+msgid "{0}{1}{2}不对。{3}"
+msgstr "{0}{1}{2} is incorrect. {3}"
+
+#, python-brace-format
+msgctxt "seed:sort-match"
+msgid "{0}回到了待放区。"
+msgstr "{0} returned to the unplaced area."
+
+msgctxt "seed:sort-match"
+msgid "取消了选择。"
+msgstr "Selection canceled."
+
+#, python-brace-format
+msgctxt "seed:sort-match"
+msgid "已选{0}。再点{1}下面的按钮，或把它拖过去。"
+msgstr "Selected {0}. Choose a button below {1}, or drag it there."
+
+msgctxt "seed:sort-match"
+msgid "一个配对对象"
+msgstr "a matching target"
+
+msgctxt "seed:sort-match"
+msgid "一类"
+msgstr "a category"
+
+msgctxt "seed:sort-match"
+msgid "先点选一个项目，再选放到哪里。"
+msgstr "Select an item first, then choose where to place it."
+
+#, python-brace-format
+msgctxt "seed:sort-match"
+msgid "答对 {0}/{1}。"
+msgstr "Correct: {0}/{1}."
+
+#, python-brace-format
+msgctxt "seed:sort-match"
+msgid "要调整的：{0}（看它们下面的提示）。"
+msgstr "Revise: {0} (see the hints below each item)."
+
+#, python-brace-format
+msgctxt "seed:sort-match"
+msgid "还没放：{0}。"
+msgstr "Not placed: {0}."
+
+msgctxt "seed:sort-match"
+msgid "全部放对了，每一项的理由都在它下面。"
+msgstr "All correct. Each item has its explanation below it."
+
+msgctxt "seed:sort-match"
+msgid "已显示全部答案，每一项的理由写在它下面。重置后可以再试一次。"
+msgstr "All answers shown, with explanations. Reset to try again."
+
+msgctxt "seed:sort-match"
+msgid "已重置：所有项目回到待放区。"
+msgstr "Reset: all items returned to the unplaced area."
+
+msgctxt "seed:sort-match"
+msgid "点选或拖动左边的项目，配给它的对应项；每放一个都会立刻告诉你对不对、为什么。"
+msgstr "Select or drag an item to its match. Each placement gives immediate feedback and a reason."
+
+msgctxt "seed:sort-match"
+msgid "点选或拖动一个项目，放进它所属的类别；每放一个都会立刻告诉你对不对、为什么。"
+msgstr "Select or drag an item into its category. Each placement gives immediate feedback and a reason."
+
+msgctxt "seed:sort-match"
+msgid "分类与配对"
+msgstr "Classify and match"
+
+msgctxt "seed:sort-match"
+msgid "检查全部"
+msgstr "Check all"
+
+msgctxt "seed:sort-match"
+msgid "显示答案"
+msgstr "Show answers"
+
+msgctxt "seed:sort-match"
+msgid "重置"
+msgstr "Reset"
+
+msgctxt "seed:sort-match"
+msgid "待放的项目"
+msgstr "Unplaced items"
+
+msgctxt "seed:step-process"
+msgid "复制一份 DNA：每一格按规则配对"
+msgstr "Replicate DNA: follow the pairing rules at each position"
+
+msgctxt "seed:step-process"
+msgid "只靠“A 对 T、G 对 C”这一条规则，为什么能得到两份和原来一样的 DNA？配错一格会怎样？"
+msgstr "Why does A–T and G–C pairing yield two copies? What happens after one mismatch?"
+
+msgctxt "seed:step-process"
+msgid "原来的一份 DNA"
+msgstr "Original DNA molecule"
+
+msgctxt "seed:step-process"
+msgid "双链 DNA 由两条链配对而成：上链的 A 对着 T，T 对着 A，G 对着 C，C 对着 G。"
+msgstr "Double-stranded DNA consists of complementary strands: A pairs with T and G pairs with C."
+
+msgctxt "seed:step-process"
+msgid "原 DNA 上链"
+msgstr "Original upper strand"
+
+msgctxt "seed:step-process"
+msgid "原 DNA 下链"
+msgstr "Original lower strand"
+
+msgctxt "seed:step-process"
+msgid "两条链拉开，各自当模板"
+msgstr "Separate the strands; use each as a template"
+
+msgctxt "seed:step-process"
+msgid "解旋酶把两条链拉开。每条旧链都露出一排没配对的碱基，等着配新链。"
+msgstr "Helicase separates the strands, exposing unpaired bases for new complementary strands."
+
+msgctxt "seed:step-process"
+msgid "旧链甲（当模板）"
+msgstr "Template strand A"
+
+msgctxt "seed:step-process"
+msgid "新链甲"
+msgstr "New strand A"
+
+msgctxt "seed:step-process"
+msgid "旧链乙（当模板）"
+msgstr "Template strand B"
+
+msgctxt "seed:step-process"
+msgid "新链乙"
+msgstr "New strand B"
+
+msgctxt "seed:step-process"
+msgid "新链甲：按规则配"
+msgstr "New strand A: follow the pairing rules"
+
+msgctxt "seed:step-process"
+msgid "新链甲逐格配对：旧链甲是 A 就配 T，是 T 就配 A，是 G 就配 C，是 C 就配 G。"
+msgstr "Complement template A position by position: A–T, T–A, G–C and C–G."
+
+msgctxt "seed:step-process"
+msgid "新链乙：同样按规则配"
+msgstr "New strand B: the same rules"
+
+msgctxt "seed:step-process"
+msgid "另一条旧链也一样当模板，规则没有变。"
+msgstr "The other existing strand is also a template, with the same rules."
+
+msgctxt "seed:step-process"
+msgid "得到两份相同的 DNA"
+msgstr "Two identical DNA molecules"
+
+msgctxt "seed:step-process"
+msgid "每份 DNA 都是“一条旧链 + 一条新链”。两份的碱基顺序和原来完全一样，这叫半保留复制。"
+msgstr ""
+"Each copy has one existing and one new strand, retaining the original sequence: semiconservative "
+"replication."
+
+msgctxt "seed:step-process"
+msgid "DNA① 上链（旧）"
+msgstr "DNA 1 upper (existing)"
+
+msgctxt "seed:step-process"
+msgid "DNA① 下链（新）"
+msgstr "DNA 1 lower (new)"
+
+msgctxt "seed:step-process"
+msgid "DNA② 上链（新）"
+msgstr "DNA 2 upper (new)"
+
+msgctxt "seed:step-process"
+msgid "DNA② 下链（旧）"
+msgstr "DNA 2 lower (existing)"
+
+msgctxt "seed:step-process"
+msgid "下一轮：用 DNA① 的下链当模板"
+msgstr "Next round: use DNA 1's lower strand as a template"
+
+msgctxt "seed:step-process"
+msgid "再复制一轮时，DNA① 的下链也要当模板。它是什么，新配出的链就是什么。"
+msgstr "During another round, DNA 1's lower strand determines its new complement."
+
+msgctxt "seed:step-process"
+msgid "模板（DNA① 下链）"
+msgstr "Template (DNA 1 lower)"
+
+msgctxt "seed:step-process"
+msgid "新配的上链"
+msgstr "New upper strand"
+
+msgctxt "seed:step-process"
+msgid "和最初的上链比"
+msgstr "Compare with original upper strand"
+
+msgctxt "seed:step-process"
+msgid "一致"
+msgstr "Same"
+
+msgctxt "seed:step-process"
+msgid "在这一步故意出错"
+msgstr "Introduce a mistake at this step"
+
+msgctxt "seed:step-process"
+msgid "错配的一格留在了新链里，它再被拿去当模板，错误就被抄给下一代。"
+msgstr ""
+"An unrepaired mismatch remains in the new strand; using it as a template can pass a sequence "
+"change to the next generation."
+
+msgctxt "seed:step-process"
+msgid "新链甲：第 4 格配错了"
+msgstr "New strand A: mismatch at position 4"
+
+msgctxt "seed:step-process"
+msgid "旧链甲第 4 格是 C，应该配 G，这里却放了 A。A 只能配 T，这一格配不上。"
+msgstr "Template A has C at position 4 and should pair with G, but A was placed here. This is a mismatch."
+
+msgctxt "seed:step-process"
+msgid "新链乙：照常配对"
+msgstr "New strand B: normal pairing"
+
+msgctxt "seed:step-process"
+msgid "另一条链配对没有问题，错误只在新链甲里。"
+msgstr "The other strand pairs normally; the error is confined to new strand A."
+
+msgctxt "seed:step-process"
+msgid "得到两份 DNA，其中一份有错配"
+msgstr "Two DNA molecules, one with a mismatch"
+
+msgctxt "seed:step-process"
+msgid "DNA① 的上下链在第 4 格对不上（C 对 A）。DNA② 是好的。细胞里的修复系统有机会发现它，但这里假设没被修复。"
+msgstr ""
+"DNA 1 has C opposite A at position 4. DNA 2 is correct. Cells may repair this, but the example "
+"assumes no repair."
+
+msgctxt "seed:step-process"
+msgid "下一轮：错的链当模板"
+msgstr "Next round: the incorrect strand becomes a template"
+
+msgctxt "seed:step-process"
+msgid "这条下链第 4 格是 A，所以新配出的上链这一格是 T，而不是原来的 C。"
+msgstr "Its fourth base is A, so its new complement has T rather than the original C."
+
+msgctxt "seed:step-process"
+msgid "不同"
+msgstr "Different"
+
+msgctxt "seed:step-process"
+msgid "（没有步骤）"
+msgstr "(No steps)"
+
+msgctxt "seed:step-process"
+msgid "错"
+msgstr "Error"
+
+msgctxt "seed:step-process"
+msgid "变"
+msgstr "Changed"
+
+msgctxt "seed:step-process"
+msgid "这一行"
+msgstr "This row"
+
+msgctxt "seed:step-process"
+msgid "整行（"
+msgstr "Whole row ("
+
+msgctxt "seed:step-process"
+msgid "前进到"
+msgstr "Advanced to "
+
+msgctxt "seed:step-process"
+msgid "退回到"
+msgstr "Returned to "
+
+msgctxt "seed:step-process"
+msgid "回到起点，"
+msgstr "Back to start, "
+
+msgctxt "seed:step-process"
+msgid "你在这里故意出错了，"
+msgstr "A deliberate mistake was introduced here, "
+
+msgctxt "seed:step-process"
+msgid "回到正确路径，"
+msgstr "Back on the correct path, "
+
+#, python-brace-format
+msgctxt "seed:step-process"
+msgid "{0}第 {1} / {2} 步「{3}」。"
+msgstr "{0}step {1} / {2}: {3}."
+
+#, python-brace-format
+msgctxt "seed:step-process"
+msgid " 这一步变化的格子：{0}{1}。"
+msgstr " Changed cells: {0}{1}."
+
+msgctxt "seed:step-process"
+msgid " 等"
+msgstr " and others"
+
+#, python-brace-format
+msgctxt "seed:step-process"
+msgid " 出错路径：有 {0} 格和正确做法不一样。{1}"
+msgstr " Error path: {0} cells differ from the correct procedure. {1}"
+
+msgctxt "seed:step-process"
+msgid " 可以按“"
+msgstr " Select “"
+
+msgctxt "seed:step-process"
+msgid "”，看看错一格会怎样。"
+msgstr "” to see what a one-cell error does."
+
+msgctxt "seed:step-process"
+msgid "分步过程"
+msgstr "Step-by-step process"
+
+msgctxt "seed:step-process"
+msgid "第"
+msgstr "Step "
+
+msgctxt "seed:step-process"
+msgid "步"
+msgstr " "
+
+msgctxt "seed:step-process"
+msgid "现在走的是出错路径（虚线圆圈）"
+msgstr "Currently on the error path (dashed circles)"
+
+msgctxt "seed:step-process"
+msgid "上一步"
+msgstr "Previous step"
+
+msgctxt "seed:step-process"
+msgid "下一步"
+msgstr "Next step"
+
+msgctxt "seed:step-process"
+msgid "重来"
+msgstr "Restart"
+
+msgctxt "seed:step-process"
+msgid "回到正确路径"
+msgstr "Return to correct path"
+
+msgctxt "seed:step-process"
+msgid "步骤"
+msgstr "Steps"
+
+msgctxt "seed:timeline-lanes"
+msgid "下载三个文件：同步和异步差在哪？"
+msgstr "Downloading three files: synchronous or asynchronous?"
+
+msgctxt "seed:timeline-lanes"
+msgid "每个下载都要等 2 秒网络。为什么异步总共不是 6 秒而是约 3 秒？"
+msgstr ""
+"Each download waits two seconds for the network. Why does the asynchronous case take about three "
+"seconds rather than six?"
+
+msgctxt "seed:timeline-lanes"
+msgid "秒"
+msgstr "seconds"
+
+msgctxt "seed:timeline-lanes"
+msgid "总耗时"
+msgstr "Total time"
+
+msgctxt "seed:timeline-lanes"
+msgid "程序在干活"
+msgstr "Program working"
+
+msgctxt "seed:timeline-lanes"
+msgid "程序卡住等待"
+msgstr "Program blocked"
+
+msgctxt "seed:timeline-lanes"
+msgid "网络在传输"
+msgstr "Network transfer"
+
+msgctxt "seed:timeline-lanes"
+msgid "同步"
+msgstr "Synchronous"
+
+msgctxt "seed:timeline-lanes"
+msgid "同步：每发一个请求，程序就卡住等它回来，三个下载一个接一个排队，等待时间全部加在一起。"
+msgstr ""
+"Synchronous requests block until each response arrives. Three downloads run in sequence, so "
+"waiting times add up."
+
+msgctxt "seed:timeline-lanes"
+msgid "主线程"
+msgstr "Main thread"
+
+msgctxt "seed:timeline-lanes"
+msgid "发请求A"
+msgstr "Request A"
+
+msgctxt "seed:timeline-lanes"
+msgid "卡住等 A"
+msgstr "Wait for A"
+
+msgctxt "seed:timeline-lanes"
+msgid "处理A"
+msgstr "Process A"
+
+msgctxt "seed:timeline-lanes"
+msgid "发请求B"
+msgstr "Request B"
+
+msgctxt "seed:timeline-lanes"
+msgid "卡住等 B"
+msgstr "Wait for B"
+
+msgctxt "seed:timeline-lanes"
+msgid "处理B"
+msgstr "Process B"
+
+msgctxt "seed:timeline-lanes"
+msgid "发请求C"
+msgstr "Request C"
+
+msgctxt "seed:timeline-lanes"
+msgid "卡住等 C"
+msgstr "Wait for C"
+
+msgctxt "seed:timeline-lanes"
+msgid "处理C"
+msgstr "Process C"
+
+msgctxt "seed:timeline-lanes"
+msgid "全部完成"
+msgstr "All complete"
+
+msgctxt "seed:timeline-lanes"
+msgid "下载 A"
+msgstr "Download A"
+
+msgctxt "seed:timeline-lanes"
+msgid "传输"
+msgstr "Transfer"
+
+msgctxt "seed:timeline-lanes"
+msgid "下载 B"
+msgstr "Download B"
+
+msgctxt "seed:timeline-lanes"
+msgid "下载 C"
+msgstr "Download C"
+
+msgctxt "seed:timeline-lanes"
+msgid "异步"
+msgstr "Asynchronous"
+
+msgctxt "seed:timeline-lanes"
+msgid "异步：发出请求后不卡住，立刻去发下一个；三个下载在网络上同时进行，等待时间重叠，总共只比最长的一次多一点。"
+msgstr ""
+"Asynchronous requests return without blocking, so all downloads overlap. Total time is only "
+"slightly longer than the longest download."
+
+msgctxt "seed:timeline-lanes"
+msgid "工作"
+msgstr "Work"
+
+msgctxt "seed:timeline-lanes"
+msgid "等待"
+msgstr "Wait"
+
+msgctxt "seed:timeline-lanes"
+msgid "传输/读写"
+msgstr "Transfer / I/O"
+
+msgctxt "seed:timeline-lanes"
+msgid "事件"
+msgstr "Event"
+
+msgctxt "seed:timeline-lanes"
+msgid "方案"
+msgstr "Scenario"
+
+msgctxt "seed:timeline-lanes"
+msgid "正在「"
+msgstr "Currently "
+
+msgctxt "seed:timeline-lanes"
+msgid "此刻没有安排"
+msgstr "Nothing scheduled now"
+
+msgctxt "seed:timeline-lanes"
+msgid "；最近的事件："
+msgstr "; nearest event: "
+
+msgctxt "seed:timeline-lanes"
+msgid "单位："
+msgstr "Unit: "
+
+msgctxt "seed:timeline-lanes"
+msgid " 有 "
+msgstr " has "
+
+msgctxt "seed:timeline-lanes"
+msgid " 个安排"
+msgstr " scheduled events"
+
+msgctxt "seed:timeline-lanes"
+msgid "拖到 "
+msgstr "Dragged to "
+
+msgctxt "seed:timeline-lanes"
+msgid "暂停在 "
+msgstr "Paused at "
+
+msgctxt "seed:timeline-lanes"
+msgid "回到起点 "
+msgstr "Back to start at "
+
+msgctxt "seed:timeline-lanes"
+msgid "播放结束，停在 "
+msgstr "Playback finished at "
+
+msgctxt "seed:timeline-lanes"
+msgid "现在是 "
+msgstr "Current time: "
+
+msgctxt "seed:timeline-lanes"
+msgid "切换到「"
+msgstr "Switched to "
+
+msgctxt "seed:timeline-lanes"
+msgid "」，当前时间 "
+msgstr "; current time "
+
+msgctxt "seed:timeline-lanes"
+msgid "，一样长。"
+msgstr "; equal duration."
+
+msgctxt "seed:timeline-lanes"
+msgid "慢"
+msgstr "slower"
+
+msgctxt "seed:timeline-lanes"
+msgid "快"
+msgstr "faster"
+
+msgctxt "seed:timeline-lanes"
+msgid "播放"
+msgstr "Play"
+
+msgctxt "seed:timeline-lanes"
+msgid "暂停"
+msgstr "Pause"
+
+msgctxt "seed:timeline-lanes"
+msgid "播放中：红线往右走，看每条泳道此刻在做什么；拖动滑块可以随时停下来看。"
+msgstr ""
+"Playing: the red line moves right. Observe each lane, or drag the time slider to pause and "
+"inspect."
+
+msgctxt "seed:timeline-lanes"
+msgid "时间线与泳道"
+msgstr "Timeline and lanes"
+
+msgctxt "seed:timeline-lanes"
+msgid "看哪一种做法"
+msgstr "Compare procedures"
+
+msgctxt "seed:timeline-lanes"
+msgid "回到起点"
+msgstr "Back to start"
+
+msgctxt "seed:timeline-lanes"
+msgid "当前时间："
+msgstr "Current time: "
+
+msgctxt "seed:timeline-lanes"
+msgid "此刻每条泳道在做什么"
+msgstr "What each lane is doing now"
+
+msgctxt "seed:network-edit"
+msgid "5 个人的朋友网络"
+msgstr "A friendship network of five people"
+
+msgctxt "seed:network-edit"
+msgid "点两个人连上或断开，看名单 V、关系清单 E 和 N、L 怎么变。"
+msgstr "Connect or disconnect two people and observe V, E, N and L."
+
+msgctxt "seed:network-edit"
+msgid "人"
+msgstr "person"
+
+msgctxt "seed:network-edit"
+msgid "互相认识"
+msgstr "know each other"
+
+msgctxt "seed:network-edit"
+msgid "小明"
+msgstr "Ming"
+
+msgctxt "seed:network-edit"
+msgid "小红"
+msgstr "Hong"
+
+msgctxt "seed:network-edit"
+msgid "小刚"
+msgstr "Gang"
+
+msgctxt "seed:network-edit"
+msgid "小丽"
+msgstr "Li"
+
+msgctxt "seed:network-edit"
+msgid "小华"
+msgstr "Hua"
+
+msgctxt "seed:network-edit"
+msgid "新同学"
+msgstr "New student"
+
+msgctxt "seed:network-edit"
+msgid "节点"
+msgstr "Node"
+
+msgctxt "seed:network-edit"
+msgid "有关系"
+msgstr "Connected"
+
+msgctxt "seed:network-edit"
+msgid "新"
+msgstr "New"
+
+#, python-brace-format
+msgctxt "seed:network-edit"
+msgid "{0} 个{1}，{2} 条边。"
+msgstr "{0} {1}, {2} edges."
+
+msgctxt "seed:network-edit"
+msgid " 虚线圈的"
+msgstr " Dashed-ring "
+
+msgctxt "seed:network-edit"
+msgid "没有边，但仍在 V 里。"
+msgstr " has no edges but still belongs to V."
+
+msgctxt "seed:network-edit"
+msgid "节点集合 V"
+msgstr "Node set V"
+
+msgctxt "seed:network-edit"
+msgid "边集合 E（每条边是一对，不分先后）"
+msgstr "Edge set E (unordered pairs)"
+
+msgctxt "seed:network-edit"
+msgid "数量"
+msgstr "Counts"
+
+msgctxt "seed:network-edit"
+msgid "没有边的"
+msgstr "Without edges: "
+
+msgctxt "seed:network-edit"
+msgid "断开"
+msgstr "Disconnect"
+
+msgctxt "seed:network-edit"
+msgid "连上"
+msgstr "Connect"
+
+#, python-brace-format
+msgctxt "seed:network-edit"
+msgid "边要连两个不同的{0}；{1}和自己之间不算边，E 不变。"
+msgstr "An edge connects two different {0}; {1} cannot connect to itself here, so E is unchanged."
+
+msgctxt "seed:network-edit"
+msgid "（先点 {0} 还是先点 {1} 都一样：{{2},{3}} 就是 {4}）"
+msgstr " (Selecting {0} or {1} first is equivalent: {{2},{3}} = {4})"
+
+#, python-brace-format
+msgctxt "seed:network-edit"
+msgid "去掉了 {0}—{1}：E 少了 {2}，L 从 {3} 变成 {4}。V 不变，两个{5}都还在名单上{6}。"
+msgstr ""
+"Removed {0}—{1}: removed {2} from E; L changed from {3} to {4}. V is unchanged; both {5} "
+"remain{6}."
+
+#, python-brace-format
+msgctxt "seed:network-edit"
+msgid "连上了 {0}—{1}（{2}）：E 多了 {3}，L 从 {4} 变成 {5}。V 不变{6}。"
+msgstr "Connected {0}—{1} ({2}): added {3} to E; L changed from {4} to {5}. V is unchanged{6}."
+
+#, python-brace-format
+msgctxt "seed:network-edit"
+msgid "选了 {0}，再点一个{1}就连上或断开。"
+msgstr "Selected {0}. Select another {1} to connect or disconnect them."
+
+#, python-brace-format
+msgctxt "seed:network-edit"
+msgid "加了 {0}：V 多了 {1}，N 从 {2} 变成 {3}。它还没有边，所以 E 和 L 不变——没有边的{4}也要写进 V。"
+msgstr ""
+"Added {0}: added {1} to V; N changed from {2} to {3}. It has no edges, so E and L are unchanged. "
+"Even an isolated {4} belongs to V."
+
+#, python-brace-format
+msgctxt "seed:network-edit"
+msgid "恢复成原来的网络：N = {0}，L = {1}。"
+msgstr "Restored original network: N = {0}, L = {1}."
+
+#, python-brace-format
+msgctxt "seed:network-edit"
+msgid "点图里两个{0}（或选好两个{1}后点「连上」），看 V、E、N、L 怎么变。"
+msgstr "Select two {0} in the diagram (or two {1} here and choose “Connect”) to observe V, E, N and L."
+
+msgctxt "seed:network-edit"
+msgid "可编辑网络"
+msgstr "Editable network"
+
+msgctxt "seed:network-edit"
+msgid "点图里两个点，或在这里选："
+msgstr "Select two points in the diagram, or choose here:"
+
+msgctxt "seed:network-edit"
+msgid "加一个点"
+msgstr "Add a point"
+
+msgctxt "seed:network-edit"
+msgid "恢复原样"
+msgstr "Restore original"
+
+msgctxt "seed:network-edit"
+msgid "第一个点"
+msgstr "First point"
+
+msgctxt "seed:network-edit"
+msgid "第二个点"
+msgstr "Second point"
+
+msgctxt "seed:network-edit"
+msgid "集合和数量"
+msgstr "Sets and counts"
+
+msgid "配对练习：给模板链选互补链"
+msgstr "Complementary strand practice"
+
+msgid "模板链 A T G C 固定，学习者在四个位置各点一个字母拼出对面那条链；结果区逐位说明哪一位配错、应该配什么，全对时给出互补链。"
+msgstr "Choose complementary bases at four positions; feedback identifies each mismatch."
+
+msgid "模板链的每个字母对面应该放哪个字母？放错一位，哪里不对？"
+msgstr "Which base pairs with each template position?"
+
+msgid "第 1–4 位的字母按钮"
+msgstr "Letter buttons"
+
+msgid "为该位置选 A、T、C 或 G（选中的按钮会高亮）"
+msgstr "Choose A, T, C or G at each position."
+
+msgid "清空重来"
+msgstr "Clear and restart"
+
+msgid "清掉所有选择，回到初始提示"
+msgstr "Clear all selections."
+
+msgid "DNA 复制模拟：拉开、当模板、配新链"
+msgstr "DNA replication simulation"
+
+msgid "固定的一段 DNA（A T G C / T A C G），用「下一步」依次看双链解开、每条旧链按规则配出新链、得到两份相同的双链；每一步结果区用文字说明发生了什么。"
+msgstr "Step through strand separation, complementary synthesis and two identical double strands."
+
+msgid "为什么只靠「A 对 T、G 对 C」这条规则，复制就能得到两份和原来一样的 DNA？"
+msgstr "Why does complementary pairing yield two copies?"
+
+msgid "下一步"
+msgstr "Next step"
+
+msgid "前进到复制的下一个阶段（共四个阶段，到最后回到开头）"
+msgstr "Advance through the four stages, returning to the start after the last."
+
+msgid "重新开始"
+msgstr "Restart"
+
+msgid "回到第一个阶段（原始双链）"
+msgstr "Return to the original double strand."
+
+msgid "给 AGCT 配互补链（含错配原因）"
+msgstr "Complement AGCT"
+
+msgid "上链 A-G-C-T 固定（标出大块 A、G 和小块 T、C），学习者给每一列选一个字母；配错时在该列下方说明是「两个大块挤不下」「两个小块有缝」还是「大小搭得上但吸点对不上」。"
+msgstr "Choose bases and inspect size and hydrogen-bond compatibility."
+
+msgid "给上面一条链的每个字母选对面的字母，配错时会出什么问题？"
+msgstr "Why do some base pairs fit while others fail?"
+
+msgid "每列的 A / T / G / C 按钮"
+msgstr "Base buttons"
+
+msgid "为该列选对面的字母，立刻显示配对是否正确及原因"
+msgstr "Select a complementary base in each column and inspect feedback."
+
+msgid "重来"
+msgstr "Restart"
+
+msgid "清空所有选择"
+msgstr "Clear all selections."
+
+msgid "拼出对面那条链：积木大小与吸点"
+msgstr "Build the complementary strand"
+
+msgid ""
+"选一条上链（预设或自己输入最多 8 个 A/T/G/C），选中下链的一格后放一块积木（A、G 是大块，T、C 是小块，吸点 2 或 3 "
+"个）；图示和文字说明这一格为什么配得上或配不上（太挤、有空隙、吸点对不上），并把下链再配一遍看能否回到上链。"
+msgstr "Place base blocks, inspect mismatches and complement the result again."
+
+msgid "上链每一格固定了，对面放哪种积木才能配上？放错了到底卡在哪里？"
+msgstr "Can either strand reconstruct the other?"
+
+msgid "上链（预设或自己输入）"
+msgstr "Upper strand"
+
+msgid "换一条上链，下链清空"
+msgstr "Choose a preset or custom upper strand and clear the lower strand."
+
+msgid "积木按钮 A / T / G / C"
+msgstr "Base blocks"
+
+msgid "把该积木放进当前选中的格子"
+msgstr "Place a block at the selected position."
+
+msgid "下链空位"
+msgstr "Lower positions"
+
+msgid "点击选择要放积木的格子；点已放的积木可取回重选"
+msgstr "Select a position or replace its block."
+
+msgid "显示正确答案"
+msgstr "Show answer"
+
+msgid "按规则填满下链"
+msgstr "Fill using complementary pairing."
+
+msgid "清空下链"
+msgstr "Clear lower strand"
+
+msgid "取回所有积木"
+msgstr "Remove all placed blocks."
+
+msgid "复制一份 DNA：每格按规则配，可故意放错一格"
+msgstr "Replicate DNA"
+
+msgid "选一条上链，用「上一步 / 下一步」看两条链拉开、各自当模板配出新链、得到两份分子；可选择故意在某一格放错，结果对照区显示该分子与原来不同，并推演下一代序列如何改变。"
+msgstr "Separate and complement templates, optionally introducing one mismatch."
+
+msgid "只靠「每一格对面放特定积木」这一条规则，为什么能得到两份一样的 DNA？有一格放错，后果是什么？"
+msgstr "How can an unrepaired mismatch affect a later copy?"
+
+msgid "原来这份 DNA 的上链"
+msgstr "Upper strand"
+
+msgid "换一条上链（预设或自己输入最多 8 个字母）"
+msgstr "Choose a preset or enter up to eight bases."
+
+msgid "故意放错一格"
+msgstr "Deliberate mismatch"
+
+msgid "选择让分子 1 的哪一格放错（或不放错）"
+msgstr "Choose one mismatch in molecule 1, or none."
+
+msgid "上一步 / 下一步 / 回到第 0 步"
+msgstr "Previous / next / step 0"
+
+msgid "在原样、拉开、配新链三个阶段之间移动"
+msgstr "Move between original, separated and complemented stages."
+
+msgid "前后对比"
+msgstr "Before and after"
+
+msgid "同一个问题的两种做法：各自的步骤、一排小方块的示意，以及几个指标画成成对的条形；可切换只看哪一种、并排看，还可以换不同的输入规模或情形，看谁在哪个指标上更好、为什么。"
+msgstr "Compare two procedures, their steps and paired metrics under different conditions."
+
+msgid "两种做法到底差在哪？差距会不会随情形变大或变小？"
+msgstr "How do the approaches differ under identical conditions?"
+
+msgid "看哪一种"
+msgstr "View"
+
+msgid "只看甲或乙的步骤和示意，或并排看"
+msgstr "View either approach or both side by side."
+
+msgid "情形"
+msgstr "Scenario"
+
+msgid "换一种输入规模或条件，指标跟着换"
+msgstr "Change input size or conditions to update metrics."
+
+msgid "指标条形"
+msgstr "Metric bars"
+
+msgid "两种做法的同一指标画成成对条形，更好的一边有文字标记"
+msgstr "Compare paired bars, with the better result labeled."
+
+msgid "算法效率"
+msgstr "Algorithm efficiency"
+
+msgid "查找"
+msgstr "Search"
+
+msgid "方法比较"
+msgstr "Method comparison"
+
+msgid "学习方法"
+msgstr "Learning methods"
+
+msgid "优化前后"
+msgstr "Before and after optimization"
+
+msgid "对照实验"
+msgstr "Controlled comparisons"
+
+msgid "有无某个步骤"
+msgstr "With or without a step"
+
+msgid "代码追踪"
+msgstr "Code trace"
+
+msgid "把几行代码和一份事先写好的执行轨迹放在一起：逐步或拖动滑块前进后退，高亮当前行，看变量表（标出变了的）和输出一步步变化。代码只显示，不会被运行。"
+msgstr "Follow displayed code, changing variables, output and explanations. Code is not executed."
+
+msgid "这段代码每一步执行到哪一行？变量此刻是多少？为什么输出是这样的顺序？"
+msgstr "What changes at each line?"
+
+msgid "code"
+msgstr "code"
+
+msgid "要显示的几行代码"
+msgstr "Code lines to display."
+
+msgid "language"
+msgstr "language"
+
+msgid "语言标签"
+msgstr "Programming language label."
+
+msgid "steps"
+msgstr "steps"
+
+msgid "每一步：行号、变量表、新增输出、一句解释"
+msgstr "Line number, variables, new output and an explanation for each step."
+
+msgid "循环与累加"
+msgstr "Loops and accumulation"
+
+msgid "递归与调用栈"
+msgstr "Recursion and call stack"
+
+msgid "变量赋值"
+msgstr "Variable assignment"
+
+msgid "执行顺序"
+msgstr "Execution order"
+
+msgid "异步与事件循环"
+msgstr "Asynchrony and event loops"
+
+msgid "代码阅读"
+msgstr "Reading code"
+
+msgid "手动追踪"
+msgstr "Manual tracing"
+
+msgid "数轴上的分布"
+msgstr "Distribution on a number line"
+
+msgid "一组数画在数轴上，标出均值、每个数的偏差和偏差的平方（方块）；拖动分散程度，看方差和标准差怎么变，可选加入一个离群值。"
+msgstr "Adjust spread and outliers while inspecting variance and standard deviation."
+
+msgid "数越分散，方差为什么变大？离群值为什么影响特别大？"
+msgstr "How do spread and outliers change variance?"
+
+msgid "分散程度"
+msgstr "Spread"
+
+msgid "把所有数按同一比例拉开或收拢"
+msgstr "Expand or contract all values around their mean."
+
+msgid "偏差平方"
+msgstr "Squared deviations"
+
+msgid "显示或隐藏每个数的平方方块"
+msgstr "Show or hide each squared-deviation block."
+
+msgid "离群值"
+msgstr "Outliers"
+
+msgid "加入或移除 config 里的离群点"
+msgstr "Add or remove the configured outlier."
+
+msgid "方差"
+msgstr "Variance"
+
+msgid "标准差"
+msgstr "Standard deviation"
+
+msgid "均值"
+msgstr "Mean"
+
+msgid "偏差"
+msgstr "Deviation"
+
+msgid "数据的分散程度"
+msgstr "Data dispersion"
+
+msgid "z 分数之前的直觉"
+msgstr "Intuition before z scores"
+
+msgid "函数探索"
+msgstr "Function explorer"
+
+msgid "选定一个函数族（一次、二次、指数、对数、逻辑斯蒂、正态密度、正弦），用滑块改变参数，看曲线、公式和关键点（顶点、零点、渐近线、拐点、μ±σ）怎么变化，可叠加一条对比曲线。"
+msgstr "Adjust parameters, compare curves and inspect formulas and key points."
+
+msgid "每个参数改变曲线的哪一部分？关键点的位置由哪些参数决定？"
+msgstr "Which curve features change with each parameter?"
+
+msgid "参数滑块"
+msgstr "Parameter sliders"
+
+msgid "改变函数的参数"
+msgstr "Adjust function parameters."
+
+msgid "对比曲线"
+msgstr "Comparison curve"
+
+msgid "叠加一条固定参数的同族曲线"
+msgstr "Overlay the same function family with fixed parameters."
+
+msgid "读取 x"
+msgstr "Read x"
+
+msgid "沿 x 轴取一点读函数值"
+msgstr "Select x to inspect the function value."
+
+msgid "函数图像"
+msgstr "Function graphs"
+
+msgid "参数的意义"
+msgstr "Parameter meaning"
+
+msgid "二次函数"
+msgstr "Quadratic functions"
+
+msgid "指数增长"
+msgstr "Exponential growth"
+
+msgid "逻辑斯蒂增长"
+msgstr "Logistic growth"
+
+msgid "对数"
+msgstr "Logarithms"
+
+msgid "正态分布"
+msgstr "Normal distribution"
+
+msgid "正弦与周期"
+msgstr "Sine and periodicity"
+
+msgid "拐点与渐近线"
+msgstr "Inflection points and asymptotes"
+
+msgid "图与树的遍历"
+msgstr "Graph traversal"
+
+msgid "在一张小图或一棵树上单步或自动运行广度优先、深度优先或 Dijkstra 最短路径，看队列或栈、已访问的节点、当前节点和边，以及最短距离怎么一步步变化。"
+msgstr "Step through BFS, DFS or Dijkstra with frontier, visits, distances and paths."
+
+msgid "这个算法每一步为什么选这个节点？队列、栈或距离表此刻装着什么？"
+msgstr "How does the frontier determine traversal order?"
+
+msgid "algorithm"
+msgstr "algorithm"
+
+msgid "bfs / dfs / dijkstra"
+msgstr "bfs / dfs / dijkstra"
+
+msgid "nodes"
+msgstr "nodes"
+
+msgid "节点，可带 0–1 的位置"
+msgstr "Nodes with optional normalized 0–1 positions."
+
+msgid "edges"
+msgstr "edges"
+
+msgid "边，可带权重和方向"
+msgstr "Edges with optional weights and direction."
+
+msgid "start"
+msgstr "start"
+
+msgid "起点"
+msgstr "Starting node."
+
+msgid "target"
+msgstr "target"
+
+msgid "可选终点"
+msgstr "Optional target node."
+
+msgid "广度优先搜索"
+msgstr "Breadth-first search"
+
+msgid "深度优先搜索"
+msgstr "Depth-first search"
+
+msgid "Dijkstra 最短路径"
+msgstr "Dijkstra shortest paths"
+
+msgid "图的遍历"
+msgstr "Graph traversal"
+
+msgid "树的遍历"
+msgstr "Tree traversal"
+
+msgid "队列与栈"
+msgstr "Queues and stacks"
+
+msgid "最少步数与最短距离"
+msgstr "Fewest steps and shortest distance"
+
+msgid "连通分量"
+msgstr "Connected components"
+
+msgid "可达性"
+msgstr "Reachability"
+
+msgid "二维线性变换"
+msgstr "2D linear transformation"
+
+msgid "一个 2×2 矩阵把平面网格、单位方块和向量变形；滑块 t 从单位矩阵渐变到 A，可旋转向量 v，读行列式（面积倍数）并标出特征方向与特征值。"
+msgstr "Interpolate from identity to a matrix; inspect vectors, area and eigendirections."
+
+msgid "矩阵对平面做了什么？哪些方向只被拉伸而不被转动？"
+msgstr "How does a matrix change directions, lengths and area?"
+
+msgid "t"
+msgstr "t"
+
+msgid "从单位矩阵渐变到 A 的程度"
+msgstr "Interpolation from identity to A."
+
+msgid "向量 v"
+msgstr "Vector v"
+
+msgid "旋转向量，看 Av 的方向和长度"
+msgstr "Rotate v and inspect Av."
+
+msgid "矩阵"
+msgstr "Matrix"
+
+msgid "在配置给出的几个矩阵之间切换"
+msgstr "Select a configured matrix."
+
+msgid "线性变换"
+msgstr "Linear transformations"
+
+msgid "矩阵与向量"
+msgstr "Matrices and vectors"
+
+msgid "行列式"
+msgstr "Determinants"
+
+msgid "特征值与特征向量"
+msgstr "Eigenvalues and eigenvectors"
+
+msgid "剪切与拉伸"
+msgstr "Shear and scaling"
+
+msgid "协方差矩阵"
+msgstr "Covariance matrices"
+
+msgid "PCA 直觉"
+msgstr "PCA intuition"
+
+msgid "参数与条形图"
+msgstr "Parameters and bars"
+
+msgid "几个滑块是输入，几个条形是按固定公式算出的结果；拖动滑块，条形立刻跟着变，并标出变化最大的那一根，越过阈值时给出一句权衡提示。"
+msgstr "Adjust inputs and inspect computed outputs, thresholds and the largest change."
+
+msgid "改动一个输入，会牵动哪几个结果？哪个结果被牵动得最多，又在哪里出现权衡？"
+msgstr "Which output is most sensitive to an input?"
+
+msgid "滑块"
+msgstr "Sliders"
+
+msgid "最多 4 个输入，各有范围和步长"
+msgstr "Up to four inputs, each with a range and step."
+
+msgid "结果条形"
+msgstr "Output bars"
+
+msgid "由白名单公式（线性、乘积、比值、幂、已有结果的组合）算出"
+msgstr "Allowed formulas: linear, product, ratio, power or combinations of previous outputs."
+
+msgid "提示线"
+msgstr "Thresholds"
+
+msgid "结果越过阈值时显示一句话"
+msgstr "Show feedback when an output crosses a threshold."
+
+msgid "权衡"
+msgstr "Trade-offs"
+
+msgid "偏差与方差"
+msgstr "Bias and variance"
+
+msgid "预算"
+msgstr "Budgets"
+
+msgid "剂量与效果"
+msgstr "Dose and response"
+
+msgid "输入输出关系"
+msgstr "Input-output relations"
+
+msgid "敏感度"
+msgstr "Sensitivity"
+
+msgid "线性与非线性"
+msgstr "Linearity and nonlinearity"
+
+msgid "随机模拟"
+msgstr "Random simulation"
+
+msgid "反复做一个随机试验（抛硬币、掷骰子、自定义概率、样本均值），画出次数的柱状图或比例随次数的折线，并和期望对比；种子固定，结果可重复。"
+msgstr "Run reproducible trials and compare observations with expectations."
+
+msgid "随机的结果，次数多了为什么会稳定下来？稳定到哪里？"
+msgstr "How do frequencies and sample means change with more trials?"
+
+msgid "每次连做"
+msgstr "Trials per batch"
+
+msgid "“做 N 次”里的 N"
+msgstr "The N in “Run N trials”."
+
+msgid "每个样本抽几个数"
+msgstr "Values per sample"
+
+msgid "只有样本均值实验才有：样本越大，均值分布越窄"
+msgstr "For sample-mean experiments: larger samples narrow the distribution."
+
+msgid "清零重来"
+msgstr "Clear and restart"
+
+msgid "同一种子，结果可重复"
+msgstr "Use the same seed for reproducible results."
+
+msgid "大数定律"
+msgstr "Law of large numbers"
+
+msgid "频率与概率"
+msgstr "Frequency and probability"
+
+msgid "孟德尔 3:1"
+msgstr "Mendelian 3:1 ratio"
+
+msgid "中心极限定理"
+msgstr "Central limit theorem"
+
+msgid "样本均值的分布"
+msgstr "Distribution of sample means"
+
+msgid "掷骰子"
+msgstr "Dice"
+
+msgid "随机抽样"
+msgstr "Random sampling"
+
+msgid "散点与直线"
+msgstr "Scatter and line"
+
+msgid "一组点画在 x–y 平面上，可以拖动或用按钮移动任意一点；可开关最小二乘直线、残差、主方向，并读出相关系数 r 和协方差。"
+msgstr "Move points and inspect regression, residuals, correlation, covariance and principal direction."
+
+msgid "点的位置怎么决定相关、回归线和主方向？"
+msgstr "How does one point affect the fitted line and association?"
+
+msgid "移动点"
+msgstr "Move points"
+
+msgid "拖动或用方向按钮改变某个点的位置"
+msgstr "Drag points or use direction buttons."
+
+msgid "叠加"
+msgstr "Overlays"
+
+msgid "开关回归线、残差、主方向、r、协方差"
+msgstr "Toggle regression, residuals, principal direction, r and covariance."
+
+msgid "预设点"
+msgstr "Preset point"
+
+msgid "一键加入 config 里的额外点"
+msgstr "Add the configured extra point."
+
+msgid "相关"
+msgstr "Correlation"
+
+msgid "相关系数"
+msgstr "Correlation coefficient"
+
+msgid "回归"
+msgstr "Regression"
+
+msgid "最小二乘"
+msgstr "Least squares"
+
+msgid "协方差"
+msgstr "Covariance"
+
+msgid "PCA 主方向"
+msgstr "PCA principal direction"
+
+msgid "散点图"
+msgstr "Scatter plots"
+
+msgid "离群点"
+msgstr "Outliers"
+
+msgid "分类与配对"
+msgstr "Classify and match"
+
+msgid "把项目拖进类别（分类），或把左边的项目配给右边唯一的对象（配对）；每放一个立刻说明对错和原因，也可以点选加按钮完成，最后检查全部或显示答案。"
+msgstr "Place items in categories or one-to-one pairs with immediate explanations."
+
+msgid "这些东西各自属于哪一类？它们之间谁和谁一一对应，为什么？"
+msgstr "Which category or partner fits each item?"
+
+msgid "mode"
+msgstr "mode"
+
+msgid "classify（分类）或 match（一对一配对）"
+msgstr "classify (categories) or match (one-to-one pairs)."
+
+msgid "targets"
+msgstr "targets"
+
+msgid "类别或配对对象"
+msgstr "Categories or matching targets."
+
+msgid "items"
+msgstr "items"
+
+msgid "要放的项目，每个带正确答案、理由和常见错误的说明"
+msgstr "Items with correct targets, explanations and common-error feedback."
+
+msgid "分类"
+msgstr "Classification"
+
+msgid "配对"
+msgstr "Matching"
+
+msgid "概念辨析"
+msgstr "Concept distinctions"
+
+msgid "统计量的类型"
+msgstr "Types of statistics"
+
+msgid "互补配对"
+msgstr "Complementary pairing"
+
+msgid "算法分类"
+msgstr "Algorithm categories"
+
+msgid "术语与定义"
+msgstr "Terms and definitions"
+
+msgid "分步过程"
+msgstr "Step-by-step process"
+
+msgid "把一个过程拆成几步，每步用表格或方框显示当前状态，变化的格子被标出；上一步/下一步逐步看，可选在某一步故意出错，看错误怎样一路传下去，再回到正确路径。"
+msgstr "Inspect highlighted changes, optionally introducing a mistake and following its consequences."
+
+msgid "这个过程每一步改变了什么？某一步出错会怎样传下去？"
+msgstr "What changes at each step, and how does a mistake propagate?"
+
+msgid "步骤"
+msgstr "Steps"
+
+msgid "上一步、下一步、重来"
+msgstr "Previous, next and restart."
+
+msgid "故意出错"
+msgstr "Deliberate mistake"
+
+msgid "在指定的一步切到出错路径，看后果，再回到正确路径"
+msgstr "Switch to an error path at a designated step, inspect consequences and return to the correct path."
+
+msgid "DNA 复制"
+msgstr "DNA replication"
+
+msgid "二分查找"
+msgstr "Binary search"
+
+msgid "算法执行过程"
+msgstr "Algorithm execution"
+
+msgid "协议握手"
+msgstr "Protocol handshakes"
+
+msgid "推导步骤"
+msgstr "Derivation steps"
+
+msgid "化学反应步骤"
+msgstr "Reaction steps"
+
+msgid "游戏流程"
+msgstr "Game flow"
+
+msgid "时间线 / 泳道"
+msgstr "Timeline and lanes"
+
+msgid "把几件事画成并排的泳道：每条泳道上是一段段“干活 / 等待 / 传输 / 事件”，红线随时间移动，读数说明此刻每条泳道在做什么；可以切换两种做法，比较总耗时。"
+msgstr "Play or scrub parallel lanes and compare alternative schedules."
+
+msgid "几件事在时间上怎样排布？为什么换一种安排，总时间就不同？"
+msgstr "Which activities overlap, and what determines total time?"
+
+msgid "播放"
+msgstr "Play"
+
+msgid "红线自动向右移动，到终点自动停"
+msgstr "Move the time marker automatically and stop at the end."
+
+msgid "当前时间"
+msgstr "Current time"
+
+msgid "拖动滑块，把红线放到任何时刻"
+msgstr "Drag to inspect any time."
+
+msgid "方案"
+msgstr "Scenario"
+
+msgid "有两个方案时切换，比较总耗时"
+msgstr "Compare total time between two schedules."
+
+msgid "同步与异步"
+msgstr "Synchronous and asynchronous"
+
+msgid "并发与并行"
+msgstr "Concurrency and parallelism"
+
+msgid "流水线"
+msgstr "Pipelines"
+
+msgid "多任务排程"
+msgstr "Task scheduling"
+
+msgid "历史事件的先后与重叠"
+msgstr "Event order and overlap"
+
+msgid "人物生平对照"
+msgstr "Comparing biographies"
+
+msgid "厨房里同时做几道菜"
+msgstr "Cooking several dishes"
+
+msgid "可编辑网络"
+msgstr "Editable network"
+
+msgid "把页面里的例子画成一张网络：点两个点就连上或断开一条边，可以加一个新点；节点集合 V、边集合 E、节点数 N 和边数 L 实时更新，没有边的点照样画出来，先点谁后点谁都是同一条边。"
+msgstr "Connect, disconnect or add nodes and inspect node and edge sets and counts."
+
+msgid "网络 = 节点名单 V + 关系清单 E：加一条边、去一条边、加一个点时，V、E、N、L 各怎么变？"
+msgstr "How do edits change V, E, N and L?"
+
+msgid "页面例子里的对象：编号 id + 名字 label（用页面自己的例子和编号）"
+msgstr "Objects in the page example, with stable ID and display label."
+
+msgid "页面例子里的关系：每条边一对 id"
+msgstr "Relations represented by pairs of IDs."
+
+msgid "relation"
+msgstr "relation"
+
+msgid "边表示的关系，如 互相认识"
+msgstr "The relation represented by an edge."
+
+msgid "node_word"
+msgstr "node_word"
+
+msgid "节点叫什么，如 人"
+msgstr "The word used for a node."
+
+msgid "editable"
+msgstr "editable"
+
+msgid "能不能点着改"
+msgstr "Whether clicks can edit the network."
+
+msgid "show_sets / show_counts"
+msgstr "show_sets / show_counts"
+
+msgid "显示 V、E 的集合写法 / N 和 L"
+msgstr "Show V and E as sets, or N and L as counts."
+
+msgid "节点与边"
+msgstr "Nodes and edges"
+
+msgid "网络的表示"
+msgstr "Network representation"
+
+msgid "节点集合与边集合"
+msgstr "Node and edge sets"
+
+msgid "无向图"
+msgstr "Undirected graphs"
+
+msgid "孤立节点"
+msgstr "Isolated nodes"
+
+msgid "社交网络"
+msgstr "Social networks"
+
+msgid "图的基本概念"
+msgstr "Graph basics"
+
+msgid "度与度分布"
+msgstr "Degree distributions"
+
+msgid "巨分量"
+msgstr "Giant components"
+
+msgid "请切换模型重试"
+msgstr "Switch models and try again."
+
+msgid "找不到这条记忆"
+msgstr "This memory was not found."
+
+msgid "last_event_id must be <message_id>:<n>"
+msgstr "The event position is invalid. Refresh the conversation."
+
+msgid "last_event_id is required"
+msgstr "The event position is required. Refresh the conversation."
+
+msgid "这组记忆已经处理过或不存在"
+msgstr "This memory group has already been handled or no longer exists."
+
+msgid "要保留的这条不在这一组里"
+msgstr "The selected memory does not belong to this group."
+
+msgid "placement=page needs page_id"
+msgstr "Select a page for this suggestion."
+
+msgid "actions unavailable"
+msgstr "Actions are unavailable. Check the service configuration."
+
+msgid "这份草稿已经处理过了"
+msgstr "This draft has already been handled."
+
+msgid "no such run"
+msgstr "This run was not found."
+
+msgid "改进功能不可用"
+msgstr "Improvement is unavailable. Check its configuration."
+
+msgid "no such round"
+msgstr "This round was not found."
+
+msgid "没有权限进行这个操作"
+msgstr "You do not have permission for this action."
+
+msgid "备份已关闭，请先在配置中启用"
+msgstr "Backups are disabled. Enable them in settings first."
+
+msgid "备份未完成，请查看备份状态后重试"
+msgstr "The backup is incomplete. Check its status before retrying."
+
+msgid "这一页现在没有在写"
+msgstr "This page is not currently being written."
+
+msgid "档案不可用"
+msgstr "Your background is unavailable. Try again."
+
+msgid "知识图谱布局暂时不可用，请重试。"
+msgstr "The graph layout is temporarily unavailable. Try again."
+
+msgid "找不到这份资料"
+msgstr "This material was not found."
+
+msgid "文件、网址、文字三选一"
+msgstr "Provide one file, URL or text input."
+
+msgid "上传的内容读不了，请重新添加"
+msgstr "The upload could not be read. Add it again."
+
+msgid "不认识这种用途"
+msgstr "This material use is not recognized."
+
+msgid "资料还在读，读完再改目录"
+msgstr "The material is still being read. Wait before editing its contents."
+
+msgid "目录里没有这一节"
+msgstr "This section is not in the contents."
+
+msgid "这份资料不需要重试"
+msgstr "This material does not need a retry."
+
+msgid "未命名资料"
+msgstr "Untitled material"
+
+msgid "附件已经删除了，去掉它再发"
+msgstr "The attachment was deleted. Remove it before sending."
+
+msgid "这条在参数或档案里，请在那里删除"
+msgstr "Delete this item in settings or your background."
+
+msgid "删除没有完成，会自动重试"
+msgstr "Deletion is incomplete and will be retried automatically."
+
+msgid "删除没完成，请再试一次"
+msgstr "Deletion is incomplete. Try again."
+
+msgid "这个模型现在不能用"
+msgstr "This model is unavailable."
+
+msgid "没能读到，重试"
+msgstr "Could not read this. Try again."
+
+msgid "正在思考…"
+msgstr "Thinking…"
+
+msgid "现在改不了。"
+msgstr "This cannot be changed now."
+
+msgid "This model was not found. Select another model."
+msgstr "This model was not found. Select another model."
+
+msgid "This model is unavailable."
+msgstr "This model is unavailable."
+
+msgid "This model does not support this reasoning level."
+msgstr "This model does not support this reasoning level."
+
+msgid "Model pricing is not configured. Open model settings."
+msgstr "Model pricing is not configured. Open model settings."
+
+msgid "The model connection is not ready. Check its API key and SDK."
+msgstr "The model connection is not ready. Check its API key and SDK."
+
+msgid "Complete the missing RSI configuration in settings."
+msgstr "Complete the missing RSI configuration in settings."
+
+msgid "Tool and code generation is disabled for this instance."
+msgstr "Tool and code generation is disabled for this instance."
+
+msgid "The action failed. Check your settings and try again."
+msgstr "The action failed. Check your settings and try again."
+
+msgid "Check the highlighted fields and try again."
+msgstr "Check the highlighted fields and try again."
+
+msgid "The file exceeds the size limit."
+msgstr "The file exceeds the size limit."
+
+msgid "This page was not found."
+msgstr "This page was not found."
+
+msgid "Knowledge base"
+msgstr "Knowledge base"
+
+msgid "Materials"
+msgstr "Materials"
+
+msgid "The page changed after this draft was proposed. Create a new draft."
+msgstr "The page changed after this draft was proposed. Create a new draft."
+
+msgid "This action did not complete. Check its status before retrying."
+msgstr "This action did not complete. Check its status before retrying."
+
+#, python-brace-format
+msgid "You can keep at most {limit} examples."
+msgstr "You can keep at most {limit} examples."
+
+msgid "Example IDs must be unique."
+msgstr "Example IDs must be unique."
+
+msgid "A teaching rule cannot be empty."
+msgstr "A teaching rule cannot be empty."
+
+#, python-brace-format
+msgid "A teaching rule can contain at most {limit} characters."
+msgstr "A teaching rule can contain at most {limit} characters."
+
+#, python-brace-format
+msgid "A domain can contain at most {limit} characters."
+msgstr "A domain can contain at most {limit} characters."
+
+#, python-brace-format
+msgid "The teaching preferences are now at version {version}. Refresh before editing."
+msgstr "The teaching preferences are now at version {version}. Refresh before editing."
+
+msgid "This page is not finished yet and cannot be used as an example."
+msgstr "This page is not finished yet and cannot be used as an example."
+
+msgid "This learning map has no such block."
+msgstr "This learning map has no such block."
+
+msgid "This source passage is no longer available. Reorganize the material and try again."
+msgstr "This source passage is no longer available. Reorganize the material and try again."
+
+msgid "EvoWiki does not modify your own notes."
+msgstr "EvoWiki does not modify your own notes."
+
+msgid "Restore this page from the trash before editing it."
+msgstr "Restore this page from the trash before editing it."
+
+msgid "This question has no answer key. You can only mark it complete."
+msgstr "This question has no answer key. You can only mark it complete."
+
+msgid "This page has not been started."
+msgstr "This page has not been started."
+
+msgid "This page is in the trash. Restore or rewrite it before continuing."
+msgstr "This page is in the trash. Restore or rewrite it before continuing."
+
+msgid "This learning goal has been taken back."
+msgstr "This learning goal has been taken back."
+
+msgid "Code changes are disabled. Enable them in settings before approving."
+msgstr "Code changes are disabled. Enable them in settings before approving."
+
+msgid "页面在提议之后改过了，这条修改已作废，不会覆盖新版本"
+msgstr "The page changed after this draft was proposed. It will not overwrite the new version."
+
+msgctxt "evoui"
+msgid "深入一点"
+msgstr "Go deeper"
+
+msgctxt "evoui"
+msgid "图"
+msgstr "Image"
+
+msgctxt "evoui"
+msgid "拖动查看更多"
+msgstr "Drag to see more"
+
+msgctxt "evoui"
+msgid "图表：用 ← → 逐个查看数据点"
+msgstr "Chart: use ← → to inspect data points"
+
+msgctxt "evoui"
+msgid "，Shift + 滚轮或拖动左右移动"
+msgstr "; Shift + scroll or drag to pan"
+
+msgctxt "evoui"
+msgid "点一下隐藏这条"
+msgstr "Click to hide this series"
+
+msgctxt "evoui"
+msgid "点一下显示这条"
+msgstr "Click to show this series"
+
+msgctxt "evoui"
+msgid "合计"
+msgstr "Total"
+
+msgctxt "evoui"
+msgid "检查答案"
+msgstr "Check answer"
+
+msgctxt "evoui"
+msgid "对。"
+msgstr "Correct."
+
+msgctxt "evoui"
+msgid "不对。"
+msgstr "Incorrect."
+
+msgctxt "evoui"
+msgid "收起提示"
+msgstr "Hide hint"
+
+msgctxt "evoui"
+msgid "提示"
+msgstr "Hint"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "答对 {0} / {1}"
+msgstr "Correct: {0} / {1}"
+
+msgctxt "evoui"
+msgid "测验"
+msgstr "Quiz"
+
+msgctxt "evoui"
+msgid "答对了"
+msgstr "Correct"
+
+msgctxt "evoui"
+msgid "答错了"
+msgstr "Incorrect"
+
+msgctxt "evoui"
+msgid "上一题"
+msgstr "Previous question"
+
+msgctxt "evoui"
+msgid "查看结果"
+msgstr "View results"
+
+msgctxt "evoui"
+msgid "下一题"
+msgstr "Next question"
+
+msgctxt "evoui"
+msgid "选出所有适用项"
+msgstr "Select all that apply"
+
+msgctxt "evoui"
+msgid "提交答案"
+msgstr "Submit answer"
+
+msgctxt "evoui"
+msgid "测验结果"
+msgstr "Quiz results"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "第 {0} 轮"
+msgstr "Round {0}"
+
+msgctxt "evoui"
+msgid "全部答对"
+msgstr "All correct"
+
+msgctxt "evoui"
+msgid "这一轮没有答对的题"
+msgstr "No correct answers this round"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "答对 {0} 题，错 {1} 题"
+msgstr "{0} correct, {1} incorrect"
+
+msgctxt "evoui"
+msgid "答对"
+msgstr "Correct"
+
+msgctxt "evoui"
+msgid "答错"
+msgstr "Incorrect"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "正确答案：{0}"
+msgstr "Correct answer: {0}"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "你选了 {0}{1}。{2}"
+msgstr "You selected {0}{1}. {2}"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "，漏了 {0}"
+msgstr "; missed {0}"
+
+msgctxt "evoui"
+msgid "重新开始"
+msgstr "Restart"
+
+msgctxt "evoui"
+msgid "只做错题"
+msgstr "Retry incorrect answers"
+
+msgctxt "evoui"
+msgid "已请求新的一套"
+msgstr "Requested a new set"
+
+msgctxt "evoui"
+msgid "再来一套"
+msgstr "Another set"
+
+msgctxt "evoui"
+msgid "点击翻面"
+msgstr "Click to flip"
+
+msgctxt "evoui"
+msgid "左滑没记住"
+msgstr "Swipe left: not remembered"
+
+msgctxt "evoui"
+msgid "右滑记住"
+msgstr "Swipe right: remembered"
+
+msgctxt "evoui"
+msgid "键盘：空格 ← → z"
+msgstr "Keyboard: Space ← → Z"
+
+msgctxt "evoui"
+msgid "闪卡"
+msgstr "Flashcards"
+
+msgctxt "evoui"
+msgid "没记住"
+msgstr "Not remembered"
+
+msgctxt "evoui"
+msgid "记住了"
+msgstr "Remembered"
+
+msgctxt "evoui"
+msgid "撤销（z）"
+msgstr "Undo (Z)"
+
+msgctxt "evoui"
+msgid "洗牌"
+msgstr "Shuffle"
+
+msgctxt "evoui"
+msgid "记住了（最后一张）"
+msgstr "Remembered (last card)"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "闪卡 {0}/{1}，{2}：{3}。空格翻面，← 没记住，→ 记住"
+msgstr "Flashcard {0}/{1}, {2}: {3}. Space to flip, ← not remembered, → remembered"
+
+msgctxt "evoui"
+msgid "背面"
+msgstr "Back"
+
+msgctxt "evoui"
+msgid "正面"
+msgstr "Front"
+
+msgctxt "evoui"
+msgid "背面："
+msgstr "Back: "
+
+msgctxt "evoui"
+msgid "已撤销"
+msgstr "Undone"
+
+msgctxt "evoui"
+msgid "已洗牌"
+msgstr "Shuffled"
+
+msgctxt "evoui"
+msgid " · 复习没记住的"
+msgstr " · Review missed cards"
+
+msgctxt "evoui"
+msgid "全部记住了"
+msgstr "All remembered"
+
+msgctxt "evoui"
+msgid "还不太熟，再练一轮"
+msgstr "Keep practicing with another round"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "记住了 {0}%"
+msgstr "Remembered {0}%"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "{0} {1} 张"
+msgstr "{0}: {1} cards"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "复习 {0} 张没记住的"
+msgstr "Review {0} missed cards"
+
+msgctxt "evoui"
+msgid "已请求更多卡片"
+msgstr "Requested more cards"
+
+msgctxt "evoui"
+msgid "更多卡片"
+msgstr "More cards"
+
+msgctxt "evoui"
+msgid "再遮住"
+msgstr "Hide again"
+
+msgctxt "evoui"
+msgid "已遮住"
+msgstr "Hidden"
+
+msgctxt "evoui"
+msgid "完成上面的练习后显示"
+msgstr "Complete the practice above to reveal"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "{0} ({1}/{2})"
+msgstr "{0} ({1}/{2})"
+
+msgctxt "evoui"
+msgid "下一步"
+msgstr "Next step"
+
+msgctxt "evoui"
+msgid "显示"
+msgstr "Show"
+
+msgctxt "evoui"
+msgid "已全部显示"
+msgstr "All steps revealed"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "已显示第 {0} 步，共 {1} 步"
+msgstr "Revealed step {0} of {1}"
+
+msgctxt "evoui"
+msgid "开始"
+msgstr "Start"
+
+msgctxt "evoui"
+msgid "重置"
+msgstr "Reset"
+
+msgctxt "evoui"
+msgid "时间到"
+msgstr "Time is up"
+
+msgctxt "evoui"
+msgid "暂停"
+msgstr "Pause"
+
+msgctxt "evoui"
+msgid "继续"
+msgstr "Resume"
+
+msgctxt "evoui"
+msgid "倒计时"
+msgstr "Countdown"
+
+msgctxt "evoui"
+msgid "秒表"
+msgstr "Stopwatch"
+
+msgctxt "evoui"
+msgid "回到开头"
+msgstr "Back to start"
+
+msgctxt "evoui"
+msgid "上一步"
+msgstr "Previous step"
+
+msgctxt "evoui"
+msgid "播放"
+msgstr "Play"
+
+msgctxt "evoui"
+msgid "速度"
+msgstr "Speed"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "第 {0} 步，共 {1} 步"
+msgstr "Step {0} of {1}"
+
+msgctxt "evoui"
+msgid "进度"
+msgstr "Progress"
+
+msgctxt "evoui"
+msgid "从头播放"
+msgstr "Play from start"
+
+msgctxt "evoui"
+msgid "播放器"
+msgstr "Player"
+
+msgctxt "evoui"
+msgid "不对"
+msgstr "Incorrect"
+
+msgctxt "evoui"
+msgid "正确答案"
+msgstr "Correct answer"
+
+msgctxt "evoui"
+msgid "再试一次"
+msgstr "Try again"
+
+msgctxt "evoui"
+msgid "填空"
+msgstr "Fill in the blank"
+
+msgctxt "evoui"
+msgid "选项"
+msgstr "Options"
+
+msgctxt "evoui"
+msgid "不对，正确答案是"
+msgstr "Incorrect. The correct answer is "
+
+msgctxt "evoui"
+msgid "空"
+msgstr "Blank"
+
+msgctxt "evoui"
+msgid "对："
+msgstr "Correct: "
+
+msgctxt "evoui"
+msgid "错："
+msgstr "Incorrect: "
+
+msgctxt "evoui"
+msgid "拼句"
+msgstr "Build a sentence"
+
+msgctxt "evoui"
+msgid "撤销上一个词"
+msgstr "Undo last word"
+
+msgctxt "evoui"
+msgid "词库"
+msgstr "Word bank"
+
+msgctxt "evoui"
+msgid "不对，正确的句子是："
+msgstr "Incorrect. The correct sentence is: "
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "第 {0} 个空：{1}"
+msgstr "Blank {0}: {1}"
+
+msgctxt "evoui"
+msgid "撤销了「"
+msgstr "Undid “"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "第 {0} 个空"
+msgstr "Blank {0}"
+
+msgctxt "evoui"
+msgid "练习"
+msgstr "Practice"
+
+msgctxt "evoui"
+msgid "上一页"
+msgstr "Previous page"
+
+msgctxt "evoui"
+msgid "下一页"
+msgstr "Next page"
+
+msgctxt "evoui"
+msgid "做完这一页的练习再继续"
+msgstr "Complete this page’s practice to continue"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "第 {0} 页，共 {1} 页"
+msgstr "Page {0} of {1}"
+
+#, python-brace-format
+msgctxt "evoui"
+msgid "完成：答对 {0} / {1}"
+msgstr "Finished: {0} / {1} correct"
+
+msgctxt "evoui"
+msgid "完成"
+msgstr "Finish"
+
+msgctxt "evoui"
+msgid "已完成"
+msgstr "Completed"
+
+msgctxt "evoui"
+msgid "重新载入"
+msgstr "Reload"
+
+msgctxt "evoui"
+msgid "小程序没有加载出来，这是文字版："
+msgstr "The app could not load. Text version: "
+
+msgctxt "evoui"
+msgid "已选："
+msgstr "Selected: "
+
+msgctxt "evoui"
+msgid "交互出错，改显示文字："
+msgstr "The interaction failed. Text version: "
+
+msgid "The deletion could not be completed. Try again."
+msgstr "The deletion could not be completed. Try again."
+
+msgid "用新方法回头猜你最近做过的题，猜得比现在的方法更准"
+msgstr "The new method predicted your recent answers more accurately in retrospective checks."
+
+msgid "An improvement run is already in progress."
+msgstr "An improvement run is already in progress."
+
+msgid "This content changed before the feedback could be applied. Refresh and try again."
+msgstr "This content changed before the feedback could be applied. Refresh and try again."
+
+msgid "Every page on this path has already been started."
+msgstr "Every page on this path has already been started."
+
+#, python-brace-format
+msgid "The file is too large. The limit is {limit} MB."
+msgstr "The file is too large. The limit is {limit} MB."
+
+msgid "A material name cannot be empty."
+msgstr "A material name cannot be empty."
+
+#, python-brace-format
+msgid "A material name can contain at most {limit} characters."
+msgstr "A material name can contain at most {limit} characters."
+
+msgid "The model could not organize this goal. Switch models and try again."
+msgstr "The model could not organize this goal. Switch models and try again."
+
+msgid "Checking deletion records. Try again shortly."
+msgstr "Checking deletion records. Try again shortly."

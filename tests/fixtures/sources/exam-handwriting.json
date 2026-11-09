@@ -1,0 +1,76 @@
+{
+  "paper": "handwriting",
+  "text": "1. 计算 1 + 1。（C）\nA. 1 B. 2 C. 3\n9. 计算 9 + 1。(A\nA. 1 B. 2 C. 3\n10. 计算 10 + 1。(A)\nA. 1 B. 2 C. 3\n11. [字迹遮挡]",
+  "plan": {
+    "items": [
+      {
+        "number": "1",
+        "kind": "single",
+        "stem": "1. 计算 1 + 1。（C）",
+        "options": [
+          "1",
+          "2",
+          "3"
+        ],
+        "answer": "C",
+        "answer_quote": "（C）"
+      },
+      {
+        "number": "9",
+        "kind": "single",
+        "stem": "9. 计算 9 + 1。(A",
+        "options": [
+          "1",
+          "2",
+          "3"
+        ],
+        "answer": "A",
+        "answer_quote": "(A"
+      },
+      {
+        "number": "10",
+        "kind": "single",
+        "stem": "10. 计算 10 + 1。(A)",
+        "options": [
+          "1",
+          "2",
+          "3"
+        ],
+        "answer": "A",
+        "answer_quote": "(A)"
+      },
+      {
+        "number": "11",
+        "kind": "single",
+        "stem": "11. [字迹遮挡]",
+        "status": "unreadable",
+        "problem": "文字被手写笔迹遮住"
+      }
+    ],
+    "answers": [
+      {
+        "number": "9",
+        "answer": "A",
+        "answer_quote": "9. 计算 9 + 1。(A"
+      }
+    ]
+  },
+  "expected": [
+    [
+      "1",
+      "ok"
+    ],
+    [
+      "9",
+      "ok"
+    ],
+    [
+      "10",
+      "ok"
+    ],
+    [
+      "11",
+      "unreadable"
+    ]
+  ]
+}

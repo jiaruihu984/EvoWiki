@@ -1,0 +1,105 @@
+{
+  "component_id": "network-edit",
+  "name": "可编辑网络",
+  "description": "把页面里的例子画成一张网络：点两个点就连上或断开一条边，可以加一个新点；节点集合 V、边集合 E、节点数 N 和边数 L 实时更新，没有边的点照样画出来，先点谁后点谁都是同一条边。",
+  "learning_question": "网络 = 节点名单 V + 关系清单 E：加一条边、去一条边、加一个点时，V、E、N、L 各怎么变？",
+  "scenarios": [
+    "节点与边",
+    "网络的表示",
+    "节点集合与边集合",
+    "无向图",
+    "孤立节点",
+    "社交网络",
+    "图的基本概念",
+    "连通分量",
+    "度与度分布",
+    "巨分量"
+  ],
+  "params": {
+    "nodes": "页面例子里的对象：编号 id + 名字 label（用页面自己的例子和编号）",
+    "edges": "页面例子里的关系：每条边一对 id",
+    "relation": "边表示的关系，如 互相认识",
+    "node_word": "节点叫什么，如 人",
+    "editable": "能不能点着改",
+    "show_sets / show_counts": "显示 V、E 的集合写法 / N 和 L"
+  },
+  "html_path": "src/evowiki/deep/components/network-edit.html",
+  "height": 560,
+  "probes": [
+    {"target": "#toggle", "action": "click", "expect_change": "#result"},
+    {"target": "#add", "action": "click", "expect_change": "#result"},
+    {"target": "#reset", "action": "click", "expect_change": "#result"}
+  ],
+  "source": "component-library: editable undirected network (Cytoscape.js), live V / E / N / L",
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["title", "question", "node_word", "relation", "nodes", "edges", "editable", "show_sets",
+                 "show_counts", "new_node_label"],
+    "properties": {
+      "title": {"type": "string", "description": "标题：这是谁的网络，用页面自己的例子"},
+      "question": {"type": "string", "description": "学习者动手要看懂的问题，一句话"},
+      "node_word": {"type": "string", "description": "节点叫什么，如 人、城市、蛋白质"},
+      "relation": {"type": "string", "description": "边表示什么关系，如 互相认识、有直飞航线"},
+      "nodes": {
+        "type": "array",
+        "description": "节点：用页面例子里的全部对象，包括没有边的；id 用页面给的编号（没有编号就 1、2、3…）",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "label"],
+          "properties": {
+            "id": {"type": "string", "description": "编号，如 1"},
+            "label": {"type": "string", "description": "名字，如 小明"}
+          }
+        }
+      },
+      "edges": {
+        "type": "array",
+        "description": "边：页面例子里的每一对关系，一对写一次（不分先后）",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["a", "b"],
+          "properties": {
+            "a": {"type": "string", "description": "一端的节点 id"},
+            "b": {"type": "string", "description": "另一端的节点 id"}
+          }
+        }
+      },
+      "editable": {"type": "boolean", "description": "true：能点着加边、去边、加点"},
+      "show_sets": {"type": "boolean", "description": "显示 V 和 E 的集合写法"},
+      "show_counts": {"type": "boolean", "description": "显示 N = |V| 和 L = |E|"},
+      "new_node_label": {"anyOf": [{"type": "string"}, {"type": "null"}],
+                         "description": "加点时新点的名字，如 新同学；null = 新加的点"}
+    }
+  },
+  "example_configs": [
+    {
+      "title": "5 个人的朋友网络",
+      "question": "点两个人连上或断开，看名单 V、关系清单 E 和 N、L 怎么变；小华没有朋友，他还在 V 里吗？",
+      "node_word": "人",
+      "relation": "互相认识",
+      "nodes": [{"id": "1", "label": "小明"}, {"id": "2", "label": "小红"}, {"id": "3", "label": "小刚"},
+                {"id": "4", "label": "小丽"}, {"id": "5", "label": "小华"}],
+      "edges": [{"a": "1", "b": "2"}, {"a": "1", "b": "3"}, {"a": "2", "b": "3"}, {"a": "3", "b": "4"}],
+      "editable": true,
+      "show_sets": true,
+      "show_counts": true,
+      "new_node_label": "新同学"
+    },
+    {
+      "title": "四座城市的直飞航线",
+      "question": "开通或取消一条直飞航线，节点数和边数各怎么变？新开一座机场呢？",
+      "node_word": "城市",
+      "relation": "有直飞航线",
+      "nodes": [{"id": "1", "label": "北京"}, {"id": "2", "label": "上海"}, {"id": "3", "label": "成都"},
+                {"id": "4", "label": "拉萨"}],
+      "edges": [{"a": "1", "b": "2"}, {"a": "1", "b": "3"}, {"a": "2", "b": "3"}],
+      "editable": true,
+      "show_sets": false,
+      "show_counts": true,
+      "new_node_label": "新城市"
+    }
+  ]
+}

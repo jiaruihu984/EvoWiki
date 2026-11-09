@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+:root{--bg:#fff;--fg:#222;--ok:#0a7a3d;--bad:#b3261e;--line:#888;--card:#f3f3f3}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1c1c;--fg:#eee;--ok:#6fd89a;--bad:#ff8a80;--line:#999;--card:#2a2a2a}}
+body{margin:0;padding:10px;background:var(--bg);color:var(--fg);font:15px/1.5 sans-serif}
+.cols{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.col{background:var(--card);border-radius:8px;padding:6px;text-align:center;min-width:0}
+.top{font-weight:bold;font-size:20px}
+.btns button{margin:2px;padding:5px 8px;font-size:15px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:6px;cursor:pointer}
+.btns button.sel{border-width:3px}
+.res{min-height:20px;font-size:13px;margin-top:4px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+#msg{margin-top:12px;padding:10px;border:1px solid var(--line);border-radius:8px}
+#reset{margin-top:10px;padding:6px 12px}
+</style><script data-evowiki-locale="pairing-lab"></script>
+</head><body>
+<p><!--ew-t:%22%E4%B8%8A%E9%9D%A2%E8%BF%99%E6%9D%A1%E9%93%BE%E6%98%AF%20A-G-C-T%E3%80%82%E2%96%A3%20%E8%A1%A8%E7%A4%BA%E4%B8%AA%E5%A4%B4%E5%A4%A7%EF%BC%88A%E3%80%81G%EF%BC%89%EF%BC%8C%E2%96%AB%20%E8%A1%A8%E7%A4%BA%E4%B8%AA%E5%A4%B4%E5%B0%8F%EF%BC%88T%E3%80%81C%EF%BC%89%E3%80%82%22-->上面这条链是 A-G-C-T。▣ 表示个头大（A、G），▫ 表示个头小（T、C）。</p>
+<div class="cols" id="cols"></div>
+<div id="msg"><!--ew-t:%22%E8%AF%B7%E4%B8%BA%E6%AF%8F%E4%B8%AA%E4%BD%8D%E7%BD%AE%E9%80%89%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AF%8D%E3%80%82%22-->请为每个位置选一个字母。</div>
+<button id="reset"><!--ew-t:%22%E9%87%8D%E6%9D%A5%22-->重来</button>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const row=['A','G','C','T'],big={A:1,G:1,C:0,T:0},right={A:'T',G:'C',C:'G',T:'A'};
+const pick=[null,null,null,null];
+const cols=document.getElementById('cols'),msg=document.getElementById('msg');
+function judge(t,b){
+ if(right[t]===b)return ['ok', ewt("✔ 配对正确：一大一小正好填满")];
+ if(big[t]&&big[b])return ['bad', ewt("✘ 两个大的并排，挤不下")];
+ if(!big[t]&&!big[b])return ['bad', ewt("✘ 两个小的并排，中间留缝")];
+ return ['bad', ewt("✘ 大小搭得上，但氢键对不上，扣不稳")];
+}
+function render(){
+ EvoWikiLocale.prop(cols,"innerHTML",()=>'');
+ row.forEach((t,i)=>{
+  const c=document.createElement('div');c.className='col';
+  EvoWikiLocale.prop(c,"innerHTML",()=>'<div class="top">'+t+(big[t]?' ▣':' ▫')+'</div><div class="btns"></div><div class="res"></div>');
+  ['A','T','G','C'].forEach(b=>{
+   const x=document.createElement('button');EvoWikiLocale.prop(x,"textContent",()=>b);x.id='b'+i+b;
+   if(pick[i]===b)x.className='sel';
+   x.onclick=()=>{pick[i]=b;render();};
+   c.querySelector('.btns').appendChild(x);});
+  if(pick[i]){const j=judge(t,pick[i]);const r=c.querySelector('.res');r.className='res '+j[0];EvoWikiLocale.prop(r,"textContent",()=>j[1]);}
+  cols.appendChild(c);});
+ const n=pick.filter(Boolean).length;
+ const errs=pick.filter((p,i)=>p&&right[row[i]]!==p).length;
+ let m= ewt("请为每个位置选一个字母。");
+ if(n&&errs>0)m= ewt("有 ")+errs+ ewt(" 处配错，看每列下方的原因，改选其他字母。");
+ else if(n===4)m= ewt("全对！互补链是 ")+pick.join('')+ ewt("。它由上链唯一决定。");
+ else if(n)m= ewt("已选 ")+n+ ewt(" 个，目前都对，继续。");
+ EvoWikiLocale.prop(msg,"textContent",()=>m);}
+document.getElementById('reset').onclick=()=>{for(let i=0;i<4;i++)pick[i]=null;render();};
+render();
+
+EvoWikiLocale.onChange(()=>{render()});</script></body></html>

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E6%95%A3%E7%82%B9%E4%B8%8E%E7%9B%B4%E7%BA%BF%22-->散点与直线</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+.axis{stroke:var(--tx-3);stroke-width:1}
+.grid{stroke:var(--line);stroke-width:1}
+.tick{fill:var(--tx-3);font:12px var(--font);font-variant-numeric:tabular-nums}
+.axTx{fill:var(--tx-2);font:12.5px var(--font)}
+.pt{fill:var(--tx);stroke:var(--bg);stroke-width:2}
+.pt.sel{fill:var(--accent);stroke:var(--bg)}
+.pt.pre{fill:var(--bad)}
+.ring{fill:none;stroke:var(--accent);stroke-width:2}
+.hit{fill:transparent;cursor:grab;touch-action:none}
+.ptTx{fill:var(--tx-2);font:12px var(--font)}
+.fit{stroke:var(--accent);stroke-width:2.5}
+.dir{stroke:var(--warn);stroke-width:2.5;stroke-dasharray:8 5}
+.res{stroke:var(--accent);stroke-width:1.5;stroke-opacity:.7}
+.mean{stroke:var(--tx-3);stroke-width:1;stroke-dasharray:3 4}
+.quad{fill:var(--accent);fill-opacity:.09}
+.quadTx{fill:var(--tx-2);font:600 12px var(--font)}
+.fitTx{fill:var(--accent);font:600 12.5px var(--font)}
+.dirTx{fill:var(--warn);font:600 12.5px var(--font)}
+.nudge{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.nudge button{padding:6px 4px}
+select{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 8px;min-height:36px;width:100%}
+.ovs{display:flex;flex-direction:column;gap:6px}
+</style>
+<script data-evowiki-locale="scatter-line"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage"><svg id="plot" viewBox="0 0 560 340" role="img" aria-labelledby="plotDesc"><desc id="plotDesc"></desc></svg>
+      <p class="muted" style="margin:6px 4px 0"><!--ew-t:%22%E6%8B%96%E5%8A%A8%E5%9C%86%E7%82%B9%EF%BC%8C%E6%88%96%E5%9C%A8%E5%8F%B3%E8%BE%B9%E9%80%89%E4%B8%80%E4%B8%AA%E7%82%B9%E7%94%A8%E6%8C%89%E9%92%AE%E7%A7%BB%E5%8A%A8%E3%80%82%22-->拖动圆点，或在右边选一个点用按钮移动。</p></div>
+    <div class="side">
+      <div class="ctl">
+        <label for="sel"><!--ew-t:%22%E9%80%89%E4%B8%AD%E7%9A%84%E7%82%B9%22-->选中的点</label>
+        <select id="sel"></select>
+      </div>
+      <div class="nudge" role="group" aria-label="移动选中的点" data-ew-attrs='{"aria-label":"移动选中的点"}'>
+        <button type="button" id="nudge-left" aria-label="向左移" data-ew-attrs='{"aria-label":"向左移"}'><!--ew-t:%22%E5%90%91%E5%B7%A6%22-->向左</button>
+        <button type="button" id="nudge-right" aria-label="向右移" data-ew-attrs='{"aria-label":"向右移"}'><!--ew-t:%22%E5%90%91%E5%8F%B3%22-->向右</button>
+        <button type="button" id="nudge-up" aria-label="向上移" data-ew-attrs='{"aria-label":"向上移"}'><!--ew-t:%22%E5%90%91%E4%B8%8A%22-->向上</button>
+        <button type="button" id="nudge-down" aria-label="向下移" data-ew-attrs='{"aria-label":"向下移"}'><!--ew-t:%22%E5%90%91%E4%B8%8B%22-->向下</button>
+      </div>
+      <div class="ovs" id="ovs" role="group" aria-label="叠加" data-ew-attrs='{"aria-label":"叠加"}'></div>
+      <div class="row" id="presets"></div>
+      <div class="read" id="read" aria-label="读数" data-ew-attrs='{"aria-label":"读数"}'></div>
+      <div class="row"><button type="button" id="reset"><!--ew-t:%22%E8%BF%98%E5%8E%9F%E6%89%80%E6%9C%89%E7%82%B9%22-->还原所有点</button></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("学习时间和测验分数：点越像一条线，相关越强"),"question": ewt("移动一个点，直线、相关系数 r 和残差怎么跟着变？一个离群点能把 r 拉多少？"),"x_label": ewt("每周学习时间"),"y_label": ewt("测验分数"),"x_unit": ewt("小时"),"y_unit": ewt("分"),"x_min":0,"x_max":10,"y_min":30,"y_max":100,"points":[{"label":"A","x":1,"y":48},{"label":"B","x":2,"y":55},{"label":"C","x":2.5,"y":52},{"label":"D","x":3,"y":63},{"label":"E","x":4,"y":60},{"label":"F","x":5,"y":72},{"label":"G","x":6,"y":70},{"label":"H","x":7,"y":82},{"label":"I","x":8,"y":78},{"label":"J","x":9,"y":90}],"overlays":["fit","residuals","correlation","covariance"],"start_on":["fit","correlation"],"presets":[{"label": ewt("学得少却考高分"),"x":1,"y":95}],"notes":{"fit": ewt("直线是让竖直残差平方和最小的那一条。"),"direction":null,"correlation": ewt("r 只衡量“像不像一条直线”，不说明谁导致谁。"),"covariance": ewt("协方差的正负看点落在均值十字的哪几个象限。")}};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?(Math.abs(x)>=1000?x.toFixed(0):x.toFixed(d)):'—';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+
+const num=(v,d)=>v!==null&&v!==undefined&&Number.isFinite(Number(v))?Number(v):d;
+let xlo=num(C.x_min,0),xhi=num(C.x_max,10),ylo=num(C.y_min,0),yhi=num(C.y_max,10);
+if(xhi<=xlo)xhi=xlo+1;if(yhi<=ylo)yhi=ylo+1;
+const clampX=v=>Math.min(xhi,Math.max(xlo,v)),clampY=v=>Math.min(yhi,Math.max(ylo,v));
+const xu=C.x_unit?EvoWikiLocale.string(C.x_unit):'',yu=C.y_unit?EvoWikiLocale.string(C.y_unit):'';
+const xl=EvoWikiLocale.string(C.x_label||'x'),yl=EvoWikiLocale.string(C.y_label||'y');
+const mk=(p,i,pre)=>({label:EvoWikiLocale.string(p.label||EvoWikiLocale.string.fromCharCode(65+i%26)).slice(0,24),x:clampX(num(p.x,xlo)),y:clampY(num(p.y,ylo)),pre:!!pre});
+const base=(C.points||[]).slice(0,14).map((p,i)=>mk(p,i));
+if(!base.length)base.push(mk({},0));
+const presets=(C.presets||[]).slice(0,3).map((p,i)=>mk(p,i+20,true));
+const OV=['fit','residuals','direction','correlation','covariance'];
+const OVN={fit: ewt("最小二乘直线"),residuals: ewt("竖直残差"),direction: ewt("主方向"),correlation: ewt("相关系数 r"),covariance: ewt("协方差与象限")};
+const offered=OV.filter(k=>(C.overlays||[]).includes(k));
+const on={};offered.forEach(k=>on[k]=(C.start_on||[]).includes(k));
+const notes=C.notes||{};
+let pts,added,sel,last='';
+function reset(){pts=base.map(p=>({...p}));added=presets.map(()=>false);sel=Math.floor(pts.length/2)}
+reset();
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title||'');EvoWikiLocale.prop($('question'),"textContent",()=>C.question||'');
+function fillSel(){EvoWikiLocale.prop($('sel'),"innerHTML",()=>pts.map((p,i)=>`<option value="${i}">${esc(p.label)}</option>`).join(''));$('sel').value=sel}
+offered.forEach(k=>{const l=document.createElement('label');l.className='check';
+  EvoWikiLocale.prop(l,"innerHTML",()=>`<input type="checkbox" id="ov-${k}"${on[k]?' checked':''}>${OVN[k]}`);$('ovs').append(l);
+  l.querySelector('input').addEventListener('change',e=>{on[k]=e.target.checked;last=on[k]? ewt("打开了“{0}”。", [OVN[k]]): ewt("关掉了“{0}”。", [OVN[k]]);draw(true)})});
+presets.forEach((p,i)=>{const b=document.createElement('button');b.type='button';b.id='preset-'+i;EvoWikiLocale.attr(b,'aria-pressed',()=>'false');
+  EvoWikiLocale.prop(b,"textContent",()=> ewt("加入：")+p.label);$('presets').append(b);
+  b.addEventListener('click',()=>{added[i]=!added[i];EvoWikiLocale.attr(b,'aria-pressed',()=>added[i]);
+    if(added[i]){pts.push({...p});sel=pts.length-1}else{const k=pts.findIndex(q=>q.pre&&q.label===p.label);if(k>=0){pts.splice(k,1);sel=Math.min(sel,pts.length-1)}}
+    fillSel();last=added[i]? ewt("加入了点“{0}”。", [p.label]): ewt("拿掉了点“{0}”。", [p.label]);draw(true)})});
+function stats(){const n=pts.length;if(n<2)return null;
+  const mx=pts.reduce((a,p)=>a+p.x,0)/n,my=pts.reduce((a,p)=>a+p.y,0)/n;
+  let sxx=0,syy=0,sxy=0;pts.forEach(p=>{sxx+=(p.x-mx)**2;syy+=(p.y-my)**2;sxy+=(p.x-mx)*(p.y-my)});
+  sxx/=n-1;syy/=n-1;sxy/=n-1;
+  const r=sxx>0&&syy>0?sxy/Math.sqrt(sxx*syy):NaN;
+  const slope=sxx>0?sxy/sxx:NaN,icpt=my-slope*mx;
+  const h=(sxx+syy)/2,d=Math.sqrt(((sxx-syy)/2)**2+sxy**2),l1=h+d;
+  let vx,vy;if(Math.abs(sxy)<1e-12){if(sxx>=syy){vx=1;vy=0}else{vx=0;vy=1}}else{vx=l1-syy;vy=sxy;const m=Math.hypot(vx,vy);vx/=m;vy/=m}
+  return {n,mx,my,sxx,syy,sxy,r,slope,icpt,vx,vy,share:sxx+syy>0?l1/(sxx+syy):NaN}}
+function clip(px,py,dx,dy){let t0=-Infinity,t1=Infinity;
+  for(const [p,d,lo,hi] of [[px,dx,xlo,xhi],[py,dy,ylo,yhi]]){if(Math.abs(d)<1e-12){if(p<lo||p>hi)return null}else{let a=(lo-p)/d,b=(hi-p)/d;if(a>b)[a,b]=[b,a];t0=Math.max(t0,a);t1=Math.min(t1,b)}}
+  return t0<t1?[px+dx*t0,py+dy*t0,px+dx*t1,py+dy*t1]:null}
+function niceStep(raw){const p=Math.pow(10,Math.floor(Math.log10(raw||1))),f=raw/p;return (f<1.5?1:f<3?2:f<7?5:10)*p}
+const word=r=>{if(!Number.isFinite(r))return  ewt("无法计算");const a=Math.abs(r),s=r>0? ewt("正"): ewt("负");return a>=.8? ewt("很强的")+s+ ewt("相关"):a>=.5? ewt("中等的")+s+ ewt("相关"):a>=.2? ewt("较弱的")+s+ ewt("相关"): ewt("几乎看不出相关")};
+const ang=(vx,vy)=>{let a=Math.atan2(vy,vx)*180/Math.PI;if(a>90)a-=180;if(a<=-90)a+=180;return a};
+const dp=(lo,hi)=>{const s=hi-lo;return s>=100?0:s>=10?1:2};
+let geo={};
+function draw(announce){
+  const S=stats();const W=Math.max(280,Math.round($('stage').clientWidth-16)),H=W<420?300:360;
+  const L=44,R=W-14,T=26,B=H-40;
+  const X=v=>L+(v-xlo)/(xhi-xlo)*(R-L),Y=v=>B-(v-ylo)/(yhi-ylo)*(B-T);
+  geo={L,R,T,B};
+  const svg=$('plot');EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} ${H}`);svg.querySelectorAll(':scope > :not(desc)').forEach(c=>c.remove());
+  const sx=niceStep((xhi-xlo)/Math.max(3,Math.floor((R-L)/80))),sy=niceStep((yhi-ylo)/Math.max(3,Math.floor((B-T)/55)));
+  for(let t=Math.ceil(xlo/sx-1e-9)*sx;t<=xhi+1e-9;t+=sx){svg.append(el('line',{x1:X(t),y1:T,x2:X(t),y2:B,class:'grid'}));svg.append(el('text',{x:X(t),y:B+16,'text-anchor':'middle',class:'tick'},fmt(t,sx<1?1:0)))}
+  for(let t=Math.ceil(ylo/sy-1e-9)*sy;t<=yhi+1e-9;t+=sy){svg.append(el('line',{x1:L,y1:Y(t),x2:R,y2:Y(t),class:'grid'}));svg.append(el('text',{x:L-6,y:Y(t)+4,'text-anchor':'end',class:'tick'},fmt(t,sy<1?1:0)))}
+  svg.append(el('line',{x1:L,y1:B,x2:R,y2:B,class:'axis'}));svg.append(el('line',{x1:L,y1:T,x2:L,y2:B,class:'axis'}));
+  svg.append(el('text',{x:R,y:B+34,'text-anchor':'end',class:'axTx'},xl+(xu?'（'+xu+'）':'')));
+  svg.append(el('text',{x:L,y:14,'text-anchor':'start',class:'axTx'},yl+(yu?'（'+yu+'）':'')));
+  let lg=R;const leg=(t,cls)=>{const w=t.length*13+30;svg.append(el('text',{x:lg,y:14,'text-anchor':'end',class:cls},t));svg.append(el('line',{x1:lg-t.length*13-26,y1:10,x2:lg-t.length*13-4,y2:10,class:cls==='fitTx'?'fit':'dir'}));lg-=w+10};
+  if(on.direction)leg( ewt("主方向"),'dirTx');if(on.fit)leg( ewt("回归线"),'fitTx');
+  const showMean=S&&(on.covariance||on.direction||on.fit);
+  if(S&&on.covariance){
+    const mx=X(S.mx),my=Y(S.my);
+    svg.append(el('rect',{x:mx,y:T,width:R-mx,height:my-T,class:'quad'}));svg.append(el('rect',{x:L,y:my,width:mx-L,height:B-my,class:'quad'}));
+    const q=(x,y,a,t)=>svg.append(el('text',{x,y,'text-anchor':a,class:'quadTx'},t));
+    q(R-6,T+16,'end', ewt("乘积为正（+）"));q(L+6,B-8,'start', ewt("乘积为正（+）"));q(L+6,T+16,'start', ewt("乘积为负（−）"));q(R-6,B-8,'end', ewt("乘积为负（−）"))}
+  if(showMean){svg.append(el('line',{x1:X(S.mx),y1:T,x2:X(S.mx),y2:B,class:'mean'}));svg.append(el('line',{x1:L,y1:Y(S.my),x2:R,y2:Y(S.my),class:'mean'}))}
+  if(S&&on.residuals&&Number.isFinite(S.slope))pts.forEach(p=>{const yh=S.icpt+S.slope*p.x;svg.append(el('line',{x1:X(p.x),y1:Y(p.y),x2:X(p.x),y2:Y(clampY(yh)),class:'res'}))});
+  if(S&&on.fit&&Number.isFinite(S.slope)){const c2=clip(S.mx,S.my,1,S.slope);
+    if(c2){svg.append(el('line',{x1:X(c2[0]),y1:Y(c2[1]),x2:X(c2[2]),y2:Y(c2[3]),class:'fit'}));}}
+  if(S&&on.direction){const d=clip(S.mx,S.my,S.vx,S.vy);
+    if(d){svg.append(el('line',{x1:X(d[0]),y1:Y(d[1]),x2:X(d[2]),y2:Y(d[3]),class:'dir'}));}}
+  if(showMean)svg.append(el('path',{d:`M${X(S.mx)-6} ${Y(S.my)}h12M${X(S.mx)} ${Y(S.my)-6}v12`,stroke:'var(--tx)','stroke-width':2,fill:'none'}));
+  pts.forEach((p,i)=>{const cx=X(p.x),cy=Y(p.y);
+    if(i===sel)svg.append(el('circle',{cx,cy,r:11,class:'ring'}));
+    svg.append(el('circle',{cx,cy,r:6,class:'pt'+(p.pre?' pre':'')+(i===sel?' sel':'')}));
+    svg.append(el('text',{x:cx+9,y:cy-8,class:'ptTx'},p.label.length>8?p.label.slice(0,8)+'…':p.label));
+    svg.append(el('circle',{cx,cy,r:15,class:'hit','data-i':i}))});
+  EvoWikiLocale.prop($('plotDesc'),"textContent",()=> ewt("{0} 个点", [pts.length])+(S?`，r = ${fmt(S.r)}`:''));
+  const row=(k,v)=>`<div><span class="k">${k}</span>${v}</div>`;let rd='';
+  const p=pts[sel];
+  rd+=row( ewt("选中：")+esc(p.label),`<b>${fmt(p.x,dp(xlo,xhi))}</b>${esc(xu)}，<b>${fmt(p.y,dp(ylo,yhi))}</b>${esc(yu)}`);
+  if(S){
+    rd+=row( ewt("均值"),`${fmt(S.mx,1)}${esc(xu)}，${fmt(S.my,1)}${esc(yu)}`);
+    if(on.correlation)rd+=row( ewt("相关系数 r"),`<b>${fmt(S.r)}</b>（${word(S.r)}）`);
+    if(on.covariance)rd+=row( ewt("协方差（样本，除以 n−1）"),`<b>${fmt(S.sxy)}</b>`);
+    if(on.fit)rd+=row( ewt("最小二乘直线"),Number.isFinite(S.slope)?`y = <b>${fmt(S.slope)}</b>·x ${S.icpt<0?'−':'+'} <b>${fmt(Math.abs(S.icpt))}</b>`: ewt("x 完全相同，斜率不存在"));
+    if(on.direction)rd+=row( ewt("主方向"), ewt("与横轴夹角 <b>{0}°</b>，占总方差 <b>{1}%</b>", [fmt(ang(S.vx,S.vy),0),fmt(S.share*100,0)]))}
+  EvoWikiLocale.prop($('read'),"innerHTML",()=>rd);
+  if(announce)say(S)}
+function say(S){let m=last;
+  if(!S){EvoWikiLocale.prop($('result'),"textContent",()=>m+ ewt(" 至少要两个点才能算相关和直线。"));return}
+  if(on.correlation)m+=` r = ${fmt(S.r)}，${word(S.r)}。`;
+  if(on.fit&&Number.isFinite(S.slope))m+= ewt(" 回归线斜率 {0}：{1}每多 1{2}，{3}平均{4} {5}{6}。", [fmt(S.slope),xl,xu,yl,S.slope>=0? ewt("多"): ewt("少"),fmt(Math.abs(S.slope)),yu]);
+  if(on.covariance)m+= ewt(" 协方差 {0}（{1}）。", [fmt(S.sxy),S.sxy>=0? ewt("同向变化的点占优"): ewt("反向变化的点占优")]);
+  if(on.direction)m+= ewt(" 点云最长的方向与横轴成 {0}°，承载了 {1}% 的总方差。", [fmt(ang(S.vx,S.vy),0),fmt(S.share*100,0)]);
+  for(const k of ['fit','direction','correlation','covariance'])if(on[k]&&notes[k])m+=' '+EvoWikiLocale.string(notes[k]).slice(0,200);
+  if(!offered.some(k=>on[k]))m+= ewt(" 现在没有打开任何叠加，只看点的位置。");
+  EvoWikiLocale.prop($('result'),"textContent",()=>m.trim())}
+function moveSel(x,y,txt){const p=pts[sel];p.x=clampX(x);p.y=clampY(y);last=txt|| ewt("把“{0}”移到 ({1}, {2})。", [p.label,fmt(p.x,dp(xlo,xhi)),fmt(p.y,dp(ylo,yhi))]);draw(true)}
+function nudge(dx,dy){const p=pts[sel],sx=(xhi-xlo)/40,sy=(yhi-ylo)/40;
+  let nx=p.x+dx*sx,ny=p.y+dy*sy;if(nx<xlo||nx>xhi)nx=p.x-dx*sx;if(ny<ylo||ny>yhi)ny=p.y-dy*sy;moveSel(nx,ny)}
+$('nudge-left').onclick=()=>nudge(-1,0);$('nudge-right').onclick=()=>nudge(1,0);$('nudge-up').onclick=()=>nudge(0,1);$('nudge-down').onclick=()=>nudge(0,-1);
+$('sel').onchange=e=>{sel=+e.target.value;last= ewt("选中了“{0}”。", [pts[sel].label]);draw(true)};
+$('reset').onclick=()=>{reset();presets.forEach((p,i)=>EvoWikiLocale.attr($('preset-'+i),'aria-pressed',()=>'false'));fillSel();last= ewt("所有点都还原了。");draw(true)};
+let drag=-1;const svgEl=$('plot');
+function dataAt(e){const r=svgEl.getBoundingClientRect(),vb=svgEl.viewBox.baseVal,k=vb.width/r.width;
+  const px=(e.clientX-r.left)*k,py=(e.clientY-r.top)*k;
+  return [xlo+(px-geo.L)/(geo.R-geo.L)*(xhi-xlo),ylo+(geo.B-py)/(geo.B-geo.T)*(yhi-ylo)]}
+svgEl.addEventListener('pointerdown',e=>{const t=e.target;if(t.classList&&t.classList.contains('hit')){drag=+t.getAttribute('data-i');sel=drag;$('sel').value=sel;svgEl.setPointerCapture(e.pointerId);e.preventDefault();draw(false)}});
+svgEl.addEventListener('pointermove',e=>{if(drag<0)return;const [x,y]=dataAt(e);const p=pts[drag];p.x=clampX(x);p.y=clampY(y);draw(false)});
+const endDrag=()=>{if(drag<0)return;const p=pts[drag];drag=-1;last= ewt("把“{0}”拖到 ({1}, {2})。", [p.label,fmt(p.x,dp(xlo,xhi)),fmt(p.y,dp(ylo,yhi))]);draw(true)};
+svgEl.addEventListener('pointerup',endDrag);svgEl.addEventListener('pointercancel',endDrag);
+new ResizeObserver(()=>draw(false)).observe($('stage'));
+fillSel();last= ewt("初始状态。");draw(true);
+
+EvoWikiLocale.onChange(()=>{draw()});</script>
+</body>
+</html>

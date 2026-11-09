@@ -1,0 +1,570 @@
+/* EvoUI v1 styles — the one stylesheet for evoui.js (web app, Obsidian plugin, backend render check).
+   Everything is scoped under .evoui. Colours come from the host when it defines them (--evowiki-*,
+   then Obsidian's theme variables), else from the light/dark defaults below. */
+.evoui{
+  --eu-bg:var(--evowiki-bg,var(--background-primary,#ffffff));
+  --eu-fg:var(--evowiki-tx,var(--text-normal,#222222));
+  --eu-fg2:var(--evowiki-tx-2,var(--text-muted,#5c5c5c));
+  --eu-line:var(--evowiki-line,var(--background-modifier-border,#e3e3e3));
+  --eu-surface:var(--evowiki-bg-1,var(--background-secondary,#f5f5f7));
+  --eu-accent:var(--evowiki-accent,var(--interactive-accent,#6b4fd6));
+  --eu-accent-tx:var(--text-on-accent,#ffffff);
+  --eu-success:#22804d;--eu-warning:#a66a00;--eu-danger:#c23b2e;--eu-secondary:#76767f;
+  --eu-right:var(--known,#2f9e5b);--eu-wrong:var(--gap,#d9483b);--eu-shaky:var(--shaky,#d99a1e);--eu-mark-tx:#ffffff;
+  --eu-hover:color-mix(in srgb,var(--eu-fg) 5%,transparent);--eu-strong:color-mix(in srgb,var(--eu-fg) 30%,transparent);
+  --eu-faint:color-mix(in srgb,var(--eu-fg) 32%,transparent);
+  --eu-blue:var(--viz-1,#2f6fdf);
+  --eu-c6:#7c5cd6;--eu-teal:#17948a;
+  --eu-miss:var(--viz-2,#e07b2a);--eu-card:var(--eu-bg);--eu-card-line:color-mix(in srgb,var(--eu-fg) 9%,transparent);
+  --eu-card-shadow:0 1px 2px rgb(0 0 0 / .04),0 10px 28px -14px rgb(0 0 0 / .22);
+  color:var(--eu-fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  border:1px solid var(--eu-line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;
+  min-width:0;max-width:100%;box-sizing:border-box;container-type:inline-size;position:relative}
+@media (prefers-color-scheme:dark){.evoui{
+  --eu-bg:var(--evowiki-bg,var(--background-primary,#1e1e21));
+  --eu-fg:var(--evowiki-tx,var(--text-normal,#e6e6ea));
+  --eu-fg2:var(--evowiki-tx-2,var(--text-muted,#b0b0b8));
+  --eu-line:var(--evowiki-line,var(--background-modifier-border,#3d3d44));
+  --eu-surface:var(--evowiki-bg-1,var(--background-secondary,#26262a));
+  --eu-accent:var(--evowiki-accent,var(--interactive-accent,#a48ff2));
+  --eu-accent-tx:var(--text-on-accent,#17141f);
+  --eu-success:#5cc98a;--eu-warning:#e0a43a;--eu-danger:#f0786b;--eu-secondary:#8c8c95;
+  --eu-right:var(--known,#4cc27a);--eu-wrong:var(--gap,#ec6a5e);--eu-shaky:var(--shaky,#e0a43a);--eu-mark-tx:#121214;
+  --eu-hover:color-mix(in srgb,var(--eu-fg) 7%,transparent);
+  --eu-miss:var(--viz-2,#f2a35c);--eu-card:color-mix(in srgb,var(--eu-fg) 7%,var(--eu-surface));--eu-card-line:color-mix(in srgb,var(--eu-fg) 10%,transparent);--eu-card-shadow:0 1px 2px rgb(0 0 0 / .3),0 12px 30px -14px rgb(0 0 0 / .6);
+  --eu-c6:#a48ff2;--eu-teal:#4cc4b8;--eu-blue:var(--viz-1,#6ea2ff)}}
+.theme-dark .evoui{--eu-c6:#a48ff2;--eu-teal:#4cc4b8;--eu-blue:var(--viz-1,#6ea2ff);--eu-success:#5cc98a;--eu-warning:#e0a43a;--eu-danger:#f0786b;--eu-secondary:#8c8c95;
+  --eu-right:var(--known,#4cc27a);--eu-wrong:var(--gap,#ec6a5e);--eu-shaky:var(--shaky,#e0a43a);--eu-mark-tx:#121214;--eu-hover:color-mix(in srgb,var(--eu-fg) 7%,transparent);
+  --eu-miss:var(--viz-2,#f2a35c);--eu-card:color-mix(in srgb,var(--eu-fg) 7%,var(--eu-surface));--eu-card-line:color-mix(in srgb,var(--eu-fg) 10%,transparent);--eu-card-shadow:0 1px 2px rgb(0 0 0 / .3),0 12px 30px -14px rgb(0 0 0 / .6)}
+.evoui *{box-sizing:border-box}
+.evoui ::selection{background:color-mix(in srgb,var(--eu-accent) 25%,transparent)}
+.evoui :focus-visible{outline:2px solid var(--eu-accent);outline-offset:2px;border-radius:4px}
+.evoui .evoui-pq-btn:focus-visible,.evoui .evoui-pq-icon:focus-visible,.evoui .evoui-fc-btn:focus-visible,.evoui .evoui-tm-btn:focus-visible,
+.evoui .evoui-pl-btn:focus-visible,.evoui .evoui-rv-btn:focus-visible,.evoui .evoui-pl-speed button:focus-visible{border-radius:999px}
+.evoui-title{font-weight:650;line-height:1.35;text-wrap:balance}
+.evoui-box,.evoui-row{display:flex;min-width:0}
+.evoui-box{flex-direction:column}
+.evoui-row{flex-direction:row;align-items:center}
+.evoui-row.wrap{flex-wrap:wrap}
+.evoui .g0{gap:0}.evoui .g1{gap:4px}.evoui .g2{gap:8px}.evoui .g3{gap:12px}.evoui .g4{gap:18px}
+.evoui .j-end{justify-content:flex-end}.evoui .j-between{justify-content:space-between}.evoui .j-center{justify-content:center}
+.evoui .bordered{border:1px solid var(--eu-line);border-radius:10px;padding:12px}
+.evoui .surface{background:var(--eu-surface);border-radius:8px;padding:10px 12px}
+.evoui-text{min-width:0;overflow-wrap:anywhere}
+.evoui-text.s-sm{font-size:13px}.evoui-text.s-lg{font-size:17px}.evoui .w-bold{font-weight:650}
+.evoui .t-secondary{color:var(--eu-fg2)}.evoui .t-success{color:var(--eu-success)}.evoui .t-warning{color:var(--eu-warning)}
+.evoui .t-danger{color:var(--eu-danger)}.evoui .t-accent{color:var(--eu-accent)}
+.evoui-badge{font-size:12px;border:1px solid currentColor;border-radius:999px;padding:1px 9px;white-space:nowrap}
+.evoui-slider{display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--eu-fg2);min-width:0}
+.evoui-row>.evoui-slider{flex:1 1 160px}
+.evoui-slider input{accent-color:var(--eu-accent);width:100%;margin:4px 0}
+.evoui-choice{display:flex;flex-wrap:wrap;gap:6px;max-width:100%}
+.evoui-choice.segmented{gap:0;background:var(--eu-surface);border-radius:8px;padding:2px;width:fit-content}
+.evoui-choice button{border:1px solid var(--eu-line);background:var(--eu-bg);color:var(--eu-fg);border-radius:6px;
+  padding:5px 11px;min-height:32px;cursor:pointer;font:inherit;font-size:13px}
+.evoui-choice button:hover{border-color:var(--eu-fg2)}
+.evoui-choice.segmented button{border:0;background:none}
+.evoui-choice button[aria-pressed="true"]{background:var(--eu-accent);border-color:var(--eu-accent);color:var(--eu-accent-tx)}
+.evoui-toggle{display:flex;gap:6px;align-items:center;font-size:13px}
+.evoui-toggle input{accent-color:var(--eu-accent);width:16px;height:16px;margin:0}
+/* plot / chart: the svg is as wide as its box (viewBox = box width in px), so text stays 11–12 px.
+   Data tones are the data palette (accent → --viz-1, warning → --viz-2, success → --known, danger → --gap);
+   every mark paints with currentColor, the tone class sets the colour. Chrome (grid, axes, ticks) is monochrome. */
+.evoui-plotwrap{display:flex;flex-direction:column;gap:6px;min-width:0}
+.evoui-plotwrap .t-default{color:var(--eu-fg)}.evoui-plotwrap .t-secondary{color:var(--eu-secondary)}
+.evoui-plotwrap .t-accent{color:var(--eu-blue)}.evoui-plotwrap .t-warning{color:var(--eu-miss)}
+.evoui-plotwrap .t-success{color:var(--eu-right)}.evoui-plotwrap .t-danger{color:var(--eu-wrong)}
+.evoui-each{display:contents}
+/* a label or a number beside a bar breaks between words, never inside one */
+.evoui-row>.evoui-text,.evoui-row>.evoui-num{min-width:min-content;overflow-wrap:break-word}
+.evoui-svgwrap{min-width:0}
+.evoui-svg{display:block;width:100%;height:auto;margin:0 auto;overflow:visible;fill:var(--eu-fg);font-size:13px;font-variant-numeric:tabular-nums}
+.evoui-svg line,.evoui-svg path,.evoui-svg polyline{stroke-linecap:round;stroke-linejoin:round}
+.evoui-svg rect,.evoui-svg circle,.evoui-svg ellipse,.evoui-svg polygon{transition:fill .18s,stroke .18s,opacity .18s}
+.evoui-svg .halo{paint-order:stroke;stroke:var(--eu-bg);stroke-width:3px;stroke-linejoin:round}
+.evoui-svg .axis text{fill:var(--eu-fg2)}
+.evoui-svg .axis line.grid{stroke:var(--eu-line);stroke-width:.6}
+.evoui-svg .axis line.base{stroke:var(--eu-fg2);stroke-width:1}
+.evoui-svg text{pointer-events:none}
+.evoui-svg text.evoui-hit,.evoui-svg text.evoui-drag{pointer-events:auto}
+.evoui .evoui-hit{cursor:pointer}
+.evoui .evoui-hit:hover{opacity:.82}
+.evoui .evoui-hit:focus-visible,.evoui .evoui-drag:focus-visible{outline:2px solid var(--eu-accent);outline-offset:1px}
+.evoui-svg .evoui-drag{cursor:grab;touch-action:none}
+.evoui-svg .evoui-drag:active{cursor:grabbing}
+.evoui-text.s-xs{font-size:12px}
+.evoui .w-medium{font-weight:550}
+.evoui-plot{width:100%;height:auto;background:var(--eu-surface);border-radius:10px;display:block;overflow:hidden}
+.evoui-plot:not(.evoui-ch):not(.pie){max-width:720px;margin:0 auto}
+.evoui-plotwrap:not(.evoui-chart)>.evoui-legend{justify-content:center}
+.evoui-plot.evoui-ch{background:none;border-radius:0;overflow:visible}
+.evoui-plot .grid{stroke:var(--eu-line);stroke-width:1}.evoui-plot .axis{stroke:var(--eu-strong);stroke-width:1}
+.evoui-plot .stroke{stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.evoui-plot .dashed{stroke-dasharray:6 4}.evoui-plot .nofill{fill:none}
+.evoui-plot .fill{fill:currentColor}
+.evoui-plot .lbl{font-size:12px;fill:currentColor}.evoui-plot .lbl.t-secondary{fill:var(--eu-fg2)}
+.evoui-plot .lbl.z-md{font-size:14px}
+.evoui-plot .lbl.onbar{fill:var(--eu-fg);font-weight:650;font-variant-numeric:tabular-nums}
+.evoui-plot .tick{font-size:11px;fill:var(--eu-fg2);font-variant-numeric:tabular-nums}
+.evoui-plot .tick.end{text-anchor:end}.evoui-plot .tick.mid{text-anchor:middle}
+.evoui-plot .shape{stroke:currentColor;stroke-width:2;fill:none}
+.evoui-plot .shape.filled{fill:currentColor;fill-opacity:.12}
+.evoui-plot .shape.solid{stroke-width:1.4;stroke-opacity:.9}
+.evoui-plot .dot{stroke:var(--eu-bg);stroke-width:2}
+.evoui-plot .bar{stroke:none}.evoui-plot .bar.stacked{stroke:var(--eu-bg);stroke-width:1}
+.evoui-plot .line{stroke-width:2.4}
+.evoui-plot .area{fill:currentColor;fill-opacity:.16;stroke:none}.evoui-plot .area.grad{fill-opacity:1}
+.evoui-plot .halo{fill-opacity:.2;stroke:none}
+.evoui-plot .cursor{stroke:var(--eu-faint);stroke-width:1;stroke-dasharray:3 3}
+.evoui-plot .band{fill:var(--eu-hover)}
+.evoui-plot .ann{stroke:currentColor;stroke-width:1.2;stroke-dasharray:5 4}
+.evoui-plot .annlbl{font-size:11.5px;font-weight:600;fill:currentColor;paint-order:stroke;stroke:var(--eu-bg);stroke-width:3px;stroke-linejoin:round}
+.evoui-plot .annlbl.end{text-anchor:end}
+.evoui-plot .annlbl.t-secondary,.evoui-plot .annlbl.t-default{fill:var(--eu-fg2)}
+.evoui-plot.pie{width:200px;max-width:100%;flex:none;background:none;border-radius:0;overflow:visible}
+.evoui-plot .slice{stroke:var(--eu-bg);stroke-width:1.5;transition:opacity .15s,transform .15s;transform-origin:100px 100px}
+.evoui-plot .slice.dim{opacity:.28}
+.evoui-plot .pie-big{font-size:22px;font-weight:650;fill:var(--eu-fg);text-anchor:middle;font-variant-numeric:tabular-nums}
+.evoui-plot .pie-sub{font-size:12px;fill:var(--eu-fg2);text-anchor:middle}
+.evoui-chartmain{display:flex;flex-direction:column;gap:6px;min-width:0}
+.evoui-chartmain.pie{flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px 28px}
+.evoui-chartbox{position:relative;min-width:0;border-radius:8px;touch-action:pan-y}
+.evoui-chartbox:focus-visible{outline-offset:4px}
+.evoui-chartbox:has(svg.windowed){cursor:grab}
+.evoui-tip{position:absolute;top:4px;left:0;z-index:2;pointer-events:none;min-width:96px;max-width:min(240px,70%);
+  background:var(--eu-card);border:1px solid var(--eu-card-line);box-shadow:var(--eu-card-shadow);border-radius:8px;
+  padding:6px 9px;font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:1px}
+.evoui-tip[hidden]{display:none}
+.evoui-tip-x{font-weight:650;color:var(--eu-fg);margin-bottom:1px;overflow-wrap:anywhere}
+.evoui-tip-row{display:flex;align-items:center;gap:6px;color:var(--eu-fg2)}
+.evoui-tip-row i{flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.evoui-tip-row span{color:var(--eu-fg2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.evoui-tip-row b{margin-left:auto;padding-left:10px;color:var(--eu-fg);font-weight:650;font-variant-numeric:tabular-nums}
+.evoui-ch-scroll{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--eu-fg2);min-width:0}
+.evoui-ch-scroll[hidden]{display:none}
+.evoui-ch-scroll span{flex:none}
+.evoui-ch-scroll input{flex:1 1 auto;min-width:0;width:100%;margin:0;height:18px;background:none;-webkit-appearance:none;appearance:none;cursor:pointer}
+.evoui-ch-scroll input::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--eu-line)}
+.evoui-ch-scroll input::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:44px;height:10px;margin-top:-3px;border-radius:5px;background:var(--eu-faint)}
+.evoui-ch-scroll input::-moz-range-track{height:4px;border-radius:2px;background:var(--eu-line)}
+.evoui-ch-scroll input::-moz-range-thumb{width:44px;height:10px;border:0;border-radius:5px;background:var(--eu-faint)}
+.evoui-legend{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12px;color:var(--eu-fg2)}
+.evoui-legend .evoui-lg{display:inline-flex;align-items:center;gap:6px;color:var(--eu-fg2)}
+.evoui-legend i{display:inline-block;flex:none;width:10px;height:10px;border-radius:3px;background:currentColor}
+.evoui-legend .evoui-lg.t-default i{background:var(--eu-fg)}.evoui-legend .evoui-lg.t-secondary i{background:var(--eu-secondary)}
+.evoui-legend .evoui-lg.t-accent i{background:var(--eu-blue)}.evoui-legend .evoui-lg.t-warning i{background:var(--eu-miss)}
+.evoui-legend .evoui-lg.t-success i{background:var(--eu-right)}.evoui-legend .evoui-lg.t-danger i{background:var(--eu-wrong)}
+.evoui-legend button.evoui-lg{border:0;background:none;font:inherit;font-size:12px;padding:3px 6px;margin:-3px -6px;border-radius:6px;cursor:pointer}
+.evoui-legend button.evoui-lg:hover{background:var(--eu-hover);color:var(--eu-fg)}
+.evoui-legend button.evoui-lg.off{color:var(--eu-faint);text-decoration:line-through}
+.evoui-legend button.evoui-lg.off i{background:none;box-shadow:inset 0 0 0 1.5px var(--eu-faint)}
+.evoui-pielegend{flex-direction:column;gap:4px;min-width:0;flex:1 1 180px;max-width:320px}
+.evoui-pielegend .evoui-lg{gap:8px;padding:3px 8px;border-radius:6px;font-size:13px;transition:opacity .15s}
+.evoui-pielegend .evoui-lg.hi{background:var(--eu-hover);color:var(--eu-fg)}
+.evoui-pielegend .evoui-lg.dim{opacity:.5}
+.evoui-lg-name{min-width:0;overflow-wrap:anywhere}
+.evoui-lg-pct{margin-left:auto;padding-left:12px;color:var(--eu-fg);font-weight:600;font-variant-numeric:tabular-nums}
+.evoui-quiz{display:flex;flex-direction:column;gap:10px}
+.evoui-quiz fieldset{border:1px solid var(--eu-line);border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:4px;margin:0;min-width:0}
+.evoui-quiz legend{font-weight:600;padding:0 4px}
+.evoui-quiz .opt{display:flex;gap:6px;align-items:flex-start;font-size:14px}
+.evoui-quiz .opt.right{color:var(--eu-success)}.evoui-quiz .opt.wrong{color:var(--eu-danger);text-decoration:line-through}
+.evoui-quiz-title{font-weight:600}
+.evoui-quiz .opt.missed{color:var(--eu-right);font-weight:600}
+.evoui-quiz .opt.missed::after{content:"（漏选）";font-weight:400;font-size:12px;margin-left:4px}
+.evoui-optfb{font-size:13px;color:var(--eu-fg2);margin:-2px 0 2px 22px;overflow-wrap:anywhere}
+.evoui-hintbtn{align-self:flex-start;border:0;background:none;padding:0 2px;font:inherit;font-size:12px;color:var(--eu-fg2);cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+.evoui-hint{font-size:13px;color:var(--eu-fg2);background:var(--eu-surface);border-radius:6px;padding:4px 8px;overflow-wrap:anywhere}
+.evoui-check{align-self:flex-start;border:1px solid var(--eu-accent);background:var(--eu-accent);color:var(--eu-accent-tx);
+  border-radius:6px;padding:5px 14px;min-height:32px;font:inherit;cursor:pointer}
+.evoui-check:disabled{opacity:.45;cursor:default}
+.evoui-slot{display:contents}
+.evoui-grid{display:grid;grid-template-columns:repeat(var(--eu-cols,2),minmax(0,1fr));min-width:0}
+.evoui-grid.c1{--eu-cols:1}.evoui-grid.c2{--eu-cols:2}.evoui-grid.c3{--eu-cols:3}.evoui-grid.c4{--eu-cols:4}
+@container (max-width:300px){.evoui-grid.c3,.evoui-grid.c4{grid-template-columns:minmax(0,1fr)}.evoui-grid>*{grid-column:auto!important}}
+@container (max-width:220px){.evoui-grid.c2{grid-template-columns:minmax(0,1fr)}.evoui-grid>*{grid-column:auto!important}}
+.evoui-num{font-weight:650;line-height:1.15;font-variant-numeric:tabular-nums;min-width:0;overflow-wrap:anywhere}
+.evoui-num.z-md{font-size:17px}.evoui-num.z-lg{font-size:22px}.evoui-num.z-xl{font-size:28px}.evoui-num.z-2xl{font-size:34px}
+.evoui-math code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;background:var(--eu-surface);border-radius:4px;padding:1px 5px;overflow-wrap:anywhere}
+.evoui-math.display{display:block;text-align:center;overflow-x:auto;max-width:100%}
+.evoui-tablewrap{overflow-x:auto;max-width:100%;display:flex;flex-direction:column;gap:4px}
+.evoui-table{border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;width:max-content;min-width:100%}
+.evoui-table th,.evoui-table td{border-bottom:1px solid var(--eu-line);padding:5px 10px;text-align:left;vertical-align:top}
+.evoui-table th{font-weight:600;color:var(--eu-fg2)}
+.evoui-icon{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;align-self:center}
+.evoui-icon.t-default{color:var(--eu-fg)}
+.evoui-divider{border:0;border-top:1px solid var(--eu-line);margin:2px 0;width:100%}
+.evoui-input,.evoui-select{display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--eu-fg2);min-width:0}
+.evoui-input input,.evoui-select select{font:inherit;font-size:14px;color:var(--eu-fg);background:var(--eu-bg);border:1px solid var(--eu-line);
+  border-radius:6px;padding:4px 8px;min-height:32px;width:100%;max-width:220px;font-variant-numeric:tabular-nums}
+.evoui-btn{align-self:flex-start;border:1px solid var(--eu-line);background:var(--eu-bg);color:var(--eu-fg);border-radius:6px;padding:5px 11px;min-height:32px;
+  cursor:pointer;font:inherit;font-size:13px}
+.evoui-btn:hover{border-color:var(--eu-fg2)}
+.evoui-btn.t-accent{background:var(--eu-accent);border-color:var(--eu-accent);color:var(--eu-accent-tx)}
+.evoui-xlabel{text-align:center}
+.evoui-quizsum{display:flex;flex-direction:column;gap:2px}
+.evoui-error{color:var(--eu-danger);font-size:13px}
+/* paged quiz (layout "paged", after ChatGPT's LearningQuiz): a rounded card, one question per page */
+/* a block that is only a paged quiz: the card is the frame (no second border around it) */
+.evoui:has(> div > .evoui-pq:only-child){border:0;padding:0;gap:8px}
+.evoui:has(> div > .evoui-pq:only-child) > .evoui-title{padding:0 4px}
+.evoui-pq{border:1px solid var(--eu-line);border-radius:24px;background:var(--eu-bg);min-width:0;overflow:hidden}
+.evoui-pq-page{padding:10px 0 4px;display:flex;flex-direction:column}
+.evoui-pq-head{display:flex;flex-wrap:wrap-reverse;align-items:flex-end;row-gap:4px;column-gap:16px;min-height:50px;padding:0 20px}
+.evoui-pq-stem{flex:999 1 340px;min-width:0;padding:6px 0 16px;display:flex;flex-direction:column;gap:2px}
+.evoui-pq-stem.hinted{padding-bottom:8px}
+.evoui-pq-title{font-size:13px;color:var(--eu-fg2);line-height:1.4;padding:4px 20px 0;overflow-wrap:anywhere}
+.evoui-pq-q{font-size:16px;line-height:1.5;font-weight:500;overflow-wrap:anywhere;white-space:pre-wrap}
+.evoui-pq-hint{padding-top:6px;font-size:15px;line-height:1.5;color:var(--eu-fg2);overflow-wrap:anywhere}
+.evoui-pq-tools{flex:1 0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.evoui-pq-nav,.evoui-pq-util{display:flex;align-items:center;gap:5px}
+.evoui-pq-util{margin-right:-8px}
+.evoui-pq-icon{width:36px;height:36px;flex:none;border:0;border-radius:999px;background:none;color:var(--eu-fg2);padding:0;
+  display:grid;place-items:center;cursor:pointer}
+.evoui-pq-icon:hover:not(:disabled){background:var(--eu-hover);color:var(--eu-fg)}
+.evoui-pq-icon:disabled{color:var(--eu-faint);cursor:default}
+.evoui-pq-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.evoui-pq-hintbtn.on{color:var(--eu-fg)}.evoui-pq-hintbtn.on svg{fill:currentColor;fill-opacity:.9}
+.evoui-pq-count{min-width:48px;text-align:center;font-size:14px;color:var(--eu-fg2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.evoui-pq-opts{display:flex;flex-direction:column;padding:0 8px}
+.evoui-pq-opt{display:flex;align-items:flex-start;gap:16px;width:100%;height:auto;box-shadow:none;min-height:46px;padding:7px 8px;border:0;border-radius:23px;
+  background:none;color:var(--eu-fg);font:inherit;text-align:left;cursor:pointer}
+.evoui-pq-opt:hover:not(:disabled){background:var(--eu-hover)}
+.evoui-pq-opt:disabled{cursor:default;color:var(--eu-fg)}
+.evoui-pq-ind{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--eu-strong);
+  font-size:14px;font-weight:500;line-height:1;color:var(--eu-fg);font-variant-numeric:tabular-nums}
+.evoui-pq-ind svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.evoui-pq-opt[data-mark="sel"] .evoui-pq-ind{background:var(--eu-fg);border-color:var(--eu-fg);color:var(--eu-bg)}
+.evoui-pq-opt[data-mark="right"] .evoui-pq-ind,.evoui-pq-ind[data-mark="right"]{background:var(--eu-right);border-color:var(--eu-right);color:var(--eu-mark-tx)}
+.evoui-pq-opt[data-mark="wrong"] .evoui-pq-ind,.evoui-pq-ind[data-mark="wrong"]{background:var(--eu-wrong);border-color:var(--eu-wrong);color:var(--eu-mark-tx)}
+.evoui-pq-opt[data-mark="missed"] .evoui-pq-ind{border:2px solid var(--eu-right);color:var(--eu-right)}
+.evoui-pq-opt[data-mark="off"] .evoui-pq-ind{border-color:color-mix(in srgb,var(--eu-fg) 16%,transparent);color:var(--eu-fg2)}
+.evoui-pq-opt[data-mark="off"] .evoui-pq-label{color:var(--eu-fg2)}
+.evoui-pq-body{flex:1;min-width:0;display:flex;flex-direction:column}
+.evoui-pq-label{min-height:32px;display:flex;align-items:center;font-size:16px;line-height:1.45;overflow-wrap:anywhere}
+.evoui-pq-fb{font-size:14px;line-height:1.5;color:var(--eu-fg2);padding:0 0 4px;overflow-wrap:anywhere}
+.evoui-pq-foot{display:flex;align-items:center;gap:12px;min-height:60px;padding:4px 24px 6px 20px}
+.evoui-pq-tip{font-size:15px;color:var(--eu-fg2);min-width:0}
+.evoui-pq-btn{flex:none;height:40px;padding:0 18px;border:1px solid var(--eu-line);border-radius:999px;background:var(--eu-bg);color:var(--eu-fg);
+  font:inherit;font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap}
+.evoui-pq-foot .evoui-pq-btn{margin-left:auto}
+.evoui-pq-btn:hover:not(:disabled){background:var(--eu-hover)}
+.evoui-pq-btn:disabled{color:var(--eu-faint);cursor:default}
+.evoui-pq-btn.primary{background:var(--eu-fg);border-color:var(--eu-fg);color:var(--eu-bg)}
+.evoui-pq-btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--eu-fg) 85%,var(--eu-bg))}
+.evoui-pq-btn.primary:disabled{background:var(--eu-surface);border-color:var(--eu-line);color:var(--eu-fg2)}
+.evoui-pq-results{display:flex;flex-direction:column}
+.evoui-pq-rhead{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:0 20px;font-size:15px;color:var(--eu-fg2)}
+.evoui-pq-round{font-size:13px;font-variant-numeric:tabular-nums}
+.evoui-pq-score{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;padding:0 20px 14px}
+.evoui-pq-num{font-size:30px;font-weight:650;line-height:1.1;font-variant-numeric:tabular-nums}
+.evoui-pq-verdict{font-size:15px;color:var(--eu-fg2)}
+.evoui-pq-cases{display:flex;flex-direction:column;gap:2px;margin:0 20px 12px;padding:10px 14px;border-radius:14px;background:var(--eu-surface)}
+.evoui-pq-case{font-size:14px;line-height:1.5;overflow-wrap:anywhere;padding-left:16px;position:relative}
+.evoui-pq-case::before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;border-radius:50%;background:var(--eu-right)}
+.evoui-pq-case[data-ok="false"]::before{background:var(--eu-wrong)}
+.evoui-pq-rows{list-style:none;margin:0;padding:0 8px;display:flex;flex-direction:column}
+.evoui-pq-row{display:flex;align-items:flex-start;gap:16px;min-height:46px;padding:7px 8px}
+.evoui-pq-row+.evoui-pq-row{border-top:1px solid color-mix(in srgb,var(--eu-line) 60%,transparent)}
+.evoui-pq-rbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding-top:5px}
+.evoui-pq-rq{font-size:15px;line-height:1.45;font-weight:500;overflow-wrap:anywhere}
+.evoui-pq-rsub{font-size:14px;line-height:1.5;color:var(--eu-fg2);overflow-wrap:anywhere}
+.evoui-pq-rfoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:16px 20px 18px}
+.evoui-pq-rbtns{display:flex;flex-wrap:wrap;gap:10px}
+@container (max-width:520px){
+  .evoui-pq-head{padding:0 12px 0 20px}.evoui-pq-title{padding-top:8px}.evoui-pq-foot{min-height:52px;padding:4px 16px 6px 20px}
+  .evoui-pq-rfoot{padding:14px 16px 16px}.evoui-pq-rfoot .primary{flex:1 1 auto}}
+/* flashcards (after ChatGPT's LearningFlashcards): a framed deck, the card on two stacked previews */
+.evoui:has(> div > .evoui-fc:only-child){border:0;padding:0;gap:8px}
+.evoui:has(> div > .evoui-fc:only-child) > .evoui-title{padding:0 4px}
+.evoui-fc{--fc-h:180px;position:relative;background:var(--eu-surface);border-radius:28px;padding:12px 12px 4px;min-width:0;overflow:hidden}
+@container (min-width:600px){.evoui-fc{--fc-h:240px;padding:14px 16px 6px}}
+.evoui-fc [hidden]{display:none!important}
+.evoui-fc-col{max-width:400px;margin:0 auto;display:flex;flex-direction:column;min-width:0}
+.evoui-fc-title{font-size:13px;line-height:1.4;color:var(--eu-fg2);text-align:center;padding:0 8px 10px;overflow-wrap:anywhere}
+.evoui-fc-stage{position:relative;height:calc(var(--fc-h) + 18px);outline:none;-webkit-tap-highlight-color:transparent}
+.evoui-fc-card,.evoui-fc-peek{position:absolute;left:0;right:0;top:0;height:var(--fc-h);border-radius:32px}
+.evoui-fc-card{z-index:3;perspective:1200px;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.evoui .evoui-fc-stage:focus-visible{outline:none}
+.evoui-fc:not(.dragging) .evoui-fc-stage:focus-visible:not(.advance) .evoui-fc-card:not(.return):not(.spring){box-shadow:0 0 0 2px var(--eu-surface),0 0 0 4px var(--eu-accent)}
+.evoui-fc.dragging .evoui-fc-card{cursor:grabbing}
+.evoui-fc-card.fly{transition:transform 240ms cubic-bezier(.45,0,.85,.55)}
+.evoui-fc-card.return{transition:transform 300ms cubic-bezier(.2,.85,.25,1)}
+.evoui-fc-card.spring{transition:transform 220ms cubic-bezier(.3,1.45,.5,1)}
+.evoui-fc-flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 300ms cubic-bezier(.35,.1,.25,1)}
+.evoui-fc-card.flipped .evoui-fc-flip{transform:rotateY(180deg)}
+.evoui-fc-face{position:absolute;inset:0;display:flex;flex-direction:column;padding:20px 22px 14px;border-radius:32px;overflow:hidden;
+  background:var(--eu-card);border:1px solid var(--eu-card-line);box-shadow:var(--eu-card-shadow);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.evoui-fc-face.back{transform:rotateY(180deg)}
+.evoui-fc-scroll{flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin}
+.evoui-fc-text{margin:auto 0;text-align:center;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--eu-fg);font-size:22px;line-height:28px;font-weight:450}
+.evoui-fc-text.top{margin:0 0 auto}.evoui-fc-text.list{text-align:left}
+.evoui-fc-text[data-z="l"]{font-size:20px;line-height:25px}
+.evoui-fc-text[data-z="m"]{font-size:17px;line-height:24px}
+.evoui-fc-text[data-z="s"]{font-size:15px;line-height:21px}
+.evoui-fc-text[data-z="xs"]{font-size:12px;line-height:17px}
+.evoui-fc-text[data-z="one"]{font-size:48px;line-height:56px;font-weight:500}
+@container (min-width:600px){.evoui-fc-text[data-z="one"]{font-size:56px;line-height:64px}}
+.evoui-fc-cardhint{flex:none;font-size:14px;line-height:1.45;color:var(--eu-fg2);text-align:center;padding:8px 6px 0;overflow-wrap:anywhere}
+.evoui-fc-tip{flex:none;font-size:13px;line-height:20px;color:var(--eu-fg2);text-align:center;padding-top:6px;transition:opacity 160ms}
+.evoui-fc-tip.swap{opacity:0}
+.evoui-fc-card::after{content:"";position:absolute;inset:0;border-radius:32px;pointer-events:none;opacity:var(--edge,0);transition:opacity 160ms;
+  box-shadow:inset 0 0 0 2.5px var(--fc-edge,transparent),0 0 0 1px var(--fc-edge,transparent),0 12px 34px -10px var(--fc-edge,transparent)}
+.evoui-fc-card[data-edge="left"]{--fc-edge:var(--eu-miss)}.evoui-fc-card[data-edge="right"]{--fc-edge:var(--eu-right)}
+.evoui-fc-card.return::after{transition:opacity 300ms}
+.evoui-fc-peek{z-index:2;pointer-events:none;transform-origin:50% 100%;transform:translateY(9px) scale(.95);
+  transition:transform 240ms cubic-bezier(.2,.7,.2,1),opacity 240ms}
+.evoui-fc-peek[data-depth="2"]{z-index:1;transform:translateY(18px) scale(.9);opacity:.7}
+.evoui-fc-peek .evoui-fc-face{box-shadow:none}
+.evoui-fc-stage.advance .evoui-fc-peek[data-depth="1"]{transform:none!important}
+.evoui-fc-stage.advance .evoui-fc-peek[data-depth="2"]{transform:translateY(9px) scale(.95);opacity:1}
+.evoui-fc.dragging .evoui-fc-card,.evoui-fc.dragging .evoui-fc-card::after,.evoui-fc.dragging .evoui-fc-peek,
+.evoui-fc-stage.still,.evoui-fc-stage.still *,.evoui-fc-stage.still .evoui-fc-card::after{transition:none!important}
+@keyframes evoui-fc-shuffle{0%{translate:0;rotate:0deg}35%{translate:-30px 4px;rotate:-6deg}70%{translate:14px 0;rotate:3deg}100%{translate:0;rotate:0deg}}
+@keyframes evoui-fc-shuffle-peek{0%{translate:0;rotate:0deg}35%{translate:26px 0;rotate:5deg}70%{translate:-10px 0;rotate:-2deg}100%{translate:0;rotate:0deg}}
+.evoui-fc-stage.shuffling .evoui-fc-card{animation:evoui-fc-shuffle 300ms ease-in-out}
+.evoui-fc-stage.shuffling .evoui-fc-peek{animation:evoui-fc-shuffle-peek 300ms ease-in-out}
+.evoui-fc-bar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;height:60px;padding:0 2px}
+.evoui-fc-count{padding-left:10px;font-size:14px;color:var(--eu-fg2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.evoui-fc-rate{display:flex;align-items:center;gap:10px}
+.evoui-fc-btn{--fc-c:var(--eu-miss);position:relative;width:40px;height:40px;flex:none;padding:0;border-radius:50%;border:1px solid var(--eu-card-line);
+  background:var(--eu-card);color:var(--eu-fg);display:grid;place-items:center;cursor:pointer;transition:color 120ms,border-color 120ms,transform 120ms}
+.evoui-fc-btn.know{--fc-c:var(--eu-right)}
+.evoui-fc-btn::before{content:"";position:absolute;inset:-1px;border-radius:50%;background:var(--fc-c);opacity:var(--lit,0);transition:opacity 160ms}
+.evoui-fc.dragging .evoui-fc-btn::before{transition:none}
+.evoui-fc-btn svg{position:relative;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.evoui-fc-btn:hover{color:var(--fc-c);border-color:color-mix(in srgb,var(--fc-c) 55%,transparent)}
+.evoui-fc-btn:active{transform:scale(.94)}
+.evoui-fc-btn[data-hot="true"]{color:var(--eu-mark-tx);border-color:transparent}
+.evoui-fc-tools{display:flex;align-items:center;justify-content:flex-end;gap:0;min-width:0}
+.evoui-fc-tools .evoui-pq-icon svg{width:18px;height:18px}
+.evoui-fc-sum{display:flex;flex-direction:column}
+.evoui-fc-sumcard{min-height:var(--fc-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:22px 20px;
+  border-radius:32px;background:var(--eu-card);border:1px solid var(--eu-card-line);box-shadow:var(--eu-card-shadow);text-align:center}
+.evoui-fc-round{font-size:13px;color:var(--eu-fg2)}
+.evoui-fc-verdict{font-size:20px;line-height:1.35;font-weight:600;text-wrap:balance}
+.evoui-fc-tally{display:flex;align-items:center;justify-content:center;gap:28px}
+.evoui-fc-chip{display:flex;align-items:center;gap:7px;font-size:20px;font-variant-numeric:tabular-nums}
+.evoui-fc-chip i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--eu-miss);color:var(--eu-mark-tx)}
+.evoui-fc-chip[data-k="know"] i{background:var(--eu-right)}
+.evoui-fc-chip svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.evoui-fc-sumbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;min-height:60px;padding:10px 2px 8px}
+@container (max-width:420px){.evoui-fc-sumbar .primary{flex:1 1 auto}.evoui-fc-face{padding:18px 18px 12px}}
+@keyframes evoui-enter{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.evoui-enter{animation:evoui-enter 180ms ease-out both}
+/* motion (EvoUI v2): fade-in 180 ms, a leaving ghost fades out in 120 ms (out of the flow, never clickable) */
+@keyframes evoui-fadein{from{opacity:0}to{opacity:1}}
+.evoui-fadein{animation:evoui-fadein 180ms ease-out both}
+@keyframes evoui-exit{from{opacity:1}to{opacity:0}}
+.evoui-leaving{pointer-events:none;animation:evoui-exit 120ms ease-in both;z-index:1;overflow:hidden}
+.evoui-tr{position:relative;min-width:0;display:flex;flex-direction:column}
+.evoui-animate,.evoui-tr-inner{min-width:0}
+/* reveal: a soft striped placeholder until shown */
+.evoui-rv{display:flex;flex-direction:column;gap:8px;min-width:0}
+.evoui-rv-body{display:flex;flex-direction:column;gap:10px;min-width:0}
+.evoui-rv[data-shown="0"] .evoui-rv-body{display:none}
+.evoui-rv-step{display:flex;flex-direction:column;gap:8px;min-width:0;outline:none}
+.evoui-rv [hidden]{display:none!important}
+.evoui-rv[data-mode="steps"] .evoui-rv-step{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:10px;align-items:start}
+.evoui-rv[data-mode="steps"] .evoui-rv-step::before{content:attr(data-step);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--eu-fg2);background:var(--eu-surface);border:1px solid var(--eu-line);margin-top:1px}
+.evoui-rv-mask{display:flex;align-items:center;justify-content:center;gap:8px;min-height:76px;padding:14px;border-radius:14px;color:var(--eu-fg2);cursor:pointer;
+  border:1px dashed color-mix(in srgb,var(--eu-fg) 18%,transparent);
+  background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--eu-fg) 5%,transparent) 0 6px,transparent 6px 13px),var(--eu-surface)}
+.evoui-rv[data-mode="after"] .evoui-rv-mask{cursor:default;font-size:13px;text-align:center}
+.evoui-rv-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--eu-line);background:var(--eu-bg);color:var(--eu-fg);border-radius:999px;
+  padding:6px 16px;min-height:36px;font:inherit;font-size:14px;font-weight:550;cursor:pointer;box-shadow:0 1px 2px rgb(0 0 0 / .06);
+  transition:transform .12s ease,box-shadow .15s ease;font-variant-numeric:tabular-nums}
+.evoui-rv-btn:hover{box-shadow:0 3px 10px -3px rgb(0 0 0 / .22)}
+.evoui-rv-btn:active{transform:scale(.97)}
+.evoui-rv-icon{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.evoui-rv-again{align-self:flex-end;border:0;background:none;color:var(--eu-fg2);font:inherit;font-size:12px;padding:2px 4px;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+/* timeline: ordered events on a vertical rail (dated: a small dot + the date above the title; else a numbered badge) */
+.evoui-tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;min-width:0}
+.evoui-tl-ev{position:relative;margin:0;padding:0;display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:10px;align-items:start;min-width:0}
+.evoui-tl-ev:not(:last-child)::before{content:"";position:absolute;left:10.5px;top:26px;bottom:-12px;width:1px;background:var(--eu-line)}
+.evoui-tl-dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;
+  font-variant-numeric:tabular-nums;color:var(--eu-fg2);background:var(--eu-surface);border:1px solid var(--eu-line);margin-top:1px}
+.evoui-tl-ev.dated .evoui-tl-dot{width:11px;height:11px;margin:6px 0 0 5.5px;background:var(--eu-bg);border:2px solid currentColor}
+.evoui-tl-ev.dated:not(:last-child)::before{top:20px}
+.evoui .evoui-tl-dot.t-default{color:var(--eu-fg2)}.evoui .evoui-tl-dot.t-secondary{color:var(--eu-faint)}
+.evoui .evoui-tl-dot.t-accent{color:var(--eu-blue);border-color:currentColor}.evoui .evoui-tl-dot.t-warning{color:var(--eu-miss);border-color:currentColor}
+.evoui .evoui-tl-dot.t-success{color:var(--eu-right);border-color:currentColor}.evoui .evoui-tl-dot.t-danger{color:var(--eu-wrong);border-color:currentColor}
+.evoui-tl-body{display:flex;flex-direction:column;gap:2px;min-width:0;overflow-wrap:anywhere}
+.evoui-tl-when{font-size:12px;line-height:1.4;color:var(--eu-fg2);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.evoui-tl-title{font-weight:600}
+.evoui-tl-text{font-size:14px;color:var(--eu-fg2);white-space:pre-line}
+/* deep-dive: an optional deeper part folded under one summary line */
+.evoui-dd{border:1px solid var(--eu-line);border-radius:12px;min-width:0}
+.evoui-dd-sum{display:flex;align-items:center;gap:8px;padding:9px 14px;min-height:40px;cursor:pointer;list-style:none;border-radius:11px;
+  font-weight:550;color:var(--eu-fg);user-select:none}
+.evoui-dd-sum::-webkit-details-marker{display:none}
+.evoui-dd-sum:hover{background:var(--eu-hover)}
+.evoui-dd-icon{width:14px;height:14px;flex:none;fill:none;stroke:var(--eu-fg2);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s ease}
+.evoui-dd[open]>.evoui-dd-sum .evoui-dd-icon{transform:rotate(90deg)}
+.evoui-dd[open]>.evoui-dd-sum{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.evoui-dd-body{padding:4px 14px 14px;min-width:0}
+/* a deep-dive straight in the block's body: the block's frame is its frame (no second border), the summary lines up with the title */
+.evoui>div>.evoui-box>.evoui-dd{border:0;border-radius:0}
+.evoui>div>.evoui-box>.evoui-dd>.evoui-dd-sum{margin:0 -8px;padding:7px 8px;border-radius:8px}
+.evoui>div>.evoui-box>.evoui-dd>.evoui-dd-body{padding:6px 0 0}
+/* timer (after ChatGPT's DigitalTimer) and player: round icon buttons, tabular digits */
+.evoui-tm-btn,.evoui-pl-btn{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--eu-line);background:var(--eu-bg);color:var(--eu-fg);
+  display:grid;place-items:center;padding:0;cursor:pointer;transition:transform .12s ease,background-color .15s ease,opacity .15s ease}
+.evoui-tm-btn:hover:not(:disabled),.evoui-pl-btn:hover:not(:disabled){background:color-mix(in srgb,var(--eu-fg) 6%,var(--eu-bg))}
+.evoui-tm-btn:active:not(:disabled),.evoui-pl-btn:active:not(:disabled){transform:scale(.94)}
+.evoui-tm-btn.primary,.evoui-pl-btn.primary{background:var(--eu-fg);border-color:var(--eu-fg);color:var(--eu-bg)}
+.evoui-tm-btn.primary:hover:not(:disabled),.evoui-pl-btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--eu-fg) 86%,var(--eu-bg))}
+.evoui-tm-btn:disabled,.evoui-pl-btn:disabled{opacity:.35;cursor:default}
+.evoui-tm-btn[hidden]{display:none}
+.evoui-tm-btn svg,.evoui-pl-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.evoui-tm-btn svg path[d$="Z"],.evoui-pl-btn svg path[d$="Z"]{fill:currentColor}
+.evoui-tm{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;min-width:0;overflow:hidden;
+  padding:14px 16px 16px;border-radius:18px;background:var(--eu-surface);border:1px solid var(--eu-line);
+  transition:background-color .3s ease,border-color .3s ease,color .3s ease}
+.evoui-tm-label{flex:1 0 100%;margin-bottom:-6px;font-size:13px;color:var(--eu-fg2);overflow-wrap:anywhere}
+.evoui-tm-label[hidden]{display:none}
+/* the readout wraps instead of clipping in a narrow cell: 「/ 5:00」 drops to its own line, and the
+   digits themselves may break as a last resort (never cut off by the card's overflow:hidden) */
+.evoui-tm-read{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;min-width:0;max-width:100%;flex-shrink:0;font-variant-numeric:tabular-nums}
+.evoui-tm-digits{min-width:0;overflow-wrap:anywhere;font-size:36px;font-weight:650;line-height:1.1;letter-spacing:-.01em}
+.evoui-tm-frac{font-size:22px;font-weight:600;color:var(--eu-fg2);margin-left:-5px}
+.evoui-tm-of{font-size:15px;color:var(--eu-fg2);white-space:nowrap}
+@container (max-width:420px){.evoui-tm-digits{font-size:28px}.evoui-tm-frac{font-size:17px;margin-left:-4px}}
+.evoui-tm-btns{display:flex;gap:8px;margin-left:auto}
+.evoui-tm[data-state="paused"] .evoui-tm-digits{color:color-mix(in srgb,var(--eu-fg) 72%,transparent)}
+.evoui-tm-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:color-mix(in srgb,var(--eu-fg) 7%,transparent)}
+.evoui-tm-bar i{display:block;height:100%;background:var(--eu-fg);transform-origin:left center;transition:transform .1s linear}
+.evoui-tm[data-state="done"]{background:var(--eu-right);border-color:var(--eu-right);color:var(--eu-mark-tx)}
+.evoui-tm[data-state="done"] .evoui-tm-label{color:color-mix(in srgb,var(--eu-mark-tx) 80%,transparent)}
+.evoui-tm[data-state="done"] .evoui-tm-bar,.evoui-tm[data-state="idle"] .evoui-tm-bar{display:none}
+.evoui-tm[data-state="done"] .evoui-tm-btn.primary{background:var(--eu-mark-tx);border-color:var(--eu-mark-tx);color:var(--eu-right)}
+.evoui-pl{display:flex;flex-direction:column;gap:6px;min-width:0;padding:10px 10px 10px 12px;border-radius:16px;background:var(--eu-surface)}
+.evoui-pl-top{display:flex;align-items:baseline;gap:10px;min-width:0}
+.evoui-pl-label{font-size:14px;font-weight:550;min-width:0;overflow-wrap:anywhere}
+.evoui-pl-label[hidden]{display:none}
+.evoui-pl-count{margin-left:auto;font-size:12px;color:var(--eu-fg2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.evoui-pl-scrub{-webkit-appearance:none;appearance:none;display:block;width:100%;height:20px;margin:0;background:transparent;cursor:pointer;--pct:0%}
+.evoui-pl-scrub::-webkit-slider-runnable-track{height:4px;border-radius:2px;
+  background:linear-gradient(to right,var(--eu-fg) var(--pct),color-mix(in srgb,var(--eu-fg) 14%,transparent) var(--pct))}
+.evoui-pl-scrub::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5px;border-radius:50%;background:var(--eu-fg);
+  border:2px solid var(--eu-surface);box-sizing:content-box}
+.evoui-pl-scrub::-moz-range-track{height:4px;border-radius:2px;background:color-mix(in srgb,var(--eu-fg) 14%,transparent)}
+.evoui-pl-scrub::-moz-range-progress{height:4px;border-radius:2px;background:var(--eu-fg)}
+.evoui-pl-scrub::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--eu-fg);border:2px solid var(--eu-surface)}
+.evoui-pl-scrub:focus-visible{outline-offset:4px}
+.evoui-pl-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-left:-6px}
+.evoui-pl-transport{display:flex;align-items:center;gap:4px}
+.evoui-pl-btn{width:36px;height:36px;background:transparent;border-color:transparent}
+.evoui-pl-btn.primary{width:44px;height:44px}
+.evoui-pl-btn svg{width:17px;height:17px}
+.evoui-pl-speed{display:flex;gap:2px;padding:2px;border-radius:999px;background:color-mix(in srgb,var(--eu-fg) 6%,transparent)}
+.evoui-pl-speed button{border:0;background:none;color:var(--eu-fg2);font:inherit;font-size:12px;font-variant-numeric:tabular-nums;min-height:28px;
+  padding:3px 9px;border-radius:999px;cursor:pointer}
+.evoui-pl-speed button[aria-pressed="true"]{background:var(--eu-bg);color:var(--eu-fg);font-weight:600;box-shadow:0 1px 2px rgb(0 0 0 / .14)}
+/* practice cards (fill-blank, sentence builder; ChatGPT LearningCard): a rounded card like the paged quiz */
+.evoui-pc{display:flex;flex-direction:column;gap:14px;min-width:0;max-width:720px;padding:14px 20px 18px;border:1px solid var(--eu-line);border-radius:24px;background:var(--eu-bg)}
+.evoui-pc:focus,.evoui-pg-page:focus{outline:none}
+.evoui-pc [hidden]{display:none!important}
+.evoui-pc-head{display:flex;align-items:center;gap:8px;min-height:32px;color:var(--eu-fg2);font-size:14px;font-weight:500}
+.evoui-pc-icon{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.evoui-pc-rule{height:1px;background:color-mix(in srgb,var(--eu-fg) 8%,transparent);margin:2px 0}
+/* the sentence: text with inline pill slots (wraps like text) */
+.evoui-sx{font-size:16px;line-height:42px;min-width:0;overflow-wrap:anywhere}
+.evoui-sx-text{white-space:pre-wrap}
+.evoui-sx-slot{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;box-sizing:border-box;min-width:76px;max-width:100%;
+  height:36px;margin:0 4px;padding:0 14px;border:1px dashed color-mix(in srgb,var(--eu-fg) 34%,transparent);border-radius:999px;line-height:1.3;
+  font-weight:500;color:var(--eu-fg);transition:background-color .16s ease,border-color .16s ease,color .16s ease}
+.evoui-sx.multi .evoui-sx-slot{min-width:62px}
+.evoui-sx-word{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.evoui-sx-slot[data-s="active"]{border-style:solid;border-color:var(--eu-blue);background:color-mix(in srgb,var(--eu-blue) 10%,transparent)}
+.evoui-sx-slot[data-s="filled"]{border-style:solid;border-color:color-mix(in srgb,var(--eu-fg) 8%,transparent);background:color-mix(in srgb,var(--eu-fg) 7%,transparent)}
+.evoui-sx-slot[data-s="right"]{border-style:solid;border-color:var(--eu-right);background:color-mix(in srgb,var(--eu-right) 15%,transparent);color:var(--eu-right)}
+.evoui-sx-slot[data-s="wrong"]{border-style:solid;border-color:var(--eu-wrong);background:color-mix(in srgb,var(--eu-wrong) 13%,transparent);color:var(--eu-wrong)}
+/* option / word pills */
+.evoui-pills{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.evoui-pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%;min-height:40px;padding:6px 16px;border:0;border-radius:999px;
+  background:color-mix(in srgb,var(--eu-fg) 5%,transparent);color:var(--eu-fg);font:inherit;font-size:15px;line-height:1.35;text-align:center;cursor:pointer;
+  transition:background-color .16s ease,color .16s ease}
+.evoui-pill:hover:not(:disabled){background:color-mix(in srgb,var(--eu-fg) 9%,transparent)}
+.evoui-pill:active:not(:disabled){transform:scale(.97)}
+.evoui-pill:disabled{cursor:default}
+.evoui-pill[data-dim="true"]{background:color-mix(in srgb,var(--eu-fg) 2%,transparent);color:color-mix(in srgb,var(--eu-fg) 36%,transparent)}
+.evoui-pill-label{min-width:0;overflow-wrap:anywhere}
+.evoui-pill-n{display:none;flex:none;width:20px;height:20px;border-radius:50%;place-items:center;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;
+  background:color-mix(in srgb,var(--eu-fg) 10%,transparent);color:var(--eu-fg2)}
+.evoui-pill[data-used="true"] .evoui-pill-n{display:grid}
+.evoui .evoui-pill:focus-visible{border-radius:999px}
+.evoui .evoui-rt-opt:focus-visible{border-radius:16px}
+/* feedback: ✓ / ✗ line, the correct sentence, the explanations */
+.evoui-fbk{display:flex;flex-direction:column;gap:4px;min-width:0}
+.evoui-fbk-status{display:flex;align-items:center;gap:6px;min-height:34px;font-size:14px;font-weight:600;color:var(--eu-right)}
+.evoui-fbk-status[data-ok="false"]{color:var(--eu-wrong)}
+.evoui-fbk-status .evoui-retry{margin-left:auto;height:34px;padding:0 14px 0 11px;font-size:14px;font-weight:500;color:var(--eu-fg);display:inline-flex;align-items:center;gap:6px}
+.evoui-fbk-status .evoui-retry svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.evoui-fbk-status>svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.evoui-fbk-label{font-size:13px;color:var(--eu-fg2);margin-top:4px}
+.evoui-fbk-correct{font-size:16px;line-height:1.5;font-weight:500;white-space:pre-wrap;overflow-wrap:anywhere}
+.evoui-fbk-why{font-size:14px;line-height:1.55;color:var(--eu-fg2);overflow-wrap:anywhere}
+/* sentence builder: the sentence and the undo button side by side */
+.evoui-sb-top{display:flex;align-items:flex-start;gap:8px;min-width:0}
+.evoui-sb-top .evoui-sx{flex:1 1 0}
+.evoui-sb-undo{margin-top:4px}
+/* pager (ChatGPT practice pager): one page at a time in a card, ‹ n/N › on top, a pill below */
+.evoui:has(> div > .evoui-pg:only-child){border:0;padding:0;gap:8px}
+.evoui:has(> div > .evoui-pg:only-child) > .evoui-title{padding:0 4px}
+.evoui-pg{display:flex;flex-direction:column;min-width:0;max-width:720px;border:1px solid var(--eu-line);border-radius:24px;background:var(--eu-bg);overflow:hidden}
+.evoui-pg [hidden]{display:none!important}
+.evoui-pg-head{display:flex;align-items:center;gap:12px;min-height:52px;padding:6px 10px 0 20px}
+.evoui-pg-bar{flex:1 1 auto;display:flex;gap:4px;min-width:0;max-width:240px}
+.evoui-pg-bar i{flex:1 1 0;min-width:3px;max-width:28px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--eu-fg) 12%,transparent);transition:background-color .2s ease}
+.evoui-pg-bar i[data-on="past"]{background:color-mix(in srgb,var(--eu-fg) 45%,transparent)}
+.evoui-pg-bar i[data-on="now"]{background:var(--eu-fg)}
+.evoui-pg-head .evoui-pq-nav{margin-left:auto}
+.evoui-pg-view{position:relative;min-width:0}
+.evoui-pg-page{display:flex;flex-direction:column;gap:10px;min-width:0;padding:4px 20px 6px}
+/* practice cards inside a page: the pager is the card (no second frame) */
+.evoui-pg-page .evoui-pc{border:0;border-radius:0;background:none;padding:0}
+.evoui-pg-page .evoui-pq{border:0;border-radius:0;background:none;margin:0 -20px}
+.evoui-pg-page .evoui-fc{border:0;background:none;margin:0 -10px}
+.evoui-pg-foot{display:flex;align-items:center;gap:12px;min-height:64px;padding:6px 20px 14px}
+.evoui-pg-tip{font-size:14px;color:var(--eu-fg2);min-width:0}
+.evoui-pg-tip[data-done="true"]{font-size:15px;font-weight:600;color:var(--eu-fg);font-variant-numeric:tabular-nums}
+.evoui-pg-foot .evoui-pq-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px}
+.evoui-pg-ok{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;color:var(--eu-right)}
+/* route (choice router): option cards; the chosen one is marked, the others dim */
+.evoui-rt{display:flex;flex-direction:column;gap:12px;min-width:0}
+.evoui-rt-prompt{font-size:16px;font-weight:550;line-height:1.45;overflow-wrap:anywhere}
+.evoui-rt-opts{max-width:720px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:8px}
+.evoui-rt-opt{display:flex;align-items:center;gap:12px;min-height:56px;padding:12px 14px 12px 16px;border:1px solid color-mix(in srgb,var(--eu-fg) 10%,transparent);
+  border-radius:16px;background:var(--eu-bg);color:var(--eu-fg);font:inherit;text-align:left;cursor:pointer;
+  transition:background-color .16s ease,border-color .16s ease,opacity .16s ease,box-shadow .16s ease}
+.evoui-rt-opt:hover{background:var(--eu-hover);border-color:color-mix(in srgb,var(--eu-fg) 22%,transparent)}
+.evoui-rt-opt:active{transform:scale(.985)}
+.evoui-rt-body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.evoui-rt-label{font-size:15px;font-weight:550;line-height:1.4;overflow-wrap:anywhere}
+.evoui-rt-desc{font-size:13px;line-height:1.45;color:var(--eu-fg2);overflow-wrap:anywhere}
+.evoui-rt-mark{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:var(--eu-fg2)}
+.evoui-rt-mark svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.evoui-rt-opt[data-state="chosen"]{border-color:var(--eu-fg);background:color-mix(in srgb,var(--eu-fg) 4%,var(--eu-bg));box-shadow:0 0 0 1px var(--eu-fg) inset}
+.evoui-rt-opt[data-state="chosen"] .evoui-rt-mark{background:var(--eu-fg);color:var(--eu-bg)}
+.evoui-rt-opt[data-state="chosen"] .evoui-rt-mark svg{stroke-width:2.4}
+.evoui-rt-opt[data-state="other"]{opacity:.55}
+.evoui-rt-opt[data-state="other"]:hover{opacity:.85}
+.evoui-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* app (tier 4): the sandboxed mini-app frame fills the block's width; its own document draws everything
+   inside it (background transparent: the block shows through). The fallback text appears under the frame
+   when the app never says ready (8 s) or frames cannot run here. */
+.evoui-app{position:relative;display:flex;flex-direction:column;gap:10px;min-width:0}
+.evoui-app-frame{display:block;width:100%;min-width:0;border:0;border-radius:10px;background:transparent;transition:height .2s cubic-bezier(.2,.7,.2,1)}
+.evoui-app-fallback{border-top:1px dashed var(--eu-line);padding-top:10px;display:flex;flex-direction:column;gap:4px}
+.evoui-app-fallback[hidden]{display:none}
+.evoui-app-credit{font-size:11px;line-height:1.5;color:var(--eu-fg2)}
+.evoui-app-reload{align-self:flex-start;margin-top:6px}
+.evoui-app-reload[hidden]{display:none}
+.evoui-app-fallback-label{font-size:12px;color:var(--eu-fg2)}
+.evoui-app-fallback-text{font-size:14px;line-height:1.6;white-space:pre-wrap}
+@media (prefers-reduced-motion:reduce){.evoui *{transition:none!important;animation:none!important}}

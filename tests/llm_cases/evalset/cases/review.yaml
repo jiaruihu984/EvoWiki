@@ -1,0 +1,62 @@
+# 第 9 类 题目和复习: questions the product makes or keeps, and what answering them does to K and to review.
+# The data is read after the answer (GET /wiki/k, GET /wiki/review/page); nothing here is graded by a model
+# except that a question was asked at all.
+- id: wrong-page-answer-k-not-up
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "review.md 审核 1 / pages.md 待审核 1：答错反而把掌握度拉上去（m 0.30 → 0.3125，下次复习推远）", failed: "m 0.30 → 0.3125，档位从「没证据」变成「模糊」"}
+  steps: [{answer: {page: 节点与边, correct: false}}]
+  grade:
+    - answer_k: {change: not_up}
+- id: wrong-page-answer-k-not-up-distribution
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "review.md 审核 1 变体：另一页（度与度分布）"}
+  steps: [{answer: {page: 度与度分布, correct: false}}]
+  grade:
+    - answer_k: {change: not_up}
+- id: wrong-page-answer-k-not-up-coffee
+  kind: act
+  topic: 手冲咖啡
+  world: r1
+  source: {ref: "review.md 审核 1 变体：非数学页（烘焙度）"}
+  steps: [{answer: {page: 烘焙度, correct: false}}]
+  grade:
+    - answer_k: {change: not_up}
+- id: right-page-answer-k-up
+  kind: control
+  topic: 渗流
+  world: r1
+  source: {ref: "review.md 查了什么：页内小测答对 → K（对照：答对要涨，防优化成一律不涨）"}
+  steps: [{answer: {page: 节点与边, correct: true}}]
+  grade:
+    - answer_k: {change: up}
+- id: page-question-is-a-review-card
+  kind: control
+  topic: 渗流
+  world: r1
+  source: {ref: "review.md 审核 3：页内确认题几乎不会以选择题卡出现；协调者：页面题要计入复习"}
+  steps: [{answer: {page: 节点与边, correct: true}}]
+  grade:
+    - page_question_in_review: {}
+- id: page-question-is-a-review-card-coffee
+  kind: control
+  topic: 手冲咖啡
+  world: r1
+  source: {ref: "review.md 审核 3 变体：烘焙度"}
+  steps: [{answer: {page: 烘焙度, correct: true}}]
+  grade:
+    - page_question_in_review: {}
+- id: quiz-me-question-is-consistent
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "review.md 审核 4：补讲题出现「节点 8 没有任何边（注意：节点 8 不在这个网络的节点集合里）」", failed: "节点 8 没有任何边（注意：节点 8 不在这个网络的节点集合里）"}
+  steps: [{say: "出一道题考考我，就考节点和边这页的内容", page: 节点与边}]
+  grade:
+    - turn_ok: {}
+    - turn_text_consistent: {}
+    - no_internal_words: {}
+    - tool_called: {any_of: [open_review]}

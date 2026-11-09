@@ -1,0 +1,160 @@
+{
+  "note": "Bundled component metadata and standalone HTML assets. Registration requires a successful render check.",
+  "components": [
+    {
+      "component_id": "pairing-practice",
+      "name": "配对练习：给模板链选互补链",
+      "description": "模板链 A T G C 固定，学习者在四个位置各点一个字母拼出对面那条链；结果区逐位说明哪一位配错、应该配什么，全对时给出互补链。",
+      "learning_question": "模板链的每个字母对面应该放哪个字母？放错一位，哪里不对？",
+      "params": {
+        "第 1–4 位的字母按钮": "为该位置选 A、T、C 或 G（选中的按钮会高亮）",
+        "清空重来": "清掉所有选择，回到初始提示"
+      },
+      "html_path": "src/evowiki/deep/components/pairing-practice.html",
+      "height": 560,
+      "probes": [
+        {
+          "target": "#pos0 .opt-T",
+          "action": "click",
+          "expect_change": "#result"
+        },
+        {
+          "target": "#pos1 .opt-G",
+          "action": "click",
+          "expect_change": "#result"
+        },
+        {
+          "target": "#pos2 .opt-C",
+          "action": "click",
+          "expect_change": "#result"
+        },
+        {
+          "target": "#pos3 .opt-A",
+          "action": "click",
+          "expect_change": "#result"
+        }
+      ],
+      "source": "EvoWiki original interactive component"
+    },
+    {
+      "component_id": "replication-sim",
+      "name": "DNA 复制模拟：拉开、当模板、配新链",
+      "description": "固定的一段 DNA（A T G C / T A C G），用「下一步」依次看双链解开、每条旧链按规则配出新链、得到两份相同的双链；每一步结果区用文字说明发生了什么。",
+      "learning_question": "为什么只靠「A 对 T、G 对 C」这条规则，复制就能得到两份和原来一样的 DNA？",
+      "params": {
+        "下一步": "前进到复制的下一个阶段（共四个阶段，到最后回到开头）",
+        "重新开始": "回到第一个阶段（原始双链）"
+      },
+      "html_path": "src/evowiki/deep/components/replication-sim.html",
+      "height": 640,
+      "probes": [
+        {
+          "target": "#next-btn",
+          "action": "click",
+          "expect_change": "#result"
+        }
+      ],
+      "source": "EvoWiki original interactive component"
+    },
+    {
+      "component_id": "pairing-lab",
+      "name": "给 AGCT 配互补链（含错配原因）",
+      "description": "上链 A-G-C-T 固定（标出大块 A、G 和小块 T、C），学习者给每一列选一个字母；配错时在该列下方说明是「两个大块挤不下」「两个小块有缝」还是「大小搭得上但吸点对不上」。",
+      "learning_question": "给上面一条链的每个字母选对面的字母，配错时会出什么问题？",
+      "params": {
+        "每列的 A / T / G / C 按钮": "为该列选对面的字母，立刻显示配对是否正确及原因",
+        "重来": "清空所有选择"
+      },
+      "html_path": "src/evowiki/deep/components/pairing-lab.html",
+      "height": 560,
+      "probes": [
+        {
+          "target": "#b0A",
+          "action": "click",
+          "expect_change": "#msg"
+        },
+        {
+          "target": "#b1G",
+          "action": "click",
+          "expect_change": "#msg"
+        }
+      ],
+      "source": "EvoWiki original interactive component"
+    },
+    {
+      "component_id": "pairing-builder",
+      "name": "拼出对面那条链：积木大小与吸点",
+      "description": "选一条上链（预设或自己输入最多 8 个 A/T/G/C），选中下链的一格后放一块积木（A、G 是大块，T、C 是小块，吸点 2 或 3 个）；图示和文字说明这一格为什么配得上或配不上（太挤、有空隙、吸点对不上），并把下链再配一遍看能否回到上链。",
+      "learning_question": "上链每一格固定了，对面放哪种积木才能配上？放错了到底卡在哪里？",
+      "params": {
+        "上链（预设或自己输入）": "换一条上链，下链清空",
+        "积木按钮 A / T / G / C": "把该积木放进当前选中的格子",
+        "下链空位": "点击选择要放积木的格子；点已放的积木可取回重选",
+        "显示正确答案": "按规则填满下链",
+        "清空下链": "取回所有积木"
+      },
+      "html_path": "src/evowiki/deep/components/pairing-builder.html",
+      "height": 1300,
+      "probes": [
+        {
+          "target": "#pieces button:nth-child(1)",
+          "action": "click",
+          "expect_change": "#explain"
+        },
+        {
+          "target": "#answer",
+          "action": "click",
+          "expect_change": "#out"
+        },
+        {
+          "target": "#preset",
+          "action": "select",
+          "value": "GGCATT",
+          "expect_change": "#out"
+        }
+      ],
+      "source": "EvoWiki original interactive component"
+    },
+    {
+      "component_id": "replication-lab",
+      "name": "复制一份 DNA：每格按规则配，可故意放错一格",
+      "description": "选一条上链，用「上一步 / 下一步」看两条链拉开、各自当模板配出新链、得到两份分子；可选择故意在某一格放错，结果对照区显示该分子与原来不同，并推演下一代序列如何改变。",
+      "learning_question": "只靠「每一格对面放特定积木」这一条规则，为什么能得到两份一样的 DNA？有一格放错，后果是什么？",
+      "params": {
+        "原来这份 DNA 的上链": "换一条上链（预设或自己输入最多 8 个字母）",
+        "故意放错一格": "选择让分子 1 的哪一格放错（或不放错）",
+        "上一步 / 下一步 / 回到第 0 步": "在原样、拉开、配新链三个阶段之间移动"
+      },
+      "html_path": "src/evowiki/deep/components/replication-lab.html",
+      "height": 1400,
+      "probes": [
+        {
+          "target": "#next",
+          "action": "click",
+          "expect_change": "#stageTitle"
+        },
+        {
+          "target": "#next",
+          "action": "click",
+          "expect_change": "#explain"
+        }
+      ],
+      "source": "EvoWiki original interactive component"
+    }
+  ],
+  "component_files": [
+    "src/evowiki/deep/components/before-after.json",
+    "src/evowiki/deep/components/code-trace.json",
+    "src/evowiki/deep/components/distribution-line.json",
+    "src/evowiki/deep/components/function-explorer.json",
+    "src/evowiki/deep/components/graph-walk.json",
+    "src/evowiki/deep/components/linear-transform-2d.json",
+    "src/evowiki/deep/components/param-bars.json",
+    "src/evowiki/deep/components/random-sim.json",
+    "src/evowiki/deep/components/scatter-line.json",
+    "src/evowiki/deep/components/sort-match.json",
+    "src/evowiki/deep/components/step-process.json",
+    "src/evowiki/deep/components/timeline-lanes.json",
+    "src/evowiki/deep/components/network-edit.json"
+  ]
+}

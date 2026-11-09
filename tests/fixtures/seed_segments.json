@@ -1,0 +1,34 @@
+{
+  "segments": [
+    {"id": "linear_algebra.one_line.en", "concept_id": "linear_algebra", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "The study of vectors and linear maps."},
+    {"id": "vector.one_line.en", "concept_id": "vector", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "An element of a vector space."},
+    {"id": "matrix.one_line.en", "concept_id": "matrix", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "A rectangular array representing a linear map."},
+    {"id": "linear_transformation.one_line.en", "concept_id": "linear_transformation", "kind": "one_line", "lang": "en", "review_status": "auto_verified", "body": "A map that preserves addition and scaling."},
+    {"id": "eigenvalue.one_line.en", "concept_id": "eigenvalue", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "A scale factor lambda with Av = lambda v."},
+    {"id": "eigenvalue.one_line.zh", "concept_id": "eigenvalue", "kind": "one_line", "lang": "zh", "review_status": "human_approved", "body": "满足 Av = λv 的缩放因子 λ。"},
+    {"id": "variance.one_line.en", "concept_id": "variance", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "Expected squared deviation from the mean."},
+    {"id": "covariance.one_line.en", "concept_id": "covariance", "kind": "one_line", "lang": "en", "review_status": "flagged", "body": "(flagged draft)"},
+    {"id": "covariance.definition.en", "concept_id": "covariance", "kind": "definition", "lang": "en", "review_status": "human_approved", "body": "Cov(X) = E[(X - mu)(X - mu)^T]."},
+    {"id": "svd.one_line.en", "concept_id": "svd", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "A = U S V^T for any matrix A."},
+    {"id": "neural_network.one_line.en", "concept_id": "neural_network", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "A composition of affine maps and nonlinearities."},
+    {"id": "autoencoder.one_line.en", "concept_id": "autoencoder", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "A network trained to reconstruct its input through a bottleneck."},
+    {"id": "lora.one_line.en", "concept_id": "lora", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "Fine-tuning with a low-rank weight update."},
+    {"id": "pca.one_line.en", "concept_id": "pca", "kind": "one_line", "lang": "en", "review_status": "human_approved", "body": "Project data onto directions of maximal variance."},
+    {"id": "pca.one_line.zh", "concept_id": "pca", "kind": "one_line", "lang": "zh", "review_status": "human_approved", "body": "把数据投影到方差最大的方向上。"},
+    {"id": "pca.intuition.en", "concept_id": "pca", "kind": "intuition", "lang": "en", "review_status": "human_approved", "body": "Rotate the axes so the first axis follows the spread of the data."},
+    {"id": "pca.definition.en", "concept_id": "pca", "kind": "definition", "lang": "en", "review_status": "human_approved", "body": "Principal components are eigenvectors of the covariance matrix."},
+    {"id": "pca.example.en.1", "concept_id": "pca", "kind": "example", "lang": "en", "review_status": "human_approved", "body": "2-D Gaussian cloud."},
+    {"id": "pca.example.en.2", "concept_id": "pca", "kind": "example", "lang": "en", "review_status": "auto_verified", "body": "Eigenfaces."},
+    {"id": "pca.example.en.3", "concept_id": "pca", "kind": "example", "lang": "en", "review_status": "auto_verified", "body": "Gene expression."},
+    {"id": "pca.derivation.en", "concept_id": "pca", "kind": "derivation", "lang": "en", "review_status": "human_approved", "body": "Maximize w^T S w subject to |w| = 1."},
+    {"id": "pca.derivation.en.flagged", "concept_id": "pca", "kind": "derivation", "lang": "en", "review_status": "flagged", "body": "(flagged draft)"},
+    {"id": "pca.misconception_fix.en", "concept_id": "pca", "kind": "misconception_fix", "lang": "en", "review_status": "human_approved", "body": "PCA does not select original features."},
+    {"id": "pca.advanced.en", "concept_id": "pca", "kind": "advanced", "lang": "en", "review_status": "human_approved", "body": "Probabilistic PCA."},
+    {"id": "conn.pca_svd.en", "concept_id": "pca", "kind": "connection", "lang": "en", "review_status": "human_approved", "body": "PCA is the SVD of centered data."},
+    {"id": "conn.pca_autoencoder.en", "concept_id": "pca", "kind": "connection", "lang": "en", "review_status": "flagged", "body": "(flagged draft)"}
+  ],
+  "connections": [
+    {"segment_id": "conn.pca_svd.en", "path": ["pca", "svd"]},
+    {"segment_id": "conn.pca_autoencoder.en", "path": ["pca", "autoencoder"]}
+  ]
+}

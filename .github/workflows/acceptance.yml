@@ -1,0 +1,91 @@
+# Product acceptance checks (tests/acceptance): the real service on Postgres + DBOS, driven over HTTP / SSE
+# with scripted models only. No secrets: no test may reach a paid API or the network (pytest-socket allows
+# 127.0.0.1 only). A check marked as a known audit item is a strict xfail: once fixed it XPASSes and fails
+# this run until the marker is removed.
+#
+# ubuntu-latest, not Windows: tests/pg.py takes a disposable server from EVOWIKI_TEST_DATABASE_URL, so a
+# pgvector service container replaces the long-lived local cluster (its WMI start and pixeltable-pgserver
+# binaries are Windows-machine concerns). Python comes from .python-version: `requires-python` alone would
+# take the newest CPython, which the locked wheels (onnxruntime) may not cover yet.
+name: acceptance
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: acceptance-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+      - run: ./.github/uv-sync.sh
+      - run: uv run ruff check src tests scripts
+
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      EVOWIKI_TEST_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/postgres
+      EVOWIKI_EMBEDDER: hash
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: obsidian-plugin/package-lock.json
+      - name: Install
+        run: |
+          ./.github/uv-sync.sh
+          npm ci --ignore-scripts --no-audit --no-fund --prefix obsidian-plugin
+      - name: Acceptance checks
+        run: >-
+          uv run pytest tests/acceptance -p no:cacheprovider -rA --tb=short
+          --log-level=WARNING --allow-hosts=127.0.0.1
+      - name: Plugin lint
+        run: npm run lint --prefix obsidian-plugin
+      # This fails the job/PR check. Requiring this job in branch protection is a repository setting.
+      # On master compare with the previous commit, since origin/master already points at HEAD.
+      - name: Merge checks
+        # The first commit has no previous tree; all lint, build and acceptance jobs still run.
+        if: github.event_name != 'push' || github.event.before != '0000000000000000000000000000000000000000'
+        env:
+          MERGE_BASE: ${{ github.event_name == 'push' && github.event.before || 'origin/master' }}
+        run: uv run python scripts/check_merge.py --base "$MERGE_BASE"

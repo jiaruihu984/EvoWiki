@@ -1,0 +1,22 @@
+title = "EvoWiki secret checks"
+
+[extend]
+useDefault = true
+
+# Exact synthetic detector fixtures, limited to their test file and matching rule.
+# Keep all other tests and docs covered, including new secrets in this same file.
+[[allowlists]]
+description = "Alphabetical fake AWS identifier used to test the patch secret detector"
+targetRules = ["aws-access-token"]
+condition = "AND"
+paths = ['''(^|[/\\])tests[/\\]forge[/\\]patch[/\\]test_paths\.py$''']
+regexTarget = "secret"
+regexes = ['''^AKIAABCDEF[G]HIJKLMNOP$''']
+
+[[allowlists]]
+description = "Exact fake API token used by test_env_secret_values"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''(^|[/\\])tests[/\\]forge[/\\]patch[/\\]test_paths\.py$''']
+regexTarget = "secret"
+regexes = ['''^[s][k]\-[0][1][2][3][4][5][6][7][8][9][a][b][c][d][e][f]$''']

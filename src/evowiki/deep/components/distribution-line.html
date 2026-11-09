@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E6%95%B0%E8%BD%B4%E4%B8%8A%E7%9A%84%E5%88%86%E5%B8%83%22-->数轴上的分布</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+.axis{stroke:var(--tx-3);stroke-width:1}
+.tick{fill:var(--tx-3);font:12px var(--font);font-variant-numeric:tabular-nums}
+.mean{stroke:var(--accent);stroke-width:2;stroke-dasharray:6 5}
+.meanTx{fill:var(--accent);font:600 13px var(--font)}
+.dev{stroke:var(--warn);stroke-width:2.5}
+.sq{fill:var(--warn);fill-opacity:.16;stroke:var(--warn);stroke-opacity:.55;stroke-width:1}
+.pt{fill:var(--tx);stroke:var(--bg);stroke-width:2}
+.pt.out{fill:var(--bad)}
+.ptTx{fill:var(--tx-2);font:12px var(--font)}
+.sq,.dev,.pt,.ptTx{transition:all .25s cubic-bezier(.16,1,.3,1)}
+</style>
+<script data-evowiki-locale="distribution-line"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage"><svg id="plot" viewBox="0 0 560 300" role="img" aria-labelledby="plotDesc"><desc id="plotDesc"></desc></svg></div>
+    <div class="side">
+      <div class="ctl">
+        <label for="spread"><span id="spreadLabel"><!--ew-t:%22%E5%88%86%E6%95%A3%E7%A8%8B%E5%BA%A6%22-->分散程度</span>：<b id="spreadTx">1.0</b><!--ew-t:%22%E5%80%8D%22--> 倍</label>
+        <input id="spread" type="range" min="0" max="25" value="10">
+      </div>
+      <label class="check"><input type="checkbox" id="squares" checked><!--ew-t:%22%E7%94%BB%E5%87%BA%E6%AF%8F%E4%B8%AA%E5%81%8F%E5%B7%AE%E7%9A%84%E5%B9%B3%E6%96%B9%22-->画出每个偏差的平方</label>
+      <div class="row" id="outlierRow" hidden><button type="button" id="outlier" aria-pressed="false"></button></div>
+      <div class="read" id="read" aria-label="计算过程" data-ew-attrs='{"aria-label":"计算过程"}'></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("同一个班的五次测验：分数有多散？"),"question": ewt("把分数拉开或收拢，看偏差的平方和方差怎么跟着变。"),"unit": ewt("分"),"spread_label": ewt("分数拉开的程度"),"points":[{"label":"A","value":62},{"label":"B","value":70},{"label":"C","value":74},{"label":"D","value":79},{"label":"E","value":90}],"outlier":null,"notes":{"low": ewt("大家分数差不多：方块都很小，方差小。"),"high": ewt("分数拉得很开：离均值远的人，方块面积按距离的平方变大，方差跟着变大。")}};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?(Math.abs(x)>=1000?x.toFixed(0):x.toFixed(d)):'—';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title);EvoWikiLocale.prop($('question'),"textContent",()=>C.question);
+EvoWikiLocale.prop($('spreadLabel'),"textContent",()=>C.spread_label|| ewt("分散程度"));
+const unit=C.unit?(' '+C.unit):'';
+const base=(C.points||[]).slice(0,30).map((p,i)=>({label:p.label||EvoWikiLocale.string.fromCharCode(65+i%26),value:Number(p.value)||0}));
+if(!base.length)base.push({label:'A',value:0});
+const m0=base.reduce((a,p)=>a+p.value,0)/base.length;
+const out=C.outlier?{label:C.outlier.label|| ewt("离群"),value:Number(C.outlier.value)||0}:null;
+let withOut=false;
+if(out){$('outlierRow').hidden=false;EvoWikiLocale.prop($('outlier'),"textContent",()=> ewt("加入 ")+out.label+'（'+fmt(out.value,1)+unit+'）')}
+
+function data(){const k=$('spread').value/10;const pts=base.map(p=>({...p,x:m0+(p.value-m0)*k}));
+  if(out&&withOut)pts.push({label:out.label,x:out.value,out:true});return {k,pts}}
+
+function draw(){const {k,pts}=data();const n=pts.length;const mean=pts.reduce((a,p)=>a+p.x,0)/n;
+  const devs=pts.map(p=>p.x-mean),sq=devs.map(d=>d*d),varc=sq.reduce((a,b)=>a+b,0)/n,sd=Math.sqrt(varc);
+  // scale: fixed range from the widest setting so moving the slider moves points, not the axis
+  const far=Math.max(...base.map(p=>Math.abs(p.value-m0)))*2.5||1;
+  let lo=Math.min(m0-far,out?out.value:Infinity),hi=Math.max(m0+far,out?out.value:-Infinity);
+  const pad=(hi-lo)*.06;lo-=pad;hi+=pad;
+  const W=Math.max(280,Math.round($('stage').clientWidth-16)),L=22,R=W-22,Y=250,X=v=>L+(v-lo)/(hi-lo)*(R-L);
+  const scale=(R-L)/(hi-lo);
+  const svg=$('plot');EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} 300`);svg.querySelectorAll(':scope > :not(desc)').forEach(c=>c.remove());
+  svg.append(el('line',{x1:L,y1:Y,x2:R,y2:Y,class:'axis'}));
+  const step=niceStep((hi-lo)/Math.max(3,Math.floor(W/90)));for(let t=Math.ceil(lo/step)*step;t<=hi;t+=step){svg.append(el('line',{x1:X(t),y1:Y,x2:X(t),y2:Y+5,class:'axis'}));svg.append(el('text',{x:X(t),y:Y+20,'text-anchor':'middle',class:'tick'},fmt(t,step<1?1:0)))}
+  if($('squares').checked)pts.forEach((p,i)=>{const s=Math.min(Math.abs(devs[i])*scale,230);if(s>1)svg.append(el('rect',{x:Math.min(X(p.x),X(mean)),y:Y-s,width:s,height:s,class:'sq'}))});
+  pts.forEach((p,i)=>{if(Math.abs(devs[i])*scale>1)svg.append(el('line',{x1:X(mean),y1:Y-4,x2:X(p.x),y2:Y-4,class:'dev'}))});
+  svg.append(el('line',{x1:X(mean),y1:18,x2:X(mean),y2:Y,class:'mean'}));
+  svg.append(el('text',{x:Math.min(Math.max(X(mean),60),W-60),y:13,'text-anchor':'middle',class:'meanTx'}, ewt("均值 ")+fmt(mean,1)+unit));
+  const order=pts.map((p,i)=>i).sort((a,b)=>pts[a].x-pts[b].x);let lastX=-99,row=0;
+  order.forEach(i=>{const p=pts[i],x=X(p.x);row=x-lastX<26?row+1:0;lastX=x;
+    svg.append(el('circle',{cx:x,cy:Y,r:6,class:'pt'+(p.out?' out':'')}));
+    svg.append(el('text',{x,y:Y+38+row*14,'text-anchor':'middle',class:'ptTx'},p.label))});
+  EvoWikiLocale.prop($('plotDesc'),"textContent",()=> ewt("{0} 个数，均值 {1}，方差 {2}，标准差 {3}", [n,fmt(mean,1),fmt(varc),fmt(sd)]));
+  EvoWikiLocale.prop($('spreadTx'),"textContent",()=>k.toFixed(1));
+  const line=(k,v)=>`<div><span class="k">${k}</span>${v}</div>`;
+  EvoWikiLocale.prop($('read'),"innerHTML",()=>line( ewt("数"),pts.map(p=>esc(p.label)+' '+fmt(p.x,1)).join('，'))+
+    line( ewt("偏差（数 − 均值）"),devs.map(d=>(d>=0?'+':'')+fmt(d,1)).join('，'))+
+    line( ewt("偏差的平方"),sq.map(s=>fmt(s,1)).join('，'))+
+    line( ewt("方差 = 平方的平均"),`<b>${fmt(varc)}</b>`)+line( ewt("标准差 = √方差"),`<b>${fmt(sd)}</b>${esc(unit)}`));
+  let msg;
+  if(k===0&&!(out&&withOut))msg= ewt("全部挤在均值上：每个偏差都是 0，方差是 0。");
+  else if(out&&withOut)msg= ewt("加入 {0} 之后，它离均值很远，一个方块就占了大头：方差变成 {1}。平方让远处的点影响特别大。", [out.label,fmt(varc)]);
+  else msg=(k<0.7?(C.notes&&C.notes.low)|| ewt("收得很紧：偏差小，方块小，方差小。"):k>1.4?(C.notes&&C.notes.high)|| ewt("拉得很开：方块按距离的平方变大，方差跟着变大。"): ewt("方差就是这些方块面积的平均；标准差把它换回原来的单位。"))+ ewt(" 现在方差 {0}，标准差 {1}{2}。", [fmt(varc),fmt(sd),unit]);
+  if(!$('squares').checked)msg+= ewt(" （方块已隐藏）");
+  EvoWikiLocale.prop($('result'),"textContent",()=>msg)}
+function niceStep(raw){const p=Math.pow(10,Math.floor(Math.log10(raw||1))),f=raw/p;return (f<1.5?1:f<3?2:f<7?5:10)*p}
+$('spread').addEventListener('input',draw);$('squares').addEventListener('change',draw);
+$('outlier').addEventListener('click',()=>{withOut=!withOut;EvoWikiLocale.attr($('outlier'),'aria-pressed',()=>withOut);draw()});
+new ResizeObserver(()=>draw()).observe($('stage'));
+draw();
+
+EvoWikiLocale.onChange(()=>{draw()});</script>
+</body>
+</html>

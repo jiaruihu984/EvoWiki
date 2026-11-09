@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E4%BB%A3%E7%A0%81%E8%BF%BD%E8%B8%AA%22-->代码追踪</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---- component ---- */
+h2{font-size:14px;line-height:1.4;margin:0 0 6px;font-weight:650}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:12px}
+.bar .sl{display:flex;align-items:center;gap:8px;flex:1 1 200px;min-width:160px}
+.bar .sl input{flex:1}
+.prog{font-size:13px;color:var(--tx-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.stage{padding:0;overflow:hidden}
+.lang{padding:8px 12px 4px;font-size:12.5px;color:var(--tx-3)}
+.code{overflow-x:auto;padding-bottom:8px}
+.inner{display:inline-block;min-width:100%}
+.ln{display:flex;align-items:stretch;font:13.5px/1.75 var(--mono);white-space:pre}
+.mk{flex:0 0 18px;position:relative}
+.no{flex:0 0 30px;text-align:right;padding-right:12px;color:var(--tx-3);font-variant-numeric:tabular-nums;user-select:none}
+.tx{padding-right:16px;color:var(--tx)}
+.ln.on{background:var(--accent-soft)}
+.ln.on .tx,.ln.on .no{font-weight:700;color:var(--tx)}
+.ln.on .mk::before{content:"";position:absolute;left:5px;top:50%;margin-top:-6px;border:6px solid transparent;border-left:9px solid var(--accent);border-right:0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font-weight:500;font-size:12.5px;color:var(--tx-3);text-align:left;padding:2px 8px 4px 0}
+td{padding:5px 8px 5px 0;border-top:1px solid var(--line);vertical-align:top}
+td.n,td.v{font-family:var(--mono);font-variant-numeric:tabular-nums;overflow-wrap:break-word}
+td.n{width:38%;color:var(--tx-2)}
+@media (min-width:621px){.lab{grid-template-columns:minmax(0,1fr) minmax(0,340px)}}
+tr.ch td.v{font-weight:700;color:var(--tx)}
+
+.chg{display:block;font:600 12.5px var(--font);color:var(--tx);margin-top:2px}
+.was{font-family:var(--mono);color:var(--tx-3);font-weight:400}
+.out{margin:0;background:var(--bg-1);border-radius:8px;padding:8px 10px;font:13.5px/1.6 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;min-height:2.6em}
+.out:empty::before{content:"（还没有输出）";color:var(--tx-3)}
+#result{min-height:3.4em}
+</style>
+<script data-evowiki-locale="code-trace"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="bar">
+    <button type="button" id="prev"><!--ew-t:%22%E4%B8%8A%E4%B8%80%E6%AD%A5%22-->上一步</button>
+    <button type="button" id="next"><!--ew-t:%22%E4%B8%8B%E4%B8%80%E6%AD%A5%22-->下一步</button>
+    <button type="button" id="reset"><!--ew-t:%22%E9%87%8D%E7%BD%AE%22-->重置</button>
+    <div class="sl"><input id="slider" type="range" min="0" max="1" value="0" aria-label="拖动查看任意一步" data-ew-attrs='{"aria-label":"拖动查看任意一步"}'><span class="prog" id="prog"></span></div>
+  </div>
+  <div class="lab">
+    <div class="stage"><div class="lang" id="lang"></div><div class="code" id="code" role="region" aria-label="代码（只显示，不会运行）" tabindex="0" data-ew-attrs='{"aria-label":"代码（只显示，不会运行）"}'><div class="inner" id="lines"></div></div></div>
+    <div class="side">
+      <div><h2><!--ew-t:%22%E5%8F%98%E9%87%8F%22-->变量</h2><div id="vars"></div></div>
+      <div><h2><!--ew-t:%22%E8%BE%93%E5%87%BA%22-->输出</h2><pre class="out" id="out" aria-live="off"></pre></div>
+    </div>
+  </div>
+  <p id="result" aria-live="polite" style="margin-top:12px"></p>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("用循环求和：total 每一轮怎么变？"),"question": ewt("跟着每一行看：循环变量 n 和累加器 total 在每一轮里分别是多少？"),"language":"Python","code":["nums = [3, 5, 2]","total = 0","for n in nums:","    total = total + n","print(total)"],"steps":[{"line":1,"vars":[{"name":"nums","value":"[3, 5, 2]"}],"output":null,"explain": ewt("创建一个列表 nums，里面有三个数。")},{"line":2,"vars":[{"name":"nums","value":"[3, 5, 2]"},{"name":"total","value":"0"}],"output":null,"explain": ewt("累加器 total 从 0 开始，之后每个数都加到它上面。")},{"line":3,"vars":[{"name":"nums","value":"[3, 5, 2]"},{"name":"total","value":"0"},{"name":"n","value":"3"}],"output":null,"explain": ewt("进入循环：n 取列表的第一个数 3。")},{"line":4,"vars":[{"name":"nums","value":"[3, 5, 2]"},{"name":"total","value":"3"},{"name":"n","value":"3"}],"output":null,"explain": ewt("total = 0 + 3，所以 total 变成 3。")},{"line":3,"vars":[{"name":"nums","value":"[3, 5, 2]"},{"name":"total","value":"3"},{"name":"n","value":"5"}],"output":null,"explain": ewt("回到循环开头：n 取下一个数 5，total 暂时还是 3。")},{"line":4,"vars":[{"name":"nums","value":"[3, 5, 2]"},{"name":"total","value":"8"},{"name":"n","value":"5"}],"output":null,"explain": ewt("total = 3 + 5，变成 8。")},{"line":3,"vars":[{"name":"nums","value":"[3, 5, 2]"},{"name":"total","value":"8"},{"name":"n","value":"2"}],"output":null,"explain": ewt("n 取最后一个数 2。")},{"line":4,"vars":[{"name":"nums","value":"[3, 5, 2]"},{"name":"total","value":"10"},{"name":"n","value":"2"}],"output":null,"explain": ewt("total = 8 + 2，变成 10。")},{"line":3,"vars":[{"name":"nums","value":"[3, 5, 2]"},{"name":"total","value":"10"},{"name":"n","value":"2"}],"output":null,"explain": ewt("列表里没有下一个数了，循环结束；n 还保留着最后一次的值 2。")},{"line":5,"vars":[{"name":"nums","value":"[3, 5, 2]"},{"name":"total","value":"10"},{"name":"n","value":"2"}],"output":"10","explain": ewt("循环之外，打印 total：输出 10，等于 3 + 5 + 2。")}]};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const L=(Array.isArray(C.code)?C.code:[]).slice(0,40).map(EvoWikiLocale.string);if(!L.length)L.push('');
+const S=(Array.isArray(C.steps)?C.steps:[]).slice(0,60).map(s=>{const ln=Math.round(Number(s.line));return {
+  line:Math.min(L.length,Math.max(1,Number.isFinite(ln)?ln:1)),
+  vars:(Array.isArray(s.vars)?s.vars:[]).slice(0,12).map(v=>({n:EvoWikiLocale.string(v.name),v:EvoWikiLocale.string(v.value)})),
+  out:s.output==null||s.output===''?null:EvoWikiLocale.string(s.output),ex:EvoWikiLocale.string(s.explain||'')}});
+if(!S.length)S.push({line:1,vars:[],out:null,ex: ewt("（没有追踪步骤）")});
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title);EvoWikiLocale.prop($('question'),"textContent",()=>C.question);
+EvoWikiLocale.prop($('lang'),"textContent",()=>(C.language?EvoWikiLocale.string(C.language): ewt("代码"))+ ewt(" · 只显示，不会被运行"));
+EvoWikiLocale.prop($('lines'),"innerHTML",()=>L.map((t,i)=>`<div class="ln" id="ln${i+1}"><span class="mk"></span><span class="no">${i+1}</span><span class="tx">${esc(t)||' '}</span></div>`).join(''));
+$('slider').max=S.length-1;$('slider').disabled=S.length<2;
+let cur=0;
+function show(){
+  const s=S[cur],prev=cur?S[cur-1]:null,last=S.length-1;
+  document.querySelectorAll('.ln').forEach((n,i)=>{const on=i+1===s.line;n.classList.toggle('on',on);if(on)EvoWikiLocale.attr(n,'aria-current',()=>'step');else n.removeAttribute('aria-current')});
+  const pm={};if(prev)prev.vars.forEach(v=>pm[v.n]=v.v);
+  let rows='';
+  s.vars.forEach(v=>{const isNew=prev&&!(v.n in pm),chg=prev&&(v.n in pm)&&pm[v.n]!==v.v;
+    rows+= ewt("<tr class=\"{0}\"><td class=\"n\">{1}</td><td class=\"v\">{2}{3}</td></tr>", [isNew||chg?'ch':'',esc(v.n),esc(v.v),isNew? ewt("<span class=\"chg\">新增</span>"):chg? ewt("<span class=\"chg\">已改 <span class=\"was\">原为 {0}</span></span>", [esc(pm[v.n])]):''])});
+  EvoWikiLocale.prop($('vars'),"innerHTML",()=>s.vars.length? ewt("<table><thead><tr><th scope=\"col\">名字</th><th scope=\"col\">值（变了的会标出）</th></tr></thead><tbody>{0}</tbody></table>", [rows]): ewt("<p class=\"muted\" style=\"margin:0\">这一步还没有变量。</p>"));
+  EvoWikiLocale.prop($('out'),"textContent",()=>S.slice(0,cur+1).filter(x=>x.out!=null).map(x=>x.out).join('\n'));
+  EvoWikiLocale.prop($('prog'),"textContent",()=> ewt("第 {0} / {1} 步", [cur+1,S.length]));
+  $('slider').value=cur;$('prev').disabled=cur<=0;$('next').disabled=cur>=last;
+  EvoWikiLocale.prop($('result'),"textContent",()=> ewt("第 {0}/{1} 步（第 {2} 行）：{3}", [cur+1,S.length,s.line,s.ex]));
+}
+$('next').addEventListener('click',()=>{if(cur<S.length-1){cur++;show()}});
+$('prev').addEventListener('click',()=>{if(cur>0){cur--;show()}});
+$('reset').addEventListener('click',()=>{cur=0;show()});
+$('slider').addEventListener('input',e=>{cur=Math.min(S.length-1,Math.max(0,Math.round(Number(e.target.value))||0));show()});
+show();
+
+EvoWikiLocale.onChange(()=>{show()});</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+# 第 7 类 记忆: the database after the conversation (memory_item), then what he is told.
+
+- id: undone-limit-not-a-decision
+  kind: no_act
+  topic: 记忆
+  world: r1
+  source:
+    ref: assistant.md 需要你定 2（记忆污染）：「将渗流目标设为每天最多 30 分钟」从没设过（当时只是请求），却存成 active 决定；这里是设了又撤销
+  purposes:
+  - assistant.turn
+  - assistant.consolidate
+  steps:
+  - say: 把渗流目标设成每天最多 30 分钟
+  - undo: true
+  - new_session: true
+  - say: 好，接着学吧
+  - settle: true
+  grade:
+  - memory_lacks:
+      pattern: 30\s*分钟
+- id: undone-limit-not-recalled
+  kind: canary
+  topic: 记忆
+  world: r1
+  source:
+    ref: docs/audit/2026-11-04/assistant.md 需要你定 2（记忆污染）：下一轮模型就说「之前设过每天最多 30 分钟」
+  purposes:
+  - assistant.turn
+  - assistant.consolidate
+  steps:
+  - say: 把渗流目标设成每天最多 30 分钟
+  - undo: true
+  - new_session: true
+  - say: 我之前给渗流设过每天最多多少分钟？
+  - settle: true
+  grade:
+  - no_value:
+      pattern: 30\s*分钟
+      unless: 撤销|撤回|取消
+  - memory_lacks:
+      pattern: 30\s*分钟
+  - turn_ok: {}
+- id: undone-split-not-a-decision
+  kind: no_act
+  topic: 记忆
+  world: r1
+  source:
+    ref: docs/audit/2026-11-04/assistant.md 需要你定 2（记忆污染）：「助手需将这页内容拆成两页」（已撤销）仍存成 active 决定
+  purposes:
+  - assistant.turn
+  - assistant.consolidate
+  steps:
+  - say: 把这页拆成两页：度一页，度分布一页。
+    page: 度与度分布
+  - accept: true
+  - undo: true
+  - new_session: true
+  - say: 好，接着学吧
+  - settle: true
+  grade:
+  - memory_lacks:
+      pattern: 拆成两页|拆成.{0,4}页
+- id: two-things-one-sentence
+  kind: act
+  topic: 记忆
+  world: r1
+  source:
+    ref: E 线记忆失败清单：一句话说两件事丢一件（「我家的狗叫豆豆」；用户裁定 2026-11-05：他明说的生活事实要记）
+  steps:
+  - say: 以后讲解先给例子再讲公式。另外我家的狗叫豆豆。
+  grade:
+  - tools_called_all:
+      names:
+      - remember_preference
+      - remember_about_me
+  - turn_ok: {}
+- id: deleted-conversation-not-recalled
+  kind: canary
+  topic: 记忆
+  world: r1
+  source:
+    ref: memory.md 结论：删除对话后，内容还能被问出来（蓝鲸计划）
+    failed: 还能答出「蓝鲸计划」
+  purposes:
+  - assistant.turn
+  - assistant.consolidate
+  steps:
+  - say: 我最近在做一个叫蓝鲸计划的小项目，想把学习笔记整理出来。
+  - new_session: true
+  - say: 好，接着学吧
+  - settle: true
+  - delete_session: 1
+  - new_session: true
+  - say: 我之前提到的那个小项目叫什么名字？
+  - settle: true
+  grade:
+  - answer_lacks:
+      terms:
+      - 蓝鲸
+  - memory_lacks:
+      pattern: 蓝鲸
+  - turn_ok: {}
+- id: forget-fact-summary-new-session
+  kind: canary
+  topic: 按事实忘记
+  world: r1
+  source:
+    ref: 按事实忘记的缺口：确认「忘掉我家猫叫年糕」后，旧对话已写好的摘要仍带着年糕进新对话的提示词
+  purposes:
+  - assistant.turn
+  - assistant.compact
+  steps:
+  - say: 我家猫叫年糕，今年三岁，最近总掉毛。我学度分布的时候老想到它。你先记住这些，再用两句话说说什么是度分布。
+    page: 度与度分布
+  - new_session: true
+  - say: 那幂律分布和它是什么关系？用两句话说。
+    page: 度与度分布
+  - settle: true
+  - new_session: true
+  - say: 忘掉我家猫叫年糕
+    page: 度与度分布
+  - accept: true
+  - new_session: true
+  - say: 我家猫叫什么名字？
+    page: 度与度分布
+  - settle: true
+  grade:
+  - no_value:
+      pattern: 年糕
+  - turn_ok: {}
+- id: forget-fact-summary-undone
+  kind: control
+  topic: 按事实忘记
+  world: r1
+  source:
+    ref: 按事实忘记的缺口的对照：撤销之后摘要和记忆都要回来，答得出来
+  purposes:
+  - assistant.turn
+  - assistant.compact
+  steps:
+  - say: 我家猫叫年糕，今年三岁，最近总掉毛。我学度分布的时候老想到它。你先记住这些，再用两句话说说什么是度分布。
+    page: 度与度分布
+  - new_session: true
+  - say: 那幂律分布和它是什么关系？用两句话说。
+    page: 度与度分布
+  - settle: true
+  - new_session: true
+  - say: 忘掉我家猫叫年糕
+    page: 度与度分布
+  - accept: true
+  - undo: true
+  - new_session: true
+  - say: 我家猫叫什么名字？
+    page: 度与度分布
+  - settle: true
+  grade:
+  - answer_has:
+      any_of:
+      - 年糕
+  - turn_ok: {}
+- id: forget-fact-same-conversation
+  kind: canary
+  topic: 按事实忘记
+  world: r1
+  source:
+    ref: 按事实忘记的缺口：同一个对话里确认忘掉之后，上文原话不能再回答出来；问的话要接着正常答
+  purposes:
+  - assistant.turn
+  steps:
+  - say: 我家猫叫年糕，今年三岁，最近总掉毛。
+    page: 度与度分布
+  - say: 什么是度分布？用两句话说。
+    page: 度与度分布
+  - say: 忘掉我家猫叫年糕
+    page: 度与度分布
+  - accept: true
+  - say: 我家猫叫什么名字？
+    page: 度与度分布
+  - settle: true
+  grade:
+  - no_value:
+      pattern: 年糕
+  - turn_ok: {}

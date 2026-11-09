@@ -1,0 +1,1439 @@
+{
+ "source": {
+  "name": "Metacademy",
+  "repository": "https://github.com/metacademy/metacademy-content",
+  "commit": "2654877392cea3857e9fa91ddf896a4a2f5361c8",
+  "files": [
+   "concepts/<tag>/{title,id,dependencies}.txt",
+   "courses/<course>/concepts.txt"
+  ],
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "license_text": "LICENSE.txt: Creative Commons Attribution-ShareAlike 3.0 Unported",
+  "attribution": "Metacademy content (metacademy.org, Roger Grosse, Colorado Reed and contributors), prerequisite graph from metacademy-content; this fixture is a derived excerpt (closure + trimming + Chinese aliases) shared under the same license.",
+  "notes": "The repository is deprecated (the site moved to a database) but holds the expert-curated graph. Dependency tags naming a renamed concept are mapped (tag_fixes); tags with no concept folder are dropped (unresolved)."
+ },
+ "rule": "closure = the anchors and every concept reachable through 'is a prerequisite of' edges; core = the anchors plus each closure concept that at least support_min = max(1, round(0.25 x number of anchors)) anchors reach; a decomposition is scored on core only (tests/llm_cases/gold/coverage.py)",
+ "tag_fixes": {
+  "feed_forward_neural_networks": "feed_forward_neural_nets",
+  "random variables": "random_variables",
+  "variance": "expectation_and_variance"
+ },
+ "unresolved": [],
+ "fields": {
+  "linear_algebra": {
+   "name": "linear algebra",
+   "aliases": [
+    "线性代数",
+    "linear algebra"
+   ]
+  },
+  "multivariable_calculus": {
+   "name": "multivariable calculus",
+   "aliases": [
+    "微积分",
+    "多元微积分",
+    "多变量微积分",
+    "calculus"
+   ]
+  },
+  "probability_theory": {
+   "name": "probability theory",
+   "aliases": [
+    "概率论",
+    "概率与统计",
+    "概率统计",
+    "probability theory"
+   ]
+  }
+ },
+ "concepts": {
+  "backpropagation": {
+   "name": "backpropagation",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/backpropagation",
+   "metacademy_id": "iplkhc1b",
+   "aliases": [
+    "反向传播",
+    "BP算法",
+    "backpropagation",
+    "backprop"
+   ]
+  },
+  "bases": {
+   "name": "bases",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/bases",
+   "metacademy_id": "soxhga99",
+   "field": "linear_algebra",
+   "aliases": [
+    "基向量",
+    "基底",
+    "一组基",
+    "维数",
+    "线性无关",
+    "线性相关",
+    "basis",
+    "linear independ"
+   ],
+   "exclude": [
+    "基函数",
+    "basis function"
+   ]
+  },
+  "basis_function_expansions": {
+   "name": "basis function expansions",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/basis_function_expansions",
+   "metacademy_id": "rszkzafz",
+   "aliases": [
+    "基函数",
+    "特征映射",
+    "特征变换",
+    "多项式回归",
+    "basis function",
+    "feature map",
+    "polynomial regression"
+   ]
+  },
+  "bias_variance_decomposition": {
+   "name": "bias-variance decomposition",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/bias_variance_decomposition",
+   "metacademy_id": "e46vxqrx",
+   "aliases": [
+    "偏差方差",
+    "偏差与方差",
+    "方差偏差",
+    "bias variance"
+   ]
+  },
+  "binary_linear_classifiers": {
+   "name": "binary linear classifiers",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/binary_linear_classifiers",
+   "metacademy_id": "gzaovo18",
+   "aliases": [
+    "线性分类",
+    "二分类",
+    "二元分类",
+    "感知机",
+    "linear classifier",
+    "binary classification",
+    "perceptron"
+   ]
+  },
+  "chain_rule": {
+   "name": "Chain Rule",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/chain_rule",
+   "metacademy_id": "zha1k3v0",
+   "field": "multivariable_calculus",
+   "aliases": [
+    "链式法则",
+    "链式求导",
+    "chain rule"
+   ]
+  },
+  "change_of_basis": {
+   "name": "change of basis",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/change_of_basis",
+   "metacademy_id": "dyfwkbip",
+   "field": "linear_algebra",
+   "aliases": [
+    "基变换",
+    "坐标变换",
+    "换基",
+    "change of basis"
+   ]
+  },
+  "column_space_and_nullspace": {
+   "name": "column space and nullspace",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/column_space_and_nullspace",
+   "metacademy_id": "ylk7eyvy",
+   "field": "linear_algebra",
+   "aliases": [
+    "列空间",
+    "零空间",
+    "核空间",
+    "秩",
+    "column space",
+    "null space",
+    "nullspace",
+    "rank"
+   ]
+  },
+  "complex_numbers": {
+   "name": "complex numbers",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/complex_numbers",
+   "metacademy_id": "nu5nhdxb",
+   "aliases": [
+    "复数",
+    "complex number"
+   ]
+  },
+  "conditional_probability": {
+   "name": "conditional probability",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/conditional_probability",
+   "metacademy_id": "7yxf3ip3",
+   "field": "probability_theory",
+   "aliases": [
+    "条件概率",
+    "贝叶斯定理",
+    "贝叶斯公式",
+    "conditional probability",
+    "bayes rule",
+    "bayes theorem"
+   ]
+  },
+  "convex_functions": {
+   "name": "convex functions",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/convex_functions",
+   "metacademy_id": "o4lo1hx5"
+  },
+  "convex_optimization": {
+   "name": "convex optimization",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/convex_optimization",
+   "metacademy_id": "ummxprtk"
+  },
+  "convex_sets": {
+   "name": "convex sets",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/convex_sets",
+   "metacademy_id": "1dx39mek"
+  },
+  "covariance": {
+   "name": "covariance",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/covariance",
+   "metacademy_id": "mxpmyv5u",
+   "field": "probability_theory"
+  },
+  "covariance_matrices": {
+   "name": "covariance matrices",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/covariance_matrices",
+   "metacademy_id": "djpu1udn"
+  },
+  "cross_validation": {
+   "name": "cross validation",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/cross_validation",
+   "metacademy_id": "4mxwxpds",
+   "aliases": [
+    "交叉验证",
+    "留一法",
+    "验证集",
+    "cross validation"
+   ]
+  },
+  "decision_trees": {
+   "name": "decision trees",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/decision_trees",
+   "metacademy_id": "46ycc9su",
+   "aliases": [
+    "决策树",
+    "decision tree"
+   ]
+  },
+  "determinant": {
+   "name": "determinant",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/determinant",
+   "metacademy_id": "xu60d2g1",
+   "field": "linear_algebra",
+   "aliases": [
+    "行列式",
+    "determinant"
+   ]
+  },
+  "dot_product": {
+   "name": "dot product",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/dot_product",
+   "metacademy_id": "bveqc1fo",
+   "field": "linear_algebra",
+   "aliases": [
+    "点积",
+    "内积",
+    "点乘",
+    "数量积",
+    "dot product",
+    "inner product"
+   ]
+  },
+  "eigenvalues_and_eigenvectors": {
+   "name": "eigenvalues and eigenvectors",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/eigenvalues_and_eigenvectors",
+   "metacademy_id": "kquxsbij",
+   "field": "linear_algebra",
+   "aliases": [
+    "特征值",
+    "特征向量",
+    "eigenvalue",
+    "eigenvector"
+   ]
+  },
+  "expectation_and_variance": {
+   "name": "expectation and variance",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/expectation_and_variance",
+   "metacademy_id": "gvp31pbp",
+   "field": "probability_theory",
+   "aliases": [
+    "期望",
+    "方差",
+    "expectation",
+    "variance"
+   ],
+   "exclude": [
+    "偏差方差",
+    "偏差与方差",
+    "方差偏差",
+    "bias variance"
+   ]
+  },
+  "feed_forward_neural_nets": {
+   "name": "feed-forward neural nets",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/feed_forward_neural_nets",
+   "metacademy_id": "m9abwewv",
+   "aliases": [
+    "神经网络",
+    "前馈网络",
+    "多层感知机",
+    "MLP",
+    "neural network",
+    "neural net"
+   ]
+  },
+  "four_fundamental_subspaces": {
+   "name": "four fundamental subspaces",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/four_fundamental_subspaces",
+   "metacademy_id": "tjcob2im",
+   "field": "linear_algebra",
+   "aliases": [
+    "四个基本子空间",
+    "基本子空间",
+    "fundamental subspace"
+   ]
+  },
+  "functions_of_several_variables": {
+   "name": "functions of several variables",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/functions_of_several_variables",
+   "metacademy_id": "kp6axa2i",
+   "field": "multivariable_calculus",
+   "aliases": [
+    "多元函数",
+    "多变量函数",
+    "多元微积分",
+    "functions of several variables",
+    "multivariable"
+   ]
+  },
+  "gaussian_distribution": {
+   "name": "Gaussian distribution",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/gaussian_distribution",
+   "metacademy_id": "jnw8a0ar",
+   "field": "probability_theory"
+  },
+  "gaussian_elimination": {
+   "name": "Gaussian elimination",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/gaussian_elimination",
+   "metacademy_id": "8de793ha",
+   "field": "linear_algebra",
+   "aliases": [
+    "高斯消元",
+    "消元法",
+    "初等行变换",
+    "行变换",
+    "gaussian elimination"
+   ]
+  },
+  "generalization": {
+   "name": "generalization",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/generalization",
+   "metacademy_id": "0dp1y59v",
+   "aliases": [
+    "泛化",
+    "过拟合",
+    "欠拟合",
+    "generalization",
+    "overfitting",
+    "underfitting"
+   ]
+  },
+  "gradient": {
+   "name": "gradient",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/gradient",
+   "metacademy_id": "8vhx3x66",
+   "field": "multivariable_calculus",
+   "aliases": [
+    "梯度",
+    "gradient"
+   ],
+   "exclude": [
+    "梯度下降",
+    "gradient descent"
+   ]
+  },
+  "gradient_descent": {
+   "name": "gradient descent",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/gradient_descent",
+   "metacademy_id": "zlyqzsgn",
+   "aliases": [
+    "梯度下降",
+    "gradient descent"
+   ]
+  },
+  "higher_order_partial_derivatives": {
+   "name": "higher-order partial derivatives",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/higher_order_partial_derivatives",
+   "metacademy_id": "6o8bvixc",
+   "field": "multivariable_calculus"
+  },
+  "independent_events": {
+   "name": "independent events",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/independent_events",
+   "metacademy_id": "k959cyjm",
+   "field": "probability_theory",
+   "aliases": [
+    "独立事件",
+    "事件独立",
+    "独立性",
+    "independent event",
+    "independence"
+   ]
+  },
+  "independent_random_variables": {
+   "name": "independent random variables",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/independent_random_variables",
+   "metacademy_id": "m59ed98e",
+   "field": "probability_theory",
+   "aliases": [
+    "独立随机变量",
+    "随机变量的独立",
+    "独立同分布",
+    "独立性",
+    "iid",
+    "independent random variable",
+    "independence"
+   ]
+  },
+  "k_means": {
+   "name": "k-means",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/k_means",
+   "metacademy_id": "c1alw8kz",
+   "aliases": [
+    "K均值",
+    "k-means",
+    "kmeans"
+   ]
+  },
+  "lasso": {
+   "name": "LASSO",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/lasso",
+   "metacademy_id": "d28z14um"
+  },
+  "limits_and_continuity_in_rn": {
+   "name": "limits and continuity in R^n",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/limits_and_continuity_in_rn",
+   "metacademy_id": "vxncdcer",
+   "field": "multivariable_calculus",
+   "aliases": [
+    "极限",
+    "连续性",
+    "limit",
+    "continuity"
+   ]
+  },
+  "linear_approximation": {
+   "name": "linear approximation",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/linear_approximation",
+   "metacademy_id": "nw2kqzlz",
+   "field": "multivariable_calculus",
+   "aliases": [
+    "线性近似",
+    "线性逼近",
+    "一阶近似",
+    "全微分",
+    "可微",
+    "泰勒展开",
+    "linear approximation",
+    "differentiab",
+    "taylor"
+   ]
+  },
+  "linear_least_squares": {
+   "name": "linear least squares",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/linear_least_squares",
+   "metacademy_id": "72g95twq",
+   "field": "linear_algebra"
+  },
+  "linear_regression": {
+   "name": "linear regression",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/linear_regression",
+   "metacademy_id": "x6e7glql",
+   "aliases": [
+    "线性回归",
+    "最小二乘回归",
+    "linear regression"
+   ]
+  },
+  "linear_regression_as_maximum_likelihood": {
+   "name": "linear regression as maximum likelihood",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/linear_regression_as_maximum_likelihood",
+   "metacademy_id": "okv0c3op"
+  },
+  "linear_regression_closed_form": {
+   "name": "linear regression: closed-form solution",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/linear_regression_closed_form",
+   "metacademy_id": "x1gu9a93"
+  },
+  "linear_systems_as_matrices": {
+   "name": "linear systems as matrices",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/linear_systems_as_matrices",
+   "metacademy_id": "jogqeyb0",
+   "field": "linear_algebra",
+   "aliases": [
+    "线性方程组",
+    "方程组",
+    "线性系统",
+    "linear system",
+    "linear equation"
+   ]
+  },
+  "linear_transformations_as_matrices": {
+   "name": "linear transformations as matrices",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/linear_transformations_as_matrices",
+   "metacademy_id": "frmn5lqo",
+   "field": "linear_algebra",
+   "aliases": [
+    "线性变换",
+    "线性映射",
+    "linear transformation",
+    "linear map"
+   ]
+  },
+  "logistic_regression": {
+   "name": "logistic regression",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/logistic_regression",
+   "metacademy_id": "fyslhiko",
+   "aliases": [
+    "逻辑回归",
+    "逻辑斯蒂回归",
+    "对数几率回归",
+    "logistic回归",
+    "logistic regression"
+   ]
+  },
+  "loss_function": {
+   "name": "loss function",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/loss_function",
+   "metacademy_id": "3cqp31aa"
+  },
+  "matrix_inverse": {
+   "name": "matrix inverse",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/matrix_inverse",
+   "metacademy_id": "t6x3pnaf",
+   "field": "linear_algebra",
+   "aliases": [
+    "逆矩阵",
+    "矩阵的逆",
+    "矩阵求逆",
+    "矩阵逆",
+    "可逆",
+    "matrix inverse",
+    "invertible"
+   ]
+  },
+  "matrix_multiplication": {
+   "name": "matrix multiplication",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/matrix_multiplication",
+   "metacademy_id": "9p3calmt",
+   "field": "linear_algebra",
+   "aliases": [
+    "矩阵乘法",
+    "矩阵相乘",
+    "矩阵乘",
+    "矩阵运算",
+    "matrix multiplication"
+   ]
+  },
+  "matrix_transpose": {
+   "name": "matrix transpose",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/matrix_transpose",
+   "metacademy_id": "72682zke",
+   "field": "linear_algebra",
+   "aliases": [
+    "转置",
+    "transpose"
+   ]
+  },
+  "maximum_likelihood": {
+   "name": "maximum likelihood",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/maximum_likelihood",
+   "metacademy_id": "fm218u5i"
+  },
+  "multiple_integrals": {
+   "name": "multiple integrals",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/multiple_integrals",
+   "metacademy_id": "jp7i38z3",
+   "field": "multivariable_calculus",
+   "aliases": [
+    "重积分",
+    "多重积分",
+    "二重积分",
+    "multiple integral",
+    "double integral"
+   ]
+  },
+  "multivariate_distributions": {
+   "name": "multivariate distributions",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/multivariate_distributions",
+   "metacademy_id": "3vjwy6go",
+   "field": "probability_theory",
+   "aliases": [
+    "多元分布",
+    "联合分布",
+    "联合概率",
+    "边缘分布",
+    "多维随机变量",
+    "joint distribution",
+    "multivariate distribution"
+   ]
+  },
+  "naive_bayes": {
+   "name": "naive Bayes",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/naive_bayes",
+   "metacademy_id": "dnvrf1nm",
+   "aliases": [
+    "朴素贝叶斯",
+    "naive bayes"
+   ]
+  },
+  "optimization_problems": {
+   "name": "optimization problems",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/optimization_problems",
+   "metacademy_id": "ujcrndcb",
+   "field": "multivariable_calculus",
+   "aliases": [
+    "最优化",
+    "优化问题",
+    "优化方法",
+    "极值",
+    "最小化",
+    "optimization",
+    "minimiz"
+   ]
+  },
+  "orthogonal_subspaces": {
+   "name": "orthogonal subspaces",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/orthogonal_subspaces",
+   "metacademy_id": "vh9s6taj",
+   "field": "linear_algebra",
+   "aliases": [
+    "正交子空间",
+    "正交补",
+    "正交",
+    "orthogonal"
+   ],
+   "exclude": [
+    "标准正交",
+    "正交基",
+    "正交矩阵",
+    "orthonormal"
+   ]
+  },
+  "orthonormal_bases": {
+   "name": "orthonormal bases",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/orthonormal_bases",
+   "metacademy_id": "n3btymcr",
+   "field": "linear_algebra",
+   "aliases": [
+    "标准正交基",
+    "正交基",
+    "正交矩阵",
+    "施密特正交化",
+    "orthonormal",
+    "gram schmidt"
+   ]
+  },
+  "partial_derivatives": {
+   "name": "partial derivatives",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/partial_derivatives",
+   "metacademy_id": "m3bm96b5",
+   "field": "multivariable_calculus",
+   "aliases": [
+    "偏导数",
+    "偏导",
+    "偏微分",
+    "partial derivative"
+   ]
+  },
+  "positive_definite_matrices": {
+   "name": "positive definite matrices",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/positive_definite_matrices",
+   "metacademy_id": "yjhlehd7",
+   "field": "linear_algebra",
+   "aliases": [
+    "正定",
+    "positive definite",
+    "positive semidefinite"
+   ]
+  },
+  "principal_component_analysis": {
+   "name": "principal component analysis",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/principal_component_analysis",
+   "metacademy_id": "qipartpb",
+   "aliases": [
+    "主成分分析",
+    "主成分",
+    "PCA",
+    "principal component"
+   ]
+  },
+  "probability": {
+   "name": "probability",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/probability",
+   "metacademy_id": "i9mo2e09",
+   "field": "probability_theory",
+   "aliases": [
+    "概率",
+    "probability"
+   ]
+  },
+  "projection_onto_a_subspace": {
+   "name": "projection onto a subspace",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/projection_onto_a_subspace",
+   "metacademy_id": "md8stwgx",
+   "field": "linear_algebra",
+   "aliases": [
+    "投影",
+    "projection"
+   ]
+  },
+  "random_variables": {
+   "name": "random variables",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/random_variables",
+   "metacademy_id": "cj7urqv5",
+   "field": "probability_theory",
+   "aliases": [
+    "随机变量",
+    "random variable"
+   ]
+  },
+  "regularization": {
+   "name": "regularization",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/regularization",
+   "metacademy_id": "9ahmjaii",
+   "aliases": [
+    "正则化",
+    "正则项",
+    "权重衰减",
+    "regularization",
+    "weight decay"
+   ]
+  },
+  "ridge_regression": {
+   "name": "ridge regression",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/ridge_regression",
+   "metacademy_id": "20pghp9d"
+  },
+  "roots_of_polynomials": {
+   "name": "roots of polynomials",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/roots_of_polynomials",
+   "metacademy_id": "gl5fz2vi",
+   "aliases": [
+    "多项式的根",
+    "多项式根",
+    "代数基本定理",
+    "roots of polynomial",
+    "polynomial root"
+   ]
+  },
+  "singular_value_decomposition": {
+   "name": "singular value decomposition",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/singular_value_decomposition",
+   "metacademy_id": "y1719kys",
+   "aliases": [
+    "奇异值分解",
+    "奇异值",
+    "SVD",
+    "singular value"
+   ]
+  },
+  "spectral_decomposition": {
+   "name": "spectral decomposition",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/spectral_decomposition",
+   "metacademy_id": "643uoa8t",
+   "field": "linear_algebra",
+   "aliases": [
+    "谱分解",
+    "特征分解",
+    "特征值分解",
+    "对角化",
+    "spectral decomposition",
+    "eigendecomposition",
+    "diagonaliz"
+   ]
+  },
+  "stochastic_gradient_descent": {
+   "name": "stochastic gradient descent",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/stochastic_gradient_descent",
+   "metacademy_id": "57amwk40",
+   "aliases": [
+    "随机梯度下降",
+    "小批量",
+    "SGD",
+    "stochastic gradient",
+    "mini batch"
+   ]
+  },
+  "subspaces": {
+   "name": "subspaces",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/subspaces",
+   "metacademy_id": "hnd1lj3g",
+   "field": "linear_algebra",
+   "aliases": [
+    "子空间",
+    "张成",
+    "生成空间",
+    "subspace",
+    "span"
+   ],
+   "exclude": [
+    "正交子空间",
+    "基本子空间"
+   ]
+  },
+  "support_vector_machine": {
+   "name": "the support vector machine",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/support_vector_machine",
+   "metacademy_id": "4wuz9t3u",
+   "aliases": [
+    "支持向量机",
+    "SVM",
+    "support vector machine"
+   ]
+  },
+  "vector_spaces": {
+   "name": "vector spaces",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/vector_spaces",
+   "metacademy_id": "b72bqd7z",
+   "aliases": [
+    "向量空间",
+    "线性空间",
+    "vector space"
+   ]
+  },
+  "vectors": {
+   "name": "vectors",
+   "url": "https://github.com/metacademy/metacademy-content/tree/2654877392cea3857e9fa91ddf896a4a2f5361c8/concepts/vectors",
+   "metacademy_id": "4ocvc918",
+   "field": "linear_algebra",
+   "aliases": [
+    "向量",
+    "vector"
+   ],
+   "exclude": [
+    "支持向量",
+    "特征向量",
+    "向量空间",
+    "向量化",
+    "词向量",
+    "support vector",
+    "eigenvector",
+    "vector space",
+    "vectoriz"
+   ]
+  }
+ },
+ "goals": [
+  {
+   "goal": "机器学习",
+   "goal_en": "machine learning",
+   "anchors": [
+    "linear_regression",
+    "logistic_regression",
+    "gradient_descent",
+    "regularization",
+    "cross_validation",
+    "bias_variance_decomposition",
+    "feed_forward_neural_nets",
+    "backpropagation",
+    "support_vector_machine",
+    "k_means",
+    "principal_component_analysis",
+    "naive_bayes",
+    "decision_trees"
+   ],
+   "support_min": 3,
+   "closure_size": 70,
+   "core": [
+    "linear_regression",
+    "logistic_regression",
+    "gradient_descent",
+    "regularization",
+    "cross_validation",
+    "bias_variance_decomposition",
+    "feed_forward_neural_nets",
+    "backpropagation",
+    "support_vector_machine",
+    "k_means",
+    "principal_component_analysis",
+    "naive_bayes",
+    "decision_trees",
+    "dot_product",
+    "vectors",
+    "matrix_multiplication",
+    "functions_of_several_variables",
+    "partial_derivatives",
+    "optimization_problems",
+    "bases",
+    "binary_linear_classifiers",
+    "column_space_and_nullspace",
+    "conditional_probability",
+    "expectation_and_variance",
+    "four_fundamental_subspaces",
+    "gaussian_elimination",
+    "generalization",
+    "gradient",
+    "independent_events",
+    "independent_random_variables",
+    "limits_and_continuity_in_rn",
+    "linear_approximation",
+    "linear_systems_as_matrices",
+    "matrix_inverse",
+    "matrix_transpose",
+    "multiple_integrals",
+    "multivariate_distributions",
+    "orthogonal_subspaces",
+    "probability",
+    "projection_onto_a_subspace",
+    "random_variables",
+    "subspaces"
+   ],
+   "edges": {
+    "backpropagation": [
+     "chain_rule",
+     "feed_forward_neural_nets",
+     "stochastic_gradient_descent"
+    ],
+    "bases": [
+     "subspaces"
+    ],
+    "basis_function_expansions": [
+     "linear_regression"
+    ],
+    "bias_variance_decomposition": [
+     "generalization",
+     "linear_regression",
+     "linear_regression_closed_form"
+    ],
+    "binary_linear_classifiers": [
+     "linear_regression"
+    ],
+    "chain_rule": [
+     "linear_approximation",
+     "matrix_multiplication",
+     "partial_derivatives"
+    ],
+    "change_of_basis": [
+     "bases",
+     "linear_transformations_as_matrices",
+     "matrix_inverse",
+     "matrix_multiplication",
+     "vector_spaces"
+    ],
+    "column_space_and_nullspace": [
+     "linear_systems_as_matrices",
+     "subspaces"
+    ],
+    "complex_numbers": [],
+    "conditional_probability": [
+     "probability"
+    ],
+    "convex_functions": [
+     "convex_sets",
+     "gradient",
+     "higher_order_partial_derivatives",
+     "linear_approximation",
+     "positive_definite_matrices",
+     "vectors"
+    ],
+    "convex_optimization": [
+     "convex_functions",
+     "convex_sets",
+     "gradient",
+     "optimization_problems"
+    ],
+    "convex_sets": [
+     "dot_product",
+     "vectors"
+    ],
+    "covariance": [
+     "expectation_and_variance",
+     "independent_random_variables",
+     "multivariate_distributions"
+    ],
+    "covariance_matrices": [
+     "covariance",
+     "positive_definite_matrices"
+    ],
+    "cross_validation": [
+     "loss_function"
+    ],
+    "decision_trees": [],
+    "determinant": [
+     "gaussian_elimination",
+     "matrix_inverse",
+     "matrix_multiplication",
+     "matrix_transpose",
+     "vectors"
+    ],
+    "dot_product": [
+     "vectors"
+    ],
+    "eigenvalues_and_eigenvectors": [
+     "column_space_and_nullspace",
+     "complex_numbers",
+     "determinant",
+     "linear_systems_as_matrices",
+     "matrix_multiplication",
+     "roots_of_polynomials"
+    ],
+    "expectation_and_variance": [
+     "random_variables"
+    ],
+    "feed_forward_neural_nets": [
+     "basis_function_expansions"
+    ],
+    "four_fundamental_subspaces": [
+     "bases",
+     "column_space_and_nullspace",
+     "gaussian_elimination",
+     "matrix_transpose",
+     "subspaces"
+    ],
+    "functions_of_several_variables": [],
+    "gaussian_distribution": [
+     "expectation_and_variance",
+     "random_variables"
+    ],
+    "gaussian_elimination": [
+     "linear_systems_as_matrices"
+    ],
+    "generalization": [
+     "linear_regression"
+    ],
+    "gradient": [
+     "dot_product",
+     "functions_of_several_variables",
+     "linear_approximation",
+     "partial_derivatives"
+    ],
+    "gradient_descent": [
+     "functions_of_several_variables",
+     "gradient"
+    ],
+    "higher_order_partial_derivatives": [
+     "linear_approximation",
+     "partial_derivatives"
+    ],
+    "independent_events": [
+     "conditional_probability",
+     "probability"
+    ],
+    "independent_random_variables": [
+     "independent_events",
+     "multivariate_distributions",
+     "random_variables"
+    ],
+    "k_means": [],
+    "lasso": [
+     "linear_regression",
+     "optimization_problems",
+     "ridge_regression"
+    ],
+    "limits_and_continuity_in_rn": [
+     "functions_of_several_variables"
+    ],
+    "linear_approximation": [
+     "dot_product",
+     "limits_and_continuity_in_rn",
+     "partial_derivatives"
+    ],
+    "linear_least_squares": [
+     "four_fundamental_subspaces",
+     "linear_systems_as_matrices",
+     "matrix_transpose",
+     "partial_derivatives",
+     "projection_onto_a_subspace"
+    ],
+    "linear_regression": [
+     "matrix_multiplication"
+    ],
+    "linear_regression_as_maximum_likelihood": [
+     "linear_regression",
+     "maximum_likelihood"
+    ],
+    "linear_regression_closed_form": [
+     "linear_least_squares",
+     "linear_regression"
+    ],
+    "linear_systems_as_matrices": [
+     "vectors"
+    ],
+    "linear_transformations_as_matrices": [
+     "dot_product"
+    ],
+    "logistic_regression": [
+     "binary_linear_classifiers",
+     "linear_regression_as_maximum_likelihood",
+     "optimization_problems",
+     "ridge_regression"
+    ],
+    "loss_function": [],
+    "matrix_inverse": [
+     "linear_systems_as_matrices",
+     "matrix_multiplication"
+    ],
+    "matrix_multiplication": [
+     "dot_product"
+    ],
+    "matrix_transpose": [
+     "matrix_multiplication"
+    ],
+    "maximum_likelihood": [
+     "gaussian_distribution",
+     "independent_random_variables",
+     "optimization_problems",
+     "random_variables"
+    ],
+    "multiple_integrals": [
+     "functions_of_several_variables"
+    ],
+    "multivariate_distributions": [
+     "multiple_integrals",
+     "random_variables"
+    ],
+    "naive_bayes": [
+     "binary_linear_classifiers",
+     "maximum_likelihood",
+     "optimization_problems"
+    ],
+    "optimization_problems": [
+     "partial_derivatives"
+    ],
+    "orthogonal_subspaces": [
+     "dot_product",
+     "four_fundamental_subspaces",
+     "subspaces"
+    ],
+    "orthonormal_bases": [
+     "bases",
+     "dot_product",
+     "matrix_inverse",
+     "matrix_multiplication",
+     "matrix_transpose",
+     "projection_onto_a_subspace"
+    ],
+    "partial_derivatives": [
+     "functions_of_several_variables"
+    ],
+    "positive_definite_matrices": [
+     "eigenvalues_and_eigenvectors",
+     "matrix_inverse",
+     "matrix_multiplication",
+     "matrix_transpose",
+     "spectral_decomposition"
+    ],
+    "principal_component_analysis": [
+     "covariance_matrices",
+     "singular_value_decomposition",
+     "spectral_decomposition"
+    ],
+    "probability": [],
+    "projection_onto_a_subspace": [
+     "bases",
+     "matrix_inverse",
+     "matrix_transpose",
+     "orthogonal_subspaces",
+     "subspaces"
+    ],
+    "random_variables": [
+     "probability"
+    ],
+    "regularization": [
+     "generalization",
+     "lasso",
+     "optimization_problems",
+     "ridge_regression"
+    ],
+    "ridge_regression": [
+     "generalization",
+     "linear_regression"
+    ],
+    "roots_of_polynomials": [
+     "complex_numbers"
+    ],
+    "singular_value_decomposition": [
+     "four_fundamental_subspaces",
+     "matrix_multiplication",
+     "matrix_transpose",
+     "orthonormal_bases",
+     "positive_definite_matrices",
+     "spectral_decomposition"
+    ],
+    "spectral_decomposition": [
+     "change_of_basis",
+     "eigenvalues_and_eigenvectors",
+     "matrix_inverse",
+     "matrix_transpose",
+     "orthonormal_bases"
+    ],
+    "stochastic_gradient_descent": [
+     "gradient_descent"
+    ],
+    "subspaces": [
+     "vectors"
+    ],
+    "support_vector_machine": [
+     "binary_linear_classifiers",
+     "convex_optimization"
+    ],
+    "vector_spaces": [
+     "vectors"
+    ],
+    "vectors": []
+   },
+   "fields": [
+    "linear_algebra",
+    "multivariable_calculus",
+    "probability_theory"
+   ]
+  },
+  {
+   "goal": "神经网络",
+   "goal_en": "neural networks",
+   "anchors": [
+    "feed_forward_neural_nets",
+    "backpropagation"
+   ],
+   "support_min": 1,
+   "closure_size": 15,
+   "core": [
+    "feed_forward_neural_nets",
+    "backpropagation",
+    "basis_function_expansions",
+    "dot_product",
+    "linear_regression",
+    "matrix_multiplication",
+    "vectors",
+    "chain_rule",
+    "functions_of_several_variables",
+    "gradient",
+    "gradient_descent",
+    "limits_and_continuity_in_rn",
+    "linear_approximation",
+    "partial_derivatives",
+    "stochastic_gradient_descent"
+   ],
+   "edges": {
+    "backpropagation": [
+     "chain_rule",
+     "feed_forward_neural_nets",
+     "stochastic_gradient_descent"
+    ],
+    "basis_function_expansions": [
+     "linear_regression"
+    ],
+    "chain_rule": [
+     "linear_approximation",
+     "matrix_multiplication",
+     "partial_derivatives"
+    ],
+    "dot_product": [
+     "vectors"
+    ],
+    "feed_forward_neural_nets": [
+     "basis_function_expansions"
+    ],
+    "functions_of_several_variables": [],
+    "gradient": [
+     "dot_product",
+     "functions_of_several_variables",
+     "linear_approximation",
+     "partial_derivatives"
+    ],
+    "gradient_descent": [
+     "functions_of_several_variables",
+     "gradient"
+    ],
+    "limits_and_continuity_in_rn": [
+     "functions_of_several_variables"
+    ],
+    "linear_approximation": [
+     "dot_product",
+     "limits_and_continuity_in_rn",
+     "partial_derivatives"
+    ],
+    "linear_regression": [
+     "matrix_multiplication"
+    ],
+    "matrix_multiplication": [
+     "dot_product"
+    ],
+    "partial_derivatives": [
+     "functions_of_several_variables"
+    ],
+    "stochastic_gradient_descent": [
+     "gradient_descent"
+    ],
+    "vectors": []
+   },
+   "fields": [
+    "linear_algebra",
+    "multivariable_calculus"
+   ]
+  },
+  {
+   "goal": "奇异值分解",
+   "goal_en": "singular value decomposition",
+   "anchors": [
+    "singular_value_decomposition"
+   ],
+   "support_min": 1,
+   "closure_size": 24,
+   "core": [
+    "singular_value_decomposition",
+    "bases",
+    "change_of_basis",
+    "column_space_and_nullspace",
+    "complex_numbers",
+    "determinant",
+    "dot_product",
+    "eigenvalues_and_eigenvectors",
+    "four_fundamental_subspaces",
+    "gaussian_elimination",
+    "linear_systems_as_matrices",
+    "linear_transformations_as_matrices",
+    "matrix_inverse",
+    "matrix_multiplication",
+    "matrix_transpose",
+    "orthogonal_subspaces",
+    "orthonormal_bases",
+    "positive_definite_matrices",
+    "projection_onto_a_subspace",
+    "roots_of_polynomials",
+    "spectral_decomposition",
+    "subspaces",
+    "vector_spaces",
+    "vectors"
+   ],
+   "edges": {
+    "bases": [
+     "subspaces"
+    ],
+    "change_of_basis": [
+     "bases",
+     "linear_transformations_as_matrices",
+     "matrix_inverse",
+     "matrix_multiplication",
+     "vector_spaces"
+    ],
+    "column_space_and_nullspace": [
+     "linear_systems_as_matrices",
+     "subspaces"
+    ],
+    "complex_numbers": [],
+    "determinant": [
+     "gaussian_elimination",
+     "matrix_inverse",
+     "matrix_multiplication",
+     "matrix_transpose",
+     "vectors"
+    ],
+    "dot_product": [
+     "vectors"
+    ],
+    "eigenvalues_and_eigenvectors": [
+     "column_space_and_nullspace",
+     "complex_numbers",
+     "determinant",
+     "linear_systems_as_matrices",
+     "matrix_multiplication",
+     "roots_of_polynomials"
+    ],
+    "four_fundamental_subspaces": [
+     "bases",
+     "column_space_and_nullspace",
+     "gaussian_elimination",
+     "matrix_transpose",
+     "subspaces"
+    ],
+    "gaussian_elimination": [
+     "linear_systems_as_matrices"
+    ],
+    "linear_systems_as_matrices": [
+     "vectors"
+    ],
+    "linear_transformations_as_matrices": [
+     "dot_product"
+    ],
+    "matrix_inverse": [
+     "linear_systems_as_matrices",
+     "matrix_multiplication"
+    ],
+    "matrix_multiplication": [
+     "dot_product"
+    ],
+    "matrix_transpose": [
+     "matrix_multiplication"
+    ],
+    "orthogonal_subspaces": [
+     "dot_product",
+     "four_fundamental_subspaces",
+     "subspaces"
+    ],
+    "orthonormal_bases": [
+     "bases",
+     "dot_product",
+     "matrix_inverse",
+     "matrix_multiplication",
+     "matrix_transpose",
+     "projection_onto_a_subspace"
+    ],
+    "positive_definite_matrices": [
+     "eigenvalues_and_eigenvectors",
+     "matrix_inverse",
+     "matrix_multiplication",
+     "matrix_transpose",
+     "spectral_decomposition"
+    ],
+    "projection_onto_a_subspace": [
+     "bases",
+     "matrix_inverse",
+     "matrix_transpose",
+     "orthogonal_subspaces",
+     "subspaces"
+    ],
+    "roots_of_polynomials": [
+     "complex_numbers"
+    ],
+    "singular_value_decomposition": [
+     "four_fundamental_subspaces",
+     "matrix_multiplication",
+     "matrix_transpose",
+     "orthonormal_bases",
+     "positive_definite_matrices",
+     "spectral_decomposition"
+    ],
+    "spectral_decomposition": [
+     "change_of_basis",
+     "eigenvalues_and_eigenvectors",
+     "matrix_inverse",
+     "matrix_transpose",
+     "orthonormal_bases"
+    ],
+    "subspaces": [
+     "vectors"
+    ],
+    "vector_spaces": [
+     "vectors"
+    ],
+    "vectors": []
+   },
+   "fields": [
+    "linear_algebra"
+   ]
+  }
+ ]
+}

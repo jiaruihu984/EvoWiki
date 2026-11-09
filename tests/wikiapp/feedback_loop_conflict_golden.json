@@ -1,0 +1,2481 @@
+{
+  "know_patch": {
+    "aspect": [
+      {
+        "event_id": "aev_0020",
+        "observation": {
+          "cell": "c1.procedure",
+          "evidence_ref": "feedback:pg_0010:s2:know",
+          "kind": "feedback",
+          "polarity": "+",
+          "quote": null,
+          "strength": 0.6
+        },
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "observe"
+      },
+      {
+        "cell": "c1.procedure",
+        "event_id": "aev_0021",
+        "evidence_ref": "feedback:pg_0010:s2:know",
+        "label": null,
+        "text": "z 分数怎么读",
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "add_note"
+      },
+      {
+        "event_id": "aev_0022",
+        "observation": {
+          "cell": "c1.interpret",
+          "evidence_ref": "feedback:pg_0010:s2:know",
+          "kind": "feedback",
+          "polarity": "+",
+          "quote": null,
+          "strength": 0.6
+        },
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "observe"
+      },
+      {
+        "cell": "c1.interpret",
+        "event_id": "aev_0023",
+        "evidence_ref": "feedback:pg_0010:s2:know",
+        "label": null,
+        "text": "z 分数怎么读",
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "add_note"
+      }
+    ],
+    "out": {
+      "change": {
+        "budget_exceeded": false,
+        "conflicts": [
+          {
+            "cell": "c2.term",
+            "kind": "line_weak",
+            "section_id": "s3"
+          }
+        ],
+        "folded": [
+          "s2"
+        ],
+        "inserted": [],
+        "llm_calls": 0,
+        "moved": [],
+        "other_pages_stale": [],
+        "rewritten": [],
+        "unfolded": [],
+        "unresolved_conflicts": [
+          "「标准差提醒」只一行带过，但其中 标准差·术语 / 定义 现在是模糊 / 不会"
+        ]
+      },
+      "section": {
+        "artifact_id": "art_fa2f2a1cfb76a243cfc46021",
+        "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧",
+        "cells": [
+          {
+            "aspect": "procedure",
+            "band": "likely",
+            "cell": "c1.procedure",
+            "concept_id": "c1",
+            "concept_name": "z 分数",
+            "declared": null
+          },
+          {
+            "aspect": "interpret",
+            "band": "shaky",
+            "cell": "c1.interpret",
+            "concept_id": "c1",
+            "concept_name": "z 分数",
+            "declared": null
+          }
+        ],
+        "changed": "folded",
+        "check": null,
+        "cue": "s2 的要点",
+        "fingerprint": "ece5e97f79086325af8bba15cfbe55fdddbb946900a8a75216bcf5342af44f01",
+        "fold_locked": true,
+        "foldable": true,
+        "folded": true,
+        "heading": "z 分数怎么读",
+        "id": "s2",
+        "lookups": [
+          "约 68% 落在 ±1 内"
+        ],
+        "note_body": null,
+        "pinned": false,
+        "role": "explain",
+        "why": "目标格，计算模糊"
+      }
+    },
+    "wiki": [
+      {
+        "body": {
+          "action": "feedback",
+          "record": {
+            "changed": {
+              "s2": "folded"
+            },
+            "checks": {},
+            "cite_issues": [],
+            "collapse_applied": false,
+            "concepts": [
+              "c1",
+              "c2"
+            ],
+            "created_at": "2026-10-08T09:00:00Z",
+            "diff": null,
+            "domain": null,
+            "done": false,
+            "feedback": null,
+            "folder": "z 分数",
+            "goal": "看懂 z 分数",
+            "hand_edit": null,
+            "kind": "learn",
+            "merged_from": [],
+            "page": {
+              "conflicts": [
+                {
+                  "cell": "c2.term",
+                  "kind": "line_weak",
+                  "section_id": "s3"
+                }
+              ],
+              "outline": {
+                "assumed": [],
+                "concepts": [
+                  "c1",
+                  "c2"
+                ],
+                "goal": "看懂 z 分数",
+                "page_id": "pg_0010",
+                "profile": "你会算 z 分数，但解读还模糊",
+                "sections": [
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "从你会的出发",
+                    "id": "s1",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "挂到已会的"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.procedure",
+                      "c1.interpret"
+                    ],
+                    "check": null,
+                    "heading": "z 分数怎么读",
+                    "id": "s2",
+                    "needs_lookup": [
+                      "经验法则 68-95-99.7"
+                    ],
+                    "notes": "",
+                    "role": "explain",
+                    "why": "目标格，计算模糊"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c2.term"
+                    ],
+                    "check": null,
+                    "heading": "标准差提醒",
+                    "id": "s3",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "前置"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.interpret"
+                    ],
+                    "check": {
+                      "answer": 2,
+                      "cell": "c1.interpret",
+                      "options": [
+                        "无意义",
+                        "低 1 分",
+                        "低一个标准差"
+                      ],
+                      "stem": "z=-1 表示？",
+                      "verified": true
+                    },
+                    "heading": "确认一下",
+                    "id": "s4",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "check",
+                    "why": "答案决定 s2 写多深"
+                  }
+                ],
+                "source": "organizer",
+                "targets": [
+                  "c1"
+                ]
+              },
+              "snapshot": {
+                "c1.interpret": "shaky",
+                "c1.procedure": "likely",
+                "c2.term": "gap"
+              },
+              "states": {
+                "s1": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "fold_locked": true,
+                  "folded": true,
+                  "pinned": false,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s3"
+                },
+                "s4": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s4"
+                }
+              },
+              "texts": {
+                "s1": {
+                  "answer": "从你会的出发的答案",
+                  "body": "s1 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s1",
+                  "cue": "s1 的要点",
+                  "note_body": null,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "answer": "z 分数怎么读的答案",
+                  "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧",
+                  "cache_key": "deep:page:u1:pg_0010:1:s2",
+                  "cue": "s2 的要点",
+                  "note_body": null,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "answer": "标准差提醒的答案",
+                  "body": "s3 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s3",
+                  "cue": "s3 的要点",
+                  "note_body": null,
+                  "section_id": "s3"
+                }
+              },
+              "unresolved_conflicts": [
+                "「标准差提醒」只一行带过，但其中 标准差·术语 / 定义 现在是模糊 / 不会"
+              ]
+            },
+            "page_id": "pg_0010",
+            "reading_id": null,
+            "revisions": 0,
+            "shelved": false,
+            "sources": [],
+            "targets": [
+              "c1"
+            ],
+            "title": "z 分数",
+            "unit_id": null,
+            "writing": null,
+            "written": {
+              "assets": [],
+              "at": "2026-10-08T09:00:00Z",
+              "cost_usd": 0.0,
+              "fallback_reason": null,
+              "job_id": "page:u1:pg_0010:1",
+              "kind": "page",
+              "model": "anthropic:claude-sonnet-5-5",
+              "sections": [
+                "s1",
+                "s2",
+                "s3"
+              ],
+              "spec_version": 1
+            }
+          },
+          "type": "page_saved"
+        },
+        "event_id": "wev_0024",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "record": {
+            "action": "这部分我懂",
+            "heading": "z 分数怎么读",
+            "page": "pg_0010",
+            "text": null
+          },
+          "type": "usage_added"
+        },
+        "event_id": "wev_0025",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "signal": {
+            "at": "2026-10-08T09:00:00Z",
+            "chips": [],
+            "evidence_type": "strong",
+            "infer_version": 1,
+            "kind": "section_know",
+            "outcome": null,
+            "page_id": "pg_0010",
+            "section_id": "s2",
+            "signal_id": "sig_0026",
+            "spec_version": 1,
+            "target_artifact_id": null,
+            "text": ""
+          },
+          "type": "signal_recorded"
+        },
+        "event_id": "wev_0027",
+        "ts": "2026-10-08T09:00:00Z"
+      }
+    ]
+  },
+  "know_plain": {
+    "aspect": [
+      {
+        "event_id": "aev_0019",
+        "observation": {
+          "cell": "c1.procedure",
+          "evidence_ref": "feedback:pg_0010:s2:know",
+          "kind": "feedback",
+          "polarity": "+",
+          "quote": null,
+          "strength": 0.6
+        },
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "observe"
+      },
+      {
+        "cell": "c1.procedure",
+        "event_id": "aev_0020",
+        "evidence_ref": "feedback:pg_0010:s2:know",
+        "label": null,
+        "text": "z 分数怎么读",
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "add_note"
+      },
+      {
+        "event_id": "aev_0021",
+        "observation": {
+          "cell": "c1.interpret",
+          "evidence_ref": "feedback:pg_0010:s2:know",
+          "kind": "feedback",
+          "polarity": "+",
+          "quote": null,
+          "strength": 0.6
+        },
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "observe"
+      },
+      {
+        "cell": "c1.interpret",
+        "event_id": "aev_0022",
+        "evidence_ref": "feedback:pg_0010:s2:know",
+        "label": null,
+        "text": "z 分数怎么读",
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "add_note"
+      }
+    ],
+    "out": {
+      "change": {
+        "budget_exceeded": false,
+        "conflicts": [],
+        "folded": [
+          "s2"
+        ],
+        "inserted": [],
+        "llm_calls": 0,
+        "moved": [],
+        "other_pages_stale": [],
+        "rewritten": [],
+        "unfolded": [],
+        "unresolved_conflicts": []
+      },
+      "section": {
+        "artifact_id": "art_fa2f2a1cfb76a243cfc46021",
+        "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧",
+        "cells": [
+          {
+            "aspect": "procedure",
+            "band": "likely",
+            "cell": "c1.procedure",
+            "concept_id": "c1",
+            "concept_name": "z 分数",
+            "declared": null
+          },
+          {
+            "aspect": "interpret",
+            "band": "shaky",
+            "cell": "c1.interpret",
+            "concept_id": "c1",
+            "concept_name": "z 分数",
+            "declared": null
+          }
+        ],
+        "changed": "folded",
+        "check": null,
+        "cue": "s2 的要点",
+        "fingerprint": "ece5e97f79086325af8bba15cfbe55fdddbb946900a8a75216bcf5342af44f01",
+        "fold_locked": true,
+        "foldable": true,
+        "folded": true,
+        "heading": "z 分数怎么读",
+        "id": "s2",
+        "lookups": [
+          "约 68% 落在 ±1 内"
+        ],
+        "note_body": null,
+        "pinned": false,
+        "role": "explain",
+        "why": "目标格，计算模糊"
+      }
+    },
+    "wiki": [
+      {
+        "body": {
+          "action": "feedback",
+          "record": {
+            "changed": {
+              "s2": "folded"
+            },
+            "checks": {},
+            "cite_issues": [],
+            "collapse_applied": false,
+            "concepts": [
+              "c1",
+              "c2"
+            ],
+            "created_at": "2026-10-08T09:00:00Z",
+            "diff": null,
+            "domain": null,
+            "done": false,
+            "feedback": null,
+            "folder": "z 分数",
+            "goal": "看懂 z 分数",
+            "hand_edit": null,
+            "kind": "learn",
+            "merged_from": [],
+            "page": {
+              "conflicts": [],
+              "outline": {
+                "assumed": [],
+                "concepts": [
+                  "c1",
+                  "c2"
+                ],
+                "goal": "看懂 z 分数",
+                "page_id": "pg_0010",
+                "profile": "你会算 z 分数，但解读还模糊",
+                "sections": [
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "从你会的出发",
+                    "id": "s1",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "挂到已会的"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.procedure",
+                      "c1.interpret"
+                    ],
+                    "check": null,
+                    "heading": "z 分数怎么读",
+                    "id": "s2",
+                    "needs_lookup": [
+                      "经验法则 68-95-99.7"
+                    ],
+                    "notes": "",
+                    "role": "explain",
+                    "why": "目标格，计算模糊"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c2.term"
+                    ],
+                    "check": null,
+                    "heading": "标准差提醒",
+                    "id": "s3",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "recap",
+                    "why": "前置"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.interpret"
+                    ],
+                    "check": {
+                      "answer": 2,
+                      "cell": "c1.interpret",
+                      "options": [
+                        "无意义",
+                        "低 1 分",
+                        "低一个标准差"
+                      ],
+                      "stem": "z=-1 表示？",
+                      "verified": true
+                    },
+                    "heading": "确认一下",
+                    "id": "s4",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "check",
+                    "why": "答案决定 s2 写多深"
+                  }
+                ],
+                "source": "organizer",
+                "targets": [
+                  "c1"
+                ]
+              },
+              "snapshot": {
+                "c1.interpret": "shaky",
+                "c1.procedure": "likely",
+                "c2.term": "none"
+              },
+              "states": {
+                "s1": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "fold_locked": true,
+                  "folded": true,
+                  "pinned": false,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s3"
+                },
+                "s4": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s4"
+                }
+              },
+              "texts": {
+                "s1": {
+                  "answer": "从你会的出发的答案",
+                  "body": "s1 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s1",
+                  "cue": "s1 的要点",
+                  "note_body": null,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "answer": "z 分数怎么读的答案",
+                  "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧",
+                  "cache_key": "deep:page:u1:pg_0010:1:s2",
+                  "cue": "s2 的要点",
+                  "note_body": null,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "answer": "标准差提醒的答案",
+                  "body": "s3 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s3",
+                  "cue": "s3 的要点",
+                  "note_body": null,
+                  "section_id": "s3"
+                }
+              },
+              "unresolved_conflicts": []
+            },
+            "page_id": "pg_0010",
+            "reading_id": null,
+            "revisions": 0,
+            "shelved": false,
+            "sources": [],
+            "targets": [
+              "c1"
+            ],
+            "title": "z 分数",
+            "unit_id": null,
+            "writing": null,
+            "written": {
+              "assets": [],
+              "at": "2026-10-08T09:00:00Z",
+              "cost_usd": 0.0,
+              "fallback_reason": null,
+              "job_id": "page:u1:pg_0010:1",
+              "kind": "page",
+              "model": "anthropic:claude-sonnet-5-5",
+              "sections": [
+                "s1",
+                "s2",
+                "s3"
+              ],
+              "spec_version": 1
+            }
+          },
+          "type": "page_saved"
+        },
+        "event_id": "wev_0023",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "record": {
+            "action": "这部分我懂",
+            "heading": "z 分数怎么读",
+            "page": "pg_0010",
+            "text": null
+          },
+          "type": "usage_added"
+        },
+        "event_id": "wev_0024",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "signal": {
+            "at": "2026-10-08T09:00:00Z",
+            "chips": [],
+            "evidence_type": "strong",
+            "infer_version": 1,
+            "kind": "section_know",
+            "outcome": null,
+            "page_id": "pg_0010",
+            "section_id": "s2",
+            "signal_id": "sig_0025",
+            "spec_version": 1,
+            "target_artifact_id": null,
+            "text": ""
+          },
+          "type": "signal_recorded"
+        },
+        "event_id": "wev_0026",
+        "ts": "2026-10-08T09:00:00Z"
+      }
+    ]
+  },
+  "page_component": {
+    "aspect": [],
+    "out": {
+      "component": {
+        "asset_id": "ia_0024",
+        "component_id": "variance-dots",
+        "kind": "component",
+        "name": "方差点图",
+        "section_id": "fs_0023",
+        "why": ""
+      },
+      "dropped": [],
+      "feedback_id": "fb_0022",
+      "llm_calls": 1,
+      "missing": [],
+      "reading": {
+        "missing": [],
+        "page": {
+          "block": null,
+          "block_why": "",
+          "component": "variance-dots",
+          "component_after": "s2",
+          "component_config": null,
+          "component_why": "",
+          "sections": [
+            {
+              "add": "先别管公式：标准差就是“典型的偏离有多大”。",
+              "section_id": "s2"
+            }
+          ],
+          "summary": "给标准差那段补一个直观说法，再放一个能拖的图"
+        },
+        "reading": "你看不懂标准差那段，想要一个能动手看的图",
+        "style": {
+          "after": "有数值和分布的概念都配一个能动手的图",
+          "before": "交互只在确实需要时才做",
+          "kind": "缺少可视化"
+        }
+      },
+      "reason": "",
+      "rsi": "queued",
+      "sections": [
+        {
+          "change": "added",
+          "heading": "z 分数怎么读",
+          "section_id": "s2"
+        }
+      ],
+      "signal_id": "sig_0019",
+      "summary": "给标准差那段补一个直观说法，再放一个能拖的图",
+      "understood": true,
+      "unfolded": []
+    },
+    "wiki": [
+      {
+        "body": {
+          "signal": {
+            "at": "2026-10-08T09:00:00Z",
+            "chips": [
+              "unclear"
+            ],
+            "evidence_type": "strong",
+            "infer_version": 1,
+            "kind": "page_feedback",
+            "outcome": null,
+            "page_id": "pg_0010",
+            "section_id": null,
+            "signal_id": "sig_0019",
+            "spec_version": 1,
+            "target_artifact_id": null,
+            "text": "标准差那段我完全看不懂，能不能画个图让我动手看看"
+          },
+          "type": "signal_recorded"
+        },
+        "event_id": "wev_0020",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "record": {
+            "action": "整页反馈",
+            "heading": null,
+            "page": "pg_0010",
+            "text": "不像人话：标准差那段我完全看不懂，能不能画个图让我动手看看"
+          },
+          "type": "usage_added"
+        },
+        "event_id": "wev_0021",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "action": "feedback",
+          "record": {
+            "changed": {
+              "fs_0023": "inserted",
+              "s1": "rewritten",
+              "s2": "rewritten",
+              "s3": "rewritten"
+            },
+            "checks": {},
+            "cite_issues": [],
+            "collapse_applied": false,
+            "concepts": [
+              "c1",
+              "c2"
+            ],
+            "created_at": "2026-10-08T09:00:00Z",
+            "diff": null,
+            "domain": null,
+            "done": false,
+            "feedback": {
+              "assets": [
+                "ia_0024"
+              ],
+              "at": "2026-10-08T09:00:00Z",
+              "feedback_id": "fb_0022",
+              "reading": "你看不懂标准差那段，想要一个能动手看的图",
+              "sections": [
+                "s2",
+                "fs_0023"
+              ],
+              "summary": "给标准差那段补一个直观说法，再放一个能拖的图"
+            },
+            "folder": "z 分数",
+            "goal": "看懂 z 分数",
+            "hand_edit": null,
+            "kind": "learn",
+            "merged_from": [],
+            "page": {
+              "conflicts": [],
+              "outline": {
+                "assumed": [],
+                "concepts": [
+                  "c1",
+                  "c2"
+                ],
+                "goal": "看懂 z 分数",
+                "page_id": "pg_0010",
+                "profile": "你会算 z 分数，但解读还模糊",
+                "sections": [
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "从你会的出发",
+                    "id": "s1",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "挂到已会的"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.procedure",
+                      "c1.interpret"
+                    ],
+                    "check": null,
+                    "heading": "z 分数怎么读",
+                    "id": "s2",
+                    "needs_lookup": [
+                      "经验法则 68-95-99.7"
+                    ],
+                    "notes": "",
+                    "role": "explain",
+                    "why": "目标格，计算模糊"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "动手看一看：方差点图",
+                    "id": "fs_0023",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "explain",
+                    "why": ""
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c2.term"
+                    ],
+                    "check": null,
+                    "heading": "标准差提醒",
+                    "id": "s3",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "recap",
+                    "why": "前置"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.interpret"
+                    ],
+                    "check": {
+                      "answer": 2,
+                      "cell": "c1.interpret",
+                      "options": [
+                        "无意义",
+                        "低 1 分",
+                        "低一个标准差"
+                      ],
+                      "stem": "z=-1 表示？",
+                      "verified": true
+                    },
+                    "heading": "确认一下",
+                    "id": "s4",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "check",
+                    "why": "答案决定 s2 写多深"
+                  }
+                ],
+                "source": "organizer",
+                "targets": [
+                  "c1"
+                ]
+              },
+              "snapshot": {
+                "c1.interpret": "none",
+                "c1.procedure": "shaky",
+                "c2.term": "none"
+              },
+              "states": {
+                "fs_0023": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "fs_0023"
+                },
+                "s1": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s3"
+                },
+                "s4": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s4"
+                }
+              },
+              "texts": {
+                "fs_0023": {
+                  "answer": "",
+                  "body": "分散程度变大时，方差怎么变？\n\n```embedded-html\ntype: embedded-html\nid: variance-dots\nsrc: assets/ia_0024.html\ntitle: 方差点图\nheight: 420\n```",
+                  "cache_key": "feedback:fb_0022:fs_0023",
+                  "cue": "方差点图",
+                  "note_body": null,
+                  "section_id": "fs_0023"
+                },
+                "s1": {
+                  "answer": "从你会的出发的答案",
+                  "body": "s1 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s1",
+                  "cue": "s1 的要点",
+                  "note_body": null,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "answer": "z 分数怎么读的答案",
+                  "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧\n\n先别管公式：标准差就是“典型的偏离有多大”。",
+                  "cache_key": "feedback:fb_0022:s2",
+                  "cue": "s2 的要点",
+                  "note_body": null,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "answer": "标准差提醒的答案",
+                  "body": "s3 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s3",
+                  "cue": "s3 的要点",
+                  "note_body": null,
+                  "section_id": "s3"
+                }
+              },
+              "unresolved_conflicts": []
+            },
+            "page_id": "pg_0010",
+            "reading_id": null,
+            "revisions": 0,
+            "shelved": false,
+            "sources": [],
+            "targets": [
+              "c1"
+            ],
+            "title": "z 分数",
+            "unit_id": null,
+            "writing": null,
+            "written": {
+              "assets": [],
+              "at": "2026-10-08T09:00:00Z",
+              "cost_usd": 0.0,
+              "fallback_reason": null,
+              "job_id": "feedback:fb_0022",
+              "kind": "feedback",
+              "model": "",
+              "sections": [
+                "s2",
+                "fs_0023"
+              ],
+              "spec_version": 1
+            }
+          },
+          "type": "page_saved"
+        },
+        "event_id": "wev_0026",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "logs": [
+            {
+              "at": "2026-10-08T09:00:00Z",
+              "bands": {
+                "c1.interpret": "none",
+                "c1.procedure": "shaky"
+              },
+              "cells": [
+                "c1.procedure",
+                "c1.interpret"
+              ],
+              "guardrails_ok": true,
+              "infer_version": 1,
+              "page_id": "pg_0010",
+              "producer": "writer",
+              "role": "explain",
+              "section_id": "s2",
+              "spec_items": [
+                "d01",
+                "d02",
+                "d03",
+                "d04",
+                "d05",
+                "d06",
+                "d07",
+                "d08",
+                "d09",
+                "d10",
+                "d11",
+                "d12",
+                "d13",
+                "d14",
+                "d15",
+                "d16",
+                "d17",
+                "d18",
+                "d20",
+                "d21",
+                "d22"
+              ],
+              "spec_version": 1,
+              "why": "目标格，计算模糊"
+            },
+            {
+              "at": "2026-10-08T09:00:00Z",
+              "bands": {},
+              "cells": [],
+              "guardrails_ok": true,
+              "infer_version": 1,
+              "page_id": "pg_0010",
+              "producer": "writer",
+              "role": "explain",
+              "section_id": "fs_0023",
+              "spec_items": [
+                "d01",
+                "d02",
+                "d03",
+                "d04",
+                "d05",
+                "d06",
+                "d07",
+                "d08",
+                "d09",
+                "d10",
+                "d11",
+                "d12",
+                "d13",
+                "d14",
+                "d15",
+                "d16",
+                "d17",
+                "d18",
+                "d20",
+                "d21",
+                "d22"
+              ],
+              "spec_version": 1,
+              "why": ""
+            }
+          ],
+          "type": "section_logs_saved"
+        },
+        "event_id": "wev_0025",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "after": {
+            "changed": {
+              "fs_0023": "inserted",
+              "s1": "rewritten",
+              "s2": "rewritten",
+              "s3": "rewritten"
+            },
+            "checks": {},
+            "cite_issues": [],
+            "collapse_applied": false,
+            "concepts": [
+              "c1",
+              "c2"
+            ],
+            "created_at": "2026-10-08T09:00:00Z",
+            "diff": null,
+            "domain": null,
+            "done": false,
+            "feedback": {
+              "assets": [
+                "ia_0024"
+              ],
+              "at": "2026-10-08T09:00:00Z",
+              "feedback_id": "fb_0022",
+              "reading": "你看不懂标准差那段，想要一个能动手看的图",
+              "sections": [
+                "s2",
+                "fs_0023"
+              ],
+              "summary": "给标准差那段补一个直观说法，再放一个能拖的图"
+            },
+            "folder": "z 分数",
+            "goal": "看懂 z 分数",
+            "hand_edit": null,
+            "kind": "learn",
+            "merged_from": [],
+            "page": {
+              "conflicts": [],
+              "outline": {
+                "assumed": [],
+                "concepts": [
+                  "c1",
+                  "c2"
+                ],
+                "goal": "看懂 z 分数",
+                "page_id": "pg_0010",
+                "profile": "你会算 z 分数，但解读还模糊",
+                "sections": [
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "从你会的出发",
+                    "id": "s1",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "挂到已会的"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.procedure",
+                      "c1.interpret"
+                    ],
+                    "check": null,
+                    "heading": "z 分数怎么读",
+                    "id": "s2",
+                    "needs_lookup": [
+                      "经验法则 68-95-99.7"
+                    ],
+                    "notes": "",
+                    "role": "explain",
+                    "why": "目标格，计算模糊"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "动手看一看：方差点图",
+                    "id": "fs_0023",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "explain",
+                    "why": ""
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c2.term"
+                    ],
+                    "check": null,
+                    "heading": "标准差提醒",
+                    "id": "s3",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "recap",
+                    "why": "前置"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.interpret"
+                    ],
+                    "check": {
+                      "answer": 2,
+                      "cell": "c1.interpret",
+                      "options": [
+                        "无意义",
+                        "低 1 分",
+                        "低一个标准差"
+                      ],
+                      "stem": "z=-1 表示？",
+                      "verified": true
+                    },
+                    "heading": "确认一下",
+                    "id": "s4",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "check",
+                    "why": "答案决定 s2 写多深"
+                  }
+                ],
+                "source": "organizer",
+                "targets": [
+                  "c1"
+                ]
+              },
+              "snapshot": {
+                "c1.interpret": "none",
+                "c1.procedure": "shaky",
+                "c2.term": "none"
+              },
+              "states": {
+                "fs_0023": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "fs_0023"
+                },
+                "s1": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s3"
+                },
+                "s4": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s4"
+                }
+              },
+              "texts": {
+                "fs_0023": {
+                  "answer": "",
+                  "body": "分散程度变大时，方差怎么变？\n\n```embedded-html\ntype: embedded-html\nid: variance-dots\nsrc: assets/ia_0024.html\ntitle: 方差点图\nheight: 420\n```",
+                  "cache_key": "feedback:fb_0022:fs_0023",
+                  "cue": "方差点图",
+                  "note_body": null,
+                  "section_id": "fs_0023"
+                },
+                "s1": {
+                  "answer": "从你会的出发的答案",
+                  "body": "s1 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s1",
+                  "cue": "s1 的要点",
+                  "note_body": null,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "answer": "z 分数怎么读的答案",
+                  "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧\n\n先别管公式：标准差就是“典型的偏离有多大”。",
+                  "cache_key": "feedback:fb_0022:s2",
+                  "cue": "s2 的要点",
+                  "note_body": null,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "answer": "标准差提醒的答案",
+                  "body": "s3 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s3",
+                  "cue": "s3 的要点",
+                  "note_body": null,
+                  "section_id": "s3"
+                }
+              },
+              "unresolved_conflicts": []
+            },
+            "page_id": "pg_0010",
+            "reading_id": null,
+            "revisions": 0,
+            "shelved": false,
+            "sources": [],
+            "targets": [
+              "c1"
+            ],
+            "title": "z 分数",
+            "unit_id": null,
+            "writing": null,
+            "written": {
+              "assets": [],
+              "at": "2026-10-08T09:00:00Z",
+              "cost_usd": 0.0,
+              "fallback_reason": null,
+              "job_id": "feedback:fb_0022",
+              "kind": "feedback",
+              "model": "",
+              "sections": [
+                "s2",
+                "fs_0023"
+              ],
+              "spec_version": 1
+            }
+          },
+          "before": {
+            "changed": {
+              "s1": "rewritten",
+              "s2": "rewritten",
+              "s3": "rewritten"
+            },
+            "checks": {},
+            "cite_issues": [],
+            "collapse_applied": false,
+            "concepts": [
+              "c1",
+              "c2"
+            ],
+            "created_at": "2026-10-08T09:00:00Z",
+            "diff": null,
+            "domain": null,
+            "done": false,
+            "feedback": null,
+            "folder": "z 分数",
+            "goal": "看懂 z 分数",
+            "hand_edit": null,
+            "kind": "learn",
+            "merged_from": [],
+            "page": {
+              "conflicts": [],
+              "outline": {
+                "assumed": [],
+                "concepts": [
+                  "c1",
+                  "c2"
+                ],
+                "goal": "看懂 z 分数",
+                "page_id": "pg_0010",
+                "profile": "你会算 z 分数，但解读还模糊",
+                "sections": [
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "从你会的出发",
+                    "id": "s1",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "挂到已会的"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.procedure",
+                      "c1.interpret"
+                    ],
+                    "check": null,
+                    "heading": "z 分数怎么读",
+                    "id": "s2",
+                    "needs_lookup": [
+                      "经验法则 68-95-99.7"
+                    ],
+                    "notes": "",
+                    "role": "explain",
+                    "why": "目标格，计算模糊"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c2.term"
+                    ],
+                    "check": null,
+                    "heading": "标准差提醒",
+                    "id": "s3",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "recap",
+                    "why": "前置"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.interpret"
+                    ],
+                    "check": {
+                      "answer": 2,
+                      "cell": "c1.interpret",
+                      "options": [
+                        "无意义",
+                        "低 1 分",
+                        "低一个标准差"
+                      ],
+                      "stem": "z=-1 表示？",
+                      "verified": true
+                    },
+                    "heading": "确认一下",
+                    "id": "s4",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "check",
+                    "why": "答案决定 s2 写多深"
+                  }
+                ],
+                "source": "organizer",
+                "targets": [
+                  "c1"
+                ]
+              },
+              "snapshot": {
+                "c1.interpret": "none",
+                "c1.procedure": "shaky",
+                "c2.term": "none"
+              },
+              "states": {
+                "s1": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s3"
+                },
+                "s4": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s4"
+                }
+              },
+              "texts": {
+                "s1": {
+                  "answer": "从你会的出发的答案",
+                  "body": "s1 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s1",
+                  "cue": "s1 的要点",
+                  "note_body": null,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "answer": "z 分数怎么读的答案",
+                  "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧",
+                  "cache_key": "deep:page:u1:pg_0010:1:s2",
+                  "cue": "s2 的要点",
+                  "note_body": null,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "answer": "标准差提醒的答案",
+                  "body": "s3 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s3",
+                  "cue": "s3 的要点",
+                  "note_body": null,
+                  "section_id": "s3"
+                }
+              },
+              "unresolved_conflicts": []
+            },
+            "page_id": "pg_0010",
+            "reading_id": null,
+            "revisions": 0,
+            "shelved": false,
+            "sources": [],
+            "targets": [
+              "c1"
+            ],
+            "title": "z 分数",
+            "unit_id": null,
+            "writing": null,
+            "written": {
+              "assets": [],
+              "at": "2026-10-08T09:00:00Z",
+              "cost_usd": 0.0,
+              "fallback_reason": null,
+              "job_id": "page:u1:pg_0010:1",
+              "kind": "page",
+              "model": "anthropic:claude-sonnet-5-5",
+              "sections": [
+                "s1",
+                "s2",
+                "s3"
+              ],
+              "spec_version": 1
+            }
+          },
+          "feedback_id": "fb_0022",
+          "page_id": "pg_0010",
+          "signal_id": "sig_0019",
+          "type": "feedback_applied"
+        },
+        "event_id": "wev_0027",
+        "ts": "2026-10-08T09:00:00Z"
+      }
+    ]
+  },
+  "page_missing_patch": {
+    "aspect": [
+      {
+        "cell": "c2.term",
+        "event_id": "aev_0022",
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "declare",
+        "value": "dont"
+      },
+      {
+        "cell": "c2.term",
+        "event_id": "aev_0023",
+        "evidence_ref": "feedback:sig_0019",
+        "label": null,
+        "text": "dont",
+        "ts": "2026-10-08T09:00:00Z",
+        "type": "add_note"
+      }
+    ],
+    "out": {
+      "component": null,
+      "dropped": [],
+      "feedback_id": "fb_0026",
+      "llm_calls": 1,
+      "missing": [
+        {
+          "cells": [
+            "c2.term"
+          ],
+          "concept_id": "c2",
+          "name": "标准差"
+        }
+      ],
+      "reading": {
+        "missing": [
+          "c2"
+        ],
+        "page": {
+          "block": null,
+          "block_why": "",
+          "component": null,
+          "component_after": null,
+          "component_config": null,
+          "component_why": "",
+          "sections": [],
+          "summary": "无"
+        },
+        "reading": "你看不懂标准差那段，想要一个能动手看的图",
+        "style": {
+          "after": "有数值和分布的概念都配一个能动手的图",
+          "before": "交互只在确实需要时才做",
+          "kind": "缺少可视化"
+        }
+      },
+      "reason": "",
+      "rsi": "queued",
+      "sections": [],
+      "signal_id": "sig_0019",
+      "summary": "",
+      "understood": true,
+      "unfolded": []
+    },
+    "wiki": [
+      {
+        "body": {
+          "signal": {
+            "at": "2026-10-08T09:00:00Z",
+            "chips": [
+              "unclear"
+            ],
+            "evidence_type": "strong",
+            "infer_version": 1,
+            "kind": "page_feedback",
+            "outcome": null,
+            "page_id": "pg_0010",
+            "section_id": null,
+            "signal_id": "sig_0019",
+            "spec_version": 1,
+            "target_artifact_id": null,
+            "text": "标准差那段我完全看不懂，能不能画个图让我动手看看"
+          },
+          "type": "signal_recorded"
+        },
+        "event_id": "wev_0020",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "record": {
+            "action": "整页反馈",
+            "heading": null,
+            "page": "pg_0010",
+            "text": "不像人话：标准差那段我完全看不懂，能不能画个图让我动手看看"
+          },
+          "type": "usage_added"
+        },
+        "event_id": "wev_0021",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "action": "declare",
+          "record": {
+            "changed": {
+              "s3": "rewritten"
+            },
+            "checks": {},
+            "cite_issues": [],
+            "collapse_applied": false,
+            "concepts": [
+              "c1",
+              "c2"
+            ],
+            "created_at": "2026-10-08T09:00:00Z",
+            "diff": null,
+            "domain": null,
+            "done": false,
+            "feedback": null,
+            "folder": "z 分数",
+            "goal": "看懂 z 分数",
+            "hand_edit": null,
+            "kind": "learn",
+            "merged_from": [],
+            "page": {
+              "conflicts": [
+                {
+                  "cell": "c2.term",
+                  "kind": "line_weak",
+                  "section_id": "s3"
+                }
+              ],
+              "outline": {
+                "assumed": [],
+                "concepts": [
+                  "c1",
+                  "c2"
+                ],
+                "goal": "看懂 z 分数",
+                "page_id": "pg_0010",
+                "profile": "你会算 z 分数，但解读还模糊",
+                "sections": [
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "从你会的出发",
+                    "id": "s1",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "挂到已会的"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.procedure",
+                      "c1.interpret"
+                    ],
+                    "check": null,
+                    "heading": "z 分数怎么读",
+                    "id": "s2",
+                    "needs_lookup": [
+                      "经验法则 68-95-99.7"
+                    ],
+                    "notes": "",
+                    "role": "explain",
+                    "why": "目标格，计算模糊"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c2.term"
+                    ],
+                    "check": null,
+                    "heading": "标准差提醒",
+                    "id": "s3",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "前置"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.interpret"
+                    ],
+                    "check": {
+                      "answer": 2,
+                      "cell": "c1.interpret",
+                      "options": [
+                        "无意义",
+                        "低 1 分",
+                        "低一个标准差"
+                      ],
+                      "stem": "z=-1 表示？",
+                      "verified": true
+                    },
+                    "heading": "确认一下",
+                    "id": "s4",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "check",
+                    "why": "答案决定 s2 写多深"
+                  }
+                ],
+                "source": "organizer",
+                "targets": [
+                  "c1"
+                ]
+              },
+              "snapshot": {
+                "c1.interpret": "none",
+                "c1.procedure": "shaky",
+                "c2.term": "gap"
+              },
+              "states": {
+                "s1": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s3"
+                },
+                "s4": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s4"
+                }
+              },
+              "texts": {
+                "s1": {
+                  "answer": "从你会的出发的答案",
+                  "body": "s1 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s1",
+                  "cue": "s1 的要点",
+                  "note_body": null,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "answer": "z 分数怎么读的答案",
+                  "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧",
+                  "cache_key": "deep:page:u1:pg_0010:1:s2",
+                  "cue": "s2 的要点",
+                  "note_body": null,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "answer": "标准差提醒的答案",
+                  "body": "s3 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s3",
+                  "cue": "s3 的要点",
+                  "note_body": null,
+                  "section_id": "s3"
+                }
+              },
+              "unresolved_conflicts": [
+                "「标准差提醒」只一行带过，但其中 标准差·术语 / 定义 现在是模糊 / 不会"
+              ]
+            },
+            "page_id": "pg_0010",
+            "reading_id": null,
+            "revisions": 0,
+            "shelved": false,
+            "sources": [],
+            "targets": [
+              "c1"
+            ],
+            "title": "z 分数",
+            "unit_id": null,
+            "writing": null,
+            "written": {
+              "assets": [],
+              "at": "2026-10-08T09:00:00Z",
+              "cost_usd": 0.0,
+              "fallback_reason": null,
+              "job_id": "page:u1:pg_0010:1",
+              "kind": "page",
+              "model": "anthropic:claude-sonnet-5-5",
+              "sections": [
+                "s1",
+                "s2",
+                "s3"
+              ],
+              "spec_version": 1
+            }
+          },
+          "type": "page_saved"
+        },
+        "event_id": "wev_0024",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "logs": [
+            {
+              "at": "2026-10-08T09:00:00Z",
+              "bands": {
+                "c2.term": "gap"
+              },
+              "cells": [
+                "c2.term"
+              ],
+              "guardrails_ok": true,
+              "infer_version": 1,
+              "page_id": "pg_0010",
+              "producer": "patch",
+              "role": "line",
+              "section_id": "s3",
+              "spec_items": [
+                "d01",
+                "d02",
+                "d03",
+                "d04",
+                "d05",
+                "d06",
+                "d07",
+                "d08",
+                "d09",
+                "d10",
+                "d11",
+                "d12",
+                "d13",
+                "d14",
+                "d15",
+                "d16",
+                "d17",
+                "d18",
+                "d20",
+                "d21",
+                "d22"
+              ],
+              "spec_version": 1,
+              "why": "前置"
+            }
+          ],
+          "type": "section_logs_saved"
+        },
+        "event_id": "wev_0025",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "action": "feedback",
+          "record": {
+            "changed": {
+              "s3": "rewritten"
+            },
+            "checks": {},
+            "cite_issues": [],
+            "collapse_applied": false,
+            "concepts": [
+              "c1",
+              "c2"
+            ],
+            "created_at": "2026-10-08T09:00:00Z",
+            "diff": null,
+            "domain": null,
+            "done": false,
+            "feedback": null,
+            "folder": "z 分数",
+            "goal": "看懂 z 分数",
+            "hand_edit": null,
+            "kind": "learn",
+            "merged_from": [],
+            "page": {
+              "conflicts": [
+                {
+                  "cell": "c2.term",
+                  "kind": "line_weak",
+                  "section_id": "s3"
+                }
+              ],
+              "outline": {
+                "assumed": [],
+                "concepts": [
+                  "c1",
+                  "c2"
+                ],
+                "goal": "看懂 z 分数",
+                "page_id": "pg_0010",
+                "profile": "你会算 z 分数，但解读还模糊",
+                "sections": [
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "从你会的出发",
+                    "id": "s1",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "挂到已会的"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.procedure",
+                      "c1.interpret"
+                    ],
+                    "check": null,
+                    "heading": "z 分数怎么读",
+                    "id": "s2",
+                    "needs_lookup": [
+                      "经验法则 68-95-99.7"
+                    ],
+                    "notes": "",
+                    "role": "explain",
+                    "why": "目标格，计算模糊"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c2.term"
+                    ],
+                    "check": null,
+                    "heading": "标准差提醒",
+                    "id": "s3",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "前置"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.interpret"
+                    ],
+                    "check": {
+                      "answer": 2,
+                      "cell": "c1.interpret",
+                      "options": [
+                        "无意义",
+                        "低 1 分",
+                        "低一个标准差"
+                      ],
+                      "stem": "z=-1 表示？",
+                      "verified": true
+                    },
+                    "heading": "确认一下",
+                    "id": "s4",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "check",
+                    "why": "答案决定 s2 写多深"
+                  }
+                ],
+                "source": "organizer",
+                "targets": [
+                  "c1"
+                ]
+              },
+              "snapshot": {
+                "c1.interpret": "none",
+                "c1.procedure": "shaky",
+                "c2.term": "gap"
+              },
+              "states": {
+                "s1": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s3"
+                },
+                "s4": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s4"
+                }
+              },
+              "texts": {
+                "s1": {
+                  "answer": "从你会的出发的答案",
+                  "body": "s1 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s1",
+                  "cue": "s1 的要点",
+                  "note_body": null,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "answer": "z 分数怎么读的答案",
+                  "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧",
+                  "cache_key": "deep:page:u1:pg_0010:1:s2",
+                  "cue": "s2 的要点",
+                  "note_body": null,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "answer": "标准差提醒的答案",
+                  "body": "s3 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s3",
+                  "cue": "s3 的要点",
+                  "note_body": null,
+                  "section_id": "s3"
+                }
+              },
+              "unresolved_conflicts": [
+                "「标准差提醒」只一行带过，但其中 标准差·术语 / 定义 现在是模糊 / 不会"
+              ]
+            },
+            "page_id": "pg_0010",
+            "reading_id": null,
+            "revisions": 0,
+            "shelved": false,
+            "sources": [],
+            "targets": [
+              "c1"
+            ],
+            "title": "z 分数",
+            "unit_id": null,
+            "writing": null,
+            "written": {
+              "assets": [],
+              "at": "2026-10-08T09:00:00Z",
+              "cost_usd": 0.0,
+              "fallback_reason": null,
+              "job_id": "page:u1:pg_0010:1",
+              "kind": "page",
+              "model": "anthropic:claude-sonnet-5-5",
+              "sections": [
+                "s1",
+                "s2",
+                "s3"
+              ],
+              "spec_version": 1
+            }
+          },
+          "type": "page_saved"
+        },
+        "event_id": "wev_0027",
+        "ts": "2026-10-08T09:00:00Z"
+      },
+      {
+        "body": {
+          "after": {
+            "changed": {
+              "s3": "rewritten"
+            },
+            "checks": {},
+            "cite_issues": [],
+            "collapse_applied": false,
+            "concepts": [
+              "c1",
+              "c2"
+            ],
+            "created_at": "2026-10-08T09:00:00Z",
+            "diff": null,
+            "domain": null,
+            "done": false,
+            "feedback": null,
+            "folder": "z 分数",
+            "goal": "看懂 z 分数",
+            "hand_edit": null,
+            "kind": "learn",
+            "merged_from": [],
+            "page": {
+              "conflicts": [
+                {
+                  "cell": "c2.term",
+                  "kind": "line_weak",
+                  "section_id": "s3"
+                }
+              ],
+              "outline": {
+                "assumed": [],
+                "concepts": [
+                  "c1",
+                  "c2"
+                ],
+                "goal": "看懂 z 分数",
+                "page_id": "pg_0010",
+                "profile": "你会算 z 分数，但解读还模糊",
+                "sections": [
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "从你会的出发",
+                    "id": "s1",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "挂到已会的"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.procedure",
+                      "c1.interpret"
+                    ],
+                    "check": null,
+                    "heading": "z 分数怎么读",
+                    "id": "s2",
+                    "needs_lookup": [
+                      "经验法则 68-95-99.7"
+                    ],
+                    "notes": "",
+                    "role": "explain",
+                    "why": "目标格，计算模糊"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c2.term"
+                    ],
+                    "check": null,
+                    "heading": "标准差提醒",
+                    "id": "s3",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "前置"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.interpret"
+                    ],
+                    "check": {
+                      "answer": 2,
+                      "cell": "c1.interpret",
+                      "options": [
+                        "无意义",
+                        "低 1 分",
+                        "低一个标准差"
+                      ],
+                      "stem": "z=-1 表示？",
+                      "verified": true
+                    },
+                    "heading": "确认一下",
+                    "id": "s4",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "check",
+                    "why": "答案决定 s2 写多深"
+                  }
+                ],
+                "source": "organizer",
+                "targets": [
+                  "c1"
+                ]
+              },
+              "snapshot": {
+                "c1.interpret": "none",
+                "c1.procedure": "shaky",
+                "c2.term": "gap"
+              },
+              "states": {
+                "s1": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s3"
+                },
+                "s4": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s4"
+                }
+              },
+              "texts": {
+                "s1": {
+                  "answer": "从你会的出发的答案",
+                  "body": "s1 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s1",
+                  "cue": "s1 的要点",
+                  "note_body": null,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "answer": "z 分数怎么读的答案",
+                  "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧",
+                  "cache_key": "deep:page:u1:pg_0010:1:s2",
+                  "cue": "s2 的要点",
+                  "note_body": null,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "answer": "标准差提醒的答案",
+                  "body": "s3 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s3",
+                  "cue": "s3 的要点",
+                  "note_body": null,
+                  "section_id": "s3"
+                }
+              },
+              "unresolved_conflicts": [
+                "「标准差提醒」只一行带过，但其中 标准差·术语 / 定义 现在是模糊 / 不会"
+              ]
+            },
+            "page_id": "pg_0010",
+            "reading_id": null,
+            "revisions": 0,
+            "shelved": false,
+            "sources": [],
+            "targets": [
+              "c1"
+            ],
+            "title": "z 分数",
+            "unit_id": null,
+            "writing": null,
+            "written": {
+              "assets": [],
+              "at": "2026-10-08T09:00:00Z",
+              "cost_usd": 0.0,
+              "fallback_reason": null,
+              "job_id": "page:u1:pg_0010:1",
+              "kind": "page",
+              "model": "anthropic:claude-sonnet-5-5",
+              "sections": [
+                "s1",
+                "s2",
+                "s3"
+              ],
+              "spec_version": 1
+            }
+          },
+          "before": {
+            "changed": {
+              "s1": "rewritten",
+              "s2": "rewritten",
+              "s3": "rewritten"
+            },
+            "checks": {},
+            "cite_issues": [],
+            "collapse_applied": false,
+            "concepts": [
+              "c1",
+              "c2"
+            ],
+            "created_at": "2026-10-08T09:00:00Z",
+            "diff": null,
+            "domain": null,
+            "done": false,
+            "feedback": null,
+            "folder": "z 分数",
+            "goal": "看懂 z 分数",
+            "hand_edit": null,
+            "kind": "learn",
+            "merged_from": [],
+            "page": {
+              "conflicts": [],
+              "outline": {
+                "assumed": [],
+                "concepts": [
+                  "c1",
+                  "c2"
+                ],
+                "goal": "看懂 z 分数",
+                "page_id": "pg_0010",
+                "profile": "你会算 z 分数，但解读还模糊",
+                "sections": [
+                  {
+                    "analogy_sources": [],
+                    "cells": [],
+                    "check": null,
+                    "heading": "从你会的出发",
+                    "id": "s1",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "挂到已会的"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.procedure",
+                      "c1.interpret"
+                    ],
+                    "check": null,
+                    "heading": "z 分数怎么读",
+                    "id": "s2",
+                    "needs_lookup": [
+                      "经验法则 68-95-99.7"
+                    ],
+                    "notes": "",
+                    "role": "explain",
+                    "why": "目标格，计算模糊"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c2.term"
+                    ],
+                    "check": null,
+                    "heading": "标准差提醒",
+                    "id": "s3",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "line",
+                    "why": "前置"
+                  },
+                  {
+                    "analogy_sources": [],
+                    "cells": [
+                      "c1.interpret"
+                    ],
+                    "check": {
+                      "answer": 2,
+                      "cell": "c1.interpret",
+                      "options": [
+                        "无意义",
+                        "低 1 分",
+                        "低一个标准差"
+                      ],
+                      "stem": "z=-1 表示？",
+                      "verified": true
+                    },
+                    "heading": "确认一下",
+                    "id": "s4",
+                    "needs_lookup": [],
+                    "notes": "",
+                    "role": "check",
+                    "why": "答案决定 s2 写多深"
+                  }
+                ],
+                "source": "organizer",
+                "targets": [
+                  "c1"
+                ]
+              },
+              "snapshot": {
+                "c1.interpret": "none",
+                "c1.procedure": "shaky",
+                "c2.term": "none"
+              },
+              "states": {
+                "s1": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s3"
+                },
+                "s4": {
+                  "fold_locked": false,
+                  "folded": false,
+                  "pinned": false,
+                  "section_id": "s4"
+                }
+              },
+              "texts": {
+                "s1": {
+                  "answer": "从你会的出发的答案",
+                  "body": "s1 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s1",
+                  "cue": "s1 的要点",
+                  "note_body": null,
+                  "section_id": "s1"
+                },
+                "s2": {
+                  "answer": "z 分数怎么读的答案",
+                  "body": "z 告诉你离均值几个标准差。⟦待查证：约 68% 落在 ±1 内⟧",
+                  "cache_key": "deep:page:u1:pg_0010:1:s2",
+                  "cue": "s2 的要点",
+                  "note_body": null,
+                  "section_id": "s2"
+                },
+                "s3": {
+                  "answer": "标准差提醒的答案",
+                  "body": "s3 正文",
+                  "cache_key": "deep:page:u1:pg_0010:1:s3",
+                  "cue": "s3 的要点",
+                  "note_body": null,
+                  "section_id": "s3"
+                }
+              },
+              "unresolved_conflicts": []
+            },
+            "page_id": "pg_0010",
+            "reading_id": null,
+            "revisions": 0,
+            "shelved": false,
+            "sources": [],
+            "targets": [
+              "c1"
+            ],
+            "title": "z 分数",
+            "unit_id": null,
+            "writing": null,
+            "written": {
+              "assets": [],
+              "at": "2026-10-08T09:00:00Z",
+              "cost_usd": 0.0,
+              "fallback_reason": null,
+              "job_id": "page:u1:pg_0010:1",
+              "kind": "page",
+              "model": "anthropic:claude-sonnet-5-5",
+              "sections": [
+                "s1",
+                "s2",
+                "s3"
+              ],
+              "spec_version": 1
+            }
+          },
+          "feedback_id": "fb_0026",
+          "page_id": "pg_0010",
+          "signal_id": "sig_0019",
+          "type": "feedback_applied"
+        },
+        "event_id": "wev_0028",
+        "ts": "2026-10-08T09:00:00Z"
+      }
+    ]
+  }
+}

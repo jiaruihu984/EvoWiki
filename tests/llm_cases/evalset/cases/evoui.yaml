@@ -1,0 +1,147 @@
+# 第 6 类 EvoUI 第 1、2 层（代码检查 + 探针回放）；第 3 层人工标签在 files/evoui_labels.yaml，空。
+# Expectations marked unverified_by_user in a case's source are the agent's reading of the failure; the user has not checked them yet.
+
+- id: template-01
+  kind: control
+  topic: EvoUI-参数实验室
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「参数实验室」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 参数实验室
+  grade:
+  - block_renders: {}
+- id: template-02
+  kind: control
+  topic: EvoUI-诊断测验
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「诊断测验」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 诊断测验
+  grade:
+  - block_renders: {}
+- id: template-03
+  kind: control
+  topic: EvoUI-闪卡 → 测验
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「闪卡 → 测验」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 闪卡 → 测验
+  grade:
+  - block_renders: {}
+- id: template-04
+  kind: control
+  topic: EvoUI-步骤动画
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「步骤动画」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 步骤动画
+  grade:
+  - block_renders: {}
+- id: template-05
+  kind: control
+  topic: EvoUI-播放参数扫描
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「播放参数扫描」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 播放参数扫描
+  grade:
+  - block_renders: {}
+- id: template-06
+  kind: control
+  topic: EvoUI-多参数 + 大号结果
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「多参数 + 大号结果」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 多参数 + 大号结果
+  grade:
+  - block_renders: {}
+- id: template-07
+  kind: control
+  topic: EvoUI-计算器
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「计算器」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 计算器
+  grade:
+  - block_renders: {}
+- id: template-08
+  kind: control
+  topic: EvoUI-情景切换 + 时序图
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「情景切换 + 时序图」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 情景切换 + 时序图
+  grade:
+  - block_renders: {}
+- id: template-09
+  kind: control
+  topic: EvoUI-阶段链
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「阶段链」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 阶段链
+  grade:
+  - block_renders: {}
+- id: template-10
+  kind: control
+  topic: EvoUI-练习翻页
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「练习翻页」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 练习翻页
+  grade:
+  - block_renders: {}
+- id: template-11
+  kind: control
+  topic: EvoUI-限时练习
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「限时练习」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 限时练习
+  grade:
+  - block_renders: {}
+- id: template-12
+  kind: control
+  topic: EvoUI-选择学习方式
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「选择学习方式」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 选择学习方式
+  grade:
+  - block_renders: {}
+- id: template-13
+  kind: control
+  topic: EvoUI-面积图 + 悬停读数
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「面积图 + 悬停读数」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 面积图 + 悬停读数
+  grade:
+  - block_renders: {}
+- id: template-14
+  kind: control
+  topic: EvoUI-时间线
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「时间线」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 时间线
+  grade:
+  - block_renders: {}
+- id: template-15
+  kind: control
+  topic: EvoUI-深入一点
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「深入一点」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 深入一点
+  grade:
+  - block_renders: {}
+- id: template-16
+  kind: control
+  topic: EvoUI-小程序（第四层）
+  source:
+    ref: src/evowiki/deep/evoui/examples.json：官方模板「小程序（第四层）」。曾在插件里显示不出的 3 个（步骤动画、播放参数扫描、面积图+悬停读数）见 pages.md 待审核 11，现已通过
+  fixture:
+    template: 小程序（第四层）
+  grade:
+  - block_renders: {}

@@ -1,0 +1,24 @@
+- id: en-intent-plan-learning
+  language: en
+  translated_from: learn-goal-bayes
+  kind: act
+  topic: Bayes theorem
+  source: {ref: "Public learning-goal intent regression"}
+  steps: [{say: "I want to learn Bayes' theorem. Please create a learning goal for me."}]
+  grade:
+    - tool_called: {any_of: [new_goal]}
+    - turn_ok: {}
+- id: en-intent-explain-only
+  language: en
+  translated_from: ask-meaning-bayes
+  kind: no_act
+  topic: Bayes theorem explanation
+  source: {ref: "Public explanation versus action control"}
+  steps: [{say: "What does Bayes' theorem mean? Give me a simple everyday example. Do not create a learning goal or change my notes."}]
+  grade:
+    - no_change_calls: {}
+    - state_unchanged: {}
+    - rubric:
+        items:
+          - {text: "The answer correctly explains updating a belief using evidence and includes a concrete everyday example.", critical: true}
+    - turn_ok: {}

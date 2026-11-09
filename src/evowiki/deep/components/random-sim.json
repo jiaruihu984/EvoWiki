@@ -1,0 +1,260 @@
+{
+ "component_id": "random-sim",
+ "name": "随机模拟",
+ "description": "反复做一个随机试验（抛硬币、掷骰子、自定义概率、样本均值），画出次数的柱状图或比例随次数的折线，并和期望对比；种子固定，结果可重复。",
+ "learning_question": "随机的结果，次数多了为什么会稳定下来？稳定到哪里？",
+ "scenarios": [
+  "大数定律",
+  "频率与概率",
+  "孟德尔 3:1",
+  "中心极限定理",
+  "样本均值的分布",
+  "掷骰子",
+  "随机抽样"
+ ],
+ "params": {
+  "每次连做": "“做 N 次”里的 N",
+  "每个样本抽几个数": "只有样本均值实验才有：样本越大，均值分布越窄",
+  "清零重来": "同一种子，结果可重复"
+ },
+ "html_path": "src/evowiki/deep/components/random-sim.html",
+ "height": 640,
+ "probes": [
+  {
+   "target": "#one",
+   "action": "click",
+   "expect_change": "#result"
+  },
+  {
+   "target": "#many",
+   "action": "click",
+   "expect_change": "#result"
+  },
+  {
+   "target": "#reset",
+   "action": "click",
+   "expect_change": "#result"
+  }
+ ],
+ "source": "component-library: seeded random experiments with histogram / running proportion",
+ "config_schema": {
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+   "title",
+   "question",
+   "experiment",
+   "outcomes",
+   "population",
+   "sample_sizes",
+   "runs",
+   "plot",
+   "track_label",
+   "show_expected",
+   "takeaway",
+   "seed"
+  ],
+  "properties": {
+   "title": {
+    "type": "string",
+    "description": "组件标题，说清模拟的是什么"
+   },
+   "question": {
+    "type": "string",
+    "description": "这个交互回答的学习问题，一句话"
+   },
+   "experiment": {
+    "type": "string",
+    "enum": [
+     "coin",
+     "die",
+     "custom",
+     "sample_mean"
+    ],
+    "description": "coin 抛硬币，die 掷骰子，custom 自定义离散分布（用 outcomes），sample_mean 从 population 里每次抽若干个数取平均（中心极限定理）"
+   },
+   "outcomes": {
+    "anyOf": [
+     {
+      "type": "null"
+     },
+     {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "required": [
+        "label",
+        "weight"
+       ],
+       "properties": {
+        "label": {
+         "type": "string",
+         "description": "结果的名字（短，几个字）"
+        },
+        "weight": {
+         "type": "number",
+         "description": "相对权重（不必加起来是 1），如 3 和 1 表示 3 : 1"
+        }
+       }
+      }
+     }
+    ],
+    "description": "coin / die 时可以是 null（用默认的均匀结果），也可以给出来改名字或改成不均匀；custom 时必填，2–12 个结果；sample_mean 时 null"
+   },
+   "population": {
+    "anyOf": [
+     {
+      "type": "null"
+     },
+     {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "number"
+      }
+     }
+    ],
+    "description": "sample_mean 时必填：总体里的 5–60 个数（可以重复，用来造偏的分布）；其他实验给 null"
+   },
+   "sample_sizes": {
+    "anyOf": [
+     {
+      "type": "null"
+     },
+     {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "number"
+      }
+     }
+    ],
+    "description": "sample_mean 时：每个样本抽几个数的选项，如 [1,5,30]（最多 4 个）；其他实验给 null"
+   },
+   "runs": {
+    "type": "array",
+    "minItems": 1,
+    "items": {
+     "type": "number"
+    },
+    "description": "“做 N 次”里 N 的选项，2–5000 之间的整数，如 [10,100,1000]，最多 6 个"
+   },
+   "plot": {
+    "type": "string",
+    "enum": [
+     "histogram",
+     "running"
+    ],
+    "description": "histogram 柱状图（各结果的次数/比例，或样本均值的直方图）；running 折线（随累计次数变化的比例或平均数，看它收敛）"
+   },
+   "track_label": {
+    "type": [
+     "string",
+     "null"
+    ],
+    "description": "running 图和读数里追踪哪个结果的比例（必须与 outcomes 的某个 label 完全一致）；null 用第一个。sample_mean 时 null"
+   },
+   "show_expected": {
+    "type": "boolean",
+    "description": "是否画出期望（虚线）：各结果的期望比例，或总体均值与钟形曲线"
+   },
+   "takeaway": {
+    "type": [
+     "string",
+     "null"
+    ],
+    "description": "累计 200 次以后显示的一句结论；null 不显示"
+   },
+   "seed": {
+    "type": [
+     "number",
+     "null"
+    ],
+    "description": "随机数种子（整数）；null 用固定的默认值。同一个种子每次清零后结果完全相同"
+   }
+  }
+ },
+ "example_configs": [
+  {
+   "title": "抛硬币：次数多了，正面的比例会怎样？",
+   "question": "一枚均匀硬币，每次正面的概率是 50%。抛 10 次、100 次、1000 次，正面的比例离 50% 有多远？",
+   "experiment": "coin",
+   "outcomes": null,
+   "population": null,
+   "sample_sizes": null,
+   "runs": [
+    10,
+    100,
+    1000
+   ],
+   "plot": "running",
+   "track_label": "正面",
+   "show_expected": true,
+   "takeaway": "这就是大数定律：次数越多，频率越靠近概率；但这不代表下一次更可能出反面，每一次仍然是 50% 对 50%。",
+   "seed": 7
+  },
+  {
+   "title": "豌豆杂交 Aa × Aa：后代的显性和隐性是 3 比 1 吗？",
+   "question": "每个后代有 3/4 的概率表现显性性状、1/4 表现隐性。模拟一批后代，比值要多少个才接近 3 : 1？",
+   "experiment": "custom",
+   "outcomes": [
+    {
+     "label": "显性 A_",
+     "weight": 3
+    },
+    {
+     "label": "隐性 aa",
+     "weight": 1
+    }
+   ],
+   "population": null,
+   "sample_sizes": null,
+   "runs": [
+    4,
+    20,
+    100,
+    1000
+   ],
+   "plot": "histogram",
+   "track_label": "隐性 aa",
+   "show_expected": true,
+   "takeaway": "每个后代是显性的概率是 3/4，所以后代够多时，显性和隐性大约是 3 : 1；只有几个后代时，比例可以偏得很远，这不是规律失效，是样本太小。",
+   "seed": 2024
+  },
+  {
+   "title": "样本均值：为什么平均数的分布会变成钟形？",
+   "question": "总体很偏（大多数人是 0 或 1，少数人很大）。每个样本抽几个数取平均，样本均值的分布长什么样？",
+   "experiment": "sample_mean",
+   "outcomes": null,
+   "population": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    2,
+    3,
+    5,
+    12
+   ],
+   "sample_sizes": [
+    1,
+    5,
+    30
+   ],
+   "runs": [
+    10,
+    100,
+    1000
+   ],
+   "plot": "histogram",
+   "track_label": null,
+   "show_expected": true,
+   "takeaway": "每个样本包含的数越多，样本均值的分布越窄、越像钟形，而且中心就是总体均值：这是中心极限定理。",
+   "seed": 11
+  }
+ ]
+}

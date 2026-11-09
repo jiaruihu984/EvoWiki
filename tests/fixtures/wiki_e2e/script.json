@@ -1,0 +1,95 @@
+{
+  "goals.intake": [
+    {
+      "title": "z 分数",
+      "concepts": [
+        {"id": "n1", "name": "z 分数", "target": true, "prereqs": ["n2", "n3"],
+         "aspects": ["procedure", "interpret"]},
+        {"id": "n2", "name": "均值", "aspects": ["procedure"]},
+        {"id": "n3", "name": "方差", "aspects": ["notation", "procedure"]}
+      ],
+      "known": [
+        {"part": "均值", "aspect": "procedure", "level": "intermediate", "quote": "我会算平均数"},
+        {"part": "方差", "aspect": "notation", "level": "beginner", "quote": "方差公式记不清"}
+      ]
+    },
+    {
+      "title": "主成分分析（PCA）",
+      "concepts": [
+        {"id": "n1", "name": "主成分分析", "target": true, "prereqs": ["c1", "n2"],
+         "aspects": ["purpose", "procedure", "interpret"],
+         "relation_to_existing": [
+           {"existing": "c1", "relation": "prereq", "why": "PCA 之前先用 z 分数把各列标准化"}]},
+        {"id": "c1"},
+        {"id": "n2", "name": "方差", "aspects": ["notation", "procedure"]}
+      ],
+      "known": [
+        {"part": "主成分分析", "aspect": "purpose", "level": "intermediate",
+         "quote": "我知道 PCA 用来降维"}
+      ]
+    }
+  ],
+  "goals.probe": [
+    {"done": true, "why": "这一轮够判断要教什么了", "questions": [
+      {"kind": "quiz", "target": "c1.interpret", "stem": "z = -1.5 表示什么？",
+       "options": ["比均值低 1.5 个标准差", "比均值低 1.5 分", "低于 1.5% 的人", "无法判断"],
+       "answer": 0},
+      {"kind": "quiz", "target": "c1.procedure", "stem": "x = 80，μ = 70，σ = 5 时 z 是多少？",
+       "options": ["2", "10", "0.5", "-2"], "answer": 0},
+      {"kind": "quiz", "target": "c3.procedure", "stem": "数据 2、4、6 的总体方差是多少？",
+       "options": ["8/3", "4", "2", "16"], "answer": 0}
+    ]},
+    {"done": true, "why": "这一轮够判断要教什么了", "questions": [
+      {"kind": "quiz", "target": "c4.procedure", "stem": "PCA 的主成分方向是怎么求出来的？",
+       "options": ["协方差矩阵的特征向量", "每一列的均值", "每一列的最大值", "随机选的方向"],
+       "answer": 0},
+      {"kind": "quiz", "target": "c4.interpret", "stem": "第一主成分解释了 70% 的方差，意思是？",
+       "options": ["它保留了数据总变异的 70%", "保留了 70% 的样本", "分类准确率是 70%",
+                   "丢掉了 70% 的数据"], "answer": 0},
+      {"kind": "quiz", "target": "c3.notation", "stem": "总体方差的公式是哪个？",
+       "options": ["σ² = Σ(x − μ)² / N", "σ = Σ(x − μ) / N", "σ² = Σx²", "σ² = (max − min) / 2"],
+       "answer": 0}
+    ]}
+  ],
+  "goals.path": [
+    {"pages": [{"concepts": ["c1", "c2", "c3"], "objective": "学完这页你能算出并解读 z 分数"}]},
+    {"pages": [{"concepts": ["c4", "c1", "c3"], "objective": "学完这页你能说清 PCA 怎么降维"}]}
+  ],
+  "plan_page": [
+    {
+      "profile": "你会算平均数，方差公式记不清；z 分数会算一点，但还不会解读。",
+      "assumed": [],
+      "sections": [
+        {"id": "s1", "heading": "从你会的平均数出发", "role": "organizer", "cells": [],
+         "why": "背景里说会算平均数"},
+        {"id": "s2", "heading": "均值提醒", "role": "recap", "cells": ["c2.procedure"],
+         "why": "均值只有自述，还模糊"},
+        {"id": "s3", "heading": "方差提醒", "role": "recap", "cells": ["c3.notation"],
+         "why": "方差公式记不清（模糊）"},
+        {"id": "s4", "heading": "z 分数怎么算、怎么读", "role": "explain",
+         "cells": ["c1.procedure", "c1.interpret"], "why": "目标；解读那题选了不知道"}
+      ]
+    },
+    {
+      "profile": "你学过 z 分数，知道 PCA 用来降维；方差公式已经答对。",
+      "assumed": ["c3.notation"],
+      "sections": [
+        {"id": "s1", "heading": "从 z 分数走到 PCA", "role": "organizer", "cells": [],
+         "why": "挂到你的 z 分数页上"},
+        {"id": "s2", "heading": "先标准化：z 分数提醒", "role": "recap",
+         "cells": ["c1.procedure", "c1.interpret"], "why": "z 分数的解读还不会"},
+        {"id": "s3", "heading": "PCA 在做什么", "role": "explain",
+         "cells": ["c4.purpose", "c4.procedure", "c4.interpret"], "why": "目标概念"}
+      ]
+    }
+  ],
+  "goals.write": [
+    {"text": "回想：z 分数就是用平均数和标准差当尺子\n\n你已经会算平均数，z 分数就从它出发。"},
+    {"text": "回想：平均数 = 总和 ÷ 个数\n\n均值 μ = Σx / N。"},
+    {"text": "回想：方差 = 离均值的平方的平均\n\nσ² = Σ(x − μ)² / N，标准差 σ 是它的平方根。"},
+    {"text": "回想：z = (x − μ) / σ\n\nz 告诉你 x 离均值几个标准差；z = -1.5 就是低 1.5 个标准差。"},
+    {"text": "回想：PCA 前先把每列变成 z 分数\n\n各列单位不同时，先标准化再做 PCA。"},
+    {"text": "回想：z = (x − μ) / σ，正负表示高于或低于均值\n\n标准化后每列均值 0、标准差 1。"},
+    {"text": "回想：PCA 找方差最大的方向\n\n主成分是协方差矩阵的特征向量，按解释的方差从大到小排。"}
+  ]
+}

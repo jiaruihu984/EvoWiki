@@ -1,0 +1,39 @@
+{
+  "source": "desktop/EvoWikiDesktop.cs",
+  "source_sha256": "1fed2c7e61ba41da51fbfee82451a3de31b8373bb9b315b45ff0416f723e58ab",
+  "application_manifest_sha256": "40770e8e6ec6e4423c8f0772ffc214f70dee759754d7fc5754fefa3e1c6827e0",
+  "icons": {
+    "desktop/icons/running.ico": "ac36037c268bd9d05d33b0d6966b7aa6b2c908b9d94909f2e6efdc4b31ca434c",
+    "desktop/icons/running.svg": "f1514310f7fda08640ade73254cc20b814c1cbe0930e322c6eed56085752546d",
+    "desktop/icons/stopped.ico": "621666c7d17251610f3a0d5d0c00f27c06079660aa2bd5a28cbaa17052f2c1ff",
+    "desktop/icons/stopped.svg": "216be7074914535f4153f4dde4d53a4f2f95e6c630a697826c7fdac0019a70b6"
+  },
+  "compiler": "Windows .NET Framework v4.0.30319 csc.exe",
+  "compiler_sha256": "46809206887326d2d24db1eff1f3064de972c3451abe766b49111450a5e08e00",
+  "arguments": [
+    "/nologo",
+    "/noconfig",
+    "/target:winexe",
+    "/platform:anycpu",
+    "/optimize+",
+    "/debug-",
+    "/utf8output",
+    "/codepage:65001",
+    "/out:EvoWiki.exe",
+    "/win32manifest:desktop/app.manifest",
+    "/win32icon:desktop/icons/running.ico",
+    "/resource:desktop/icons/running.ico,EvoWiki.Running.ico",
+    "/resource:desktop/icons/stopped.ico,EvoWiki.Stopped.ico",
+    "/reference:System.dll",
+    "/reference:System.Core.dll",
+    "/reference:System.Windows.Forms.dll",
+    "/reference:System.Drawing.dll",
+    "/reference:System.Web.Extensions.dll",
+    "desktop\\EvoWikiDesktop.cs"
+  ],
+  "output": "EvoWiki.exe",
+  "output_sha256": "9ed6c39c7d365c703ba6e4116a8762390339907059eb090f097a6937e6fe60d7",
+  "signed": false,
+  "byte_reproducible": false,
+  "note": "Legacy Framework csc has no deterministic switch; hashes identify this build only."
+}

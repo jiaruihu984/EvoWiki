@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<style>
+body { margin: 0; padding: 12px; font-family: var(--font-text, system-ui, sans-serif);
+  background: var(--background-primary, Canvas); color: var(--text-normal, CanvasText); }
+li { margin: 4px 0; }
+.bad { color: var(--color-red, red); font-weight: bold; }
+.good { color: var(--color-green, green); }
+button { font: inherit; }
+</style>
+</head>
+<body>
+<p>沙箱探针：每一项都应该是「被挡住了」。出现「做到了」就是沙箱漏了。</p>
+<ul id="out"></ul>
+<p><button id="nav" type="button">试着把这个框跳到别的网址</button>
+  （点了以后这个框应该马上回到这一页，上面的列表重新出现；不会停在出错页或别的网页）</p>
+<p><button id="top" type="button">试着把整个 Obsidian 跳到别的网址</button> <span id="topres"></span>
+  （点了以后 Obsidian 应该原地不动）</p>
+<script>
+(function () {
+  var out = document.getElementById("out");
+  function row(name, ok, detail) {
+    var li = document.createElement("li");
+    li.className = ok ? "bad" : "good";
+    li.textContent = name + "：" + (ok ? "做到了（不应该）" : "被挡住了") + (detail ? "（" + detail + "）" : "");
+    out.appendChild(li);
+  }
+  function err(e) { return e && e.name ? e.name : String(e); }
+  // 1. read the host page (Obsidian) through parent
+  try { var t = parent.document.title; row("读取 Obsidian 页面（parent.document）", true, String(t)); }
+  catch (e) { row("读取 Obsidian 页面（parent.document）", false, err(e)); }
+  // 2. Node / Electron require
+  row("调用 require（Node）", typeof require !== "undefined", typeof require);
+  // 4. cookies / storage of an origin (the sandbox has none)
+  try { var c = document.cookie; row("读 cookie", true, String(c).slice(0, 20)); }
+  catch (e) { row("读 cookie", false, err(e)); }
+  try { localStorage.setItem("p", "1"); row("写 localStorage", true, ""); }
+  catch (e) { row("写 localStorage", false, err(e)); }
+  // 5. a popup
+  try { var w = window.open("https://evowiki-probe.invalid/popup"); row("弹出新窗口", !!w, ""); }
+  catch (e) { row("弹出新窗口", false, err(e)); }
+  // 6. a request to an outside address (fetch); the answer comes later
+  var li = document.createElement("li");
+  li.textContent = "向外面的网址发请求（fetch）：正在试…";
+  out.appendChild(li);
+  try {
+    fetch("https://example.com/").then(function () {
+      li.className = "bad"; li.textContent = "向外面的网址发请求（fetch）：做到了（不应该）";
+    }, function (e) {
+      li.className = "good"; li.textContent = "向外面的网址发请求（fetch）：被挡住了（" + err(e) + "）";
+    });
+  } catch (e) { li.className = "good"; li.textContent = "向外面的网址发请求（fetch）：被挡住了（" + err(e) + "）"; }
+  // 3. move the whole Obsidian window (top.location): only on a click. Chromium usually blocks this without an
+  // exception (a console message), so the check is that Obsidian stays where it is.
+  document.getElementById("top").addEventListener("click", function () {
+    var r = document.getElementById("topres");
+    try { top.location.href = "https://evowiki-probe.invalid/top"; r.textContent = "没有报错；Obsidian 还在原地就是被挡住了。"; }
+    catch (e) { r.textContent = "被挡住了（" + err(e) + "）"; }
+  });
+  // 7. self-navigation: only on a click (an automatic one would loop: the plugin redraws the frame after every navigation)
+  document.getElementById("nav").addEventListener("click", function () {
+    location.href = "https://evowiki-probe.invalid/self";
+  });
+})();
+</script>
+</body>
+</html>

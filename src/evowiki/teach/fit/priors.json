@@ -1,0 +1,67 @@
+{
+  "evidence_weight.quiz": {
+    "mean": 1.0,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "evidence_weight.check": {
+    "mean": 1.0,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "evidence_weight.self": {
+    "mean": 0.6,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "evidence_weight.feedback": {
+    "mean": 0.4,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "evidence_weight.ask": {
+    "mean": 0.3,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "evidence_weight.recall": {
+    "mean": 1.0,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "evidence_weight.slip_claim": {
+    "mean": 0.3,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "evidence_weight.learned_claim": {
+    "mean": 0.3,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "forgetting_scale": {
+    "mean": 1.0,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "slip": {
+    "mean": 0.1,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "guess_scale": {
+    "mean": 1.0,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "inference_strength": {
+    "mean": 1.0,
+    "sd_logit": 1.5,
+    "source": "default"
+  },
+  "start_known": {
+    "mean": 0.4258,
+    "sd_logit": 1.3369,
+    "source": "assistments2009@fit-priors-v2"
+  }
+}

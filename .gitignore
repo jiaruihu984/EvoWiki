@@ -1,0 +1,43 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+
+# local secrets — never commit
+.env
+.evowiki-vault/
+
+# local dev database (scripts/dev_db.py)
+.pgdata/
+# dev Postgres as a Windows service (scripts/install_pg_service.ps1): stable binaries, server logs
+.pg18/
+.pglog/
+.pgdata.log*
+
+# live LLM case results (tests/llm_cases/live)
+.live-results/
+
+# TutorBench (CC BY-NC 4.0): local use only, never committed (scripts/fetch_tutorbench.py)
+tests/llm_cases/data/tutorbench/
+# LectureBank has no license: local-only gold excerpt (build_gold.py)
+tests/llm_cases/gold/lecturebank_ml.json
+
+# public datasets (raw + locally derived numbers): never committed (scripts/rsi/fit_priors.py)
+.data/
+
+# EvoWiki launcher runtime files: backend pid/log, pre-migration backups (scripts/evowiki_ctl.py)
+.evowiki-run/
+.phoenix/
+
+# Local workspace and private assistant instructions
+node_modules/
+.eval-venv/
+.claude/
+.run/
+.superpowers/
+CLAUDE.md
+CODEX.md
+AGENTS.md
+codex_work.md

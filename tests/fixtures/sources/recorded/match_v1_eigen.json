@@ -1,0 +1,41 @@
+{
+ "call_id": "llm_160f98afdf9e485adb83",
+ "purpose": "sources.match",
+ "prompt_version": "sources-match@v1",
+ "ts": "2026-10-21 23:59:01.855082+08",
+ "prompt": null,
+ "reply": {
+  "verdicts": [
+   {
+    "n": 1,
+    "same": true,
+    "why": "资料涵盖特征值，本页正是特征值与特征向量的系统讲解，直接对应。"
+   },
+   {
+    "n": 2,
+    "same": false,
+    "why": ""
+   },
+   {
+    "n": 3,
+    "same": true,
+    "why": "资料涵盖对角化，本页讲对称矩阵的对角化，属于该主题。"
+   },
+   {
+    "n": 4,
+    "same": false,
+    "why": ""
+   },
+   {
+    "n": 5,
+    "same": false,
+    "why": ""
+   },
+   {
+    "n": 6,
+    "same": false,
+    "why": ""
+   }
+  ]
+ }
+}

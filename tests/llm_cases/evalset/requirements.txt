@@ -1,0 +1,3 @@
+# The evaluation runner's own venv only (README). Not in pyproject: uv resolves all extras together, so
+# an extra's constraints move the main environment's versions.
+inspect-ai>=0.3.287

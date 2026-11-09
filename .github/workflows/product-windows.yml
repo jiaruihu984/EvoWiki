@@ -1,0 +1,52 @@
+name: Windows product installation
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: product-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bootstrap:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        checkout: [checkout, "EvoWiki 安装"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ matrix.checkout }}
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # No project environment, PostgreSQL, npm artifacts or model cache is restored.
+      # Downloads use the real launcher. Only the paid model endpoint is a local fake.
+      - name: Bootstrap, configure, start, stop and restart
+        shell: pwsh
+        run: |
+          $checkoutRoot = Join-Path $env:GITHUB_WORKSPACE '${{ matrix.checkout }}'
+          $pythonVersion = (Get-Content "$checkoutRoot/.python-version").Trim()
+          uv run --isolated --no-project --python $pythonVersion python "$checkoutRoot/scripts/check_product_install.py" --root "$checkoutRoot"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Upload installation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-install-${{ strategy.job-index }}
+          if-no-files-found: ignore
+          path: |
+            ${{ matrix.checkout }}/.evowiki-run/install-check.json
+            ${{ matrix.checkout }}/.evowiki-run/backend.log
+            ${{ matrix.checkout }}/.pgdata.log

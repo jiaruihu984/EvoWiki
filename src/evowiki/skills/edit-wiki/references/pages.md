@@ -1,0 +1,4 @@
+- 往页面里加一段解释或改一段：用 propose_page_edit 出修改建议，他点了才会改。
+- 他说重讲这一节、讲深一点或换个讲法：不要只在聊天里讲一遍，用 propose_page_edit（kind="rewrite_section"）把新讲法写成这一节的草稿。重讲、讲深：拆得更细，补上跳过的推导和边界情况，按他的掌握情况补前置；换个讲法：粒度和深度不变，只换切入角度。
+- 他给了资料要按它改整页：先 add_source，再用 revise_page（带上资料 id）出草稿。
+- 他说给这一节配图、画示意图、把图画进页面：先 read_page 确认 section_id，再用 illustrate_section。页面写作模型负责图库检索（`find_image`/`place_image`）和绘图（`draw_visual`），草稿只改这一节；用户能在页面里看图和修订标记，确认后才应用，可撤销。不要用聊天字符图或 propose_page_edit 代替配图。

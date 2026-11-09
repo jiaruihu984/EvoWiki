@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E5%88%86%E6%AD%A5%E8%BF%87%E7%A8%8B%22-->分步过程</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+.stage{padding:12px}
+.stage h2{font-size:15px;margin:0 0 10px;font-weight:650;line-height:1.4}
+.expl{margin:12px 0 0;color:var(--tx-2)}
+.tbl{overflow-x:auto;max-width:100%}
+table{border-collapse:separate;border-spacing:3px;font-size:14px}
+td .cell{min-width:34px;padding-left:3px;padding-right:3px}
+th{font:12px var(--font);color:var(--tx-3);font-weight:500;padding:2px 4px;text-align:center;white-space:nowrap}
+th.rl{text-align:left;padding-right:8px}
+.cell{position:relative;display:flex;align-items:center;justify-content:center;min-width:38px;min-height:50px;padding:14px 6px 4px;
+  border:1px solid var(--line);border-radius:6px;background:var(--bg);font:15px var(--mono);font-variant-numeric:tabular-nums;color:var(--tx);text-align:center;white-space:nowrap}
+.cell.changed{border:2px solid var(--accent);background:var(--accent-soft);font-weight:700;padding:13px 5px 3px}
+.cell.wrong{border:2px dashed var(--bad);color:var(--bad);font-weight:700;padding:13px 5px 3px}
+.tag{position:absolute;top:1px;left:4px;font:12px/14px var(--font);color:var(--tx-3);font-style:normal}
+.cell.changed .tag{color:var(--accent)}
+.cell.wrong .tag{color:var(--bad)}
+.brow{margin:0 0 10px}
+.brow .k{display:block;font-size:12px;color:var(--tx-3);margin:0 0 3px}
+.boxes{display:flex;flex-wrap:wrap;gap:6px}
+.dots{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0}
+.dots li{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font:12px var(--mono);color:var(--tx-3)}
+.dots li.done{border-color:var(--accent);color:var(--tx)}
+.dots li.cur{background:var(--accent);border-color:var(--accent);color:var(--accent-tx);font-weight:700}
+.dots li.bad{border-style:dashed;border-color:var(--bad)}
+.dots li.bad.cur{background:var(--bad);color:var(--accent-tx)}
+.pathNote{font-size:13px;color:var(--bad);font-weight:600;margin:0}
+button.err{border-color:var(--bad);color:var(--bad)}
+button.err:hover{background:var(--bg-1)}
+</style>
+<script data-evowiki-locale="step-process"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage">
+      <h2 id="stepTitle"></h2>
+      <div id="state"></div>
+      <p class="expl" id="expl"></p>
+    </div>
+    <div class="side">
+      <div class="ctl"><span class="lb"><!--ew-t:%22%E7%AC%AC%22-->第 <b id="pos">1</b> / <span id="total">1</span><!--ew-t:%22%E6%AD%A5%22--> 步</span><ol class="dots" id="dots" aria-label="步骤" data-ew-attrs='{"aria-label":"步骤"}'></ol></div>
+      <p class="pathNote" id="pathNote" hidden><!--ew-t:%22%E7%8E%B0%E5%9C%A8%E8%B5%B0%E7%9A%84%E6%98%AF%E5%87%BA%E9%94%99%E8%B7%AF%E5%BE%84%EF%BC%88%E8%99%9A%E7%BA%BF%E5%9C%86%E5%9C%88%EF%BC%89%22-->现在走的是出错路径（虚线圆圈）</p>
+      <div class="row">
+        <button type="button" id="prev"><!--ew-t:%22%E4%B8%8A%E4%B8%80%E6%AD%A5%22-->上一步</button>
+        <button type="button" id="next"><!--ew-t:%22%E4%B8%8B%E4%B8%80%E6%AD%A5%22-->下一步</button>
+        <button type="button" id="reset"><!--ew-t:%22%E9%87%8D%E6%9D%A5%22-->重来</button>
+      </div>
+      <div class="row">
+        <button type="button" id="mistake" class="err" hidden><!--ew-t:%22%E5%9C%A8%E8%BF%99%E4%B8%80%E6%AD%A5%E6%95%85%E6%84%8F%E5%87%BA%E9%94%99%22-->在这一步故意出错</button>
+        <button type="button" id="fix" hidden><!--ew-t:%22%E5%9B%9E%E5%88%B0%E6%AD%A3%E7%A1%AE%E8%B7%AF%E5%BE%84%22-->回到正确路径</button>
+      </div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("复制一份 DNA：每一格按规则配对"),"question": ewt("只靠“A 对 T、G 对 C”这一条规则，为什么能得到两份和原来一样的 DNA？配错一格会怎样？"),"layout":"boxes","columns":[],"steps":[{"title": ewt("原来的一份 DNA"),"explain": ewt("双链 DNA 由两条链配对而成：上链的 A 对着 T，T 对着 A，G 对着 C，C 对着 G。"),"rows":[{"label": ewt("原 DNA 上链"),"cells":[{"text":"A","changed":false},{"text":"T","changed":false},{"text":"G","changed":false},{"text":"C","changed":false},{"text":"C","changed":false},{"text":"A","changed":false}]},{"label": ewt("原 DNA 下链"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]}]},{"title": ewt("两条链拉开，各自当模板"),"explain": ewt("解旋酶把两条链拉开。每条旧链都露出一排没配对的碱基，等着配新链。"),"rows":[{"label": ewt("旧链甲（当模板）"),"cells":[{"text":"A","changed":false},{"text":"T","changed":false},{"text":"G","changed":false},{"text":"C","changed":false},{"text":"C","changed":false},{"text":"A","changed":false}]},{"label": ewt("新链甲"),"cells":[{"text":"?","changed":true},{"text":"?","changed":true},{"text":"?","changed":true},{"text":"?","changed":true},{"text":"?","changed":true},{"text":"?","changed":true}]},{"label": ewt("旧链乙（当模板）"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("新链乙"),"cells":[{"text":"?","changed":true},{"text":"?","changed":true},{"text":"?","changed":true},{"text":"?","changed":true},{"text":"?","changed":true},{"text":"?","changed":true}]}]},{"title": ewt("新链甲：按规则配"),"explain": ewt("新链甲逐格配对：旧链甲是 A 就配 T，是 T 就配 A，是 G 就配 C，是 C 就配 G。"),"rows":[{"label": ewt("旧链甲（当模板）"),"cells":[{"text":"A","changed":false},{"text":"T","changed":false},{"text":"G","changed":false},{"text":"C","changed":false},{"text":"C","changed":false},{"text":"A","changed":false}]},{"label": ewt("新链甲"),"cells":[{"text":"T","changed":true},{"text":"A","changed":true},{"text":"C","changed":true},{"text":"G","changed":true},{"text":"G","changed":true},{"text":"T","changed":true}]},{"label": ewt("旧链乙（当模板）"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("新链乙"),"cells":[{"text":"?","changed":false},{"text":"?","changed":false},{"text":"?","changed":false},{"text":"?","changed":false},{"text":"?","changed":false},{"text":"?","changed":false}]}]},{"title": ewt("新链乙：同样按规则配"),"explain": ewt("另一条旧链也一样当模板，规则没有变。"),"rows":[{"label": ewt("旧链甲（当模板）"),"cells":[{"text":"A","changed":false},{"text":"T","changed":false},{"text":"G","changed":false},{"text":"C","changed":false},{"text":"C","changed":false},{"text":"A","changed":false}]},{"label": ewt("新链甲"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("旧链乙（当模板）"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("新链乙"),"cells":[{"text":"A","changed":true},{"text":"T","changed":true},{"text":"G","changed":true},{"text":"C","changed":true},{"text":"C","changed":true},{"text":"A","changed":true}]}]},{"title": ewt("得到两份相同的 DNA"),"explain": ewt("每份 DNA 都是“一条旧链 + 一条新链”。两份的碱基顺序和原来完全一样，这叫半保留复制。"),"rows":[{"label": ewt("DNA① 上链（旧）"),"cells":[{"text":"A","changed":false},{"text":"T","changed":false},{"text":"G","changed":false},{"text":"C","changed":false},{"text":"C","changed":false},{"text":"A","changed":false}]},{"label": ewt("DNA① 下链（新）"),"cells":[{"text":"T","changed":true},{"text":"A","changed":true},{"text":"C","changed":true},{"text":"G","changed":true},{"text":"G","changed":true},{"text":"T","changed":true}]},{"label": ewt("DNA② 上链（新）"),"cells":[{"text":"A","changed":true},{"text":"T","changed":true},{"text":"G","changed":true},{"text":"C","changed":true},{"text":"C","changed":true},{"text":"A","changed":true}]},{"label": ewt("DNA② 下链（旧）"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]}]},{"title": ewt("下一轮：用 DNA① 的下链当模板"),"explain": ewt("再复制一轮时，DNA① 的下链也要当模板。它是什么，新配出的链就是什么。"),"rows":[{"label": ewt("模板（DNA① 下链）"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("新配的上链"),"cells":[{"text":"A","changed":true},{"text":"T","changed":true},{"text":"G","changed":true},{"text":"C","changed":true},{"text":"C","changed":true},{"text":"A","changed":true}]},{"label": ewt("和最初的上链比"),"cells":[{"text": ewt("一致"),"changed":false},{"text": ewt("一致"),"changed":false},{"text": ewt("一致"),"changed":false},{"text": ewt("一致"),"changed":false},{"text": ewt("一致"),"changed":false},{"text": ewt("一致"),"changed":false}]}]}],"mistake":{"at_step":3,"button_label": ewt("在这一步故意出错"),"consequence": ewt("错配的一格留在了新链里，它再被拿去当模板，错误就被抄给下一代。"),"wrong_steps":[{"title": ewt("新链甲：第 4 格配错了"),"explain": ewt("旧链甲第 4 格是 C，应该配 G，这里却放了 A。A 只能配 T，这一格配不上。"),"rows":[{"label": ewt("旧链甲（当模板）"),"cells":[{"text":"A","changed":false},{"text":"T","changed":false},{"text":"G","changed":false},{"text":"C","changed":false},{"text":"C","changed":false},{"text":"A","changed":false}]},{"label": ewt("新链甲"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"A","changed":true},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("旧链乙（当模板）"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("新链乙"),"cells":[{"text":"?","changed":false},{"text":"?","changed":false},{"text":"?","changed":false},{"text":"?","changed":false},{"text":"?","changed":false},{"text":"?","changed":false}]}]},{"title": ewt("新链乙：照常配对"),"explain": ewt("另一条链配对没有问题，错误只在新链甲里。"),"rows":[{"label": ewt("旧链甲（当模板）"),"cells":[{"text":"A","changed":false},{"text":"T","changed":false},{"text":"G","changed":false},{"text":"C","changed":false},{"text":"C","changed":false},{"text":"A","changed":false}]},{"label": ewt("新链甲"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"A","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("旧链乙（当模板）"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("新链乙"),"cells":[{"text":"A","changed":true},{"text":"T","changed":true},{"text":"G","changed":true},{"text":"C","changed":true},{"text":"C","changed":true},{"text":"A","changed":true}]}]},{"title": ewt("得到两份 DNA，其中一份有错配"),"explain": ewt("DNA① 的上下链在第 4 格对不上（C 对 A）。DNA② 是好的。细胞里的修复系统有机会发现它，但这里假设没被修复。"),"rows":[{"label": ewt("DNA① 上链（旧）"),"cells":[{"text":"A","changed":false},{"text":"T","changed":false},{"text":"G","changed":false},{"text":"C","changed":false},{"text":"C","changed":false},{"text":"A","changed":false}]},{"label": ewt("DNA① 下链（新）"),"cells":[{"text":"T","changed":true},{"text":"A","changed":true},{"text":"C","changed":true},{"text":"A","changed":true},{"text":"G","changed":true},{"text":"T","changed":true}]},{"label": ewt("DNA② 上链（新）"),"cells":[{"text":"A","changed":true},{"text":"T","changed":true},{"text":"G","changed":true},{"text":"C","changed":true},{"text":"C","changed":true},{"text":"A","changed":true}]},{"label": ewt("DNA② 下链（旧）"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"G","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]}]},{"title": ewt("下一轮：错的链当模板"),"explain": ewt("这条下链第 4 格是 A，所以新配出的上链这一格是 T，而不是原来的 C。"),"rows":[{"label": ewt("模板（DNA① 下链）"),"cells":[{"text":"T","changed":false},{"text":"A","changed":false},{"text":"C","changed":false},{"text":"A","changed":false},{"text":"G","changed":false},{"text":"T","changed":false}]},{"label": ewt("新配的上链"),"cells":[{"text":"A","changed":true},{"text":"T","changed":true},{"text":"G","changed":true},{"text":"T","changed":true},{"text":"C","changed":true},{"text":"A","changed":true}]},{"label": ewt("和最初的上链比"),"cells":[{"text": ewt("一致"),"changed":false},{"text": ewt("一致"),"changed":false},{"text": ewt("一致"),"changed":false},{"text": ewt("不同"),"changed":true},{"text": ewt("一致"),"changed":false},{"text": ewt("一致"),"changed":false}]}]}]}};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?(Math.abs(x)>=1000?x.toFixed(0):x.toFixed(d)):'—';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+const clampI=(v,lo,hi)=>Math.min(hi,Math.max(lo,Math.round(Number(v))||lo));
+function normStep(s){s=s||{};
+  const rows=(Array.isArray(s.rows)?s.rows:[]).slice(0,12).map(r=>({label:EvoWikiLocale.string((r&&r.label)||''),
+    cells:(Array.isArray(r&&r.cells)?r.cells:[]).slice(0,16).map(c=>({text:EvoWikiLocale.string(c&&c.text!=null?c.text:''),changed:!!(c&&c.changed)}))}));
+  return {title:EvoWikiLocale.string(s.title||''),explain:EvoWikiLocale.string(s.explain||''),rows}}
+const steps=(Array.isArray(C.steps)?C.steps:[]).slice(0,30).map(normStep);
+if(!steps.length)steps.push(normStep({title: ewt("（没有步骤）")}));
+const layout=C.layout==='boxes'?'boxes':'table';
+const cols=(Array.isArray(C.columns)?C.columns:[]).slice(0,16).map(EvoWikiLocale.string);
+const hasRowLabels=steps.some(s=>s.rows.some(r=>r.label));
+let M=null;
+if(C.mistake&&Array.isArray(C.mistake.wrong_steps)&&C.mistake.wrong_steps.length){
+  M={at:clampI(C.mistake.at_step,1,steps.length),label:EvoWikiLocale.string(C.mistake.button_label|| ewt("在这一步故意出错")),
+     consequence:EvoWikiLocale.string(C.mistake.consequence||''),wrong:C.mistake.wrong_steps.slice(0,30).map(normStep)}}
+let i=0,wrongMode=false;
+const path=()=>wrongMode?steps.slice(0,M.at-1).concat(M.wrong):steps;
+const onWrong=()=>wrongMode&&i>=M.at-1;
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title||'');EvoWikiLocale.prop($('question'),"textContent",()=>C.question||'');
+if(M)EvoWikiLocale.prop($('mistake'),"textContent",()=>M.label);
+
+function cellEl(c,wrong){const d=document.createElement('div');d.className='cell'+(wrong?' wrong':c.changed?' changed':'');
+  d.append(document.createTextNode(c.text));
+  if(wrong||c.changed){const t=document.createElement('i');t.className='tag';EvoWikiLocale.prop(t,"textContent",()=>wrong? ewt("错"): ewt("变"));d.append(t)}return d}
+function isWrongCell(r,j,c){if(!onWrong())return false;const cs=steps[i];if(!cs)return c.changed;
+  const cr=cs.rows[r]&&cs.rows[r].cells[j];return !cr||cr.text!==c.text}
+
+function render(action){
+  const P=path();i=Math.min(Math.max(i,0),P.length-1);const s=P[i];const wr=onWrong();
+  EvoWikiLocale.prop($('stepTitle'),"textContent",()=>s.title);EvoWikiLocale.prop($('expl'),"textContent",()=>s.explain);
+  const st=$('state');EvoWikiLocale.prop(st,"textContent",()=>'');
+  if(layout==='table'){
+    const wrap=document.createElement('div');wrap.className='tbl';const tb=document.createElement('table');
+    const n=Math.max(cols.length,...s.rows.map(r=>r.cells.length),0);
+    if(cols.length){const tr=document.createElement('tr');const e=document.createElement('th');if(hasRowLabels)tr.append(e);
+      for(let j=0;j<n;j++){const th=document.createElement('th');th.scope='col';EvoWikiLocale.prop(th,"textContent",()=>cols[j]||'');tr.append(th)}tb.append(tr)}
+    s.rows.forEach((r,ri)=>{const tr=document.createElement('tr');
+      if(hasRowLabels){const th=document.createElement('th');th.scope='row';th.className='rl';EvoWikiLocale.prop(th,"textContent",()=>r.label);tr.append(th)}
+      for(let j=0;j<n;j++){const td=document.createElement('td');if(r.cells[j])td.append(cellEl(r.cells[j],isWrongCell(ri,j,r.cells[j])));tr.append(td)}
+      tb.append(tr)});
+    wrap.append(tb);st.append(wrap);
+  }else{
+    s.rows.forEach((r,ri)=>{const d=document.createElement('div');d.className='brow';
+      if(r.label){const k=document.createElement('span');k.className='k';EvoWikiLocale.prop(k,"textContent",()=>r.label);d.append(k)}
+      const b=document.createElement('div');b.className='boxes';
+      r.cells.forEach((c,j)=>b.append(cellEl(c,isWrongCell(ri,j,c))));d.append(b);st.append(d)});
+  }
+  EvoWikiLocale.prop($('pos'),"textContent",()=>i+1);EvoWikiLocale.prop($('total'),"textContent",()=>P.length);
+  const dots=$('dots');EvoWikiLocale.prop(dots,"textContent",()=>'');
+  P.forEach((_,k)=>{const li=document.createElement('li');EvoWikiLocale.prop(li,"textContent",()=>k+1);
+    li.className=(k===i?'cur ':k<i?'done ':'')+(wrongMode&&k>=M.at-1?'bad':'');
+    if(k===i)EvoWikiLocale.attr(li,'aria-current',()=>'step');dots.append(li)});
+  $('prev').disabled=i===0;$('next').disabled=i>=P.length-1;
+  $('mistake').hidden=!(M&&!wrongMode&&i===M.at-1);
+  $('fix').hidden=!wr;$('pathNote').hidden=!wr;
+  const ch=[];s.rows.forEach(r=>{const idx=r.cells.map((c,j)=>c.changed?j:-1).filter(j=>j>=0);if(!idx.length)return;
+    const nm=r.label|| ewt("这一行");
+    if(idx.length===r.cells.length&&idx.length>2)ch.push(nm+ ewt("整行（")+r.cells.map(c=>c.text).join(' ')+'）');
+    else idx.forEach(j=>ch.push(nm+(cols[j]?' '+cols[j]:'')+' = '+r.cells[j].text))});
+  const pre={next: ewt("前进到"),prev: ewt("退回到"),reset: ewt("回到起点，"),mistake: ewt("你在这里故意出错了，"),fix: ewt("回到正确路径，")}[action]||'';
+  let t= ewt("{0}第 {1} / {2} 步「{3}」。", [pre,i+1,P.length,s.title]);
+  if(ch.length)t+= ewt(" 这一步变化的格子：{0}{1}。", [ch.slice(0,6).join('；'),ch.length>6? ewt(" 等"):'']);
+  if(wr){let nw=0;s.rows.forEach((r,ri)=>r.cells.forEach((c,j)=>{if(isWrongCell(ri,j,c))nw++}));
+    t+= ewt(" 出错路径：有 {0} 格和正确做法不一样。{1}", [nw,M.consequence])}
+  else if(M&&!wrongMode&&i===M.at-1)t+= ewt(" 可以按“")+M.label+ ewt("”，看看错一格会怎样。");
+  EvoWikiLocale.prop($('result'),"textContent",()=>t);
+}
+function go(d){i+=d;if(wrongMode&&i<M.at-1)wrongMode=false;render(d>0?'next':'prev')}
+$('next').addEventListener('click',()=>go(1));
+$('prev').addEventListener('click',()=>go(-1));
+$('reset').addEventListener('click',()=>{i=0;wrongMode=false;render('reset')});
+$('mistake').addEventListener('click',()=>{wrongMode=true;render('mistake')});
+$('fix').addEventListener('click',()=>{wrongMode=false;i=M.at-1;render('fix')});
+render('');
+
+EvoWikiLocale.onChange(()=>{render("")});</script>
+</body>
+</html>

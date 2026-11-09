@@ -1,0 +1,337 @@
+{
+ "model": "claude-sonnet-5-5",
+ "seconds": 49.7,
+ "input_tokens": 3480,
+ "output_tokens": 7238,
+ "cost_usd": 0.0793,
+ "raw": "{\"blocks\": [\n  {\"type\": \"evoui\", \"title\": \"特征向量实验室\",\n   \"question\": \"为什么只有某些方向的向量，被矩阵 A 作用后方向不变？\",\n   \"state\": {\"angle\": 45},\n   \"derived\": {\n     \"t\": \"deg2rad(angle)\",\n     \"vx\": \"cos(t)\",\n     \"vy\": \"sin(t)\",\n     \"ax\": \"2 * vx\",\n     \"ay\": \"vy\",\n     \"cross\": \"vx * ay - vy * ax\",\n     \"dot\": \"vx * ax + vy * ay\",\n     \"ang\": \"abs(atan2(cross, dot)) * 180 / PI\",\n     \"same\": \"abs(cross) < 0.005\",\n     \"lam\": \"abs(vx) > 0.5 ? 2 : 1\",\n     \"circle\": \"map(range(73), i => [cos(deg2rad(i * 5)), sin(deg2rad(i * 5))])\"\n   },\n   \"body\": {\"kind\": \"box\", \"gap\": 3, \"border\": true, \"children\": [\n     {\"kind\": \"row\", \"justify\": \"between\", \"wrap\": true, \"children\": [\n       {\"kind\": \"text\", \"text\": \"矩阵 A = [[2, 0], [0, 1]]：把 x 方向拉长 2 倍，y 方向不变\", \"weight\": \"bold\"},\n       {\"kind\": \"badge\", \"text\": \"{same ? '方向不变' : '方向被拉歪'}\", \"tone\": \"secondary\"}]},\n     {\"kind\": \"text\", \"size\": \"sm\", \"tone\": \"secondary\", \"text\": \"怎么动：拖动滑块或点预设角度，转动单位向量 v。看什么：虚线箭头 Av 是否和实线箭头 v 落在同一条直线上。\"},\n     {\"kind\": \"slider\", \"bind\": \"angle\", \"min\": 0, \"max\": 180, \"step\": 1, \"label\": \"v 的角度：{fmt(angle, 0)}°\"},\n     {\"kind\": \"choice\", \"bind\": \"angle\", \"style\": \"buttons\", \"options\": [\n       {\"label\": \"0°\", \"value\": 0},\n       {\"label\": \"45°\", \"value\": 45},\n       {\"label\": \"90°\", \"value\": 90},\n       {\"label\": \"135°\", \"value\": 135},\n       {\"label\": \"180°\", \"value\": 180}]},\n     {\"kind\": \"plot\", \"xmin\": -2.5, \"xmax\": 2.5, \"ymin\": -1.5, \"ymax\": 1.5, \"grid\": true, \"height\": 300,\n      \"items\": [\n        {\"shape\": \"polyline\", \"points\": \"circle\", \"tone\": \"secondary\", \"dashed\": true},\n        {\"shape\": \"arrow\", \"x1\": 0, \"y1\": 0, \"x2\": \"vx\", \"y2\": \"vy\", \"tone\": \"accent\", \"label\": \"v（实线）\", \"dashed\": false},\n        {\"shape\": \"arrow\", \"x1\": 0, \"y1\": 0, \"x2\": \"ax\", \"y2\": \"ay\", \"tone\": \"warning\", \"label\": \"Av（虚线）\", \"dashed\": true}],\n      \"legend\": [\n        {\"label\": \"v：单位向量（实线）\", \"tone\": \"accent\"},\n        {\"label\": \"Av：变换后的向量（虚线）\", \"tone\": \"warning\"},\n        {\"label\": \"单位圆（点线，参考）\", \"tone\": \"secondary\"}]},\n     {\"kind\": \"box\", \"tone\": \"surface\", \"gap\": 1, \"children\": [\n       {\"kind\": \"text\", \"size\": \"sm\", \"text\": \"v = ({fmt(vx, 2)}, {fmt(vy, 2)})\"},\n       {\"kind\": \"text\", \"size\": \"sm\", \"text\": \"Av = ({fmt(ax, 2)}, {fmt(ay, 2)})\"},\n       {\"kind\": \"text\", \"size\": \"sm\", \"text\": \"v 与 Av 的夹角 = {fmt(ang, 1)}°\"},\n       {\"kind\": \"if\", \"cond\": \"same\",\n        \"then\": {\"kind\": \"text\", \"size\": \"sm\", \"tone\": \"success\", \"weight\": \"bold\",\n                 \"text\": \"这是特征向量，特征值是 {lam}：Av = {lam}·v，方向没变，只是长度变为原来的 {lam} 倍。\"},\n        \"else\": {\"kind\": \"text\", \"size\": \"sm\", \"tone\": \"warning\",\n                 \"text\": \"不是特征向量：Av 与 v 夹了 {fmt(ang, 1)}°。因为 A 把 x 分量乘 2、y 分量不变，两个分量被拉伸的倍数不同，方向就被拽偏了（Av 更靠近 x 轴）。只有 v 完全落在 x 轴或 y 轴上时，两个分量才按同一个倍数变化。\"}}]}]},\n   \"fallback\": \"A = [[2,0],[0,1]] 把 x 分量乘 2、y 分量不变。只有当 v 在 x 轴（0° 或 180°，特征值 2）或 y 轴（90°，特征值 1）上时，Av 才和 v 在同一直线上；其他角度两个分量被拉伸的倍数不同，方向会偏转。\"},\n\n  {\"type\": \"evoui\", \"title\": \"await 小测验\",\n   \"question\": \"能不能区分“await 让出执行权”和“并发执行”？\",\n   \"state\": {}, \"derived\": {},\n   \"body\": {\"kind\": \"quiz\", \"questions\": [\n     {\"q\": \"协程执行到 await slow() 时，下面哪句话是对的？\",\n      \"options\": [\n        \"当前协程暂停，事件循环可以去运行其他已就绪的任务\",\n        \"整个程序被阻塞，直到 slow() 完成才能做别的事\",\n        \"slow() 会被丢进一个新线程并行执行\",\n        \"await 之后的代码会先于 slow() 执行\"],\n      \"correct\": 0,\n      \"why\": \"await 的含义是：我要等这个结果，先把执行权还给事件循环。事件循环趁这段时间可以运行别的任务，等 slow() 的结果就绪，再回来继续当前协程。它不会阻塞整个程序（那是同步的 time.sleep 之类的行为），也不会自动开线程，更不会改变代码顺序：当前协程里 await 后面的代码仍然要等 slow() 完成后才会执行。\"},\n     {\"q\": \"想让 fetch(1) 和 fetch(2) 的等待时间重叠，应该怎么写？\",\n      \"options\": [\n        \"await fetch(1)  然后  await fetch(2)\",\n        \"await asyncio.gather(fetch(1), fetch(2))\",\n        \"只要把 fetch 定义成 async def 就会自动并发\",\n        \"在 fetch 内部多写几个 await\"],\n      \"correct\": 1,\n      \"why\": \"并发需要把多个协程同时交给事件循环调度，gather（或 create_task）做的就是这件事。连续两个 await 是先等 fetch(1) 完成再开始 fetch(2)，总时间是两者相加；让出执行权不等于启动后面的任务。async def 只是定义协程函数，调用它只得到一个协程对象，不会自动与别的协程并发。在 fetch 内部多写 await 只会让这个协程多几个暂停点，并不会让 fetch(1) 与 fetch(2) 同时开始。\"}]},\n   \"fallback\": \"await 只是在等待时把执行权还给事件循环，不会阻塞整个程序，也不会自动并发。要让多个任务同时进行，需要 asyncio.gather 或 create_task。\"},\n\n  {\"type\": \"evoui\", \"title\": \"学习率对比\",\n   \"question\": \"学习率不同，梯度下降的损失曲线为什么会完全不同？\",\n   \"state\": {\"lr\": 0.2},\n   \"derived\": {\n     \"r\": \"1 - 2 * lr\",\n     \"xs\": \"iterate(13, 5, x => x - 2 * lr * x)\",\n     \"data\": \"map(range(13), i => ({\\\"step\\\": i, \\\"loss\\\": xs[i] ** 2}))\",\n     \"mode\": \"abs(r) > 1 ? 2 : r < 0 ? 1 : 0\"\n   },\n   \"body\": {\"kind\": \"box\", \"gap\": 3, \"border\": true, \"children\": [\n     {\"kind\": \"row\", \"justify\": \"between\", \"wrap\": true, \"children\": [\n       {\"kind\": \"text\", \"text\": \"f(x) = x²，从 x = 5 出发，每步 x ← x − 2·lr·x\", \"weight\": \"bold\"},\n       {\"kind\": \"badge\", \"text\": \"{mode == 0 ? '逐步下降' : mode == 1 ? '来回跳但收敛' : '发散'}\", \"tone\": \"secondary\"}]},\n     {\"kind\": \"text\", \"size\": \"sm\", \"tone\": \"secondary\", \"text\": \"怎么动：切换下面三个学习率。看什么：折线图里 12 步中损失 f(x) 是单调下降、上下抖动着变小，还是越来越大。\"},\n     {\"kind\": \"choice\", \"bind\": \"lr\", \"style\": \"segmented\", \"options\": [\n       {\"label\": \"lr = 0.2\", \"value\": 0.2},\n       {\"label\": \"lr = 0.6\", \"value\": 0.6},\n       {\"label\": \"lr = 1.1\", \"value\": 1.1}]},\n     {\"kind\": \"chart\", \"chart\": \"line\", \"data\": \"data\", \"x\": \"step\",\n      \"series\": [{\"key\": \"loss\", \"label\": \"损失 f(x) = x²\"}],\n      \"caption\": \"横轴：第几步（0 为起点）；纵轴：该步的损失 f(x)。学习率 {fmt(lr, 1)}\"},\n     {\"kind\": \"box\", \"tone\": \"surface\", \"gap\": 1, \"children\": [\n       {\"kind\": \"text\", \"size\": \"sm\", \"text\": \"每一步 x 乘以 (1 − 2·lr) = {fmt(r, 2)}；12 步后 x = {fmt(xs[12], 3)}，损失 = {fmt(xs[12] ** 2, 3)}\"},\n       {\"kind\": \"if\", \"cond\": \"mode == 0\",\n        \"then\": {\"kind\": \"text\", \"size\": \"sm\", \"tone\": \"success\",\n                 \"text\": \"逐步下降：每步乘 {fmt(r, 2)}（0 到 1 之间），x 始终在最小值 0 的同一侧，损失一步比一步小，平稳收敛。\"},\n        \"else\": {\"kind\": \"if\", \"cond\": \"mode == 1\",\n                 \"then\": {\"kind\": \"text\", \"size\": \"sm\", \"tone\": \"warning\",\n                          \"text\": \"来回跳但收敛：每步乘 {fmt(r, 2)}（为负），x 每步都跨过最小值 0 到另一侧，但落点离 0 越来越近（|倍数| < 1），所以损失仍然快速变小。\"},\n                 \"else\": {\"kind\": \"text\", \"size\": \"sm\", \"tone\": \"danger\",\n                          \"text\": \"发散：每步乘 {fmt(r, 2)}，|倍数| > 1，x 每次跨过 0 后反而离 0 更远，损失越来越大。学习率太大，步子迈过头了。\"}}}]}]},\n   \"fallback\": \"x ← x − 2·lr·x 等价于每步乘以 (1 − 2·lr)。lr = 0.2 时乘 0.6，损失逐步下降；lr = 0.6 时乘 −0.2，x 来回跨过 0 但很快收敛；lr = 1.1 时乘 −1.2，每步离 0 更远，损失发散。\"}\n]}",
+ "blocks": [
+  {
+   "type": "evoui",
+   "title": "特征向量实验室",
+   "question": "为什么只有某些方向的向量，被矩阵 A 作用后方向不变？",
+   "state": {
+    "angle": 45
+   },
+   "derived": {
+    "t": "deg2rad(angle)",
+    "vx": "cos(t)",
+    "vy": "sin(t)",
+    "ax": "2 * vx",
+    "ay": "vy",
+    "cross": "vx * ay - vy * ax",
+    "dot": "vx * ax + vy * ay",
+    "ang": "abs(atan2(cross, dot)) * 180 / PI",
+    "same": "abs(cross) < 0.005",
+    "lam": "abs(vx) > 0.5 ? 2 : 1",
+    "circle": "map(range(73), i => [cos(deg2rad(i * 5)), sin(deg2rad(i * 5))])"
+   },
+   "body": {
+    "kind": "box",
+    "gap": 3,
+    "border": true,
+    "children": [
+     {
+      "kind": "row",
+      "justify": "between",
+      "wrap": true,
+      "children": [
+       {
+        "kind": "text",
+        "text": "矩阵 A = [[2, 0], [0, 1]]：把 x 方向拉长 2 倍，y 方向不变",
+        "weight": "bold"
+       },
+       {
+        "kind": "badge",
+        "text": "{same ? '方向不变' : '方向被拉歪'}",
+        "tone": "secondary"
+       }
+      ]
+     },
+     {
+      "kind": "text",
+      "size": "sm",
+      "tone": "secondary",
+      "text": "怎么动：拖动滑块或点预设角度，转动单位向量 v。看什么：虚线箭头 Av 是否和实线箭头 v 落在同一条直线上。"
+     },
+     {
+      "kind": "slider",
+      "bind": "angle",
+      "min": 0,
+      "max": 180,
+      "step": 1,
+      "label": "v 的角度：{fmt(angle, 0)}°"
+     },
+     {
+      "kind": "choice",
+      "bind": "angle",
+      "style": "buttons",
+      "options": [
+       {
+        "label": "0°",
+        "value": 0
+       },
+       {
+        "label": "45°",
+        "value": 45
+       },
+       {
+        "label": "90°",
+        "value": 90
+       },
+       {
+        "label": "135°",
+        "value": 135
+       },
+       {
+        "label": "180°",
+        "value": 180
+       }
+      ]
+     },
+     {
+      "kind": "plot",
+      "xmin": -2.5,
+      "xmax": 2.5,
+      "ymin": -1.5,
+      "ymax": 1.5,
+      "grid": true,
+      "height": 300,
+      "items": [
+       {
+        "shape": "polyline",
+        "points": "circle",
+        "tone": "secondary",
+        "dashed": true
+       },
+       {
+        "shape": "arrow",
+        "x1": 0,
+        "y1": 0,
+        "x2": "vx",
+        "y2": "vy",
+        "tone": "accent",
+        "label": "v（实线）",
+        "dashed": false
+       },
+       {
+        "shape": "arrow",
+        "x1": 0,
+        "y1": 0,
+        "x2": "ax",
+        "y2": "ay",
+        "tone": "warning",
+        "label": "Av（虚线）",
+        "dashed": true
+       }
+      ],
+      "legend": [
+       {
+        "label": "v：单位向量（实线）",
+        "tone": "accent"
+       },
+       {
+        "label": "Av：变换后的向量（虚线）",
+        "tone": "warning"
+       },
+       {
+        "label": "单位圆（点线，参考）",
+        "tone": "secondary"
+       }
+      ]
+     },
+     {
+      "kind": "box",
+      "tone": "surface",
+      "gap": 1,
+      "children": [
+       {
+        "kind": "text",
+        "size": "sm",
+        "text": "v = ({fmt(vx, 2)}, {fmt(vy, 2)})"
+       },
+       {
+        "kind": "text",
+        "size": "sm",
+        "text": "Av = ({fmt(ax, 2)}, {fmt(ay, 2)})"
+       },
+       {
+        "kind": "text",
+        "size": "sm",
+        "text": "v 与 Av 的夹角 = {fmt(ang, 1)}°"
+       },
+       {
+        "kind": "if",
+        "cond": "same",
+        "then": {
+         "kind": "text",
+         "size": "sm",
+         "tone": "success",
+         "weight": "bold",
+         "text": "这是特征向量，特征值是 {lam}：Av = {lam}·v，方向没变，只是长度变为原来的 {lam} 倍。"
+        },
+        "else": {
+         "kind": "text",
+         "size": "sm",
+         "tone": "warning",
+         "text": "不是特征向量：Av 与 v 夹了 {fmt(ang, 1)}°。因为 A 把 x 分量乘 2、y 分量不变，两个分量被拉伸的倍数不同，方向就被拽偏了（Av 更靠近 x 轴）。只有 v 完全落在 x 轴或 y 轴上时，两个分量才按同一个倍数变化。"
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "A = [[2,0],[0,1]] 把 x 分量乘 2、y 分量不变。只有当 v 在 x 轴（0° 或 180°，特征值 2）或 y 轴（90°，特征值 1）上时，Av 才和 v 在同一直线上；其他角度两个分量被拉伸的倍数不同，方向会偏转。"
+  },
+  {
+   "type": "evoui",
+   "title": "await 小测验",
+   "question": "能不能区分“await 让出执行权”和“并发执行”？",
+   "state": {},
+   "derived": {},
+   "body": {
+    "kind": "quiz",
+    "questions": [
+     {
+      "q": "协程执行到 await slow() 时，下面哪句话是对的？",
+      "options": [
+       "当前协程暂停，事件循环可以去运行其他已就绪的任务",
+       "整个程序被阻塞，直到 slow() 完成才能做别的事",
+       "slow() 会被丢进一个新线程并行执行",
+       "await 之后的代码会先于 slow() 执行"
+      ],
+      "correct": 0,
+      "why": "await 的含义是：我要等这个结果，先把执行权还给事件循环。事件循环趁这段时间可以运行别的任务，等 slow() 的结果就绪，再回来继续当前协程。它不会阻塞整个程序（那是同步的 time.sleep 之类的行为），也不会自动开线程，更不会改变代码顺序：当前协程里 await 后面的代码仍然要等 slow() 完成后才会执行。"
+     },
+     {
+      "q": "想让 fetch(1) 和 fetch(2) 的等待时间重叠，应该怎么写？",
+      "options": [
+       "await fetch(1)  然后  await fetch(2)",
+       "await asyncio.gather(fetch(1), fetch(2))",
+       "只要把 fetch 定义成 async def 就会自动并发",
+       "在 fetch 内部多写几个 await"
+      ],
+      "correct": 1,
+      "why": "并发需要把多个协程同时交给事件循环调度，gather（或 create_task）做的就是这件事。连续两个 await 是先等 fetch(1) 完成再开始 fetch(2)，总时间是两者相加；让出执行权不等于启动后面的任务。async def 只是定义协程函数，调用它只得到一个协程对象，不会自动与别的协程并发。在 fetch 内部多写 await 只会让这个协程多几个暂停点，并不会让 fetch(1) 与 fetch(2) 同时开始。"
+     }
+    ]
+   },
+   "fallback": "await 只是在等待时把执行权还给事件循环，不会阻塞整个程序，也不会自动并发。要让多个任务同时进行，需要 asyncio.gather 或 create_task。"
+  },
+  {
+   "type": "evoui",
+   "title": "学习率对比",
+   "question": "学习率不同，梯度下降的损失曲线为什么会完全不同？",
+   "state": {
+    "lr": 0.2
+   },
+   "derived": {
+    "r": "1 - 2 * lr",
+    "xs": "iterate(13, 5, x => x - 2 * lr * x)",
+    "data": "map(range(13), i => ({\"step\": i, \"loss\": xs[i] ** 2}))",
+    "mode": "abs(r) > 1 ? 2 : r < 0 ? 1 : 0"
+   },
+   "body": {
+    "kind": "box",
+    "gap": 3,
+    "border": true,
+    "children": [
+     {
+      "kind": "row",
+      "justify": "between",
+      "wrap": true,
+      "children": [
+       {
+        "kind": "text",
+        "text": "f(x) = x²，从 x = 5 出发，每步 x ← x − 2·lr·x",
+        "weight": "bold"
+       },
+       {
+        "kind": "badge",
+        "text": "{mode == 0 ? '逐步下降' : mode == 1 ? '来回跳但收敛' : '发散'}",
+        "tone": "secondary"
+       }
+      ]
+     },
+     {
+      "kind": "text",
+      "size": "sm",
+      "tone": "secondary",
+      "text": "怎么动：切换下面三个学习率。看什么：折线图里 12 步中损失 f(x) 是单调下降、上下抖动着变小，还是越来越大。"
+     },
+     {
+      "kind": "choice",
+      "bind": "lr",
+      "style": "segmented",
+      "options": [
+       {
+        "label": "lr = 0.2",
+        "value": 0.2
+       },
+       {
+        "label": "lr = 0.6",
+        "value": 0.6
+       },
+       {
+        "label": "lr = 1.1",
+        "value": 1.1
+       }
+      ]
+     },
+     {
+      "kind": "chart",
+      "chart": "line",
+      "data": "data",
+      "x": "step",
+      "series": [
+       {
+        "key": "loss",
+        "label": "损失 f(x) = x²"
+       }
+      ],
+      "caption": "横轴：第几步（0 为起点）；纵轴：该步的损失 f(x)。学习率 {fmt(lr, 1)}"
+     },
+     {
+      "kind": "box",
+      "tone": "surface",
+      "gap": 1,
+      "children": [
+       {
+        "kind": "text",
+        "size": "sm",
+        "text": "每一步 x 乘以 (1 − 2·lr) = {fmt(r, 2)}；12 步后 x = {fmt(xs[12], 3)}，损失 = {fmt(xs[12] ** 2, 3)}"
+       },
+       {
+        "kind": "if",
+        "cond": "mode == 0",
+        "then": {
+         "kind": "text",
+         "size": "sm",
+         "tone": "success",
+         "text": "逐步下降：每步乘 {fmt(r, 2)}（0 到 1 之间），x 始终在最小值 0 的同一侧，损失一步比一步小，平稳收敛。"
+        },
+        "else": {
+         "kind": "if",
+         "cond": "mode == 1",
+         "then": {
+          "kind": "text",
+          "size": "sm",
+          "tone": "warning",
+          "text": "来回跳但收敛：每步乘 {fmt(r, 2)}（为负），x 每步都跨过最小值 0 到另一侧，但落点离 0 越来越近（|倍数| < 1），所以损失仍然快速变小。"
+         },
+         "else": {
+          "kind": "text",
+          "size": "sm",
+          "tone": "danger",
+          "text": "发散：每步乘 {fmt(r, 2)}，|倍数| > 1，x 每次跨过 0 后反而离 0 更远，损失越来越大。学习率太大，步子迈过头了。"
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "x ← x − 2·lr·x 等价于每步乘以 (1 − 2·lr)。lr = 0.2 时乘 0.6，损失逐步下降；lr = 0.6 时乘 −0.2，x 来回跨过 0 但很快收敛；lr = 1.1 时乘 −1.2，每步离 0 更远，损失发散。"
+  }
+ ]
+}

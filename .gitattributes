@@ -1,0 +1,5 @@
+tests/fixtures/demo_view/* text eol=lf
+tests/e2e/*.json text eol=lf
+desktop/*.cs text eol=lf
+desktop/*.manifest text eol=lf
+desktop/icons/*.svg text eol=lf

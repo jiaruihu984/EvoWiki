@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E5%A4%8D%E5%88%B6%EF%BC%9A%E6%8B%89%E5%BC%80%E3%80%81%E5%90%84%E8%87%AA%E5%BD%93%E6%A8%A1%E6%9D%BF%E3%80%81%E5%86%8D%E9%85%8D%E5%AF%B9%22-->复制：拉开、各自当模板、再配对</title>
+<style>
+:root{color-scheme:light dark;--bg:#f7f5ef;--panel:#fffdfa;--text:#211f1a;--muted:#5f5a50;--line:#b7afa1;--blue:#1f6f8b;--amber:#a45d05;--green:#247044;--purple:#6d4aa2;--red:#a53a35;--focus:#7c3aed}
+@media(prefers-color-scheme:dark){:root{--bg:#16181d;--panel:#1f2229;--text:#ecebe6;--muted:#a9a79f;--line:#5a5f6b;--blue:#6cc0de;--amber:#e8a94d;--green:#6cc58c;--purple:#b79af0;--red:#f08a84;--focus:#c4b0ff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,"Microsoft YaHei",sans-serif}
+main{max-width:980px;margin:auto;padding:14px}
+section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;overflow-wrap:anywhere}
+h1{font-size:1.35rem;margin:0 0 6px}h2{font-size:1.05rem;margin:0 0 8px}p{margin:0 0 8px}
+.q{border-left:6px solid var(--purple);padding:8px 12px;background:color-mix(in srgb,var(--panel) 88%,var(--purple))}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+label{font-weight:700;display:block}label span{display:block;font-size:.9rem;margin-bottom:3px}
+select,input,button{min-height:44px;padding:6px 10px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font:inherit}
+input{width:9em}
+button{font-weight:800;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.pieces button{min-width:76px}
+.pieces button small{display:block;font-weight:500;font-size:.72rem;color:var(--muted)}
+[hidden]{display:none!important}
+svg{width:100%;max-width:640px;height:auto;display:block;margin:0 auto}
+svg text{fill:var(--text);font-family:inherit}
+.slot{cursor:pointer}
+.legend{color:var(--muted);font-size:.88rem}
+#explain{border-left:6px solid var(--amber);padding:10px 12px;background:color-mix(in srgb,var(--panel) 88%,var(--amber));min-height:4.5em;font-weight:600}
+#out{white-space:pre-wrap;font:14px/1.7 ui-monospace,Consolas,monospace;border-left:6px solid var(--green);padding:10px 12px;background:color-mix(in srgb,var(--panel) 90%,var(--green))}
+</style>
+<script data-evowiki-locale="replication-lab"></script>
+</head>
+<body>
+<main>
+<section>
+  <h1><!--ew-t:%22%E5%A4%8D%E5%88%B6%E4%B8%80%E4%BB%BD%20DNA%EF%BC%9A%E6%8B%89%E5%BC%80%EF%BC%8C%E5%90%84%E8%87%AA%E5%BD%93%E6%A8%A1%E6%9D%BF%EF%BC%8C%E6%AF%8F%E6%A0%BC%E6%8C%89%E8%A7%84%E5%88%99%E9%85%8D%22-->复制一份 DNA：拉开，各自当模板，每格按规则配</h1>
+  <p class="q"><!--ew-t:%22%E5%AD%A6%E4%B9%A0%E9%97%AE%E9%A2%98%EF%BC%9A%E5%8F%AA%E9%9D%A0%E2%80%9C%E6%AF%8F%E4%B8%80%E6%A0%BC%E5%AF%B9%E9%9D%A2%E6%94%BE%E7%89%B9%E5%AE%9A%E7%A7%AF%E6%9C%A8%E2%80%9D%E8%BF%99%E4%B8%80%E6%9D%A1%E8%A7%84%E5%88%99%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%B0%B1%E8%83%BD%E5%BE%97%E5%88%B0%E4%B8%A4%E4%BB%BD%E5%92%8C%E5%8E%9F%E6%9D%A5%E4%B8%80%E6%A0%B7%E7%9A%84%20DNA%EF%BC%9F%E5%A6%82%E6%9E%9C%E6%9C%89%E4%B8%80%E6%A0%BC%E6%94%BE%E9%94%99%EF%BC%8C%E5%90%8E%E6%9E%9C%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%22-->学习问题：只靠“每一格对面放特定积木”这一条规则，为什么就能得到两份和原来一样的 DNA？如果有一格放错，后果是什么？</p>
+  <div class="row">
+    <label><span><!--ew-t:%22%E5%8E%9F%E6%9D%A5%E8%BF%99%E4%BB%BD%20DNA%20%E7%9A%84%E4%B8%8A%E9%93%BE%22-->原来这份 DNA 的上链</span><select id="preset">
+      <option>ATGCCA</option><option>GGCATT</option><option>CAGTAC</option><option value="custom"><!--ew-t:%22%E8%87%AA%E5%B7%B1%E8%BE%93%E5%85%A5%E2%80%A6%22-->自己输入…</option></select></label>
+    <label id="customWrap" hidden><span><!--ew-t:%22%E8%87%AA%E5%B7%B1%E8%BE%93%E5%85%A5%EF%BC%88A%20T%20G%20C%EF%BC%8C%E6%9C%80%E5%A4%9A%208%20%E4%B8%AA%EF%BC%89%22-->自己输入（A T G C，最多 8 个）</span><input id="custom" maxlength="8" value="ATGC"></label>
+    <label><span><!--ew-t:%22%E6%95%85%E6%84%8F%E6%94%BE%E9%94%99%E4%B8%80%E6%A0%BC%22-->故意放错一格</span><select id="err"></select></label>
+  </div>
+  <div class="row" style="margin-top:10px">
+    <button id="prev"><!--ew-t:%22%E4%B8%8A%E4%B8%80%E6%AD%A5%22-->上一步</button><button id="next"><!--ew-t:%22%E4%B8%8B%E4%B8%80%E6%AD%A5%22-->下一步</button><button id="reset"><!--ew-t:%22%E5%9B%9E%E5%88%B0%E7%AC%AC%200%20%E6%AD%A5%22-->回到第 0 步</button>
+  </div>
+</section>
+<section>
+  <h2 id="stageTitle"></h2>
+  <svg id="svg" role="img" aria-label="DNA 复制过程示意" data-ew-attrs='{"aria-label":"DNA 复制过程示意"}'></svg>
+  <p class="legend"><!--ew-t:%22%E6%A0%87%E2%80%9C%E6%96%B0%E2%80%9D%E7%9A%84%E6%98%AF%E5%88%9A%E9%85%8D%E4%B8%8A%E7%9A%84%E6%96%B0%E9%93%BE%EF%BC%8C%E6%B2%A1%E6%9C%89%E6%A0%87%E7%9A%84%E6%98%AF%E6%97%A7%E9%93%BE%E3%80%82%E4%B8%AD%E9%97%B4%E7%9A%84%E7%BB%BF%E8%89%B2%E7%9F%AD%E7%AB%96%E7%BA%BF%EF%BC%9D%E5%90%B8%E7%82%B9%EF%BC%88%E2%9C%93%20%E9%85%8D%E5%BE%97%E4%B8%8A%EF%BC%89%EF%BC%9B%E7%BA%A2%E8%89%B2%E8%99%9A%E7%BA%BF%E6%A1%86%E5%92%8C%E7%BA%A2%E8%89%B2%E8%99%9A%E7%BA%BF%EF%BC%9D%E9%85%8D%E4%B8%8D%E4%B8%8A%EF%BC%88%E2%9C%97%EF%BC%89%E3%80%82%E5%A4%A7%E5%9D%97%E9%AB%98%202%20%E6%A0%BC%EF%BC%88A%E3%80%81G%EF%BC%89%EF%BC%8C%E5%B0%8F%E5%9D%97%E9%AB%98%201%20%E6%A0%BC%EF%BC%88T%E3%80%81C%EF%BC%89%EF%BC%8C%E7%BA%B9%E7%90%86%E4%B9%9F%E5%90%84%E4%B8%8D%E7%9B%B8%E5%90%8C%E3%80%82%22-->标“新”的是刚配上的新链，没有标的是旧链。中间的绿色短竖线＝吸点（✓ 配得上）；红色虚线框和红色虚线＝配不上（✗）。大块高 2 格（A、G），小块高 1 格（T、C），纹理也各不相同。</p>
+</section>
+<section>
+  <h2><!--ew-t:%22%E8%BF%99%E4%B8%80%E6%AD%A5%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88%22-->这一步发生了什么</h2>
+  <div id="explain" aria-live="polite" style="white-space:pre-wrap"></div>
+</section>
+<section>
+  <h2><!--ew-t:%22%E7%BB%93%E6%9E%9C%E5%AF%B9%E7%85%A7%22-->结果对照</h2>
+  <div id="out" aria-live="polite"></div>
+</section>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const U=26,BOND=16,CW=60,G=3*U+BOND;
+const SIZE={A:2,G:2,T:1,C:1},COMP={A:'T',T:'A',G:'C',C:'G'},BONDS={A:2,T:2,G:3,C:3};
+const WRONG={A:'C',T:'G',G:'T',C:'A'};
+const $=id=>document.getElementById(id);
+let S1=[],stage=0,errAt=-1;
+const NS='http://www.w3.org/2000/svg';
+function el(n,a,txt){const e=document.createElementNS(NS,n);for(const k in a)EvoWikiLocale.attr(e,k,()=>a[k]);if(txt!=null)EvoWikiLocale.prop(e,"textContent",()=>txt);return e;}
+function defs(svg){
+  const d=el('defs',{});
+  const pats={A:'<path d="M0 8L8 0" stroke="currentColor" stroke-width="1.6"/>',
+   T:'<circle cx="4" cy="4" r="1.4" fill="currentColor"/>',
+   G:'<path d="M0 0L8 8M8 0L0 8" stroke="currentColor" stroke-width="1.2"/>',
+   C:'<path d="M0 4H8" stroke="currentColor" stroke-width="1.6"/>'};
+  for(const k in pats){const p=el('pattern',{id:'p'+k,width:8,height:8,patternUnits:'userSpaceOnUse'});EvoWikiLocale.prop(p,"innerHTML",()=>pats[k]);d.appendChild(p);}
+  svg.appendChild(d);
+}
+function block(svg,l,x,yAttach,dir,bad,sel0){
+  const h=SIZE[l]*U,y=dir>0?yAttach:yAttach-h,g=el('g',{});
+  g.appendChild(el('rect',{x:x+5,y:y,width:CW-10,height:h,rx:5,fill:'var(--panel)'}));
+  g.appendChild(el('rect',{x:x+5,y:y,width:CW-10,height:h,rx:5,fill:`url(#p${l})`,style:'color:var(--muted);opacity:.55'}));
+  g.appendChild(el('rect',{x:x+5,y:y,width:CW-10,height:h,rx:5,fill:'none',stroke:bad?'var(--red)':'var(--text)','stroke-width':bad?2.5:2,'stroke-dasharray':bad?'6 4':'0'}));
+  if(SIZE[l]==2)g.appendChild(el('line',{x1:x+5,x2:x+CW-5,y1:y+U,y2:y+U,stroke:'var(--text)','stroke-width':1,opacity:.6}));
+  g.appendChild(el('rect',{x:x+CW/2-13,y:y+h/2-12,width:26,height:24,rx:4,fill:'var(--panel)',opacity:.92}));
+  g.appendChild(el('text',{x:x+CW/2,y:y+h/2+7,'text-anchor':'middle','font-size':20,'font-weight':800},l));
+  svg.appendChild(g);
+}
+
+function bondLine(svg,x,gy,t,b){
+  if(b===COMP[t]){const nb=BONDS[t];for(let j=0;j<nb;j++){const bx=x+CW/2+(j-(nb-1)/2)*11;svg.appendChild(el('line',{x1:bx,x2:bx,y1:gy+2,y2:gy+BOND-2,stroke:'var(--green)','stroke-width':3}));}}
+  else for(let j=0;j<2;j++){const bx=x+CW/2+(j-.5)*14;svg.appendChild(el('line',{x1:bx,x2:bx,y1:gy+2,y2:gy+BOND-2,stroke:'var(--red)','stroke-width':3,'stroke-dasharray':'3 3'}));}
+}
+function newTag(svg,x,y){svg.appendChild(el('text',{x:x+CW/2,y:y,'text-anchor':'middle','font-size':12,'font-weight':800}, ewt("新")));}
+function ladder(svg,Y0,topArr,botArr,topNew,botNew,title){
+  const n=topArr.length,W=n*CW+20,Yb=Y0+G;
+  svg.appendChild(el('text',{x:10,y:Y0-(topNew?34:24),'font-size':13,'font-weight':700},title));
+  svg.appendChild(el('line',{x1:6,x2:W-6,y1:Y0-6,y2:Y0-6,stroke:'var(--text)','stroke-width':4}));
+  svg.appendChild(el('line',{x1:6,x2:W-6,y1:Yb+6,y2:Yb+6,stroke:'var(--text)','stroke-width':4}));
+  for(let i=0;i<n;i++){
+    const x=10+i*CW,t=topArr[i],b=botArr[i],bad=b!==COMP[t];
+    block(svg,t,x,Y0,1,topNew&&bad);block(svg,b,x,Yb,-1,botNew&&bad);
+    bondLine(svg,x,Y0+SIZE[t]*U,t,b);
+    if(topNew)newTag(svg,x+CW/2-CW/2,Y0-10);
+    if(botNew)newTag(svg,x,Yb+24);
+    svg.appendChild(el('text',{x:x+CW/2,y:Yb+(botNew?40:26),'text-anchor':'middle','font-size':11,'font-weight':700},bad? ewt("✗ 配不上"):'✓'));
+  }
+}
+function strand(svg,arr,Yattach,dir,title){
+  const n=arr.length,W=n*CW+20;
+  svg.appendChild(el('line',{x1:6,x2:W-6,y1:Yattach-dir*6,y2:Yattach-dir*6,stroke:'var(--text)','stroke-width':4}));
+  svg.appendChild(el('text',{x:10,y:dir>0?Yattach-18:Yattach+24,'font-size':13,'font-weight':700},title));
+  arr.forEach((l,i)=>block(svg,l,10+i*CW,Yattach,dir,false));
+}
+function data(){
+  const A=S1.slice(),B=S1.map(t=>COMP[t]);
+  const N1=A.map(t=>COMP[t]);
+  if(errAt>=0)N1[errAt]=WRONG[A[errAt]];
+  const N2=B.map(t=>COMP[t]);
+  return{A,B,N1,N2};
+}
+function render(){
+  const{A,B,N1,N2}=data(),n=A.length,W=n*CW+20;
+  const svg=$('svg');EvoWikiLocale.prop(svg,"innerHTML",()=>'');defs(svg);
+  const titles=[ ewt("第 0 步：原来的一份 DNA"), ewt("第 1 步：把两条链拉开"), ewt("第 2 步：每条旧链当模板，对面配上新积木")];
+  EvoWikiLocale.prop($('stageTitle'),"textContent",()=>titles[stage]);
+  if(stage===0){
+    EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} 200`);
+    ladder(svg,50,A,B,false,false, ewt("原来的 DNA：上链＋下链"));
+  }else if(stage===1){
+    EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} 310`);
+    strand(svg,A,50,1, ewt("旧上链（单独一条）"));
+    strand(svg,B,50+G+90,-1, ewt("旧下链（单独一条）"));
+    svg.appendChild(el('text',{x:W/2,y:50+G/2+46,'text-anchor':'middle','font-size':13,'font-weight':700}, ewt("吸点已断开，两条链分开")));
+  }else{
+    EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} 440`);
+    ladder(svg,50,A,N1,false,true, ewt("分子 1＝旧上链＋新下链"));
+    ladder(svg,50+G+130,N2,B,true,false, ewt("分子 2＝新上链＋旧下链"));
+  }
+  const ex=[
+    ewt("这是一份 DNA：上链固定，下链是按规则配出来的对应链，两条链靠中间的吸点贴在一起。下链的每一格都能由上链推出来，反过来也成立。"),
+    ewt("复制从拉开两条链开始（细胞里有专门的“小工具”做这件事）。现在每条链都只剩一半，但各自仍带着完整的信息：只要知道一条，就知道对面该放什么。"),
+    ewt("每条旧链当模板，对面一格一格放上新积木，规则不变：A 对 T，G 对 C。上面的旧链得到一条新下链，下面的旧链得到一条新上链，于是有了两份 DNA。")
+  ];
+  EvoWikiLocale.prop($('explain'),"textContent",()=>ex[stage]+(stage===2&&errAt>=0? ewt("\n注意：你让分子 1 的第 {0} 格放了 {1}（该放 {2}），所以这一格配不上。", [errAt+1,N1[errAt],COMP[A[errAt]]]):''));
+  let o='';
+  if(stage<2)o= ewt("到第 2 步才会产生两份新分子。");
+  else{
+    const same1=N1.join('')===B.join('');
+    o= ewt("原来的 DNA　上链 {0}　下链 {1}\n", [A.join(' '),B.join(' ')])+
+       ewt("分子 1　　　上链 {0}　下链 {1}　{2}\n", [A.join(' '),N1.join(' '),same1? ewt("✓ 与原来完全相同"): ewt("✗ 与原来不同")])+
+       ewt("分子 2　　　上链 {0}　下链 {1}　{2}\n\n", [N2.join(' '),B.join(' '),N2.join('')===A.join('')? ewt("✓ 与原来完全相同"): ewt("✗ 与原来不同")]);
+    if(errAt<0)o+= ewt("两份都和原来一模一样：每份是“一条旧链＋一条新链”。因为每一格都只有一种积木放得上，新链是被旧链“决定”出来的，不是随便生成的。");
+    else{
+      const nextTop=N1.map(t=>COMP[t]);
+      o+= ewt("分子 1 的第 {0} 格配不上，吸不稳。\n如果这里没被修好，下一次复制时带错的新下链会当模板：它对面会放 {1}，而原来这一格是 {2}。\n下一代的上链：{3}　与最初的 {4} 在第 {5} 格不同。\n一格放错，后代的序列就改变了（这是突变的来源之一）。真实细胞有检查和修复机制，这里不展示。", [errAt+1,COMP[N1[errAt]],A[errAt],nextTop.join(' '),A.join(' '),errAt+1]);
+    }
+  }
+  EvoWikiLocale.prop($('out'),"textContent",()=>o);
+  $('prev').disabled=stage===0;$('next').disabled=stage===2;
+}
+function fillErr(){
+  const e=$('err');EvoWikiLocale.prop(e,"innerHTML",()=>'');
+  const o0=document.createElement('option');o0.value=-1;EvoWikiLocale.prop(o0,"textContent",()=> ewt("不放错（按规则配）"));e.appendChild(o0);
+  S1.forEach((t,i)=>{const o=document.createElement('option');o.value=i;EvoWikiLocale.prop(o,"textContent",()=> ewt("第 {0} 格（该放 {1}，故意放 {2}）", [i+1,COMP[t],WRONG[t]]));e.appendChild(o);});
+  e.value=errAt;
+}
+function readTop(){
+  const p=$('preset').value;let s=p==='custom'?$('custom').value:p;
+  s=s.toUpperCase().replace(/[^ATGC]/g,'').slice(0,8);return(s||'ATGC').split('');
+}
+function init(){S1=readTop();errAt=-1;fillErr();render();}
+$('preset').onchange=()=>{$('customWrap').hidden=$('preset').value!=='custom';init();};
+$('custom').oninput=init;
+$('err').onchange=()=>{errAt=Number($('err').value);render();};
+$('prev').onclick=()=>{if(stage>0)stage--;render();};
+$('next').onclick=()=>{if(stage<2)stage++;render();};
+$('reset').onclick=()=>{stage=0;render();};
+init();
+
+EvoWikiLocale.onChange(()=>{render()});</script>
+</body>
+</html>

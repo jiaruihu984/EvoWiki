@@ -1,0 +1,122 @@
+[
+ {
+  "id": "zh-wrong-zscore",
+  "kind": "assistant",
+  "subject": "统计",
+  "prompt": "z 分数是什么？",
+  "initial_explanation": "z 分数说的是一个数离平均值有几个标准差：z = (x − μ) / σ。z = 2 表示比平均高两个标准差，z 是负数表示在平均值以下。",
+  "follow_up": "看不懂，我为什么错了？",
+  "wrong": {"stem": "z = −1 表示什么？", "options": ["比平均高一个标准差", "比平均低一个标准差"], "chosen": "比平均高一个标准差", "answer": 1},
+  "rubrics": [
+   {"attributes": {"severity": "critical", "tutoring_skill": "identifying the error", "eval_dimension": "correctness"}, "criteria": "回答开头就点明他错在哪里：把负号的方向读反了（负的 z 在平均值以下）。"},
+   {"attributes": {"severity": "critical", "tutoring_skill": "correctness", "eval_dimension": "correctness"}, "criteria": "回答给出正确读法：z = −1 表示比平均低一个标准差。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "remedy", "eval_dimension": "pedagogy"}, "criteria": "回答给出一个帮他以后不再读反的办法（例如一个具体数值例子或看符号的口诀）。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "tone", "eval_dimension": "style"}, "criteria": "回答不责备学习者，语气平和。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "focus", "eval_dimension": "concision"}, "criteria": "回答不重新从头讲一遍 z 分数的定义和用途。"}
+  ]
+ },
+ {
+  "id": "zh-wrong-derivative",
+  "kind": "assistant",
+  "subject": "微积分",
+  "prompt": "x 的平方求导是什么？",
+  "initial_explanation": "幂函数求导：x 的 n 次方的导数是 n 乘以 x 的 n−1 次方。所以 x² 的导数是 2x，x³ 的导数是 3x²。",
+  "follow_up": "我选错了，能告诉我为什么吗？",
+  "wrong": {"stem": "x³ 的导数是什么？", "options": ["3x³", "3x²", "x²"], "chosen": "3x³", "answer": 1},
+  "rubrics": [
+   {"attributes": {"severity": "critical", "tutoring_skill": "identifying the error", "eval_dimension": "correctness"}, "criteria": "回答先指出他的错误：把系数 3 乘上了，但忘了把指数减 1。"},
+   {"attributes": {"severity": "critical", "tutoring_skill": "correctness", "eval_dimension": "correctness"}, "criteria": "回答给出正确答案 3x²。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "remedy", "eval_dimension": "pedagogy"}, "criteria": "回答用一句话或一个例子说明“指数先挪到前面、再减 1”这两步。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "check understanding", "eval_dimension": "pedagogy"}, "criteria": "回答最多提一个检查理解的问题，不连续提问。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "accuracy", "eval_dimension": "correctness"}, "criteria": "回答里没有数学错误。"}
+  ]
+ },
+ {
+  "id": "zh-rewrite-variance",
+  "kind": "rewrite",
+  "subject": "方差",
+  "prompt": "方差是怎么算的？",
+  "initial_explanation": "方差 = 每个数减去平均数后平方，再求这些平方的平均。记作 σ² = Σ(x − μ)² / n。它衡量数据离平均有多散。",
+  "follow_up": "这个公式我看了还是没感觉，能换个讲法吗？",
+  "rubrics": [
+   {"attributes": {"severity": "critical", "tutoring_skill": "new angle", "eval_dimension": "pedagogy"}, "criteria": "改写换了切入角度（例如从一组具体数字一步步算起），不是把原来的公式说明换个说法重复一遍。"},
+   {"attributes": {"severity": "critical", "tutoring_skill": "correctness", "eval_dimension": "correctness"}, "criteria": "改写里方差的算法是对的：离均差先平方，再取平均。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "worked example", "eval_dimension": "pedagogy"}, "criteria": "改写包含一个具体数值例子，并且逐步算出结果。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "meaning", "eval_dimension": "pedagogy"}, "criteria": "改写说明了为什么要平方（例如正负偏差会互相抵消）。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "format", "eval_dimension": "style"}, "criteria": "改写不用 LaTeX，公式用纯文本写。"}
+  ]
+ },
+ {
+  "id": "zh-rewrite-recursion",
+  "kind": "rewrite",
+  "subject": "递归",
+  "prompt": "递归函数是什么？",
+  "initial_explanation": "递归函数就是在函数体里调用自己的函数。它需要一个终止条件（基本情况），否则会无限调用下去。例如阶乘：fact(n) = n × fact(n − 1)，fact(0) = 1。",
+  "follow_up": "定义我懂，但我脑子里想象不出它是怎么一层层跑的，换个讲法？",
+  "rubrics": [
+   {"attributes": {"severity": "critical", "tutoring_skill": "new angle", "eval_dimension": "pedagogy"}, "criteria": "改写换了角度，把一次调用过程一层层展开（例如追踪 fact(3) 的每一层调用和返回）。"},
+   {"attributes": {"severity": "critical", "tutoring_skill": "correctness", "eval_dimension": "correctness"}, "criteria": "改写里追踪的数值和返回顺序是对的（fact(3) = 6，最里层先返回）。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "addressing the request", "eval_dimension": "relevance"}, "criteria": "改写针对他说的“想象不出怎么一层层跑”，而不是重讲定义。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "base case", "eval_dimension": "pedagogy"}, "criteria": "改写指出终止条件在追踪中的哪一步起作用。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "format", "eval_dimension": "style"}, "criteria": "改写没有标题，也没有前言或总结。"}
+  ]
+ },
+ {
+  "id": "zh-both-probability",
+  "kind": "both",
+  "subject": "概率",
+  "prompt": "两个独立事件同时发生的概率怎么算？",
+  "initial_explanation": "两个事件独立时，同时发生的概率等于各自概率相乘：P(A 且 B) = P(A) × P(B)。例如抛两次硬币都是正面的概率是 1/2 × 1/2 = 1/4。",
+  "follow_up": "那为什么是乘而不是加？",
+  "rubrics": [
+   {"attributes": {"severity": "critical", "tutoring_skill": "addressing the question", "eval_dimension": "relevance"}, "criteria": "回答直接回答“为什么是乘”，而不是只重复乘法规则。"},
+   {"attributes": {"severity": "critical", "tutoring_skill": "correctness", "eval_dimension": "correctness"}, "criteria": "回答在数学上正确，没有把“或”的加法规则和“且”的乘法规则混在一起。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "intuition", "eval_dimension": "pedagogy"}, "criteria": "回答给出一个直观的理由（例如列出所有等可能结果、或“在 A 发生的那一部分里再取 B 的那一部分”）。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "contrast", "eval_dimension": "pedagogy"}, "criteria": "回答说明什么时候用加法（互斥事件的“或”），帮他分清两者。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "concision", "eval_dimension": "style"}, "criteria": "回答不超过大约 300 字。"}
+  ]
+ },
+ {
+  "id": "zh-both-ohm",
+  "kind": "both",
+  "subject": "电学",
+  "prompt": "欧姆定律是什么？",
+  "initial_explanation": "欧姆定律：电压 = 电流 × 电阻，即 U = I × R。电阻越大，同样电压下电流越小。",
+  "follow_up": "电阻变大电流变小，这个我老是记反，能讲得让我记住吗？",
+  "rubrics": [
+   {"attributes": {"severity": "critical", "tutoring_skill": "correctness", "eval_dimension": "correctness"}, "criteria": "回答里电压、电流、电阻的关系是对的（电压不变时，电阻越大电流越小）。"},
+   {"attributes": {"severity": "critical", "tutoring_skill": "addressing the request", "eval_dimension": "relevance"}, "criteria": "回答给出一个帮他记住方向的具体办法（类比、数值例子或从公式推一步）。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "worked example", "eval_dimension": "pedagogy"}, "criteria": "回答用一组具体数字演示一次（例如电压不变、电阻翻倍、电流减半）。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "analogy fit", "eval_dimension": "pedagogy"}, "criteria": "如果用了类比，回答指出类比在哪里不成立；没用类比也算通过。"}
+  ]
+ },
+ {
+  "id": "zh-both-big-o",
+  "kind": "both",
+  "subject": "算法复杂度",
+  "prompt": "O(n log n) 是什么意思？",
+  "initial_explanation": "大 O 描述输入规模 n 变大时运行时间的增长速度。O(n log n) 比 O(n) 慢一点，比 O(n²) 快得多，归并排序就是 O(n log n)。",
+  "follow_up": "log n 那部分是从哪里来的？",
+  "rubrics": [
+   {"attributes": {"severity": "critical", "tutoring_skill": "addressing the question", "eval_dimension": "relevance"}, "criteria": "回答解释 log n 的来源：每次对半分，分到大小为 1 需要大约 log₂ n 层。"},
+   {"attributes": {"severity": "critical", "tutoring_skill": "correctness", "eval_dimension": "correctness"}, "criteria": "回答说明每一层合并的总工作量约为 n，所以总共约 n × log n。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "worked example", "eval_dimension": "pedagogy"}, "criteria": "回答用一个具体的 n（例如 8 个数分 3 层）演示层数。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "accuracy", "eval_dimension": "correctness"}, "criteria": "回答里没有错误的复杂度说法。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "focus", "eval_dimension": "concision"}, "criteria": "回答不展开讲与问题无关的其他排序算法。"}
+  ]
+ },
+ {
+  "id": "zh-both-photosynthesis",
+  "kind": "both",
+  "subject": "生物",
+  "prompt": "光合作用是什么？",
+  "initial_explanation": "光合作用是植物用光能把二氧化碳和水变成葡萄糖并放出氧气的过程，主要在叶绿体里进行。",
+  "follow_up": "放出来的氧气是从二氧化碳里来的还是从水里来的？",
+  "rubrics": [
+   {"attributes": {"severity": "critical", "tutoring_skill": "correctness", "eval_dimension": "correctness"}, "criteria": "回答明确说放出的氧气来自水。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "evidence", "eval_dimension": "pedagogy"}, "criteria": "回答提到支持这一点的证据（例如同位素标记实验），或说明在光反应中水被分解。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "misconception", "eval_dimension": "pedagogy"}, "criteria": "回答指出“氧气来自二氧化碳”是常见的误解，并说明二氧化碳里的碳和氧去了哪里（进入糖）。"},
+   {"attributes": {"severity": "not_critical", "tutoring_skill": "answer first", "eval_dimension": "style"}, "criteria": "回答先给出结论，再解释。"}
+  ]
+ }
+]

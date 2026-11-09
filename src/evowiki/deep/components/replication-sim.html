@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><!--ew-t:%22DNA%20%E5%A4%8D%E5%88%B6%E6%A8%A1%E6%8B%9F%22-->DNA 复制模拟</title>
+<style>
+:root{
+  --bg:#f7f5f0; --panel:#ffffff; --text:#1f2933; --muted:#6b7280;
+  --accent:#2563eb; --good:#15803d; --line:#d1d5db; --old:#fef3c7; --new:#e0f2fe;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#111827; --panel:#1f2937; --text:#f3f4f6; --muted:#9ca3af;
+    --accent:#60a5fa; --good:#4ade80; --line:#374151; --old:#78350f; --new:#0c4a6e;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+.wrap{max-width:375px; margin:0 auto; padding:12px;}
+h2{font-size:16px; margin:0 0 8px;}
+.controls{display:flex; gap:8px; margin:10px 0;}
+button.ctrl{padding:9px 14px; border:1.5px solid var(--line); background:var(--panel); color:var(--text); border-radius:8px; cursor:pointer; font-size:14px;}
+button.ctrl:active{outline:2px solid var(--accent);}
+.view{min-height:300px; padding:12px; border:1.5px solid var(--line); border-radius:12px; background:var(--panel); display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center;}
+.caption{font-size:12px; color:var(--muted); text-align:center; margin:0;}
+.strand-line{display:flex; justify-content:center; gap:6px;}
+.tag{width:44px; flex:0 0 44px; font-size:10px; color:var(--muted); display:flex; align-items:center; justify-content:center; text-align:center; line-height:1.2;}
+.base{width:34px; height:34px; flex:0 0 34px; display:flex; align-items:center; justify-content:center; border:2px solid var(--line); border-radius:8px; font-weight:700; font-size:15px; background:var(--panel);}
+.base.old{background:var(--old); border-style:solid;}
+.base.new{background:var(--new); border-style:dashed;}
+.bonds{display:flex; justify-content:center; gap:6px; margin:-4px 0;}
+.bond{width:34px; flex:0 0 34px; text-align:center; font-size:16px; color:var(--muted);}
+.pair{display:flex; flex-direction:column; gap:4px; align-items:center;}
+.result{margin-top:10px; padding:10px; border:1.5px solid var(--line); border-radius:10px; background:var(--panel); min-height:60px; font-size:14px; line-height:1.7;}
+</style>
+<script data-evowiki-locale="replication-sim"></script>
+</head>
+<body>
+<div class="wrap">
+  <h2><!--ew-t:%22DNA%20%E5%A4%8D%E5%88%B6%E6%A8%A1%E6%8B%9F%22-->DNA 复制模拟</h2>
+  <div class="controls">
+    <button class="ctrl" id="next-btn"><!--ew-t:%22%E4%B8%8B%E4%B8%80%E6%AD%A5%22-->下一步</button>
+    <button class="ctrl" id="reset-btn"><!--ew-t:%22%E9%87%8D%E6%96%B0%E5%BC%80%E5%A7%8B%22-->重新开始</button>
+  </div>
+  <div class="view" id="view"></div>
+  <div class="result" id="result"></div>
+</div>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const bases = {top:['A','T','G','C'], bottom:['T','A','C','G']};
+function baseBox(letter, kind){
+  return '<span class="base '+kind+'">'+letter+'</span>';
+}
+function strandRow(label, letters, kind){
+  return '<div class="strand-line"><span class="tag">'+label+'</span>'+
+    letters.map(l=>baseBox(l, kind)).join('')+'</div>';
+}
+function bondsRow(){
+  return '<div class="bonds"><span class="tag"></span>'+
+    bases.top.map(()=>'<span class="bond">│</span>').join('')+'</div>';
+}
+const stages = [
+  {
+    view:  ewt("<div class=\"pair\"><p class=\"caption\">原始双链：两条旧链靠配对扣在一起</p>")+
+      strandRow( ewt("旧链 5′"),'A T G C'.split(' '),'old')+
+      bondsRow()+
+      strandRow( ewt("旧链 3′"),'T A C G'.split(' '),'old')+'</div>',
+    result:  ewt("现在是一个完整的双链 DNA。两条旧链面对面，碱基按 A-T、C-G 扣在一起。")
+  },
+  {
+    view:  ewt("<div class=\"pair\"><p class=\"caption\">第一步：双链解开</p>")+
+      strandRow( ewt("旧链 5′"),'A T G C'.split(' '),'old')+
+      '<div style="height:22px"></div>'+
+      strandRow( ewt("旧链 3′"),'T A C G'.split(' '),'old')+'</div>',
+    result:  ewt("双链分开了，两条旧链的碱基都露出来，等待新伙伴补上。")
+  },
+  {
+    view:  ewt("<div class=\"pair\"><p class=\"caption\">第二步：每条旧链当模板，新链按规则补上</p>")+
+      strandRow( ewt("旧链 5′"),'A T G C'.split(' '),'old')+
+      bondsRow()+
+      strandRow( ewt("新链 3′"),'T A C G'.split(' '),'new')+
+      '<div style="height:16px"></div>'+
+      strandRow( ewt("新链 5′"),'A T G C'.split(' '),'new')+
+      bondsRow()+
+      strandRow( ewt("旧链 3′"),'T A C G'.split(' '),'old')+'</div>',
+    result:  ewt("旧链上是 A 就补 T，是 T 就补 A，是 C 就补 G，是 G 就补 C。每条旧链都配出了一条新链。")
+  },
+  {
+    view:  ewt("<div class=\"pair\"><p class=\"caption\">第三步：得到两个相同的双链</p>")+
+       ewt("<div class=\"pair\"><p class=\"caption\">双链 1（旧 + 新）</p>")+
+      strandRow( ewt("旧链 5′"),'A T G C'.split(' '),'old')+
+      bondsRow()+
+      strandRow( ewt("新链 3′"),'T A C G'.split(' '),'new')+'</div>'+
+       ewt("<div class=\"pair\"><p class=\"caption\">双链 2（新 + 旧）</p>")+
+      strandRow( ewt("新链 5′"),'A T G C'.split(' '),'new')+
+      bondsRow()+
+      strandRow( ewt("旧链 3′"),'T A C G'.split(' '),'old')+'</div></div>',
+    result:  ewt("复制完成：两个双链的序列都和原来一模一样，各含一条旧链和一条新链。")
+  }
+];
+let stage = 0;
+function render(){
+  EvoWikiLocale.prop(document.getElementById('view'),"innerHTML",()=>stages[stage].view);
+  EvoWikiLocale.prop(document.getElementById('result'),"textContent",()=>stages[stage].result);
+}
+document.getElementById('next-btn').addEventListener('click',()=>{
+  stage = (stage + 1) % stages.length;
+  render();
+});
+document.getElementById('reset-btn').addEventListener('click',()=>{
+  stage = 0;
+  render();
+});
+render();
+
+EvoWikiLocale.onChange(()=>{render()});</script>
+</body>
+</html>

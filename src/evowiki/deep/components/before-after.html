@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E5%89%8D%E5%90%8E%E5%AF%B9%E6%AF%94%22-->前后对比</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+.problem{margin:0 0 12px;color:var(--tx)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px;margin-bottom:10px}
+.col h2{font-size:15px;margin:0 0 4px;font-weight:650}
+.col ol{margin:0 0 8px;padding-left:20px;color:var(--tx-2);font-size:14px}
+.col .cap{margin:6px 0 0;font-size:12.5px;color:var(--tx-3)}
+.boxes{display:flex;flex-wrap:wrap;gap:4px}
+.bx{min-width:42px;border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:3px 6px;text-align:center;
+  font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--tx)}
+.bx i{display:block;font:normal 11.5px var(--font);color:var(--tx-3);min-height:16px}
+.bx.hit{border-color:var(--accent);border-width:2px;padding:2px 5px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--tx-2);margin:6px 0 2px}
+.legend span{display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:100%;overflow-wrap:anywhere}
+.stage .legend svg.sw{flex:none;width:18px;height:12px;display:inline-block;overflow:hidden}
+.sw rect.a{fill:var(--accent)}
+.sw rect.b{fill:none;stroke:var(--tx-2);stroke-width:1}
+.sw .hl{stroke:var(--tx-2);stroke-width:1.6}
+.mt{fill:var(--tx);font:600 13px var(--font)}
+.mn{fill:var(--tx-3);font:12px var(--font)}
+.vl{fill:var(--tx-2);font:13px var(--mono);font-variant-numeric:tabular-nums}
+.vl.win{fill:var(--tx);font-weight:700}
+.barA{fill:var(--accent)}
+.barB{fill:url(#hatch);stroke:var(--tx-2);stroke-width:1}
+.win-o{stroke:var(--good);stroke-width:2.5}
+.hl{stroke:var(--tx-2);stroke-width:1.5}
+.dim{opacity:.38}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+</style>
+<script data-evowiki-locale="before-after"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage">
+      <p class="problem" id="problem"></p>
+      <div class="cols" id="cols"></div>
+      <div class="legend" id="legend"></div>
+      <svg id="bars" viewBox="0 0 320 200" role="img" aria-labelledby="barsDesc"><desc id="barsDesc"></desc></svg>
+    </div>
+    <div class="side">
+      <div class="ctl"><span class="lb"><!--ew-t:%22%E7%9C%8B%E5%93%AA%E4%B8%80%E7%A7%8D%22-->看哪一种</span>
+        <div class="seg" id="views" role="group" aria-label="看哪一种" data-ew-attrs='{"aria-label":"看哪一种"}'></div></div>
+      <div class="ctl" id="scnBox" hidden><span class="lb" id="scnLabel"><!--ew-t:%22%E6%83%85%E5%BD%A2%22-->情形</span>
+        <div class="seg" id="scns" role="group" aria-label="情形" data-ew-attrs='{"aria-label":"情形"}'></div></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("在有序的数里找一个数：从头找，还是对半找？"),"question": ewt("数据变多时，两种查找各要看多少个数？"),"problem": ewt("一排从小到大排好的数，要找到其中的 27。"),"approaches":[{"name": ewt("线性查找"),"steps":[ ewt("从最左边开始"), ewt("一个一个和 27 比"), ewt("找到就停；找到头还没有就是没有")],"visual":{"caption": ewt("依次看了 6 个数才找到 27。"),"cells":[{"label": ewt("第1次"),"value":"3","mark":true},{"label": ewt("第2次"),"value":"8","mark":true},{"label": ewt("第3次"),"value":"12","mark":true},{"label": ewt("第4次"),"value":"15","mark":true},{"label": ewt("第5次"),"value":"21","mark":true},{"label": ewt("第6次"),"value":"27","mark":true},{"label": ewt("没看"),"value":"33","mark":false},{"label": ewt("没看"),"value":"40","mark":false}]}},{"name": ewt("二分查找"),"steps":[ ewt("看正中间那个数"), ewt("比 27 小就丢掉左半边，比 27 大就丢掉右半边"), ewt("在剩下的一半里重复，直到找到")],"visual":{"caption": ewt("只看了 2 个数：15 比 27 小，丢掉左半边，再看中间的 27。"),"cells":[{"label": ewt("丢掉"),"value":"3","mark":false},{"label": ewt("丢掉"),"value":"8","mark":false},{"label": ewt("丢掉"),"value":"12","mark":false},{"label": ewt("第1次"),"value":"15","mark":true},{"label":"","value":"21","mark":false},{"label": ewt("第2次"),"value":"27","mark":true},{"label":"","value":"33","mark":false},{"label":"","value":"40","mark":false}]}}],"metrics":[{"name": ewt("最坏要比较的次数"),"unit": ewt("次"),"better":"lower","why": ewt("线性查找最坏要从头看到尾，次数和 n 一样多；二分每次丢掉一半，次数只有大约 log2 n。")},{"name": ewt("平均要比较的次数"),"unit": ewt("次"),"better":"lower","why": ewt("线性查找平均要看一半的数；二分的次数增长得慢得多，n 越大差距越夸张。")}],"input_label": ewt("数的个数 n"),"scenarios":[{"label":"n = 10","values":[{"a":10,"b":4},{"a":5,"b":3}]},{"label":"n = 1,000","values":[{"a":1000,"b":10},{"a":500,"b":9}]},{"label":"n = 1,000,000","values":[{"a":1000000,"b":20},{"a":500000,"b":19}]}]};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?(Math.abs(x)>=1000?x.toFixed(0):x.toFixed(d)):'—';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+
+const A=(C.approaches||[]).slice(0,2).map(a=>({name:EvoWikiLocale.string(a.name||'—'),steps:(a.steps||[]).slice(0,8).map(EvoWikiLocale.string),
+  visual:a.visual&&Array.isArray(a.visual.cells)?{caption:a.visual.caption||'',cells:a.visual.cells.slice(0,14)}:null}));
+while(A.length<2)A.push({name:'—',steps:[],visual:null});
+const M=(C.metrics||[]).slice(0,4).map(m=>({name:EvoWikiLocale.string(m.name||''),unit:m.unit||'',lower:m.better==='lower',why:m.why||''}));
+let S=(C.scenarios||[]).slice(0,8).map(s=>({label:EvoWikiLocale.string(s.label||''),values:Array.isArray(s.values)?s.values:[]}));
+if(!S.length)S=[{label:'',values:[]}];
+const TAG=[ ewt("甲"), ewt("乙")];
+let view='0',sc=0;
+const num=(s,m,k)=>{const v=Number(((S[s].values[m])||{})[k?'b':'a']);return Number.isFinite(v)?v:0};
+const nf=v=>{const a=Math.abs(v);return v.toLocaleString('en-US',{maximumFractionDigits:a<10?2:a<100?1:0})};
+const U=m=>M[m].unit?(' '+M[m].unit):'';
+function win(m){const a=num(sc,m,0),b=num(sc,m,1);if(a===b)return -1;return (M[m].lower?a<b:a>b)?0:1}
+
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title||'');EvoWikiLocale.prop($('question'),"textContent",()=>C.question||'');EvoWikiLocale.prop($('problem'),"textContent",()=>C.problem||'');
+const SW_HATCH=[-10,-5,0,5,10,15].map(x=>`<line class="hl" x1="${x}" y1="12" x2="${x+12}" y2="0"/>`).join('');
+EvoWikiLocale.prop($('legend'),"innerHTML",()=>A.map((a,i)=>`<span><svg class="sw" viewBox="0 0 18 12" aria-hidden="true"><clipPath id="swc${i}"><rect x="0" y="0" width="18" height="12" rx="2"/></clipPath><rect class="${i?'b':'a'}" x="0.5" y="0.5" width="17" height="11" rx="2"/>${i?`<g clip-path="url(#swc${i})">${SW_HATCH}</g>`:''}</svg>${TAG[i]}　${esc(a.name)}</span>`).join(''));
+
+function mkBtn(id,text,on){const b=document.createElement('button');b.type='button';b.id=id;EvoWikiLocale.prop(b,"textContent",()=>text);b.addEventListener('click',on);return b}
+const vb=[mkBtn('show-0',EvoWikiLocale.mark(()=>TAG[0]+'　'+A[0].name),()=>{view='0';draw()}),mkBtn('show-1',EvoWikiLocale.mark(()=>TAG[1]+'　'+A[1].name),()=>{view='1';draw()}),mkBtn('mode-side', ewt("并排看"),()=>{view='side';draw()})];
+vb.forEach(b=>$('views').append(b));
+if(S.length>1){$('scnBox').hidden=false;EvoWikiLocale.prop($('scnLabel'),"textContent",()=>C.input_label|| ewt("情形"));
+  S.forEach((s,i)=>$('scns').append(mkBtn('scn-'+i,s.label||( ewt("情形 ")+(i+1)),()=>{sc=i;draw()})))}
+
+function colHtml(i){const a=A[i];let h=`<div class="col"><h2>${TAG[i]}　${esc(a.name)}</h2>`;
+  if(a.steps.length)h+='<ol>'+a.steps.map(s=>`<li>${esc(s)}</li>`).join('')+'</ol>';
+  if(a.visual){h+='<div class="boxes">'+a.visual.cells.map(c=>`<div class="bx${c.mark?' hit':''}"><i>${esc(c.label||'')}</i>${esc(c.value==null?'':c.value)}</div>`).join('')+'</div>';
+    if(a.visual.caption)h+=`<p class="cap">${esc(a.visual.caption)}</p>`}
+  return h+'</div>'}
+
+function bars(){const svg=$('bars');const W=Math.max(260,Math.round($('stage').clientWidth-16));
+  const L=4,TXT=150,maxW=Math.max(70,W-L-TXT-8),RH=82;
+  EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} ${Math.max(1,M.length)*RH}`);
+  svg.querySelectorAll(':scope > :not(desc)').forEach(c=>c.remove());
+  const d=el('defs',{}),p=el('pattern',{id:'hatch',width:6,height:6,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'});
+  p.append(el('rect',{width:6,height:6,fill:'var(--bg)'}),el('line',{x1:0,y1:0,x2:0,y2:6,class:'hl'}));d.append(p);svg.append(d);
+  M.forEach((m,i)=>{const y0=i*RH,w=win(i),vals=[num(sc,i,0),num(sc,i,1)],mx=Math.max(vals[0],vals[1],1e-9);
+    svg.append(el('text',{x:L,y:y0+14,class:'mt'},m.name));
+    svg.append(el('text',{x:W-2,y:y0+14,'text-anchor':'end',class:'mn'},m.lower? ewt("越低越好"): ewt("越高越好")));
+    vals.forEach((v,k)=>{const y=y0+24+k*26,bw=v>0?Math.max(3,v/mx*maxW):0,dim=view!=='side'&&EvoWikiLocale.string(k)!==view;
+      const g=el('g',{class:dim?'dim':''});
+      g.append(el('rect',{x:L,y,width:maxW,height:18,fill:'var(--bg-2)',rx:3}));
+      g.append(el('rect',{x:L,y,width:bw,height:18,rx:3,class:(k?'barB':'barA')+(w===k?' win-o':'')}));
+      g.append(el('text',{x:L+bw+8,y:y+14,class:'vl'+(w===k?' win':'')},TAG[k]+' '+nf(v)+U(i)+(w===k? ewt(" · 更好"):'')));svg.append(g)});
+    if(w<0)svg.append(el('text',{x:L,y:y0+78,class:'mn'}, ewt("两种持平")))});
+  EvoWikiLocale.prop($('barsDesc'),"textContent",()=>M.map((m,i)=>m.name+'：'+TAG[0]+' '+nf(num(sc,i,0))+'，'+TAG[1]+' '+nf(num(sc,i,1))).join('；'))}
+
+function draw(){
+  EvoWikiLocale.prop($('cols'),"innerHTML",()=>view==='side'?colHtml(0)+colHtml(1):colHtml(+view));
+  EvoWikiLocale.attr(vb[0],'aria-pressed',()=>view==='0');EvoWikiLocale.attr(vb[1],'aria-pressed',()=>view==='1');EvoWikiLocale.attr(vb[2],'aria-pressed',()=>view==='side');
+  S.forEach((s,i)=>{const b=$('scn-'+i);if(b)EvoWikiLocale.attr(b,'aria-pressed',()=>i===sc)});
+  bars();
+  let msg=view==='side'? ewt("并排看："): ewt("正在看「{0}」{1}。", [A[+view].name,A[+view].steps.length?'（'+A[+view].steps.length+ ewt(" 步）"):'']);
+  if(S.length>1)msg+= ewt("在「{0}」这种情形下，", [S[sc].label]);
+  msg+=M.map((m,i)=>{const w=win(i),a=num(sc,i,0),b=num(sc,i,1);
+    if(w<0)return  ewt("「{0}」两种持平（{1}{2}）。", [m.name,nf(a),U(i)]);
+    const x=w?b:a,y=w?a:b;
+    return  ewt("「{0}」{1}更好（{2}{3} 对 {4}{5}）{6}", [m.name,A[w].name,nf(x),U(i),nf(y),U(i),m.why?'：'+m.why:'。'])}).join(' ');
+  EvoWikiLocale.prop($('result'),"textContent",()=>msg)}
+new ResizeObserver(()=>bars()).observe($('stage'));
+draw();
+
+EvoWikiLocale.onChange(()=>{draw()});</script>
+</body>
+</html>

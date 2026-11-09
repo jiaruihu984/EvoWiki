@@ -1,0 +1,15 @@
+(function(){
+ let language=document.documentElement.lang.startsWith('en')?'en':'zh';
+ const messages=JSON.parse(document.getElementById("evowiki-system-messages").textContent),bound=new Map(); let captures=0,refresh=null;
+ const mark=(read)=>{const value=new String(String(read()));value._ew=true;for(const method of ['replace','replaceAll','trim','slice','substring','toLowerCase','toUpperCase'])value[method]=(...args)=>mark(()=>String(read())[method](...args));value.toString=()=>{captures++;return String(read());};value.valueOf=value.toString;value.toJSON=value.toString;return value;};
+ const t=(key,values=[])=>mark(()=>(language==='en'?messages[key]??key:key).replace(/\{(\d+)\}/g,(_,i)=>String(values[Number(i)])));
+ const get=(v)=>{while(typeof v==='function')v=v();return v==null?'':String(v);};
+ const patch=(old,next)=>{if(old.nodeType!==next.nodeType||old.nodeName!==next.nodeName)return false;if(old.nodeType===3){old.data=next.data;return true;}if(old.nodeType!==1)return true;const a=[...old.childNodes],b=[...next.childNodes];if(a.length!==b.length)return false;for(let i=0;i<a.length;i++)if(!patch(a[i],b[i]))return false;for(const at of [...next.attributes])if(!['value','checked','selected','disabled','style'].includes(at.name))old.setAttribute(at.name,at.value);return true;};
+ const prop=(el,key,value)=>{const before=captures,text=get(value),localized=captures!==before;el[key]=text;let props=bound.get(el);if(localized){if(!props){props=new Map();bound.set(el,props);}props.set(key,()=>{const next=get(value);if(key==='innerHTML'){const box=document.createElement(el.tagName==='TBODY'?'tbody':'div');box.innerHTML=next;if(box.childNodes.length===el.childNodes.length)[...el.childNodes].forEach((n,i)=>patch(n,box.childNodes[i]));}else el[key]=next;});}else if(props)props.delete(key);return text;};
+ const attr=(el,key,value)=>{const before=captures,text=get(value);el.setAttribute(key,text);if(captures!==before){let props=bound.get(el);if(!props){props=new Map();bound.set(el,props);}props.set('@'+key,()=>el.setAttribute(key,get(value)));}};
+ const statics=()=>{const walk=document.createTreeWalker(document,128);let n;while(n=walk.nextNode()){if(n.data.startsWith('ew-t:')){const key=JSON.parse(decodeURIComponent(n.data.slice(5))),text=n.nextSibling;if(text&&text.nodeType===3)prop(text,'textContent',()=>t(key));}}for(const el of document.querySelectorAll('[data-ew-attrs]'))for(const [key,value]of Object.entries(JSON.parse(el.dataset.ewAttrs)))attr(el,key,()=>t(value));};
+ const setLanguage=value=>{const next=value==='en'?'en':'zh';if(next===language)return;language=next;document.documentElement.lang=language;if(refresh)refresh();for(const [el,props]of bound){if(!el.isConnected){bound.delete(el);continue;}for(const paint of props.values())paint();}statics();};
+ window.EvoWikiLocale={t,mark,string:value=>value&&value._ew?value:String(value),prop,attr,setLanguage,get language(){return language;},onChange:fn=>{refresh=fn;}};
+ addEventListener('DOMContentLoaded',statics);
+ addEventListener('message',ev=>{if(ev.source===parent&&ev.data?.t==='locale'&&['zh','en'].includes(ev.data.locale))setLanguage(ev.data.locale);});
+})();

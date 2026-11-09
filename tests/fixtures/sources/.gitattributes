@@ -1,0 +1,2 @@
+# Generated binary fixtures: never let core.autocrlf rewrite their bytes.
+*.pdf binary

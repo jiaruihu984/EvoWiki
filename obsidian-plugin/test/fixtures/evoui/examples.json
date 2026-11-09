@@ -1,0 +1,36 @@
+[
+  {"type": "evoui", "title": "分散程度和方差", "question": "数据越分散，方差为什么越大？",
+   "state": {"k": 1},
+   "derived": {
+     "xs": "map([-1.6, -0.7, 0, 0.5, 1.8], b => 5 + b * k)",
+     "m": "sum(xs) / len(xs)",
+     "v": "sum(map(xs, x => (x - m) ** 2)) / len(xs)"
+   },
+   "body": {"kind": "box", "gap": 3, "border": true, "children": [
+     {"kind": "row", "justify": "between", "children": [
+       {"kind": "text", "text": "拖动分散程度，看方差怎么变", "weight": "bold"},
+       {"kind": "badge", "text": "{v > 3 ? '很散' : v < 0.5 ? '很集中' : '中等'}", "tone": "secondary"}]},
+     {"kind": "slider", "bind": "k", "min": 0, "max": 2.5, "step": 0.1, "label": "分散程度：{fmt(k, 1)}"},
+     {"kind": "plot", "xmin": 0, "xmax": 10, "ymin": -1, "ymax": 1, "grid": false, "height": 160,
+      "items": [
+        {"shape": "segment", "x1": "m", "y1": -1, "x2": "m", "y2": 1, "tone": "accent", "dashed": true},
+        {"shape": "label", "x": "m", "y": 0.8, "text": "均值 {fmt(m, 1)}", "tone": "accent"},
+        {"shape": "point", "x": "xs[0]", "y": 0, "tone": "default"},
+        {"shape": "point", "x": "xs[1]", "y": 0, "tone": "default"},
+        {"shape": "point", "x": "xs[2]", "y": 0, "tone": "default"},
+        {"shape": "point", "x": "xs[3]", "y": 0, "tone": "default"},
+        {"shape": "point", "x": "xs[4]", "y": 0, "tone": "default"}],
+      "legend": [{"label": "数据点", "tone": "default"}, {"label": "均值（虚线）", "tone": "accent"}]},
+     {"kind": "box", "tone": "surface", "gap": 1, "children": [
+       {"kind": "text", "size": "sm", "text": "方差 = {fmt(v, 2)}"},
+       {"kind": "if", "cond": "k == 0",
+        "then": {"kind": "text", "size": "sm", "tone": "success", "text": "全都一样：没有偏差，方差是 0。"},
+        "else": {"kind": "text", "size": "sm", "text": "点离虚线越远，偏差的平方越大，方差跟着变大。"}}]}]},
+   "fallback": "五个点围绕均值 5，分散程度越大，每个点离均值越远，方差越大；全都一样时方差为 0。"},
+  {"type": "evoui", "title": "检查一下", "question": "能不能区分 await 让出执行权和并发？",
+   "state": {}, "derived": {},
+   "body": {"kind": "quiz", "questions": [
+     {"q": "连续写 await a() 和 await b()，它们会同时进行吗？", "options": ["会", "不会，先完成 a 再开始 b"], "correct": 1,
+      "why": "await 只是在等待时让出执行权，不会自动启动后面的 b。要同时进行，用 gather。"}]},
+   "fallback": "连续 await 是先后执行；要并发需要 gather 或 create_task。"}
+]

@@ -1,0 +1,174 @@
+{
+  "component_id": "before-after",
+  "name": "前后对比",
+  "description": "同一个问题的两种做法：各自的步骤、一排小方块的示意，以及几个指标画成成对的条形；可切换只看哪一种、并排看，还可以换不同的输入规模或情形，看谁在哪个指标上更好、为什么。",
+  "learning_question": "两种做法到底差在哪？差距会不会随情形变大或变小？",
+  "scenarios": ["算法效率", "查找", "方法比较", "学习方法", "优化前后", "对照实验", "有无某个步骤"],
+  "params": {"看哪一种": "只看甲或乙的步骤和示意，或并排看", "情形": "换一种输入规模或条件，指标跟着换", "指标条形": "两种做法的同一指标画成成对条形，更好的一边有文字标记"},
+  "html_path": "src/evowiki/deep/components/before-after.html",
+  "height": 760,
+  "probes": [
+    {"target": "#show-1", "action": "click", "expect_change": "#result"},
+    {"target": "#mode-side", "action": "click", "expect_change": "#result"}
+  ],
+  "source": "component-library: generic before/after comparison",
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["title", "question", "problem", "approaches", "metrics", "input_label", "scenarios"],
+    "properties": {
+      "title": {"type": "string", "description": "组件标题，说明在比较什么"},
+      "question": {"type": "string", "description": "这个交互回答的学习问题，一句话"},
+      "problem": {"type": "string", "description": "要解决的问题，一两句话，两种做法都针对它"},
+      "approaches": {
+        "type": "array", "minItems": 1,
+        "description": "恰好 2 种做法：第一个叫甲、第二个叫乙（通常甲是“之前/朴素”的做法，乙是“之后/改进”的做法）",
+        "items": {
+          "type": "object", "additionalProperties": false, "required": ["name", "steps", "visual"],
+          "properties": {
+            "name": {"type": "string", "description": "做法的名字，短"},
+            "steps": {"type": "array", "minItems": 1, "description": "2–5 步，每步一句短话", "items": {"type": "string"}},
+            "visual": {
+              "anyOf": [
+                {"type": "null"},
+                {"type": "object", "additionalProperties": false, "required": ["caption", "cells"],
+                 "properties": {
+                   "caption": {"type": "string", "description": "示意图下的一句说明"},
+                   "cells": {
+                     "type": "array", "minItems": 1, "description": "一排小方块，最多 12 个；两种做法的方块应画同一份东西，只是标注不同",
+                     "items": {
+                       "type": "object", "additionalProperties": false, "required": ["label", "value", "mark"],
+                       "properties": {
+                         "label": {"type": ["string", "null"], "description": "方块上方的小标注，如 第1次；没有就 null"},
+                         "value": {"type": "string", "description": "方块里的内容，很短"},
+                         "mark": {"type": "boolean", "description": "是否用粗边强调（如被查看过、被选中）"}
+                       }
+                     }
+                   }
+                 }}
+              ]
+            }
+          }
+        }
+      },
+      "metrics": {
+        "type": "array", "minItems": 1,
+        "description": "1–4 个指标；每个指标在每种情形下的数值写在 scenarios 里，顺序一致",
+        "items": {
+          "type": "object", "additionalProperties": false, "required": ["name", "unit", "better", "why"],
+          "properties": {
+            "name": {"type": "string", "description": "指标名，如 比较次数"},
+            "unit": {"type": ["string", "null"], "description": "单位，如 次、分钟、%；没有就 null"},
+            "better": {"type": "string", "enum": ["lower", "higher"], "description": "越低越好填 lower，越高越好填 higher"},
+            "why": {"type": "string", "description": "一句话解释为什么更好的那种做法在这个指标上更好（结果句里会用到）"}
+          }
+        }
+      },
+      "input_label": {"type": ["string", "null"], "description": "情形选择器的名字，如 数据量 n；只有一种情形时填 null"},
+      "scenarios": {
+        "type": "array", "minItems": 1,
+        "description": "1–5 种情形（如不同的输入规模）；只有一种情形时给一项即可",
+        "items": {
+          "type": "object", "additionalProperties": false, "required": ["label", "values"],
+          "properties": {
+            "label": {"type": "string", "description": "情形名，短，如 n = 1000"},
+            "values": {
+              "type": "array", "minItems": 1, "description": "每个指标一项，顺序与 metrics 相同",
+              "items": {
+                "type": "object", "additionalProperties": false, "required": ["a", "b"],
+                "properties": {
+                  "a": {"type": "number", "description": "甲在该指标上的数值（非负）"},
+                  "b": {"type": "number", "description": "乙在该指标上的数值（非负）"}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "example_configs": [
+    {
+      "title": "在有序的数里找一个数：从头找，还是对半找？",
+      "question": "数据变多时，两种查找各要看多少个数？",
+      "problem": "一排从小到大排好的数，要找到其中的 27。",
+      "approaches": [
+        {
+          "name": "线性查找",
+          "steps": ["从最左边开始", "一个一个和 27 比", "找到就停；找到头还没有就是没有"],
+          "visual": {
+            "caption": "依次看了 6 个数才找到 27。",
+            "cells": [
+              {"label": "第1次", "value": "3", "mark": true}, {"label": "第2次", "value": "8", "mark": true},
+              {"label": "第3次", "value": "12", "mark": true}, {"label": "第4次", "value": "15", "mark": true},
+              {"label": "第5次", "value": "21", "mark": true}, {"label": "第6次", "value": "27", "mark": true},
+              {"label": "没看", "value": "33", "mark": false}, {"label": "没看", "value": "40", "mark": false}
+            ]
+          }
+        },
+        {
+          "name": "二分查找",
+          "steps": ["看正中间那个数", "比 27 小就丢掉左半边，比 27 大就丢掉右半边", "在剩下的一半里重复，直到找到"],
+          "visual": {
+            "caption": "只看了 2 个数：15 比 27 小，丢掉左半边，再看中间的 27。",
+            "cells": [
+              {"label": "丢掉", "value": "3", "mark": false}, {"label": "丢掉", "value": "8", "mark": false},
+              {"label": "丢掉", "value": "12", "mark": false}, {"label": "第1次", "value": "15", "mark": true},
+              {"label": "", "value": "21", "mark": false}, {"label": "第2次", "value": "27", "mark": true},
+              {"label": "", "value": "33", "mark": false}, {"label": "", "value": "40", "mark": false}
+            ]
+          }
+        }
+      ],
+      "metrics": [
+        {"name": "最坏要比较的次数", "unit": "次", "better": "lower", "why": "线性查找最坏要从头看到尾，次数和 n 一样多；二分每次丢掉一半，次数只有大约 log2 n。"},
+        {"name": "平均要比较的次数", "unit": "次", "better": "lower", "why": "线性查找平均要看一半的数；二分的次数增长得慢得多，n 越大差距越夸张。"}
+      ],
+      "input_label": "数的个数 n",
+      "scenarios": [
+        {"label": "n = 10", "values": [{"a": 10, "b": 4}, {"a": 5, "b": 3}]},
+        {"label": "n = 1,000", "values": [{"a": 1000, "b": 10}, {"a": 500, "b": 9}]},
+        {"label": "n = 1,000,000", "values": [{"a": 1000000, "b": 20}, {"a": 500000, "b": 19}]}
+      ]
+    },
+    {
+      "title": "背 10 个单词：反复重读，还是盖住答案回忆？",
+      "question": "为什么重读让人觉得“很熟”，隔几天却考不过回忆过的人？",
+      "problem": "要记住 10 个英语单词，隔一段时间后考中文意思。下面的数字是示意值，用来比较趋势。",
+      "approaches": [
+        {
+          "name": "反复重读",
+          "steps": ["把单词和意思一起看一遍", "再读一遍、两遍……", "觉得熟了就停"],
+          "visual": {
+            "caption": "答案一直在眼前，看着就觉得“我会了”。",
+            "cells": [
+              {"label": "读", "value": "apple 苹果", "mark": false}, {"label": "读", "value": "apple 苹果", "mark": false},
+              {"label": "读", "value": "apple 苹果", "mark": false}, {"label": "读", "value": "apple 苹果", "mark": false}
+            ]
+          }
+        },
+        {
+          "name": "检索练习",
+          "steps": ["盖住意思，只看单词", "先自己想起意思，想不起来也要试", "再对答案，错的多练几次"],
+          "visual": {
+            "caption": "每一轮都要从记忆里把答案“拿出来”，这个费力的动作本身在加固记忆。",
+            "cells": [
+              {"label": "看", "value": "apple ?", "mark": false}, {"label": "想", "value": "…", "mark": true},
+              {"label": "对答案", "value": "苹果", "mark": false}, {"label": "再来", "value": "apple ?", "mark": false}
+            ]
+          }
+        }
+      ],
+      "metrics": [
+        {"name": "测验正确率", "unit": "%", "better": "higher", "why": "隔得越久，回忆练习的优势越大；刚学完马上考时，重读带来的熟悉感还管用。"},
+        {"name": "学习用时", "unit": "分钟", "better": "lower", "why": "重读不用停下来想，所以更省时间，但省下的时间没有换来长久的记忆。"}
+      ],
+      "input_label": "隔多久考",
+      "scenarios": [
+        {"label": "10 分钟后", "values": [{"a": 82, "b": 75}, {"a": 20, "b": 24}]},
+        {"label": "2 天后", "values": [{"a": 54, "b": 68}, {"a": 20, "b": 24}]},
+        {"label": "1 周后", "values": [{"a": 36, "b": 61}, {"a": 20, "b": 24}]}
+      ]
+    }
+  ]
+}

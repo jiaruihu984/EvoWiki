@@ -1,0 +1,2387 @@
+[
+ {
+  "name": "参数实验室",
+  "use": "一个量随参数怎么变：拖一个参数，看图、读数和结论一起变（特征向量、学习率、正态分布）",
+  "block": {
+   "type": "evoui",
+   "title": "特征向量实验室：哪些方向只被拉长？",
+   "question": "矩阵作用到大多数向量上会把它转个方向；什么样的向量只被拉长、方向不变？",
+   "state": {
+    "deg": 30
+   },
+   "derived": {
+    "r": "deg2rad(deg)",
+    "vx": "cos(r)",
+    "vy": "sin(r)",
+    "ax": "2 * vx + vy",
+    "ay": "vx + 2 * vy",
+    "cross": "abs(vx * ay - vy * ax)",
+    "eigen": "cross < 0.03",
+    "k": "sqrt(ax * ax + ay * ay)"
+   },
+   "body": {
+    "kind": "box",
+    "gap": 3,
+    "children": [
+     {
+      "kind": "row",
+      "justify": "between",
+      "wrap": true,
+      "children": [
+       {
+        "kind": "text",
+        "text": "A = [[2, 1], [1, 2]]，v 转一圈",
+        "tone": "secondary",
+        "size": "sm"
+       },
+       {
+        "kind": "badge",
+        "text": "{eigen ? '特征向量' : '普通向量'}",
+        "tone": "accent"
+       }
+      ]
+     },
+     {
+      "kind": "slider",
+      "bind": "deg",
+      "min": 0,
+      "max": 180,
+      "step": 1,
+      "label": "v 的角度：{deg}°"
+     },
+     {
+      "kind": "choice",
+      "bind": "deg",
+      "style": "buttons",
+      "options": [
+       {
+        "label": "0°",
+        "value": 0
+       },
+       {
+        "label": "45°",
+        "value": 45
+       },
+       {
+        "label": "90°",
+        "value": 90
+       },
+       {
+        "label": "135°",
+        "value": 135
+       }
+      ]
+     },
+     {
+      "kind": "plot",
+      "xmin": -3,
+      "xmax": 3,
+      "ymin": -3,
+      "ymax": 3,
+      "grid": true,
+      "height": 280,
+      "items": [
+       {
+        "shape": "arrow",
+        "x1": 0,
+        "y1": 0,
+        "x2": "vx",
+        "y2": "vy",
+        "tone": "secondary",
+        "label": "v"
+       },
+       {
+        "shape": "arrow",
+        "x1": 0,
+        "y1": 0,
+        "x2": "ax",
+        "y2": "ay",
+        "tone": "accent",
+        "label": "Av"
+       }
+      ],
+      "legend": [
+       {
+        "label": "v（原向量）",
+        "tone": "secondary"
+       },
+       {
+        "label": "Av（作用之后）",
+        "tone": "accent"
+       }
+      ]
+     },
+     {
+      "kind": "text",
+      "text": "Av = ({fmt(ax, 2)}, {fmt(ay, 2)})，长度是 v 的 {fmt(k, 2)} 倍",
+      "size": "sm"
+     },
+     {
+      "kind": "if",
+      "cond": "eigen",
+      "then": {
+       "kind": "text",
+       "tone": "success",
+       "weight": "bold",
+       "text": "方向没变，只被拉长 {fmt(k, 2)} 倍：v 是特征向量，特征值 λ = {fmt(k, 2)}。"
+      },
+      "else": {
+       "kind": "text",
+       "tone": "secondary",
+       "text": "Av 和 v 不在一条线上：方向被改了，这不是特征向量。试试 45° 和 135°。"
+      }
+     }
+    ]
+   },
+   "fallback": "对 A = [[2, 1], [1, 2]]：沿 45° 方向的向量 v 作用后变成 3v，沿 135° 方向的变成 1·v，方向都不变，所以它们是特征向量，特征值分别是 3 和 1；其他方向的向量都会被转向。",
+   "probes": [
+    {
+     "set": {
+      "deg": 45
+     }
+    },
+    {
+     "set": {
+      "deg": 90
+     }
+    }
+   ]
+  },
+  "group": "chart"
+ },
+ {
+  "name": "诊断测验",
+  "use": "辨析几种容易混的情况，一页一题、错了当场看为什么，答完知道自己卡在哪一种（语法、概念辨析、易错题型）",
+  "block": {
+   "type": "evoui",
+   "title": "诊断：现在完成时还是一般过去时？",
+   "question": "同样是「过去发生的事」，什么时候用现在完成时、什么时候用一般过去时？卡在哪种情况？",
+   "state": {},
+   "derived": {},
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "caption",
+      "text": "一页一题：选完马上判对错并解释；提示要自己点开。做完看每种情况答对了几道。"
+     },
+     {
+      "kind": "quiz",
+      "id": "diag",
+      "layout": "paged",
+      "title": "诊断：完成时 vs 过去时",
+      "cases": [
+       {
+        "id": "time",
+        "label": "有具体的过去时间",
+        "advice": "回看「具体过去时间」：yesterday、in 2019、an hour ago 一出现就用一般过去时"
+       },
+       {
+        "id": "since",
+        "label": "since / for 持续到现在",
+        "advice": "回看「持续到现在」：动作从过去一直延续到现在，用现在完成时"
+       },
+       {
+        "id": "result",
+        "label": "强调对现在的影响",
+        "advice": "回看「对现在的影响」：结果现在还在（钥匙还丢着、窗户还破着）用现在完成时"
+       }
+      ],
+      "questions": [
+       {
+        "q": "She ___ in Singapore since 2023.",
+        "options": [
+         "lived",
+         "has lived",
+         "lives"
+        ],
+        "correct": 1,
+        "why": "since 2023 说的是从 2023 年一直到现在，用现在完成时。",
+        "feedback": [
+         "lived 表示已经结束，但 since 说明她现在还住在那里。",
+         "对：since + 起点，动作持续到现在。",
+         "一般现在时只说现在，丢掉了「从 2023 年开始」这段时间。"
+        ],
+        "hint": "since 后面是起点：这件事到现在还在继续吗？",
+        "case": "since",
+        "cell": "c1.interpret"
+       },
+       {
+        "q": "I ___ the report yesterday.",
+        "options": [
+         "finished",
+         "have finished"
+        ],
+        "correct": 0,
+        "why": "yesterday 是具体的过去时间，用一般过去时。",
+        "feedback": [
+         "对：有具体过去时间就用一般过去时。",
+         "现在完成时不能和 yesterday 这类具体过去时间连用。"
+        ],
+        "case": "time",
+        "cell": "c1.interpret"
+       },
+       {
+        "q": "「I have seen that film last week.」这句话是对的。",
+        "type": "tf",
+        "options": [
+         "对",
+         "错"
+        ],
+        "correct": 1,
+        "why": "last week 是具体过去时间，应该说 I saw that film last week。",
+        "feedback": [
+         "看到 have seen 就觉得对？last week 已经把时间钉在过去了。",
+         "对：具体过去时间和现在完成时不能同时出现。"
+        ],
+        "hint": "先找句子里有没有具体的过去时间。",
+        "case": "time",
+        "cell": "c1.interpret"
+       },
+       {
+        "q": "哪些空该填现在完成时？（可多选）",
+        "type": "multi",
+        "options": [
+         "I ___ (lose) my keys, so I can't get in.",
+         "We ___ (meet) in 2019.",
+         "Someone ___ (eat) my sandwich — the plate is empty!",
+         "He ___ (call) me an hour ago."
+        ],
+        "correct": [
+         0,
+         2
+        ],
+        "why": "钥匙现在还丢着、盘子现在是空的：强调结果对现在的影响，用现在完成时；in 2019、an hour ago 是具体过去时间。",
+        "feedback": [
+         "对：进不去门是现在的结果。",
+         "in 2019 是具体过去时间，用 met。",
+         "对：空盘子就在眼前，是现在的结果。",
+         "an hour ago 是具体过去时间，用 called。"
+        ],
+        "hint": "每句先问：说话的人在意的是现在看得到的结果吗？",
+        "case": "result",
+        "cell": "c1.interpret"
+       },
+       {
+        "q": "We ___ for two hours and we're still waiting.",
+        "options": [
+         "waited",
+         "have waited",
+         "wait"
+        ],
+        "correct": 1,
+        "why": "for two hours 加上 still waiting：一直等到现在。",
+        "feedback": [
+         "waited 表示已经等完了，但后半句说还在等。",
+         "对：for + 一段时间，持续到现在。",
+         "一般现在时说不出「已经等了两小时」。"
+        ],
+        "case": "since",
+        "cell": "c1.interpret"
+       },
+       {
+        "q": "Look! Someone ___ the window.",
+        "options": [
+         "broke",
+         "has broken"
+        ],
+        "correct": 1,
+        "why": "Look! 说明碎窗户就在眼前：强调对现在的影响。",
+        "feedback": [
+         "broke 只讲过去发生了这件事，没有「你看，现在是碎的」的意思。",
+         "对：结果现在还在。"
+        ],
+        "hint": "说话的人想让你看什么？",
+        "case": "result",
+        "cell": "c1.interpret"
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "有具体的过去时间（yesterday、last week、in 2019、an hour ago）用一般过去时；从过去持续到现在（since、for）或强调结果对现在的影响（钥匙还丢着、窗户还碎着），用现在完成时。例：She has lived here since 2023；I finished it yesterday。"
+  },
+  "group": "quiz"
+ },
+ {
+  "name": "闪卡 → 测验",
+  "use": "成对记忆（假名、单词、公式符号、术语 ↔ 意思）：先翻卡主动回想，翻完一轮自动打开分页测验，全对撒彩纸",
+  "block": {
+   "type": "evoui",
+   "title": "平假名：あ行和か行",
+   "question": "这 10 个假名看到能马上读出来吗？光看不练记不住，要先回想再核对。",
+   "state": {},
+   "derived": {},
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "caption",
+      "text": "先翻卡：看到正面先在心里读出来，再点卡片翻面核对；记住了往右滑（或按 →），没记住往左滑（或按 ←）。"
+     },
+     {
+      "kind": "flashcards",
+      "id": "kana",
+      "title": "あ行 + か行（10 张）",
+      "shuffle": true,
+      "cards": [
+       {
+        "front": "あ",
+        "back": "a\n- 联想：像一个张大嘴说「啊」的人",
+        "cell": "c1.recall"
+       },
+       {
+        "front": "い",
+        "back": "i\n- 联想：两笔竖，像两根并排的筷子",
+        "cell": "c1.recall"
+       },
+       {
+        "front": "う",
+        "back": "u\n- 联想：上面一点，下面一个弯：嘴撅起来「乌」",
+        "cell": "c1.recall"
+       },
+       {
+        "front": "え",
+        "back": "e\n- 联想：像一个人在跳舞，伸出一条腿",
+        "cell": "c1.recall"
+       },
+       {
+        "front": "お",
+        "back": "o\n- 联想：比あ多一个小点，像「哦」时的惊讶",
+        "cell": "c1.recall"
+       },
+       {
+        "front": "か",
+        "back": "ka\n- 联想：像一把刀加一点：「咔」地一刀",
+        "cell": "c1.recall"
+       },
+       {
+        "front": "き",
+        "back": "ki\n- 联想：像一把钥匙（key）",
+        "cell": "c1.recall",
+        "hint": "和 さ 长得像，但读 k 开头"
+       },
+       {
+        "front": "く",
+        "back": "ku\n- 联想：像鸟嘴张开「咕」",
+        "cell": "c1.recall"
+       },
+       {
+        "front": "け",
+        "back": "ke\n- 联想：左边一竖，右边像桶（keg）",
+        "cell": "c1.recall"
+       },
+       {
+        "front": "こ",
+        "back": "ko\n- 联想：上下两横，像两条小鱼",
+        "cell": "c1.recall"
+       }
+      ]
+     },
+     {
+      "kind": "reveal",
+      "mode": "after",
+      "after": "kana",
+      "label": "翻完一轮卡片后，这里打开测验",
+      "children": [
+       {
+        "kind": "quiz",
+        "id": "quiz",
+        "layout": "paged",
+        "title": "测一测：认读假名",
+        "questions": [
+         {
+          "q": "き 怎么读？",
+          "options": [
+           "sa",
+           "ku",
+           "ki",
+           "ka"
+          ],
+          "correct": 2,
+          "why": "き = ki，像一把钥匙（key）。",
+          "feedback": [
+           "さ 才读 sa：き 比它多一横。",
+           "ku 是 く，像张开的鸟嘴。",
+           "对。",
+           "ka 是 か。"
+          ],
+          "hint": "想想「钥匙」的英文。",
+          "cell": "c1.recall"
+         },
+         {
+          "q": "读音 ko 写作哪个？",
+          "options": [
+           "い",
+           "け",
+           "こ"
+          ],
+          "correct": 2,
+          "why": "こ = ko：上下两横。",
+          "feedback": [
+           "い 是两笔竖，读 i。",
+           "け 读 ke，左边多一竖。",
+           "对。"
+          ],
+          "cell": "c1.recall"
+         },
+         {
+          "q": "く 读作 ku。",
+          "type": "tf",
+          "options": [
+           "对",
+           "错"
+          ],
+          "correct": 0,
+          "why": "く = ku。",
+          "feedback": [
+           "对。",
+           "く 就是 ku：像张开的鸟嘴「咕」。"
+          ],
+          "cell": "c1.recall"
+         },
+         {
+          "q": "哪些假名的读音以 k 开头？（可多选）",
+          "type": "multi",
+          "options": [
+           "か",
+           "お",
+           "け",
+           "う"
+          ],
+          "correct": [
+           0,
+           2
+          ],
+          "why": "か行（か き く け こ）都以 k 开头；あ行（あ い う え お）是单独的元音。",
+          "feedback": [
+           "对：ka。",
+           "お 是元音 o。",
+           "对：ke。",
+           "う 是元音 u。"
+          ],
+          "hint": "か行的五个都带 k。",
+          "cell": "c1.recall"
+         },
+         {
+          "q": "え 怎么读？",
+          "options": [
+           "i",
+           "e",
+           "o"
+          ],
+          "correct": 1,
+          "why": "え = e。",
+          "feedback": [
+           "i 是 い。",
+           "对。",
+           "o 是 お，带一个小点。"
+          ],
+          "cell": "c1.recall"
+         },
+         {
+          "q": "う 和 く 的读音差在哪？",
+          "options": [
+           "完全一样",
+           "く 前面多一个 k 音",
+           "う 读 o"
+          ],
+          "correct": 1,
+          "why": "か行 = k + あ行的元音：く = k + う。",
+          "feedback": [
+           "一个是元音 u，一个是 ku。",
+           "对：か行就是在元音前加 k。",
+           "う 读 u，读 o 的是 お。"
+          ],
+          "cell": "c1.recall"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "あ行是五个元音：あ a、い i、う u、え e、お o；か行是在它们前面加 k：か ka、き ki、く ku、け ke、こ ko。记法：先看假名在心里读出来，再核对，比反复看答案记得牢。"
+  },
+  "group": "flashcard"
+ },
+ {
+  "name": "步骤动画",
+  "use": "算法或过程一步一步怎么走、两种做法差在哪（排序、查找、递推）：一个播放器同时推进两边，柱子移动、正在比较的一对高亮、计数读数、完成标记，最后揭开结论",
+  "block": {
+   "type": "evoui",
+   "title": "冒泡排序 vs 插入排序：同一组数，谁比较得少？",
+   "question": "两种排序都靠交换相邻的数，为什么插入排序常常比较得更少？输入越接近有序，差别怎么变？",
+   "state": {
+    "step": 0,
+    "order": "rand"
+   },
+   "derived": {
+    "start": "order == 'near' ? [1, 2, 4, 3, 5, 6] : order == 'up' ? [1, 2, 3, 4, 5, 6] : order == 'down' ? [6, 5, 4, 3, 2, 1] : [4, 2, 6, 1, 5, 3]",
+    "bub": "iterate(step + 1, {a: start, j: 0, p: 0, c: 0, m: 0, w: false, d: false}, s => s.d ? s : {a: s.a[s.j] > s.a[s.j + 1] ? map(range(6), k => k == s.j ? s.a[k + 1] : k == s.j + 1 ? s.a[k - 1] : s.a[k]) : s.a, j: s.j >= 4 - s.p ? 0 : s.j + 1, p: s.j >= 4 - s.p ? s.p + 1 : s.p, c: s.c + 1, m: s.m + (s.a[s.j] > s.a[s.j + 1] ? 1 : 0), w: !(s.j >= 4 - s.p) && (s.w || s.a[s.j] > s.a[s.j + 1]), d: s.j >= 4 - s.p && (s.p >= 4 || !(s.w || s.a[s.j] > s.a[s.j + 1])), q: s.j, x: s.a[s.j] > s.a[s.j + 1]})[step]",
+    "ins": "iterate(step + 1, {a: start, i: 1, j: 1, c: 0, m: 0}, s => s.i > 5 ? s : {a: s.a[s.j - 1] > s.a[s.j] ? map(range(6), k => k == s.j ? s.a[k - 1] : k == s.j - 1 ? s.a[k + 1] : s.a[k]) : s.a, i: s.a[s.j - 1] > s.a[s.j] && s.j > 1 ? s.i : s.i + 1, j: s.a[s.j - 1] > s.a[s.j] && s.j > 1 ? s.j - 1 : s.i + 1, c: s.c + 1, m: s.m + (s.a[s.j - 1] > s.a[s.j] ? 1 : 0), q: s.j, x: s.a[s.j - 1] > s.a[s.j]})[step]",
+    "bdone": "bub.d",
+    "idone": "ins.i > 5",
+    "bact": "step > 0 && step <= bub.c",
+    "iact": "step > 0 && step <= ins.c"
+   },
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "row",
+      "justify": "between",
+      "wrap": true,
+      "children": [
+       {
+        "kind": "choice",
+        "bind": "order",
+        "style": "segmented",
+        "options": [
+         {
+          "label": "随机",
+          "value": "rand"
+         },
+         {
+          "label": "几乎有序",
+          "value": "near"
+         },
+         {
+          "label": "升序",
+          "value": "up"
+         },
+         {
+          "label": "降序",
+          "value": "down"
+         }
+        ]
+       },
+       {
+        "kind": "badge",
+        "tone": "secondary",
+        "text": "{order == 'down' ? '最坏情况' : order == 'up' ? '最好情况' : order == 'near' ? '只有一对反了' : '一般情况'}"
+       }
+      ]
+     },
+     {
+      "kind": "player",
+      "id": "run",
+      "bind": "step",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "interval_ms": 800,
+      "label": "第 {step} 步：两边各比较一对相邻的数"
+     },
+     {
+      "kind": "grid",
+      "columns": 4,
+      "gap": 3,
+      "children": [
+       {
+        "kind": "grid-item",
+        "span": 2,
+        "tone": "surface",
+        "gap": 2,
+        "children": [
+         {
+          "kind": "row",
+          "justify": "between",
+          "wrap": true,
+          "children": [
+           {
+            "kind": "text",
+            "text": "冒泡排序",
+            "weight": "bold"
+           },
+           {
+            "kind": "if",
+            "cond": "bdone",
+            "then": {
+             "kind": "badge",
+             "tone": "success",
+             "text": "已完成 · 第 {bub.c} 步排好"
+            },
+            "else": {
+             "kind": "badge",
+             "tone": "secondary",
+             "text": "进行中"
+            }
+           }
+          ]
+         },
+         {
+          "kind": "plot",
+          "xmin": 0,
+          "xmax": 6,
+          "ymin": 0,
+          "ymax": 7,
+          "height": 200,
+          "items": [
+           {
+            "shape": "rect",
+            "x": "bdone ? 0 : 6 - bub.p",
+            "y": 0,
+            "w": "bdone ? 6 : bub.p",
+            "h": 7,
+            "tone": "success",
+            "fill": true,
+            "dashed": true
+           },
+           {
+            "shape": "rect",
+            "x": "bact ? bub.q + 0.04 : -3",
+            "y": 0.06,
+            "w": 1.92,
+            "h": 6.88,
+            "tone": "warning",
+            "dashed": true
+           },
+           {
+            "shape": "rect",
+            "x": 0.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "bub.a[0]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{bub.a[0]}"
+           },
+           {
+            "shape": "rect",
+            "x": 1.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "bub.a[1]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{bub.a[1]}"
+           },
+           {
+            "shape": "rect",
+            "x": 2.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "bub.a[2]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{bub.a[2]}"
+           },
+           {
+            "shape": "rect",
+            "x": 3.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "bub.a[3]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{bub.a[3]}"
+           },
+           {
+            "shape": "rect",
+            "x": 4.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "bub.a[4]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{bub.a[4]}"
+           },
+           {
+            "shape": "rect",
+            "x": 5.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "bub.a[5]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{bub.a[5]}"
+           }
+          ]
+         },
+         {
+          "kind": "grid",
+          "columns": 2,
+          "gap": 2,
+          "children": [
+           {
+            "kind": "box",
+            "gap": 0,
+            "children": [
+             {
+              "kind": "caption",
+              "text": "比较"
+             },
+             {
+              "kind": "title",
+              "size": "lg",
+              "text": "{bub.c}"
+             }
+            ]
+           },
+           {
+            "kind": "box",
+            "gap": 0,
+            "children": [
+             {
+              "kind": "caption",
+              "text": "交换"
+             },
+             {
+              "kind": "title",
+              "size": "lg",
+              "text": "{bub.m}"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "kind": "text",
+          "text": "{step == 0 ? '从左往右两两比较，大的往右冒。' : step > bub.c ? '已经排好，后面的步不再变。' : '比较第 ' + (bub.q + 1) + '、' + (bub.q + 2) + ' 个：' + (bub.x ? '左边大，交换。' : '不用换。')}",
+          "size": "sm",
+          "tone": "secondary"
+         }
+        ]
+       },
+       {
+        "kind": "grid-item",
+        "span": 2,
+        "tone": "surface",
+        "gap": 2,
+        "children": [
+         {
+          "kind": "row",
+          "justify": "between",
+          "wrap": true,
+          "children": [
+           {
+            "kind": "text",
+            "text": "插入排序",
+            "weight": "bold"
+           },
+           {
+            "kind": "if",
+            "cond": "idone",
+            "then": {
+             "kind": "badge",
+             "tone": "success",
+             "text": "已完成 · 第 {ins.c} 步排好"
+            },
+            "else": {
+             "kind": "badge",
+             "tone": "secondary",
+             "text": "进行中"
+            }
+           }
+          ]
+         },
+         {
+          "kind": "plot",
+          "xmin": 0,
+          "xmax": 6,
+          "ymin": 0,
+          "ymax": 7,
+          "height": 200,
+          "items": [
+           {
+            "shape": "rect",
+            "x": 0,
+            "y": 0,
+            "w": "idone ? 6 : ins.j < ins.i ? ins.i + 1 : ins.i",
+            "h": 7,
+            "tone": "success",
+            "fill": true,
+            "dashed": true
+           },
+           {
+            "shape": "rect",
+            "x": "iact ? ins.q - 1 + 0.04 : -3",
+            "y": 0.06,
+            "w": 1.92,
+            "h": 6.88,
+            "tone": "warning",
+            "dashed": true
+           },
+           {
+            "shape": "rect",
+            "x": 0.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "ins.a[0]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{ins.a[0]}"
+           },
+           {
+            "shape": "rect",
+            "x": 1.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "ins.a[1]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{ins.a[1]}"
+           },
+           {
+            "shape": "rect",
+            "x": 2.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "ins.a[2]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{ins.a[2]}"
+           },
+           {
+            "shape": "rect",
+            "x": 3.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "ins.a[3]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{ins.a[3]}"
+           },
+           {
+            "shape": "rect",
+            "x": 4.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "ins.a[4]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{ins.a[4]}"
+           },
+           {
+            "shape": "rect",
+            "x": 5.12,
+            "y": 0,
+            "w": 0.76,
+            "h": "ins.a[5]",
+            "tone": "accent",
+            "fill": true,
+            "label": "{ins.a[5]}"
+           }
+          ]
+         },
+         {
+          "kind": "grid",
+          "columns": 2,
+          "gap": 2,
+          "children": [
+           {
+            "kind": "box",
+            "gap": 0,
+            "children": [
+             {
+              "kind": "caption",
+              "text": "比较"
+             },
+             {
+              "kind": "title",
+              "size": "lg",
+              "text": "{ins.c}"
+             }
+            ]
+           },
+           {
+            "kind": "box",
+            "gap": 0,
+            "children": [
+             {
+              "kind": "caption",
+              "text": "交换"
+             },
+             {
+              "kind": "title",
+              "size": "lg",
+              "text": "{ins.m}"
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "kind": "text",
+          "text": "{step == 0 ? '把右边的数一个个插进左边排好的部分。' : step > ins.c ? '已经排好，后面的步不再变。' : '比较第 ' + ins.q + '、' + (ins.q + 1) + ' 个：' + (ins.x ? (ins.q > 1 ? '左边大，交换，继续往左比。' : '左边大，交换，已经到最左边了。') : '左边不比它大，这个数到位了。')}",
+          "size": "sm",
+          "tone": "secondary"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "transition",
+      "key": "(bdone ? 1 : 0) + (idone ? 2 : 0)",
+      "children": [
+       {
+        "kind": "text",
+        "text": "{bdone && idone ? '两边都排好了' : idone ? '插入排序先排好了，冒泡还在比' : bdone ? '冒泡先排好了，插入还在比' : '两种排序同时进行'}",
+        "weight": "bold"
+       }
+      ]
+     },
+     {
+      "kind": "celebrate",
+      "when": "bdone && idone"
+     },
+     {
+      "kind": "if",
+      "cond": "bdone && idone",
+      "then": {
+       "kind": "animate",
+       "children": [
+        {
+         "kind": "text",
+         "text": "这组数：冒泡比较 {bub.c} 次，插入比较 {ins.c} 次；交换都是 {bub.m} 次。换一组输入再播放，看看比较次数的差别怎么变。"
+        }
+       ]
+      },
+      "else": null
+     },
+     {
+      "kind": "divider"
+     },
+     {
+      "kind": "reveal",
+      "id": "why",
+      "mode": "click",
+      "label": "看结论",
+      "children": [
+       {
+        "kind": "text",
+        "text": "交换次数两边总是一样：每交换一次相邻的数，正好消掉一对「前大后小」的数（逆序对），两种算法都要把逆序对全部消掉。",
+        "weight": "bold"
+       },
+       {
+        "kind": "text",
+        "text": "差别在比较：插入排序遇到不比它大的数就停，已经排好的部分不再碰；冒泡每一趟都要从头比到尾，只有一整趟都没交换才能提前结束。"
+       },
+       {
+        "kind": "text",
+        "text": "所以几乎有序时插入排序几乎只比较 n − 1 次；逆序时两者都要比较 n(n − 1)/2 = 15 次。"
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "冒泡排序和插入排序都只交换相邻的数，交换次数都等于逆序对的个数（4 2 6 1 5 3 有 8 对，两者都交换 8 次）。差别在比较次数：这组数冒泡（带提前结束）比较 14 次，插入比较 11 次；几乎有序的 1 2 4 3 5 6 冒泡 9 次、插入 6 次；升序两者都是 5 次；降序两者都是 15 次。"
+  },
+  "group": "player"
+ },
+ {
+  "name": "播放参数扫描",
+  "use": "一个参数逐步加大时结果怎么演变（傅里叶项数、迭代次数、时间 t）：播放器 + 滑块同绑一个参数，曲线、大号读数和结论一起变，最后一两道题",
+  "block": {
+   "type": "evoui",
+   "title": "用正弦波叠出方波：项越多越像吗？",
+   "question": "方波能用一串奇次正弦波叠出来；项数 N 越多越接近方波，可跳变旁边的尖角为什么一直不消失？",
+   "state": {
+    "n": 1
+   },
+   "derived": {
+    "xs": "map(range(361), i => -3.1416 + i * 6.2832 / 360)",
+    "partial": "map(range(361), i => [-3.1416 + i * 6.2832 / 360, sum(map(range(15), k => k < n ? 4 / PI * sin((2 * k + 1) * (-3.1416 + i * 6.2832 / 360)) / (2 * k + 1) : 0))])",
+    "newest": "map(xs, x => [x, 4 / PI * sin((2 * n - 1) * x) / (2 * n - 1)])",
+    "peak": "sum(map(range(n), k => 4 / PI * sin((2 * k + 1) * PI / (2 * n)) / (2 * k + 1)))",
+    "over": "(peak - 1) / 2 * 100"
+   },
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "text",
+      "text": "方波 = 4/π × (sin x + sin 3x / 3 + sin 5x / 5 + …)：只有奇数倍频，第 N 项是 2N − 1 倍频。",
+      "size": "sm",
+      "tone": "secondary"
+     },
+     {
+      "kind": "player",
+      "id": "sweep",
+      "bind": "n",
+      "min": 1,
+      "max": 15,
+      "step": 1,
+      "interval_ms": 700,
+      "label": "叠加前 {n} 项（最新一项是 {2 * n - 1} 倍频）"
+     },
+     {
+      "kind": "slider",
+      "bind": "n",
+      "min": 1,
+      "max": 15,
+      "step": 1,
+      "label": "项数 N = {n}"
+     },
+     {
+      "kind": "plot",
+      "xmin": -3.3,
+      "xmax": 3.3,
+      "ymin": -1.6,
+      "ymax": 1.6,
+      "grid": true,
+      "height": 240,
+      "items": [
+       {
+        "shape": "polyline",
+        "points": "[[-3.1416, -1], [0, -1], [0, 1], [3.1416, 1]]",
+        "tone": "secondary",
+        "dashed": true
+       },
+       {
+        "shape": "polyline",
+        "points": "newest",
+        "tone": "warning",
+        "dashed": true
+       },
+       {
+        "shape": "polyline",
+        "points": "partial",
+        "tone": "accent"
+       },
+       {
+        "shape": "point",
+        "x": "PI / (2 * n)",
+        "y": "peak",
+        "tone": "danger",
+        "label": "最高点"
+       }
+      ],
+      "legend": [
+       {
+        "label": "方波",
+        "tone": "secondary"
+       },
+       {
+        "label": "最新加入的一项",
+        "tone": "warning"
+       },
+       {
+        "label": "前 N 项之和",
+        "tone": "accent"
+       }
+      ]
+     },
+     {
+      "kind": "grid",
+      "columns": 3,
+      "gap": 2,
+      "children": [
+       {
+        "kind": "grid-item",
+        "tone": "surface",
+        "children": [
+         {
+          "kind": "caption",
+          "text": "项数 N"
+         },
+         {
+          "kind": "title",
+          "size": "lg",
+          "text": "{n}"
+         }
+        ]
+       },
+       {
+        "kind": "grid-item",
+        "tone": "surface",
+        "children": [
+         {
+          "kind": "caption",
+          "text": "跳变旁最高点（方波是 1）"
+         },
+         {
+          "kind": "title",
+          "size": "lg",
+          "text": "{fmt(peak, 3)}"
+         }
+        ]
+       },
+       {
+        "kind": "grid-item",
+        "tone": "surface",
+        "children": [
+         {
+          "kind": "caption",
+          "text": "过冲（占跳变高度）"
+         },
+         {
+          "kind": "title",
+          "size": "lg",
+          "text": "{fmt(over, 1)}%"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "if",
+      "cond": "n >= 8",
+      "then": {
+       "kind": "animate",
+       "children": [
+        {
+         "kind": "text",
+         "text": "已经叠了 {n} 项，过冲还有 {fmt(over, 1)}%：再加项，尖角只是变窄、往跳变处挤，高度停在约 9%。这叫吉布斯现象。",
+         "tone": "success",
+         "weight": "bold"
+        }
+       ]
+      },
+      "else": {
+       "kind": "text",
+       "text": "按 ▶ 播放：平的部分越来越平——盯住跳变旁的尖角，看它会不会消失。",
+       "tone": "secondary"
+      }
+     },
+     {
+      "kind": "divider"
+     },
+     {
+      "kind": "quiz",
+      "id": "gibbs",
+      "layout": "paged",
+      "title": "想一想",
+      "questions": [
+       {
+        "q": "N 足够大时，跳变旁的过冲会消失。",
+        "type": "tf",
+        "options": [
+         "对",
+         "错"
+        ],
+        "correct": 1,
+        "why": "过冲一直约是跳变高度的 9%，只是越来越窄。",
+        "feedback": [
+         "平的部分确实越来越准，但尖角的高度不降。",
+         "对：尖角变窄，高度停在约 9%。"
+        ],
+        "hint": "播放到 15 项，看第三个读数怎么变。",
+        "cell": "c1.interpret"
+       },
+       {
+        "q": "N 从 3 加到 4，新加进来的是几倍频的正弦？",
+        "options": [
+         "4 倍频",
+         "7 倍频",
+         "8 倍频"
+        ],
+        "correct": 1,
+        "why": "方波只含奇次谐波：第 N 项是 2N − 1 倍频。",
+        "feedback": [
+         "方波里没有偶数倍频。",
+         "对：2 × 4 − 1 = 7。",
+         "8 是偶数，方波里没有。"
+        ],
+        "cell": "c1.interpret"
+       }
+      ]
+     },
+     {
+      "kind": "reveal",
+      "mode": "after",
+      "after": "gibbs",
+      "children": [
+       {
+        "kind": "text",
+        "text": "延伸：尖角宽度大约和 1/N 成正比，所以整体误差（均方误差）趋于 0，但最大误差不趋于 0——「平均意义上收敛」和「每一点都收敛」不是一回事。"
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "方波 = 4/π (sin x + sin 3x / 3 + sin 5x / 5 + …)，只含奇次谐波。项数越多，平的部分越平；但跳变旁总有一个尖角，高出跳变高度的约 9%（N = 1 时约 13.7%，N = 15 时约 9%），只会变窄不会变矮，这叫吉布斯现象。"
+  },
+  "group": "player"
+ },
+ {
+  "name": "多参数 + 大号结果",
+  "use": "几个参数一起决定一个结论（贝叶斯：患病率、灵敏度、特异度 → 阳性后真患病的概率）",
+  "block": {
+   "type": "evoui",
+   "title": "检测阳性，真的患病的可能有多大？",
+   "question": "「准确率 90%」的检测阳性了，为什么真患病的可能可能远低于 90%？",
+   "state": {
+    "prev": 1,
+    "sens": 90,
+    "spec": 91
+   },
+   "derived": {
+    "tp": "10000 * prev / 100 * sens / 100",
+    "fp": "10000 * (1 - prev / 100) * (1 - spec / 100)",
+    "post": "tp / (tp + fp)"
+   },
+   "body": {
+    "kind": "box",
+    "gap": 3,
+    "children": [
+     {
+      "kind": "grid",
+      "columns": 3,
+      "gap": 3,
+      "children": [
+       {
+        "kind": "grid-item",
+        "children": [
+         {
+          "kind": "row",
+          "justify": "between",
+          "children": [
+           {
+            "kind": "text",
+            "text": "患病率",
+            "weight": "bold"
+           },
+           {
+            "kind": "title",
+            "text": "{prev}%",
+            "size": "md"
+           }
+          ]
+         },
+         {
+          "kind": "slider",
+          "bind": "prev",
+          "min": 0.1,
+          "max": 20,
+          "step": 0.1,
+          "label": "人群里有多少人患病"
+         }
+        ]
+       },
+       {
+        "kind": "grid-item",
+        "children": [
+         {
+          "kind": "row",
+          "justify": "between",
+          "children": [
+           {
+            "kind": "text",
+            "text": "灵敏度",
+            "weight": "bold"
+           },
+           {
+            "kind": "title",
+            "text": "{sens}%",
+            "size": "md"
+           }
+          ]
+         },
+         {
+          "kind": "slider",
+          "bind": "sens",
+          "min": 50,
+          "max": 100,
+          "step": 1,
+          "label": "患病者里查出阳性的比例"
+         }
+        ]
+       },
+       {
+        "kind": "grid-item",
+        "children": [
+         {
+          "kind": "row",
+          "justify": "between",
+          "children": [
+           {
+            "kind": "text",
+            "text": "特异度",
+            "weight": "bold"
+           },
+           {
+            "kind": "title",
+            "text": "{spec}%",
+            "size": "md"
+           }
+          ]
+         },
+         {
+          "kind": "slider",
+          "bind": "spec",
+          "min": 50,
+          "max": 99.9,
+          "step": 0.1,
+          "label": "健康者里查出阴性的比例"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "divider"
+     },
+     {
+      "kind": "box",
+      "tone": "surface",
+      "gap": 1,
+      "children": [
+       {
+        "kind": "caption",
+        "text": "阳性的人里真患病的比例"
+       },
+       {
+        "kind": "title",
+        "text": "{fmt(post * 100, 1)}%",
+        "size": "2xl",
+        "tone": "accent"
+       },
+       {
+        "kind": "text",
+        "size": "sm",
+        "text": "1 万人里：真阳性 {fmt(tp, 0)} 人，假阳性 {fmt(fp, 0)} 人"
+       }
+      ]
+     },
+     {
+      "kind": "math",
+      "tex": "P(\\text{患病}\\mid +) = \\frac{P(+\\mid\\text{患病})P(\\text{患病})}{P(+)}",
+      "display": true
+     },
+     {
+      "kind": "if",
+      "cond": "post < 0.5",
+      "then": {
+       "kind": "text",
+       "tone": "warning",
+       "text": "患病的人太少，假阳性比真阳性还多：阳性也多半没病。把患病率调高看看。"
+      },
+      "else": {
+       "kind": "text",
+       "tone": "success",
+       "text": "患病率够高，阳性的人里多数真的患病。"
+      }
+     }
+    ]
+   },
+   "fallback": "患病率 1%、灵敏度 90%、特异度 91% 时，1 万人里约 90 个真阳性、891 个假阳性，阳性的人里只有约 9% 真患病。患病率越低，假阳性占比越大。"
+  },
+  "group": "chart"
+ },
+ {
+  "name": "计算器",
+  "use": "代入自己的数字算结果（复利、换算、贷款）",
+  "block": {
+   "type": "evoui",
+   "title": "复利计算器",
+   "question": "利率和年数怎样一起决定最后有多少钱？",
+   "state": {
+    "p": 10000,
+    "r": 4,
+    "n": 20
+   },
+   "derived": {
+    "fv": "p * (1 + r / 100) ** n",
+    "simple": "p * (1 + r / 100 * n)"
+   },
+   "body": {
+    "kind": "box",
+    "gap": 3,
+    "children": [
+     {
+      "kind": "grid",
+      "columns": 3,
+      "children": [
+       {
+        "kind": "input",
+        "bind": "p",
+        "min": 100,
+        "max": 10000000,
+        "step": 100,
+        "label": "本金（元）"
+       },
+       {
+        "kind": "input",
+        "bind": "r",
+        "min": 0,
+        "max": 30,
+        "step": 0.1,
+        "label": "年利率（%）"
+       },
+       {
+        "kind": "input",
+        "bind": "n",
+        "min": 1,
+        "max": 60,
+        "step": 1,
+        "label": "年数"
+       }
+      ]
+     },
+     {
+      "kind": "grid",
+      "columns": 3,
+      "children": [
+       {
+        "kind": "grid-item",
+        "tone": "surface",
+        "children": [
+         {
+          "kind": "caption",
+          "text": "本金"
+         },
+         {
+          "kind": "title",
+          "text": "{fmt(p, 0)}",
+          "size": "lg"
+         }
+        ]
+       },
+       {
+        "kind": "grid-item",
+        "tone": "surface",
+        "children": [
+         {
+          "kind": "caption",
+          "text": "总额"
+         },
+         {
+          "kind": "title",
+          "text": "{fmt(fv, 0)}",
+          "size": "lg",
+          "tone": "accent"
+         }
+        ]
+       },
+       {
+        "kind": "grid-item",
+        "tone": "surface",
+        "children": [
+         {
+          "kind": "caption",
+          "text": "收益"
+         },
+         {
+          "kind": "title",
+          "text": "{fmt(fv - p, 0)}",
+          "size": "lg",
+          "tone": "success"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "text",
+      "size": "sm",
+      "tone": "secondary",
+      "text": "同样条件按单利只有 {fmt(simple, 0)}：多出的 {fmt(fv - simple, 0)} 是「利息再生利息」。"
+     }
+    ]
+   },
+   "fallback": "复利总额 = 本金 × (1 + 年利率)^年数。1 万元、年利率 4%、20 年后约 21911 元，比单利的 18000 元多约 3911 元。",
+   "probes": [
+    {
+     "set": {
+      "r": 8
+     }
+    },
+    {
+     "set": {
+      "n": 40
+     }
+    },
+    {
+     "set": {
+      "p": 50000
+     }
+    }
+   ]
+  },
+  "group": "chart"
+ },
+ {
+  "name": "情景切换 + 时序图",
+  "use": "过程在不同情况下怎样变（TCP 握手正常 / 丢包、协议、流程）",
+  "block": {
+   "type": "evoui",
+   "title": "TCP 三次握手：丢一个包会怎样？",
+   "question": "为什么要三次握手，第二个包丢了会发生什么？",
+   "state": {
+    "mode": "ok"
+   },
+   "derived": {
+    "lost": "mode == 'lost'"
+   },
+   "body": {
+    "kind": "box",
+    "gap": 3,
+    "children": [
+     {
+      "kind": "choice",
+      "bind": "mode",
+      "options": [
+       {
+        "label": "正常",
+        "value": "ok"
+       },
+       {
+        "label": "SYN-ACK 丢失",
+        "value": "lost"
+       }
+      ]
+     },
+     {
+      "kind": "plot",
+      "xmin": 0,
+      "xmax": 10,
+      "ymin": 0,
+      "ymax": 10,
+      "height": 320,
+      "items": [
+       {
+        "shape": "text",
+        "x": 2,
+        "y": 9.5,
+        "text": "客户端",
+        "anchor": "middle",
+        "size": "md"
+       },
+       {
+        "shape": "text",
+        "x": 8,
+        "y": 9.5,
+        "text": "服务器",
+        "anchor": "middle",
+        "size": "md"
+       },
+       {
+        "shape": "segment",
+        "x1": 2,
+        "y1": 9,
+        "x2": 2,
+        "y2": 0.5,
+        "tone": "secondary",
+        "dashed": true
+       },
+       {
+        "shape": "segment",
+        "x1": 8,
+        "y1": 9,
+        "x2": 8,
+        "y2": 0.5,
+        "tone": "secondary",
+        "dashed": true
+       },
+       {
+        "shape": "arrow",
+        "x1": 2,
+        "y1": 8,
+        "x2": 8,
+        "y2": 7,
+        "tone": "accent"
+       },
+       {
+        "shape": "text",
+        "x": 5,
+        "y": 7.9,
+        "text": "① SYN",
+        "anchor": "middle"
+       },
+       {
+        "shape": "arrow",
+        "x1": 8,
+        "y1": 6,
+        "x2": "lost ? 5 : 2",
+        "y2": "lost ? 5.5 : 5",
+        "tone": "warning"
+       },
+       {
+        "shape": "text",
+        "x": 5,
+        "y": 6.2,
+        "text": "{lost ? '② SYN-ACK ✕ 丢了' : '② SYN-ACK'}",
+        "anchor": "middle"
+       },
+       {
+        "shape": "arrow",
+        "x1": 2,
+        "y1": 4,
+        "x2": 8,
+        "y2": 3,
+        "tone": "accent"
+       },
+       {
+        "shape": "text",
+        "x": 5,
+        "y": 3.9,
+        "text": "{lost ? '① 超时重发 SYN' : '③ ACK'}",
+        "anchor": "middle"
+       }
+      ]
+     },
+     {
+      "kind": "if",
+      "cond": "lost",
+      "then": {
+       "kind": "text",
+       "tone": "warning",
+       "text": "客户端等不到 SYN-ACK，超时后重发 SYN；服务器也会重发 SYN-ACK。连接晚一点建立，但不会建错。"
+      },
+      "else": {
+       "kind": "text",
+       "tone": "success",
+       "text": "三个包都到了：双方都确认了「我能发、你能收」，连接建立。"
+      }
+     }
+    ]
+   },
+   "fallback": "三次握手：客户端发 SYN，服务器回 SYN-ACK，客户端再回 ACK。若 SYN-ACK 丢失，客户端超时重发 SYN、服务器重发 SYN-ACK，连接延迟建立但不会出错。"
+  },
+  "group": "chart"
+ },
+ {
+  "name": "阶段链",
+  "use": "一步引出下一步的因果链或过程（历史进程、光合作用、因果链）",
+  "block": {
+   "type": "evoui",
+   "title": "光合作用：光能怎样变成糖？",
+   "question": "光反应和暗反应各做什么，它们靠什么连在一起？",
+   "state": {
+    "step": 0
+   },
+   "derived": {
+    "why": "['叶绿素吸收光，能量把水分解成氧气、氢离子和电子。', '电子沿着传递链流动，造出 ATP 和 NADPH——两种「充好电的电池」。', '卡尔文循环用 ATP 和 NADPH 的能量，把 CO₂ 一步步装配成糖。'][step]"
+   },
+   "body": {
+    "kind": "box",
+    "gap": 2,
+    "children": [
+     {
+      "kind": "box",
+      "tone": "surface",
+      "gap": 0,
+      "children": [
+       {
+        "kind": "text",
+        "text": "① 吸光、分解水",
+        "weight": "bold"
+       },
+       {
+        "kind": "text",
+        "text": "类囊体膜上，产生 O₂",
+        "size": "sm",
+        "tone": "secondary"
+       }
+      ]
+     },
+     {
+      "kind": "row",
+      "justify": "center",
+      "children": [
+       {
+        "kind": "icon",
+        "name": "arrow-down"
+       }
+      ]
+     },
+     {
+      "kind": "box",
+      "tone": "surface",
+      "gap": 0,
+      "children": [
+       {
+        "kind": "text",
+        "text": "② 造 ATP 和 NADPH",
+        "weight": "bold"
+       },
+       {
+        "kind": "text",
+        "text": "光反应的产物，送去下一步",
+        "size": "sm",
+        "tone": "secondary"
+       }
+      ]
+     },
+     {
+      "kind": "row",
+      "justify": "center",
+      "children": [
+       {
+        "kind": "icon",
+        "name": "arrow-down"
+       }
+      ]
+     },
+     {
+      "kind": "box",
+      "tone": "surface",
+      "gap": 0,
+      "children": [
+       {
+        "kind": "text",
+        "text": "③ 卡尔文循环固定 CO₂",
+        "weight": "bold"
+       },
+       {
+        "kind": "text",
+        "text": "叶绿体基质里，产出糖",
+        "size": "sm",
+        "tone": "secondary"
+       }
+      ]
+     },
+     {
+      "kind": "divider"
+     },
+     {
+      "kind": "choice",
+      "bind": "step",
+      "options": [
+       {
+        "label": "看 ①",
+        "value": 0
+       },
+       {
+        "label": "看 ②",
+        "value": 1
+       },
+       {
+        "label": "看 ③",
+        "value": 2
+       }
+      ]
+     },
+     {
+      "kind": "text",
+      "text": "{why}"
+     }
+    ]
+   },
+   "fallback": "光合作用分两段：光反应在类囊体膜上吸光、分解水（放出 O₂），造出 ATP 和 NADPH；暗反应（卡尔文循环）在基质里用这两者的能量把 CO₂ 装配成糖。"
+  },
+  "group": "timeline"
+ },
+ {
+  "name": "练习翻页",
+  "use": "一组 3–8 个小练习一页一页做（关键词填空、公式拼装、判断）：做完一页才翻下一页，完成后揭开小结",
+  "block": {
+   "type": "evoui",
+   "title": "导数的定义：练三步",
+   "question": "会背导数的定义，不等于会写、会用：这几页练写出定义、用定义算一个数。",
+   "state": {},
+   "derived": {},
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "caption",
+      "text": "一页一题，做完这一页才能往后翻；答错可以看解释再试一次。"
+     },
+     {
+      "kind": "pager",
+      "id": "drill",
+      "gate": true,
+      "children": [
+       {
+        "kind": "box",
+        "children": [
+         {
+          "kind": "text",
+          "text": "先填一个空：",
+          "tone": "secondary"
+         },
+         {
+          "kind": "fill-blank",
+          "id": "word",
+          "cell": "c1.interpret",
+          "sentence": "导数 f′(a) 是函数在 x = a 处的 ___ 变化率。",
+          "options": [
+           {
+            "label": "瞬时",
+            "why": "对：h → 0 时割线斜率的极限，就是这一瞬间的变化率。"
+           },
+           {
+            "label": "平均",
+            "why": "平均变化率是割线斜率，h 还没有取极限。"
+           },
+           {
+            "label": "最大",
+            "why": "导数说的是变化有多快，不是最大值。"
+           },
+           {
+            "label": "总",
+            "why": "总的变化是 f(b) − f(a)，不是变化率。"
+           }
+          ],
+          "correct": 0,
+          "why": "割线斜率 (f(a + h) − f(a)) / h 在 h → 0 时的极限，叫导数，也就是瞬时变化率。"
+         }
+        ]
+       },
+       {
+        "kind": "box",
+        "children": [
+         {
+          "kind": "text",
+          "text": "把定义拼完整：",
+          "tone": "secondary"
+         },
+         {
+          "kind": "sentence",
+          "id": "formula",
+          "cell": "c1.interpret",
+          "sentence": "f′(a) = lim(h → 0) (___ − ___) ÷ ___",
+          "words": [
+           "f(a + h)",
+           "f(a)",
+           "h",
+           "a",
+           "f(h)"
+          ],
+          "answer": [
+           0,
+           1,
+           2
+          ],
+          "why": "先算从 a 走到 a + h 时函数变了多少，再除以走了多远 h。"
+         }
+        ]
+       },
+       {
+        "kind": "box",
+        "children": [
+         {
+          "kind": "text",
+          "text": "用定义算一个数：",
+          "tone": "secondary"
+         },
+         {
+          "kind": "fill-blank",
+          "id": "calc",
+          "cell": "c1.apply",
+          "sentence": "f(x) = x² 在 x = 3 处的导数是 ___。",
+          "options": [
+           {
+            "label": "6",
+            "why": "对：((3 + h)² − 9) / h = 6 + h，h → 0 得 6。"
+           },
+           {
+            "label": "9",
+            "why": "9 是函数值 f(3)，不是变化率。"
+           },
+           {
+            "label": "3",
+            "why": "把 x 当成了导数；x² 的导数是 2x。"
+           },
+           {
+            "label": "2x",
+            "why": "2x 是导函数，要代入 x = 3。"
+           }
+          ],
+          "correct": 0,
+          "why": "(f(3 + h) − f(3)) / h = (6h + h²) / h = 6 + h，h → 0 时是 6。"
+         }
+        ]
+       },
+       {
+        "kind": "quiz",
+        "id": "check",
+        "layout": "paged",
+        "questions": [
+         {
+          "q": "h = 0.001 时，割线斜率 (f(a + h) − f(a)) / h 就等于 f′(a)。",
+          "type": "tf",
+          "options": [
+           "对",
+           "错"
+          ],
+          "correct": 1,
+          "why": "h 再小也只是近似：x² 在 3 处 h = 0.001 时是 6.001，导数要取极限才是 6。",
+          "feedback": [
+           "很接近，但不相等。",
+           "对：导数是极限，不是某个很小的 h 的值。"
+          ],
+          "cell": "c1.interpret"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "reveal",
+      "mode": "after",
+      "after": "drill",
+      "children": [
+       {
+        "kind": "text",
+        "text": "小结：导数 = 割线斜率在 h → 0 时的极限。会写定义、会用定义把一个具体的数算出来，这一节就过关了。",
+        "weight": "bold"
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "导数的定义：f′(a) = lim(h → 0) (f(a + h) − f(a)) ÷ h，是 x = a 处的瞬时变化率。例：f(x) = x² 在 x = 3 处，(f(3 + h) − f(3)) / h = 6 + h，h → 0 得 6；h = 0.001 时是 6.001，只是近似。"
+  },
+  "group": "practice"
+ },
+ {
+  "name": "限时练习",
+  "use": "熟练度练习（口算、换算、认读）：倒计时 + 一组分页题，读数随时间变，时间到也做完再看错题",
+  "block": {
+   "type": "evoui",
+   "title": "二进制 → 十进制：90 秒 5 题",
+   "question": "会算二进制和算得快是两回事：限时做几题，看自己卡在哪一位。",
+   "state": {
+    "secs": 0
+   },
+   "derived": {},
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "row",
+      "justify": "between",
+      "wrap": true,
+      "children": [
+       {
+        "kind": "caption",
+        "text": "目标：90 秒内做完 5 题。先求准，再求快；按开始计时。"
+       },
+       {
+        "kind": "badge",
+        "tone": "secondary",
+        "text": "{secs < 90 ? '已用 ' + secs + ' 秒' : '时间到'}"
+       }
+      ]
+     },
+     {
+      "kind": "timer",
+      "id": "clock",
+      "mode": "countdown",
+      "seconds": 90,
+      "bind": "secs",
+      "label": "限时 90 秒"
+     },
+     {
+      "kind": "quiz",
+      "id": "bin",
+      "layout": "paged",
+      "title": "二进制 → 十进制",
+      "questions": [
+       {
+        "q": "1011₂ = ?",
+        "options": [
+         "11",
+         "13",
+         "9",
+         "1011"
+        ],
+        "correct": 0,
+        "why": "从右往左每一位代表 1、2、4、8、16：1011₂ = 11。",
+        "feedback": [
+         "对：8 + 2 + 1。",
+         "13 是 1101：位的顺序反了。",
+         "9 是 1001：漏了 2 那一位。",
+         "这是二进制原样，要换成十进制。"
+        ],
+        "hint": "从右往左每一位代表 1、2、4、8……把是 1 的位加起来。",
+        "cell": "c1.apply"
+       },
+       {
+        "q": "1101₂ = ?",
+        "options": [
+         "13",
+         "14",
+         "7",
+         "11"
+        ],
+        "correct": 0,
+        "why": "从右往左每一位代表 1、2、4、8、16：1101₂ = 13。",
+        "feedback": [
+         "对：8 + 4 + 1。",
+         "14 是 1110：最右一位是 1，所以是奇数。",
+         "7 是 111，只有三位。",
+         "11 是 1011。"
+        ],
+        "cell": "c1.apply"
+       },
+       {
+        "q": "10000₂ = ?",
+        "options": [
+         "10000",
+         "8",
+         "16",
+         "32"
+        ],
+        "correct": 2,
+        "why": "从右往左每一位代表 1、2、4、8、16：10000₂ = 16。",
+        "feedback": [
+         "这是二进制原样。",
+         "8 是 1000，四位。",
+         "对：第五位代表 16。",
+         "32 要六位：100000。"
+        ],
+        "cell": "c1.apply"
+       },
+       {
+        "q": "111₂ = ?",
+        "options": [
+         "3",
+         "7",
+         "6",
+         "111"
+        ],
+        "correct": 1,
+        "why": "从右往左每一位代表 1、2、4、8、16：111₂ = 7。",
+        "feedback": [
+         "3 是 11，两位。",
+         "对：4 + 2 + 1。",
+         "6 是 110：最右一位是 1，所以是奇数。",
+         "这是二进制原样。"
+        ],
+        "cell": "c1.apply"
+       },
+       {
+        "q": "10101₂ = ?",
+        "options": [
+         "21",
+         "42",
+         "19",
+         "11"
+        ],
+        "correct": 0,
+        "why": "从右往左每一位代表 1、2、4、8、16：10101₂ = 21。",
+        "feedback": [
+         "对：16 + 4 + 1。",
+         "42 是 101010，多了一位。",
+         "19 是 10011。",
+         "11 是 1011。"
+        ],
+        "cell": "c1.apply"
+       }
+      ]
+     },
+     {
+      "kind": "if",
+      "cond": "secs >= 90",
+      "then": {
+       "kind": "text",
+       "text": "时间到：没做完也没关系，接着做完，再看结果页里错的是哪一位。",
+       "tone": "warning"
+      },
+      "else": null
+     }
+    ]
+   },
+   "fallback": "二进制换十进制：从右往左每一位代表 1、2、4、8、16……，把是 1 的位加起来。1011₂ = 8 + 2 + 1 = 11，1101₂ = 13，10000₂ = 16，111₂ = 7，10101₂ = 21。最右一位是 1 的一定是奇数。"
+  },
+  "group": "reveal"
+ },
+ {
+  "name": "选择学习方式",
+  "use": "让学习者选接下来怎么学（一步步引导 / 直接讲解 / 先看图 / 考考我）：选项就是下一轮请求，选择记成教学偏好",
+  "block": {
+   "type": "evoui",
+   "title": "阳性结果意味着什么：你想怎么学？",
+   "question": "检测准确率 99%、阳性了，真患病的可能有多大？先选一种适合你的学法。",
+   "state": {
+    "mode": ""
+   },
+   "derived": {},
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "route",
+      "id": "how",
+      "prompt": "这一节想怎么学？",
+      "preference": "teaching_mode",
+      "bind": "mode",
+      "options": [
+       {
+        "label": "一步步引导",
+        "value": "guided",
+        "desc": "每一步先问你，再给提示",
+        "next": "请一步一步引导我理解：检测阳性后真患病的概率怎么算，每一步先问我一个问题，等我回答再继续。"
+       },
+       {
+        "label": "直接看讲解",
+        "value": "explain",
+        "desc": "一口气讲清楚，再做一道题",
+        "next": "请直接完整讲解阳性后真患病的概率怎么算（贝叶斯公式），最后给我一道练习。"
+       },
+       {
+        "label": "先看图",
+        "value": "picture",
+        "desc": "用 1 万人的分布图讲",
+        "next": "请先用 1 万人的自然频数图讲给我看阳性的人里有多少真患病，再讲公式。"
+       },
+       {
+        "label": "考考我",
+        "value": "quiz",
+        "desc": "先做题，错了再讲",
+        "next": "请先出两道阳性后真患病概率的题考我，我答错了再讲。"
+       }
+      ]
+     },
+     {
+      "kind": "if",
+      "cond": "mode == ''",
+      "then": {
+       "kind": "caption",
+       "text": "选一种方式，下一轮就按它来；随时可以改选。"
+      },
+      "else": {
+       "kind": "transition",
+       "key": "mode",
+       "children": [
+        {
+         "kind": "box",
+         "tone": "surface",
+         "border": true,
+         "gap": 1,
+         "children": [
+          {
+           "kind": "caption",
+           "text": "{mode == 'guided' ? '一步步引导' : mode == 'explain' ? '直接看讲解' : mode == 'picture' ? '先看图' : '考考我'} · 先热个身"
+          },
+          {
+           "kind": "text",
+           "text": "{mode == 'guided' ? '第一个问题：1 万人里患病率 1%，大约有多少人真的患病？' : mode == 'explain' ? '要点：阳性的人里既有真患病的，也有被误报的健康人；患病的人很少时，误报会占多数。' : mode == 'picture' ? '1 万人 → 患病 100 人（阳性 99）；健康 9900 人（误报阳性 99）：阳性的 198 人里只有一半真患病。' : '先想：准确率 99%、患病率 1%，阳性后真患病的概率更接近 99%、50% 还是 1%？'}"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "fallback": "阳性后真患病的概率取决于患病率：患病率 1%、检测灵敏度和特异度都是 99% 时，1 万人里 100 人患病（99 人阳性），9900 名健康人里 99 人被误报阳性，阳性的 198 人里只有一半真患病，所以约 50%，不是 99%。"
+  },
+  "group": "practice"
+ },
+ {
+  "name": "面积图 + 悬停读数",
+  "use": "总量由几部分组成、随时间怎么变（本金和利息、各渠道占比）：堆叠面积图，悬停哪一年，上面的大号数字和说明就换成哪一年",
+  "block": {
+   "type": "evoui",
+   "title": "复利：利息什么时候超过本金？",
+   "question": "复利「越滚越快」到底快在哪？利息从哪一年开始比本金还多？",
+   "state": {
+    "r": 5,
+    "h": -1
+   },
+   "derived": {
+    "d": "map(range(31), t => {t: t, p: 10000, i: round(10000 * (pow(1 + r / 100, t) - 1))})",
+    "k": "h < 0 ? 30 : h",
+    "dbl": "ceil(log(2) / log(1 + r / 100))"
+   },
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "slider",
+      "bind": "r",
+      "min": 3,
+      "max": 12,
+      "step": 0.5,
+      "label": "年利率 {fmt(r, 1)}%（本金 1 万元，每年利滚利）"
+     },
+     {
+      "kind": "row",
+      "justify": "between",
+      "wrap": true,
+      "children": [
+       {
+        "kind": "box",
+        "children": [
+         {
+          "kind": "caption",
+          "text": "{h < 0 ? '第 30 年（把鼠标移到图上看每一年）' : '第 ' + d[k].t + ' 年'}"
+         },
+         {
+          "kind": "title",
+          "size": "xl",
+          "text": "{fmt(d[k].p + d[k].i, 0)} 元"
+         }
+        ],
+        "gap": 0
+       },
+       {
+        "kind": "badge",
+        "tone": "accent",
+        "text": "{d[k].i > d[k].p ? '利息已超过本金' : '本金仍占多数'}"
+       }
+      ]
+     },
+     {
+      "kind": "text",
+      "text": "其中本金 10000 元，利息 {fmt(d[k].i, 0)} 元（占 {fmt(d[k].i / (d[k].p + d[k].i) * 100, 0)}%）",
+      "size": "sm",
+      "tone": "secondary"
+     },
+     {
+      "kind": "chart",
+      "chart": "area",
+      "stack": true,
+      "gradient": true,
+      "curve": "smooth",
+      "hover": "h",
+      "data": "d",
+      "x": "t",
+      "series": [
+       {
+        "key": "p",
+        "label": "本金"
+       },
+       {
+        "key": "i",
+        "label": "利息"
+       }
+      ],
+      "x_label": "年",
+      "y_label": "元",
+      "annotations": [
+       {
+        "x": "dbl",
+        "label": "第 {dbl} 年利息追上本金",
+        "tone": "warning"
+       }
+      ]
+     },
+     {
+      "kind": "text",
+      "text": "利率 {fmt(r, 1)}% 时，第 {dbl} 年起利息超过本金；之后每年新增的利息越来越多——这就是复利「越滚越快」。",
+      "weight": "bold"
+     }
+    ]
+   },
+   "fallback": "本金 1 万元、年利率 5% 利滚利：第 15 年总额约 2.08 万，利息开始超过本金；第 30 年约 4.32 万，利息约 3.32 万，占 77%。利率 10% 时第 8 年利息就超过本金。粗算翻倍年数 ≈ 72 ÷ 利率。"
+  },
+  "group": "chart"
+ },
+ {
+  "name": "时间线",
+  "use": "顺序本身就是要记的：历史事件、发展阶段、一个过程的几个环节；关键的一项用 accent",
+  "block": {
+   "type": "evoui",
+   "title": "从经典力学到相对论：几个关键年份",
+   "question": "相对论是在什么背景下、按什么顺序提出来的？",
+   "state": {},
+   "derived": {},
+   "body": {
+    "kind": "box",
+    "gap": 3,
+    "children": [
+     {
+      "kind": "caption",
+      "text": "从上往下按时间读；标了颜色的是转折和这一页要讲的那一步。"
+     },
+     {
+      "kind": "timeline",
+      "events": [
+       {
+        "when": "1687",
+        "title": "牛顿《原理》",
+        "text": "时间和空间对所有人都一样（绝对时空）。"
+       },
+       {
+        "when": "1865",
+        "title": "麦克斯韦方程组",
+        "text": "算出电磁波的速度，正好是光速。"
+       },
+       {
+        "when": "1887",
+        "title": "迈克耳孙–莫雷实验",
+        "text": "没测到地球相对「以太」的运动。",
+        "tone": "warning"
+       },
+       {
+        "when": "1905",
+        "title": "狭义相对论",
+        "text": "光速对所有惯性观察者都一样；时间和长度随运动变化。",
+        "tone": "accent"
+       },
+       {
+        "when": "1915",
+        "title": "广义相对论",
+        "text": "引力是时空的弯曲。"
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "1687 年牛顿提出绝对时空；1865 年麦克斯韦算出电磁波速度等于光速；1887 年迈克耳孙–莫雷实验没测到以太；1905 年爱因斯坦提出狭义相对论（光速不变，时间和长度随运动变化）；1915 年提出广义相对论（引力是时空弯曲）。"
+  },
+  "group": "timeline"
+ },
+ {
+  "name": "深入一点",
+  "use": "正文略过、但有人想知道的推导、例外或来龙去脉，折叠起来让读者自己点开；必须读的内容不要放进去",
+  "block": {
+   "type": "evoui",
+   "title": "为什么抛硬币正面的概率是 1/2？",
+   "question": "「1/2」是怎么来的、在什么条件下才成立？",
+   "state": {},
+   "derived": {},
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "deep-dive",
+      "label": "深入一点：1/2 什么时候不成立",
+      "children": [
+       {
+        "kind": "text",
+        "text": "1/2 来自两个假设：只有正、反两种结果，而且两种一样可能。"
+       },
+       {
+        "kind": "text",
+        "text": "P(正) = 正面的结果数 ÷ 所有等可能的结果数 = 1 ÷ 2。",
+        "weight": "bold"
+       },
+       {
+        "kind": "text",
+        "text": "真实的硬币两面花纹不同，重心略偏；有人实测过 35 万次，抛出时朝上的那面落地仍朝上的比例约 51%。所以 1/2 是理想模型，不是定律。"
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "1/2 来自两个假设：只有正、反两种结果，且一样可能。真实硬币略有偏差：实测抛出时朝上的那面落地仍朝上约占 51%，所以 1/2 是理想模型。"
+  },
+  "group": "timeline"
+ },
+ {
+  "name": "小程序（第四层）",
+  "use": "只在积木做不到时用：连续的画布动画、3D、物理模拟、像游戏的练习。沙盒里的 HTML，必须调用 evowiki.ready()，作答用 evowiki.item 回报，块要有完整的 fallback",
+  "block": {
+   "type": "evoui",
+   "title": "驻波：两列波叠出不动的点",
+   "question": "两列反向传播的波叠在一起，为什么有些点永远不动？光看静态图看不出「一直在动却有点不动」。",
+   "state": {},
+   "derived": {},
+   "body": {
+    "kind": "box",
+    "children": [
+     {
+      "kind": "text",
+      "text": "两列振幅相同、方向相反的波（虚线）叠在一起成了实线。看动画：实线只上下摆，不往前走，红点那几处始终不动。",
+      "tone": "secondary",
+      "size": "sm"
+     },
+     {
+      "kind": "app",
+      "id": "wave",
+      "height": 380,
+      "html": "<style>\nbody{margin:0;color:var(--text,#222);font:14px/1.5 system-ui,-apple-system,\"Segoe UI\",\"PingFang SC\",\"Microsoft YaHei\",sans-serif}\n*{box-sizing:border-box}\ncanvas{display:block;width:100%;height:180px;border-radius:12px;background:var(--surface,#f5f5f7)}\n.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}\nbutton{font:inherit;color:inherit;background:var(--bg,#fff);border:1px solid var(--line,#e3e3e3);border-radius:10px;padding:6px 12px;cursor:pointer}\n.ok{border-color:var(--known,#2f9e5b)}.no{border-color:var(--gap,#d9483b)}\n.mute{color:var(--text-2,#5c5c5c)}\n</style>\n<canvas id=\"cv\" aria-label=\"两列反向传播的波和它们的叠加\"></canvas>\n<div class=\"bar\"><button id=\"play\">暂停</button><button id=\"parts\">隐藏两列分波</button><span class=\"mute\" id=\"tm\">t = 0.00</span></div>\n<p style=\"margin:8px 0 6px;font-weight:600\">图上红点那几处始终不动（波节）。每列分波的振幅是 A，波节处叠加后的振幅是多少？</p>\n<div class=\"bar\" id=\"opts\"><button data-v=\"0\">0</button><button data-v=\"A\">A</button><button data-v=\"2A\">2A</button></div>\n<div class=\"mute\" id=\"fb\"></div>\n<script>\n(function () {\n  var cv = document.getElementById(\"cv\"), g = cv.getContext(\"2d\"), play = document.getElementById(\"play\"), partsBtn = document.getElementById(\"parts\");\n  var calm = matchMedia(\"(prefers-reduced-motion: reduce)\").matches, t = 0, playing = !calm, parts = true, raf = 0, last = 0, shown = Date.now();\n  function col(n, d) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || d; }\n  function draw() {\n    var w = cv.clientWidth, h = cv.clientHeight, r = window.devicePixelRatio || 1;\n    if (cv.width !== Math.round(w * r)) { cv.width = Math.round(w * r); cv.height = Math.round(h * r); }\n    g.setTransform(r, 0, 0, r, 0, 0); g.clearRect(0, 0, w, h);\n    var mid = h / 2, amp = h * 0.2, k = 4 * Math.PI / w;\n    function curve(f, c, lw, dash) { g.beginPath(); for (var x = 0; x <= w; x += 2) { var y = mid - f(x) * amp; if (x) g.lineTo(x, y); else g.moveTo(x, y); } g.strokeStyle = c; g.lineWidth = lw; g.setLineDash(dash); g.stroke(); }\n    if (parts) { curve(function (x) { return Math.sin(k * x - 2 * t); }, col(\"--viz-1\", \"#2f6fdf\"), 1.5, [5, 4]); curve(function (x) { return Math.sin(k * x + 2 * t); }, col(\"--viz-2\", \"#e07b2a\"), 1.5, [5, 4]); }\n    curve(function (x) { return Math.sin(k * x - 2 * t) + Math.sin(k * x + 2 * t); }, col(\"--text\", \"#222\"), 2.5, []);\n    g.fillStyle = col(\"--gap\", \"#d9483b\");\n    for (var n = 0; n * Math.PI / k <= w + 1; n++) { g.beginPath(); g.arc(Math.min(n * Math.PI / k, w - 4), mid, 4, 0, 2 * Math.PI); g.fill(); }\n    document.getElementById(\"tm\").textContent = \"t = \" + t.toFixed(2);\n  }\n  function tick(now) { if (!playing) return; if (last) t += Math.min(0.05, (now - last) / 1000); last = now; draw(); raf = requestAnimationFrame(tick); }\n  function setPlaying(p) { playing = p; last = 0; play.textContent = p ? \"暂停\" : \"播放\"; if (p) raf = requestAnimationFrame(tick); else cancelAnimationFrame(raf); }\n  play.onclick = function () { if (calm) { t += 0.25; draw(); } else setPlaying(!playing); };\n  if (calm) play.textContent = \"下一帧\";\n  partsBtn.onclick = function () { parts = !parts; partsBtn.textContent = parts ? \"隐藏两列分波\" : \"显示两列分波\"; draw(); };\n  function answer(v, report) {\n    var right = v === \"0\";\n    [].forEach.call(document.querySelectorAll(\"#opts button\"), function (b) { b.className = b.dataset.v === v ? (right ? \"ok\" : \"no\") : \"\"; });\n    document.getElementById(\"fb\").textContent = right ? \"对：两列波在波节处总是一正一负、大小相等，叠加后始终是 0。\" : \"不对：盯住红点看——两列分波在那里总是大小相等、方向相反，加起来是 0；振幅 2A 出现在两个波节正中间（波腹）。\";\n    if (report) { evowiki.item(\"node\", v, right, false, Date.now() - shown); evowiki.save({ answer: v }); }\n    evowiki.resize();\n  }\n  [].forEach.call(document.querySelectorAll(\"#opts button\"), function (b) { b.onclick = function () { answer(b.dataset.v, true); }; });\n  evowiki.onInit(function (p) { if (p && typeof p.answer === \"string\") answer(p.answer, false); });\n  addEventListener(\"evowiki:theme\", draw);\n  addEventListener(\"resize\", draw);\n  draw();\n  if (playing) raf = requestAnimationFrame(tick);\n  evowiki.ready();\n  evowiki.resize();\n})();\n</script>",
+      "items": [
+       {
+        "id": "node",
+        "label": "波节处叠加后的振幅",
+        "cell": "c1.interpret"
+       }
+      ]
+     }
+    ]
+   },
+   "fallback": "两列振幅为 A、频率相同、方向相反的波叠加：y = 2A sin(kx) cos(ωt)。sin(kx) = 0 的点（波节，相隔半个波长）永远不动、振幅为 0；两个波节正中间（波腹）振幅最大，为 2A。整条波只上下摆动，不向前传播，所以叫驻波。"
+  },
+  "group": "app"
+ }
+]

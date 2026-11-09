@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><!--ew-t:%22%E9%85%8D%E5%AF%B9%E7%BB%83%E4%B9%A0%22-->配对练习</title>
+<style>
+:root{
+  --bg:#f7f5f0; --panel:#ffffff; --text:#1f2933; --muted:#6b7280;
+  --accent:#2563eb; --good:#15803d; --bad:#b91c1c; --line:#d1d5db; --sel:#dbeafe;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#111827; --panel:#1f2937; --text:#f3f4f6; --muted:#9ca3af;
+    --accent:#60a5fa; --good:#4ade80; --bad:#f87171; --line:#374151; --sel:#1e3a8a;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+.wrap{max-width:375px; margin:0 auto; padding:12px;}
+h2{font-size:16px; margin:0 0 8px;}
+.hint{font-size:13px; color:var(--muted); margin:0 0 10px;}
+.strand{display:flex; align-items:flex-start; gap:6px; margin:8px 0;}
+.box{width:34px; height:34px; display:flex; align-items:center; justify-content:center; border:2px solid var(--line); border-radius:8px; font-weight:700; font-size:15px; background:var(--panel); flex:0 0 auto;}
+.label{width:34px; height:34px; text-align:center; font-size:11px; color:var(--muted); display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
+.group{flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:4px; align-items:center;}
+.group-title{width:100%; text-align:center; font-size:10px; color:var(--muted); line-height:1.3; margin-bottom:2px;}
+.opts{display:flex; flex-direction:column; gap:4px; align-items:center;}
+.opt{width:34px; height:28px; border:1.5px solid var(--line); background:var(--panel); color:var(--text); border-radius:7px; font-size:13px; cursor:pointer; padding:0; font-weight:600;}
+.opt[aria-pressed="true"]{background:var(--sel); border-color:var(--accent); font-weight:700; outline:2px solid var(--accent); outline-offset:1px;}
+.result{margin-top:12px; padding:10px; border:1.5px solid var(--line); border-radius:10px; background:var(--panel); min-height:86px; font-size:14px; line-height:1.7;}
+.result .ok{color:var(--good); font-weight:700;}
+.result .bad{color:var(--bad); font-weight:700;}
+.reset{margin-top:8px; padding:8px 12px; border:1.5px solid var(--line); background:var(--panel); color:var(--text); border-radius:8px; cursor:pointer; font-size:13px;}
+</style>
+<script data-evowiki-locale="pairing-practice"></script>
+</head>
+<body>
+<div class="wrap">
+  <h2><!--ew-t:%22%E6%A8%A1%E6%9D%BF%E9%93%BE%EF%BC%9A5%E2%80%B2%20A%20T%20G%20C%203%E2%80%B2%22-->模板链：5′ A T G C 3′</h2>
+  <p class="hint"><!--ew-t:%22%E5%9C%A8%E5%9B%9B%E4%B8%AA%E4%BD%8D%E7%BD%AE%E5%90%84%E7%82%B9%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AF%8D%EF%BC%8C%E7%BB%84%E6%88%90%E5%AF%B9%E9%9D%A2%E7%9A%84%E4%BA%92%E8%A1%A5%E9%93%BE%E3%80%82%E9%80%89%E9%94%99%E6%B2%A1%E5%85%B3%E7%B3%BB%EF%BC%8C%E7%9C%8B%E7%BB%93%E6%9E%9C%E5%8C%BA%E7%9A%84%E6%8F%90%E7%A4%BA%E5%86%8D%E6%94%B9%E3%80%82%22-->在四个位置各点一个字母，组成对面的互补链。选错没关系，看结果区的提示再改。</p>
+  <div class="strand">
+    <span class="label">5′</span>
+    <div class="box">A</div><div class="box">T</div><div class="box">G</div><div class="box">C</div>
+    <span class="label">3′</span>
+  </div>
+  <div class="strand">
+    <span class="label">3′</span>
+    <div class="group" id="pos0">
+      <span class="group-title"><!--ew-t:%22%E7%AC%AC1%E4%BD%8D%22-->第1位<br><!--ew-t:%22A%20%E9%85%8D%20%3F%22-->A 配 ?</span>
+      <div class="opts">
+        <button class="opt opt-A" data-letter="A" aria-pressed="false">A</button>
+        <button class="opt opt-T" data-letter="T" aria-pressed="false">T</button>
+        <button class="opt opt-C" data-letter="C" aria-pressed="false">C</button>
+        <button class="opt opt-G" data-letter="G" aria-pressed="false">G</button>
+      </div>
+    </div>
+    <div class="group" id="pos1">
+      <span class="group-title"><!--ew-t:%22%E7%AC%AC2%E4%BD%8D%22-->第2位<br><!--ew-t:%22T%20%E9%85%8D%20%3F%22-->T 配 ?</span>
+      <div class="opts">
+        <button class="opt opt-A" data-letter="A" aria-pressed="false">A</button>
+        <button class="opt opt-T" data-letter="T" aria-pressed="false">T</button>
+        <button class="opt opt-C" data-letter="C" aria-pressed="false">C</button>
+        <button class="opt opt-G" data-letter="G" aria-pressed="false">G</button>
+      </div>
+    </div>
+    <div class="group" id="pos2">
+      <span class="group-title"><!--ew-t:%22%E7%AC%AC3%E4%BD%8D%22-->第3位<br><!--ew-t:%22G%20%E9%85%8D%20%3F%22-->G 配 ?</span>
+      <div class="opts">
+        <button class="opt opt-A" data-letter="A" aria-pressed="false">A</button>
+        <button class="opt opt-T" data-letter="T" aria-pressed="false">T</button>
+        <button class="opt opt-C" data-letter="C" aria-pressed="false">C</button>
+        <button class="opt opt-G" data-letter="G" aria-pressed="false">G</button>
+      </div>
+    </div>
+    <div class="group" id="pos3">
+      <span class="group-title"><!--ew-t:%22%E7%AC%AC4%E4%BD%8D%22-->第4位<br><!--ew-t:%22C%20%E9%85%8D%20%3F%22-->C 配 ?</span>
+      <div class="opts">
+        <button class="opt opt-A" data-letter="A" aria-pressed="false">A</button>
+        <button class="opt opt-T" data-letter="T" aria-pressed="false">T</button>
+        <button class="opt opt-C" data-letter="C" aria-pressed="false">C</button>
+        <button class="opt opt-G" data-letter="G" aria-pressed="false">G</button>
+      </div>
+    </div>
+    <span class="label">5′</span>
+  </div>
+  <div class="result" id="result"><!--ew-t:%22%E8%BF%98%E6%B2%A1%E9%80%89%E5%AD%97%E6%AF%8D%EF%BC%9A%E8%AF%B7%E5%9C%A8%E5%9B%9B%E4%B8%AA%E4%BD%8D%E7%BD%AE%E5%90%84%E7%82%B9%E4%B8%80%E4%B8%AA%E5%AD%97%E6%AF%8D%E3%80%82%22-->还没选字母：请在四个位置各点一个字母。</div>
+  <button class="reset" id="reset"><!--ew-t:%22%E6%B8%85%E7%A9%BA%E9%87%8D%E6%9D%A5%22-->清空重来</button>
+</div>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const answers={0:'T',1:'A',2:'C',3:'G'};
+const template=['A','T','G','C'];
+const state=[null,null,null,null];
+function render(){
+  const chosen=state.map(s=>s||'?');
+  const wrong=[];
+  for(let i=0;i<4;i++){
+    if(state[i]===null){ wrong.push( ewt("第")+(i+1)+ ewt("位还没选")); }
+    else if(state[i]!==answers[i]){ wrong.push( ewt("第")+(i+1)+ ewt("位：模板 ")+template[i]+ ewt(" 应该配 ")+answers[i]+ ewt("，你选了 ")+state[i]); }
+  }
+  const result=document.getElementById('result');
+  const complete=chosen.every(c=>c!=='?');
+  if(complete && wrong.length===0){
+    EvoWikiLocale.prop(result,"innerHTML",()=> ewt("互补链：<span class=\"ok\">T A C G</span>（从 3′ 端读到 5′ 端）。四个位置都满足 A-T、C-G，两条链能稳定扣在一起。"));
+  }else if(complete){
+    EvoWikiLocale.prop(result,"innerHTML",()=> ewt("你的互补链：<span class=\"bad\">")+chosen.join(' ')+ ewt("</span>。还没稳定：<br>")+wrong.join('；<br>')+'。');
+  }else{
+    EvoWikiLocale.prop(result,"innerHTML",()=> ewt("当前互补链：")+chosen.join(' ')+'。<br>'+(wrong.length? wrong.join('；<br>') :  ewt("继续把四个位置选完。")));
+  }
+}
+document.querySelectorAll('.opt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const group=btn.closest('.group');
+    const idx=Number(group.id.replace('pos',''));
+    state[idx]=btn.dataset.letter;
+    group.querySelectorAll('.opt').forEach(b=>EvoWikiLocale.attr(b,'aria-pressed',()=>b===btn ? 'true':'false'));
+    render();
+  });
+});
+document.getElementById('reset').addEventListener('click',()=>{
+  for(let i=0;i<4;i++) state[i]=null;
+  document.querySelectorAll('.opt').forEach(b=>EvoWikiLocale.attr(b,'aria-pressed',()=>'false'));
+  render();
+});
+
+EvoWikiLocale.onChange(()=>{render()});</script>
+</body>
+</html>

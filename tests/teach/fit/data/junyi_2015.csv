@@ -1,0 +1,6 @@
+user_id,exercise,problem_type,problem_number,topic_mode,suggested,review_mode,time_done,time_taken,time_taken_attempts,correct,count_attempts,hint_used,count_hints,hint_time_taken_list,earned_proficiency,points_earned
+1,addition_1,addition_1,1,false,true,false,1365210000000000,10,10,true,1,false,0,,false,75
+1,addition_1,addition_1,2,false,true,false,1365200000000000,8,8,false,2,false,0,,false,0
+1,subtraction_1,subtraction_1,1,false,true,false,1365220000000000,12,12,true,1,false,0,,false,75
+2,addition_1,addition_1,1,false,true,false,1365230000000000,9,9,true,1,false,0,,false,75
+2,addition_1,addition_1,2,false,true,false,1365240000000000,9,9,maybe,1,false,0,,false,75

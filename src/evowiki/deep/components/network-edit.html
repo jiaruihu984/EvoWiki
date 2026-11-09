@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E5%8F%AF%E7%BC%96%E8%BE%91%E7%BD%91%E7%BB%9C%22-->可编辑网络</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+#net{width:100%;height:300px}
+.pick{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+select{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);border-radius:7px;
+  padding:6px 8px;min-height:36px;min-width:0;width:100%}
+</style>
+<script data-evowiki-locale="network-edit"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage"><div id="net" role="img" aria-labelledby="netDesc"></div><p class="muted" id="netDesc"></p></div>
+    <div class="side">
+      <div class="ctl" id="edit">
+        <span class="lb" id="pickLabel"><!--ew-t:%22%E7%82%B9%E5%9B%BE%E9%87%8C%E4%B8%A4%E4%B8%AA%E7%82%B9%EF%BC%8C%E6%88%96%E5%9C%A8%E8%BF%99%E9%87%8C%E9%80%89%EF%BC%9A%22-->点图里两个点，或在这里选：</span>
+        <div class="pick">
+          <select id="a" aria-label="第一个点" data-ew-attrs='{"aria-label":"第一个点"}'></select>
+          <select id="b" aria-label="第二个点" data-ew-attrs='{"aria-label":"第二个点"}'></select>
+        </div>
+        <div class="row">
+          <button type="button" id="toggle"><!--ew-t:%22%E8%BF%9E%E4%B8%8A%22-->连上</button>
+          <button type="button" id="add"><!--ew-t:%22%E5%8A%A0%E4%B8%80%E4%B8%AA%E7%82%B9%22-->加一个点</button>
+          <button type="button" id="reset"><!--ew-t:%22%E6%81%A2%E5%A4%8D%E5%8E%9F%E6%A0%B7%22-->恢复原样</button>
+        </div>
+      </div>
+      <div class="read" id="read" aria-label="集合和数量" data-ew-attrs='{"aria-label":"集合和数量"}'></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script data-vendor="cytoscape"></script>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("5 个人的朋友网络"),"question": ewt("点两个人连上或断开，看名单 V、关系清单 E 和 N、L 怎么变。"),"node_word": ewt("人"),"relation": ewt("互相认识"),"nodes":[{"id":"1","label": ewt("小明")},{"id":"2","label": ewt("小红")},{"id":"3","label": ewt("小刚")},{"id":"4","label": ewt("小丽")},{"id":"5","label": ewt("小华")}],"edges":[{"a":"1","b":"2"},{"a":"1","b":"3"},{"a":"2","b":"3"},{"a":"3","b":"4"}],"editable":true,"show_sets":true,"show_counts":true,"new_node_label": ewt("新同学")};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const clip=(s,n)=>EvoWikiLocale.string(s==null?'':s).slice(0,n);
+
+EvoWikiLocale.prop($('title'),"textContent",()=>clip(C.title,200));EvoWikiLocale.prop($('question'),"textContent",()=>clip(C.question,400));
+const WORD=clip(C.node_word|| ewt("节点"),8),REL=clip(C.relation|| ewt("有关系"),20),NEW=clip(C.new_node_label|| ewt("新")+WORD,12);
+// the config's network (cleaned: unique ids, no self loops, no repeated pairs, edges only between known nodes)
+function initial(){
+  const nodes=[],seen=new Set();
+  for(const n of (C.nodes||[]).slice(0,40)){const id=clip(n&&n.id,24).trim();if(!id||seen.has(id))continue;seen.add(id);nodes.push({id,label:clip(n.label||id,24)})}
+  if(!nodes.length)nodes.push({id:'1',label:'1'});
+  const edges=[],pairs=new Set();
+  for(const e of (C.edges||[]).slice(0,120)){const a=clip(e&&e.a,24).trim(),b=clip(e&&e.b,24).trim(),k=key(a,b);
+    if(a===b||!seen.has(a)||!seen.has(b)||pairs.has(k))continue;pairs.add(k);edges.push(k)}
+  return {nodes,edges:new Set(edges)};
+}
+// a pair is unordered: {a,b} = {b,a}; numbers sort as numbers
+const cmp=(x,y)=>{const a=Number(x),b=Number(y);return Number.isFinite(a)&&Number.isFinite(b)?a-b:EvoWikiLocale.string(x).localeCompare(EvoWikiLocale.string(y),'zh')};
+function key(a,b){return cmp(a,b)<=0?a+'\u0001'+b:b+'\u0001'+a}
+const ends=k=>k.split('\u0001');
+let S=initial();
+const label=id=>{const n=S.nodes.find(x=>x.id===id);return n?n.label:id};
+const named=id=>label(id)===id?id:label(id)+'（'+id+'）';
+const setV=()=>'{'+S.nodes.map(n=>n.id).sort(cmp).join(', ')+'}';
+const setE=()=>'{'+[...S.edges].map(ends).sort((p,q)=>cmp(p[0],q[0])||cmp(p[1],q[1])).map(([a,b])=>'{'+a+','+b+'}').join(', ')+'}';
+const deg=id=>[...S.edges].filter(k=>ends(k).includes(id)).length;
+
+// ---- the network drawing: Cytoscape.js (canvas), colours from the page tokens ----
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#888';
+function style(){return [
+  {selector:'node',style:{'background-color':css('--bg'),'border-width':2,'border-color':css('--tx-2'),label:'data(text)',
+    color:css('--tx'),'font-size':13,'font-family':css('--font'),'text-valign':'bottom','text-margin-y':6,width:30,height:30,
+    'text-wrap':'wrap','text-max-width':90,'text-background-color':css('--bg-1'),'text-background-opacity':1,
+    'text-background-padding':'2px','text-background-shape':'roundrectangle'}},
+  {selector:'node.iso',style:{'border-style':'dashed','border-color':css('--tx-3')}},
+  {selector:'node.sel',style:{'background-color':css('--accent'),'border-color':css('--accent')}},
+  {selector:'edge',style:{width:2.5,'line-color':css('--tx-2'),'curve-style':'straight'}},
+  {selector:'edge.new',style:{'line-color':css('--accent'),width:3.5}}]}
+let cy=null,picked=null,lastEdge=null;
+function els(){return [...S.nodes.map(n=>({data:{id:'n'+n.id,nid:n.id,text:n.label===n.id?n.id:n.label+' '+n.id},classes:deg(n.id)?'':'iso'})),
+  ...[...S.edges].map(k=>{const [a,b]=ends(k);return {data:{id:'e'+k,source:'n'+a,target:'n'+b},classes:k===lastEdge?'new':''}})]}
+function layout(){if(!cy)return;cy.layout({name:'circle',padding:34,animate:false,startAngle:-Math.PI/2}).run();cy.fit(undefined,34)}
+function draw(){
+  if(typeof cytoscape==='function'){
+    if(!cy){cy=cytoscape({container:$('net'),elements:els(),style:style(),userZoomingEnabled:false,userPanningEnabled:false,minZoom:0.4,maxZoom:1.25,
+      boxSelectionEnabled:false,autounselectify:true});
+      cy.on('tap','node',ev=>tapNode(ev.target.data('nid')));layout()}
+    else{  // sync in place: nodes keep their positions; only a new node re-runs the layout
+      const want=new Map(els().map(e=>[e.data.id,e]));let added=false;
+      cy.elements().forEach(x=>{if(!want.has(x.id()))x.remove()});
+      for(const [id,e] of want){const x=cy.$id(id);
+        if(x.length){x.data(e.data);x.classes(e.classes)}else{cy.add(e);if(id[0]==='n')added=true}}
+      if(added)layout()}
+    cy.nodes().removeClass('sel');if(picked)cy.$id('n'+picked).addClass('sel')}
+  EvoWikiLocale.prop($('netDesc'),"textContent",()=> ewt("{0} 个{1}，{2} 条边。", [S.nodes.length,WORD,S.edges.size])+(S.nodes.filter(n=>!deg(n.id)).length?
+     ewt(" 虚线圈的")+WORD+ ewt("没有边，但仍在 V 里。"):''));
+  read();opts()}
+function read(){
+  const line=(k,v)=>`<div><span class="k">${k}</span>${v}</div>`;let h='';
+  if(C.show_sets!==false)h+=line( ewt("节点集合 V"),esc(setV()))+line( ewt("边集合 E（每条边是一对，不分先后）"),esc(setE()));
+  if(C.show_counts!==false)h+=line( ewt("数量"),`N = |V| = <b>${S.nodes.length}</b>，L = |E| = <b>${S.edges.size}</b>`);
+  const iso=S.nodes.filter(n=>!deg(n.id));if(iso.length)h+=line( ewt("没有边的")+WORD,esc(iso.map(n=>named(n.id)).join('、')));
+  EvoWikiLocale.prop($('read'),"innerHTML",()=>h)}
+function opts(){for(const [s,i] of [[$('a'),0],[$('b'),1]]){const v=s.value;EvoWikiLocale.prop(s,"innerHTML",()=>'');
+  for(const n of S.nodes){const o=document.createElement('option');o.value=n.id;EvoWikiLocale.prop(o,"textContent",()=>named(n.id));s.append(o)}
+  s.value=S.nodes.some(n=>n.id===v)?v:(S.nodes[Math.min(i,S.nodes.length-1)]||{}).id}
+  const a=$('a').value,b=$('b').value;EvoWikiLocale.prop($('toggle'),"textContent",()=>a!==b&&S.edges.has(key(a,b))? ewt("断开"): ewt("连上"))}
+
+function toggle(a,b){
+  if(a===b){EvoWikiLocale.prop($('result'),"textContent",()=> ewt("边要连两个不同的{0}；{1}和自己之间不算边，E 不变。", [WORD,named(a)]));return}
+  const k=key(a,b),L0=S.edges.size,[x,y]=ends(k),pair='{'+x+','+y+'}',swapped=cmp(a,b)>0;
+  const same=swapped? ewt("（先点 {0} 还是先点 {1} 都一样：{{2},{3}} 就是 {4}）", [b,a,a,b,pair]):'';
+  if(S.edges.has(k)){S.edges.delete(k);lastEdge=null;
+    EvoWikiLocale.prop($('result'),"textContent",()=> ewt("去掉了 {0}—{1}：E 少了 {2}，L 从 {3} 变成 {4}。V 不变，两个{5}都还在名单上{6}。", [label(x),label(y),pair,L0,S.edges.size,WORD,same]))}
+  else{S.edges.add(k);lastEdge=k;
+    EvoWikiLocale.prop($('result'),"textContent",()=> ewt("连上了 {0}—{1}（{2}）：E 多了 {3}，L 从 {4} 变成 {5}。V 不变{6}。", [label(x),label(y),REL,pair,L0,S.edges.size,same]))}
+  draw()}
+function tapNode(id){if(C.editable===false)return;
+  if(picked===null){picked=id;$('a').value=id;opts();EvoWikiLocale.prop($('result'),"textContent",()=> ewt("选了 {0}，再点一个{1}就连上或断开。", [named(id),WORD]));draw();return}
+  const a=picked;picked=null;$('b').value=id;toggle(a,id)}
+$('toggle').addEventListener('click',()=>{picked=null;toggle($('a').value,$('b').value)});
+$('a').addEventListener('change',opts);$('b').addEventListener('change',opts);
+$('add').addEventListener('click',()=>{
+  const nums=S.nodes.map(n=>Number(n.id)).filter(Number.isFinite);let id=nums.length===S.nodes.length?EvoWikiLocale.string(Math.max(0,...nums)+1):'n'+(S.nodes.length+1);
+  while(S.nodes.some(n=>n.id===id))id+="'";
+  const k=S.nodes.filter(n=>n.label.startsWith(NEW)).length+1,N0=S.nodes.length;
+  S.nodes.push({id,label:NEW+(k>1?k:'')});picked=null;
+  EvoWikiLocale.prop($('result'),"textContent",()=> ewt("加了 {0}：V 多了 {1}，N 从 {2} 变成 {3}。它还没有边，所以 E 和 L 不变——没有边的{4}也要写进 V。", [named(id),id,N0,S.nodes.length,WORD]));
+  draw();$('b').value=id;opts()});
+$('reset').addEventListener('click',()=>{S=initial();picked=null;lastEdge=null;if(cy){cy.destroy();cy=null}
+  EvoWikiLocale.prop($('result'),"textContent",()=> ewt("恢复成原来的网络：N = {0}，L = {1}。", [S.nodes.length,S.edges.size]));draw()});
+if(C.editable===false){$('edit').hidden=true}
+EvoWikiLocale.prop($('result'),"textContent",()=>C.editable===false? ewt("{0} 个{1}，{2} 条边。", [S.nodes.length,WORD,S.edges.size]):
+   ewt("点图里两个{0}（或选好两个{1}后点「连上」），看 V、E、N、L 怎么变。", [WORD,WORD]));
+new ResizeObserver(()=>{if(cy){cy.resize();cy.fit(undefined,34)}}).observe($('net'));
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(cy)cy.style(style())});
+draw();
+
+EvoWikiLocale.onChange(()=>{draw();read()});</script>
+</body>
+</html>

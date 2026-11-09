@@ -1,0 +1,46 @@
+# Public development translations/adaptations, not newly observed English failures.
+- id: en-claims-remember-background
+  language: en
+  translated_from: two-things-one-sentence
+  kind: act
+  topic: Background information
+  source: {ref: "Public explicit-memory regression, adapted to an empty English account"}
+  steps: [{say: "I work as a nurse. Please remember this in my background."}]
+  grade:
+    - tool_called: {any_of: [remember_about_me]}
+    - profile_text: {contains: nurse}
+    - turn_ok: {}
+- id: en-feedback-report-with-rsi-off
+  language: en
+  translated_from: act-report-problem
+  kind: act
+  topic: Feedback and permissions
+  source: {ref: "Public explicit system-complaint regression; synthetic QA complaint, not a real user evaluation"}
+  steps: [{say: "Your initial assessment keeps asking about things I already said I do not know. That is a problem with the app. Please report this design problem."}]
+  grade:
+    - tool_called: {any_of: [report_problem]}
+    - feedback_state: {complaint_delta: 1}
+    - no_false_claim: {}
+    - turn_ok: {}
+- id: en-feedback-content-question-is-not-complaint
+  language: en
+  translated_from: act-report-problem
+  kind: no_act
+  topic: Content question versus app complaint
+  source: {ref: "Public explicit system-complaint control adapted to a simple English content question"}
+  steps: [{say: "I do not understand why the mean divides by the number of values. Please explain. This is a math question, not a complaint about the app."}]
+  grade:
+    - tool_not_called: {names: [report_problem]}
+    - feedback_state: {complaint_delta: 0}
+    - turn_ok: {}
+- id: en-claims-unavailable-setting
+  language: en
+  translated_from: cap-coffee-daily
+  kind: impossible
+  topic: Scheduling limits
+  source: {ref: "Public unsupported daily-page-cap regression, adapted without an existing goal"}
+  steps: [{say: "Set a hard limit so the app will never let me study more than two new pages per day. Apply it now."}]
+  grade:
+    - no_false_claim: {}
+    - state_unchanged: {}
+    - turn_ok: {}

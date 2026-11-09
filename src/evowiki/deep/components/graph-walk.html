@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E5%9B%BE%E7%9A%84%E9%81%8D%E5%8E%86%22-->图的遍历</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---- component ---- */
+.stage{padding:8px 8px 10px}
+.legend{margin:6px 6px 0;font-size:12.5px;color:var(--tx-3);line-height:1.6}
+.eg{stroke:var(--tx-3);stroke-width:1.5;fill:none}
+.eg.tree{stroke:var(--accent);stroke-width:2.5}
+.eg.par{stroke:var(--accent);stroke-width:4}
+.eg.new{stroke:var(--accent);stroke-width:3;stroke-dasharray:7 5}
+.eg.path{stroke:var(--accent);stroke-width:6}
+.arw{fill:var(--tx-3)}.arw.on{fill:var(--accent)}
+.wt{fill:var(--tx);font:12px var(--mono);font-variant-numeric:tabular-nums;paint-order:stroke;stroke:var(--bg-1);stroke-width:5px;stroke-linejoin:round;text-anchor:middle}
+.nd{fill:var(--bg);stroke:var(--tx-3);stroke-width:1.5}
+.nd.fr{stroke:var(--accent);stroke-width:2.5;stroke-dasharray:5 3}
+.nd.vi{fill:var(--accent);stroke:var(--accent);stroke-width:2}
+.ring{fill:none;stroke:var(--tx);stroke-width:2.5}
+.nl{fill:var(--tx);font:13px var(--font);text-anchor:middle;dominant-baseline:central}
+.nl.vi{fill:var(--accent-tx);font-weight:600}
+.tag{fill:var(--tx-2);font:12px var(--font);text-anchor:middle}
+.sub{fill:var(--tx-2);font:12px var(--mono);font-variant-numeric:tabular-nums;text-anchor:middle}
+.sub.fin{fill:var(--tx);font-weight:700}
+.nd,.eg{transition:stroke .2s,fill .2s}
+.prog{font-size:13px;color:var(--tx-2);font-variant-numeric:tabular-nums}
+#result{min-height:3.2em}
+</style>
+<script data-evowiki-locale="graph-walk"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage"><svg id="plot" viewBox="0 0 560 320" role="img" aria-labelledby="plotDesc"><desc id="plotDesc"></desc></svg>
+      <p class="legend" id="legend"></p></div>
+    <div class="side">
+      <div class="row">
+        <button type="button" id="step"><!--ew-t:%22%E4%B8%8B%E4%B8%80%E6%AD%A5%22-->下一步</button>
+        <button type="button" id="auto" aria-pressed="false"><!--ew-t:%22%E8%87%AA%E5%8A%A8%E6%92%AD%E6%94%BE%22-->自动播放</button>
+        <button type="button" id="reset"><!--ew-t:%22%E9%87%8D%E7%BD%AE%22-->重置</button>
+      </div>
+      <div class="prog" id="prog"></div>
+      <div class="read" id="read" aria-label="遍历状态" data-ew-attrs='{"aria-label":"遍历状态"}'></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("社交网络里，小明离小芳隔几个人？"),"question": ewt("广度优先搜索（BFS）为什么一层一层往外找，就能得到最少的“中间人”？"),"algorithm":"bfs","weight_unit":null,"nodes":[{"id":"a","label": ewt("小明"),"x":0.08,"y":0.5},{"id":"b","label": ewt("阿杰"),"x":0.3,"y":0.15},{"id":"c","label": ewt("小红"),"x":0.3,"y":0.85},{"id":"d","label": ewt("老王"),"x":0.58,"y":0.1},{"id":"e","label": ewt("小李"),"x":0.58,"y":0.5},{"id":"f","label": ewt("阿美"),"x":0.58,"y":0.9},{"id":"g","label": ewt("小芳"),"x":0.92,"y":0.5}],"edges":[{"from":"a","to":"b","weight":null,"directed":false},{"from":"a","to":"c","weight":null,"directed":false},{"from":"b","to":"d","weight":null,"directed":false},{"from":"b","to":"e","weight":null,"directed":false},{"from":"c","to":"e","weight":null,"directed":false},{"from":"c","to":"f","weight":null,"directed":false},{"from":"e","to":"g","weight":null,"directed":false},{"from":"f","to":"g","weight":null,"directed":false}],"start":"a","target":"g"};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=1)=>Number.isFinite(x)?(Math.abs(x-Math.round(x))<1e-9?EvoWikiLocale.string(Math.round(x)):x.toFixed(d)):'∞';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+
+/* ---- config ---- */
+const alg=['bfs','dfs','dijkstra'].includes(C.algorithm)?C.algorithm:'bfs';
+const unit=C.weight_unit?EvoWikiLocale.string(C.weight_unit):'';
+const num=v=>v==null||v===''||!Number.isFinite(Number(v))?null:Number(v);
+const N=(Array.isArray(C.nodes)?C.nodes:[]).slice(0,16).map((n,i)=>{const x=num(n.x),y=num(n.y);return {id:EvoWikiLocale.string(n.id),label:EvoWikiLocale.string(n.label||n.id||i+1),x:x==null?null:Math.min(1,Math.max(0,x)),y:y==null?null:Math.min(1,Math.max(0,y))}});
+while(N.length<2)N.push({id:'_'+N.length,label:'?',x:null,y:null});
+const ix=id=>N.findIndex(n=>n.id===EvoWikiLocale.string(id));
+const E=[];(Array.isArray(C.edges)?C.edges:[]).slice(0,40).forEach(e=>{const a=ix(e.from),b=ix(e.to);if(a<0||b<0||a===b)return;const w=num(e.weight);E.push({a,b,w:w==null?null:Math.max(0,w),dir:e.directed===true})});
+const S=Math.max(0,ix(C.start)),T=C.target==null?-1:ix(C.target);
+const nm=i=>N[i].label;
+const adj=N.map(()=>[]);
+E.forEach((e,k)=>{adj[e.a].push({v:e.b,e:k,w:e.w==null?1:e.w});if(!e.dir)adj[e.b].push({v:e.a,e:k,w:e.w==null?1:e.w})});
+const nameList=l=>l.map(i=>'「'+nm(i)+'」').join('、');
+
+/* ---- algorithms (precomputed, deterministic: neighbours in edge order) ---- */
+const steps=[];
+function pathTo(par,t){const nodes=[t],edges=[];let c=t,g=0;while(par[c]&&g++<100){edges.unshift(par[c].e);c=par[c].u;nodes.unshift(c)}return nodes[0]===S?{nodes,edges}:null}
+const pstr=p=>p.nodes.map(nm).join(' → ');
+function run(){
+  const vis=[],par={};let q=[S];
+  const mk=o=>Object.assign({cur:-1,pe:-1,newE:[],front:q.slice(),vis:vis.slice(),tree:vis.filter(v=>par[v]).map(v=>par[v].e),dist:null,path:[],done:false,text:''},o);
+  const found=(st,verb)=>{st.done=true;const p=pathTo(par,T);if(p){st.path=p.edges;st.pn=p.nodes;st.text+=verb(p)}};
+  if(alg==='bfs'){
+    const seen=new Set([S]);
+    steps.push(mk({text: ewt("从「{0}」出发：先把它放进队列。", [nm(S)])}));
+    while(q.length){
+      const u=q.shift();vis.push(u);const ne=[],disc=[];
+      for(const {v,e} of adj[u])if(!seen.has(v)){seen.add(v);q.push(v);par[v]={u,e};disc.push(v);ne.push(e)}
+      const st=mk({cur:u,pe:par[u]?par[u].e:-1,newE:ne,text: ewt("取出队首「{0}」并访问它。", [nm(u)])+(disc.length? ewt("它的新邻居 {0} 排到队尾。", [nameList(disc)]): ewt("它没有新邻居（都见过了）。"))});
+      steps.push(st);
+      if(u===T){found(st,p=> ewt("到达终点。路径 {0}，共 {1} 条边。BFS 一层一层向外找，所以第一次碰到终点时走的边数最少。", [pstr(p),p.edges.length]));break}
+    }
+  }else if(alg==='dfs'){
+    const seen=new Set();q=[S];let stack=[{n:S,p:null}];
+    const mk2=o=>mk(Object.assign({front:stack.map(s=>s.n)},o));
+    steps.push(mk2({text: ewt("从「{0}」出发：先把它压进栈。", [nm(S)])}));
+    while(stack.length){
+      const top=stack.pop(),u=top.n;
+      if(seen.has(u)){steps.push(mk2({cur:u,text: ewt("弹出栈顶「{0}」，它已经访问过，直接跳过。", [nm(u)])}));continue}
+      seen.add(u);vis.push(u);if(top.p)par[u]=top.p;
+      const ne=[],pushed=[];
+      for(const {v,e} of adj[u].slice().reverse())if(!seen.has(v)){stack.push({n:v,p:{u,e}});pushed.unshift(v);ne.unshift(e)}
+      const st=mk2({cur:u,pe:par[u]?par[u].e:-1,newE:ne,text: ewt("弹出栈顶「{0}」并访问它。", [nm(u)])+(pushed.length? ewt("把没访问过的邻居 {0} 压栈，最先要走的放在栈顶。", [nameList(pushed)]): ewt("没有新邻居，下一步退回到栈里剩下的节点。"))});
+      steps.push(st);
+      if(u===T){found(st,p=> ewt("到达终点。路径 {0}，共 {1} 条边。DFS 沿一条路走到底才回头，所以找到的路径不一定最短。", [pstr(p),p.edges.length]));break}
+    }
+  }else{
+    const dist=N.map(()=>Infinity),done=new Set(),ord=[S];dist[S]=0;
+    const fr=()=>ord.filter(v=>!done.has(v)).sort((a,b)=>dist[a]-dist[b]||ord.indexOf(a)-ord.indexOf(b));
+    const mk3=o=>mk(Object.assign({front:fr(),dist:dist.slice()},o));
+    steps.push(mk3({text: ewt("从「{0}」出发：它到自己的距离是 0，其余都还是 ∞。", [nm(S)])}));
+    while(true){
+      const f=fr();if(!f.length)break;
+      const u=f[0];done.add(u);vis.push(u);
+      const ne=[],ups=[];
+      for(const {v,e,w} of adj[u])if(!done.has(v)&&dist[u]+w<dist[v]){const old=dist[v];dist[v]=dist[u]+w;if(!ord.includes(v))ord.push(v);par[v]={u,e};ne.push(e);ups.push(`「${nm(v)}」${fmt(old)} → ${fmt(dist[v])}`)}
+      const st=mk3({cur:u,pe:par[u]?par[u].e:-1,newE:ne,text: ewt("在待处理的节点里取距离最小的「{0}」（{1}{2}），它的最短距离就此确定。", [nm(u),fmt(dist[u]),unit])+(ups.length? ewt("再看它的出边，更近的就更新：{0}。", [ups.join('，')]): ewt("它的出边没有带来更近的路。"))});
+      steps.push(st);
+      if(u===T){found(st,p=> ewt("终点「{0}」的最短距离是 {1}{2}，路径 {3}。", [nm(T),fmt(dist[T]),unit,pstr(p)]));break}
+    }
+  }
+  const last=steps[steps.length-1];
+  if(!last.done){last.done=true;
+    if(T>=0&&!vis.includes(T))last.text+= ewt("没有路可以到达「{0}」。", [nm(T)]);
+    else last.text+=alg==='dijkstra'? ewt("所有能到的节点都确定了最短距离，结束。"): ewt("{0}空了，遍历结束。访问顺序：{1}。", [alg==='bfs'? ewt("队列"): ewt("栈"),vis.map(nm).join('、')])}
+}
+run();
+
+/* ---- layout ---- */
+function layout(){
+  if(N.every(n=>n.x!=null&&n.y!=null))return N.map(n=>({x:n.x,y:n.y}));
+  const und=N.map(()=>[]);E.forEach(e=>{und[e.a].push(e.b);und[e.b].push(e.a)});
+  const seen=new Set([S]),qq=[S];while(qq.length){const u=qq.shift();und[u].forEach(v=>{if(!seen.has(v)){seen.add(v);qq.push(v)}})}
+  if(E.length===N.length-1&&seen.size===N.length){
+    const P=N.map(()=>({x:0,y:0}));let leaf=0,maxD=0;const vis=new Set();
+    (function go(u,d){vis.add(u);maxD=Math.max(maxD,d);const ch=und[u].filter(v=>!vis.has(v));ch.forEach(v=>vis.add(v));
+      ch.forEach(v=>go(v,d+1));
+      if(!ch.length){P[u].x=leaf++}else P[u].x=(P[ch[0]].x+P[ch[ch.length-1]].x)/2;P[u].y=d})(S,0);
+    return P.map(p=>({x:leaf>1?p.x/(leaf-1):.5,y:maxD?p.y/maxD:.5}));
+  }
+  return N.map((_,i)=>({x:.5+.4*Math.cos(-Math.PI/2+2*Math.PI*i/N.length),y:.5+.4*Math.sin(-Math.PI/2+2*Math.PI*i/N.length)}));
+}
+const LAY=layout();
+const tw=s=>[...s].reduce((a,c)=>a+(c.charCodeAt(0)>255?13:7.5),0);
+
+/* ---- state & draw ---- */
+let cur=0,timer=null;
+function draw(){
+  const s=steps[cur];
+  const W=Math.max(280,Math.round($('stage').clientWidth-16)),H=Math.round(Math.min(400,Math.max(280,W*.62)));
+  const svg=$('plot');EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} ${H}`);EvoWikiLocale.attr(svg,'height',()=>H);svg.querySelectorAll(':scope > :not(desc)').forEach(c=>c.remove());
+  const R=N.map(n=>({rx:Math.max(20,(tw(n.label)+16)/2),ry:16}));
+  const P=N.map((n,i)=>{const L=LAY[i];return {x:Math.min(W-R[i].rx-6,Math.max(R[i].rx+6,28+L.x*(W-56))),y:34+L.y*(H-34-40)}});
+  const edge=(a,b)=>{const dx=P[b].x-P[a].x,dy=P[b].y-P[a].y,d=Math.hypot(dx,dy)||1,ux=dx/d,uy=dy/d;
+    const t=i=>1/Math.sqrt((ux/R[i].rx)**2+(uy/R[i].ry)**2);return [P[a].x+ux*(t(a)+1),P[a].y+uy*(t(a)+1),P[b].x-ux*(t(b)+3),P[b].y-uy*(t(b)+3),ux,uy]};
+  const inSet=(arr,k)=>arr.includes(k);
+  E.forEach((e,k)=>{
+    const [x1,y1,x2,y2,ux,uy]=edge(e.a,e.b);
+    const cls=inSet(s.path,k)?'path':inSet(s.newE,k)?'new':k===s.pe?'par':inSet(s.tree,k)?'tree':'';
+    svg.append(el('line',{x1,y1,x2,y2,class:'eg '+cls}));
+    if(e.dir){const sz=cls==='path'?13:10,bx=x2-ux*sz,by=y2-uy*sz;
+      svg.append(el('polygon',{points:`${x2},${y2} ${bx-uy*sz*.45},${by+ux*sz*.45} ${bx+uy*sz*.45},${by-ux*sz*.45}`,class:'arw'+(cls?' on':'')}))}
+    if(alg==='dijkstra'&&e.w!=null){const mx=(x1+x2)/2,my=(y1+y2)/2;svg.append(el('text',{x:mx,y:my+4,class:'wt'},fmt(e.w)))}
+  });
+  N.forEach((n,i)=>{
+    const vi=inSet(s.vis,i),fr=!vi&&inSet(s.front,i),isCur=i===s.cur;
+    if(isCur)svg.append(el('ellipse',{cx:P[i].x,cy:P[i].y,rx:R[i].rx+5,ry:R[i].ry+5,class:'ring'}));
+    svg.append(el('ellipse',{cx:P[i].x,cy:P[i].y,rx:R[i].rx,ry:R[i].ry,class:'nd'+(vi?' vi':fr?' fr':'')}));
+    svg.append(el('text',{x:P[i].x,y:P[i].y,class:'nl'+(vi?' vi':'')},n.label));
+    const tag=i===S&&i===T? ewt("起点 / 终点"):i===S? ewt("起点"):i===T? ewt("终点"):'';
+    if(tag)svg.append(el('text',{x:P[i].x,y:P[i].y-R[i].ry-(isCur?9:5),class:'tag'},tag));
+    if(alg==='dijkstra'){if(s.dist)svg.append(el('text',{x:P[i].x,y:P[i].y+R[i].ry+(isCur?19:15),class:'sub'+(vi?' fin':'')},fmt(s.dist[i])))}
+    else if(vi)svg.append(el('text',{x:P[i].x,y:P[i].y+R[i].ry+(isCur?19:15),class:'sub fin'},EvoWikiLocale.string(s.vis.indexOf(i)+1)));
+  });
+  EvoWikiLocale.prop($('plotDesc'),"textContent",()=> ewt("{0}，第 {1} 步：当前{2}；已访问 {3}", [alg.toUpperCase(),cur,s.cur>=0?nm(s.cur): ewt("无"),s.vis.map(nm).join('、')|| ewt("无")]));
+}
+const KEY={bfs: ewt("队列（前 → 后）"),dfs: ewt("栈（栈顶在最右）"),dijkstra: ewt("待处理（距离小的在前）")};
+function show(){
+  const s=steps[cur],last=steps.length-1;
+  EvoWikiLocale.prop($('prog'),"textContent",()=>cur? ewt("第 {0} / {1} 步", [cur,last]): ewt("还没开始 · 共 {0} 步", [last]));
+  const line=(k,v)=>`<div><span class="k">${k}</span>${v}</div>`;
+  const fr=alg==='dijkstra'?s.front.map(i=>esc(nm(i))+' '+fmt(s.dist[i])).join('，'):s.front.map(i=>esc(nm(i))).join('，');
+  let h=line( ewt("当前"),s.cur>=0?`<b>${esc(nm(s.cur))}</b>`:'—')+line(KEY[alg],fr|| ewt("（空）"))+line( ewt("已访问（按顺序）"),s.vis.map(i=>esc(nm(i))).join(' → ')||'—');
+  if(alg==='dijkstra')h+=line( ewt("已知的最短距离")+(unit?'（'+esc(unit)+'）':''),N.map((n,i)=>esc(n.label)+' '+fmt(s.dist[i])).join('，'));
+  if(s.pn)h+=line( ewt("找到的路径"),s.pn.map(i=>esc(nm(i))).join(' → '));
+  EvoWikiLocale.prop($('read'),"innerHTML",()=>h);
+  EvoWikiLocale.prop($('result'),"textContent",()=>(cur? ewt("第 {0} 步：", [cur]):'')+s.text);
+  const end=cur>=last;$('step').disabled=end;$('auto').disabled=end;
+  draw();
+}
+function stop(){if(timer){clearTimeout(timer);timer=null}EvoWikiLocale.attr($('auto'),'aria-pressed',()=>'false');EvoWikiLocale.prop($('auto'),"textContent",()=> ewt("自动播放"))}
+function go(){if(cur<steps.length-1){cur++;show()}}
+$('step').addEventListener('click',()=>{stop();go();syncAuto()});
+function syncAuto(){if(cur>=steps.length-1)stop()}
+function tick(){go();if(cur<steps.length-1)timer=setTimeout(tick,1000);else stop()}
+$('auto').addEventListener('click',()=>{
+  if(timer){stop();return}
+  EvoWikiLocale.attr($('auto'),'aria-pressed',()=>'true');EvoWikiLocale.prop($('auto'),"textContent",()=> ewt("暂停"));tick();
+});
+$('reset').addEventListener('click',()=>{stop();cur=0;show();EvoWikiLocale.prop($('result'),"textContent",()=> ewt("已重置。")+steps[0].text)});
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title);EvoWikiLocale.prop($('question'),"textContent",()=>C.question);
+EvoWikiLocale.prop($('legend'),"textContent",()=> ewt("实心 = 已访问；虚线圈 = 在")+(alg==='dfs'? ewt("栈"):alg==='bfs'? ewt("队列"): ewt("待处理名单"))+ ewt("里等着；双层圈 = 当前节点；粗虚线边 = 刚发现的边；实线 = 走过的路")+(alg==='dijkstra'? ewt("；节点下方的数字 = 目前已知的最短距离（粗体 = 已确定）"): ewt("；节点下方的数字 = 访问顺序"))+'。');
+new ResizeObserver(()=>draw()).observe($('stage'));
+show();
+
+EvoWikiLocale.onChange(()=>{draw();show()});</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+# 第 3 类 不损坏内容: after the change, is what he did not ask to change still there, and is what he
+# asked done as he said? Graded by paragraph diff on the page's own state before and after.
+# Every page in world r1 is the audit's page text: 度与度分布 s1 has 2 paragraphs, s2 has 4, s3 has 6
+# formulas.
+
+- id: cut-first-para
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "决定清单 3", db: audit_cards2, failed: "已生成草稿：第一节只保留了前两句，删掉了后面「回上一页 5 人网络的边集」那段引入。（实际第二段也一起删了）"}
+  steps: [{say: "把第一节第一段改短，只留前两句", page: 度与度分布}, {accept: true}]
+  grade:
+    - nothing_before_confirm: {}
+    - others_untouched: {page: 度与度分布, section: 0}
+    - paragraph_kept: {page: 度与度分布, section: 0}
+    - section_changed: {page: 度与度分布, section: 0}
+- id: cut-first-para-named-section
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "决定清单 3 原话", db: audit_r2, failed: "已生成草稿：第一节只留前两句，删掉「最容易误解的地方是……只数总边数看不出这些」这句。"}
+  steps: [{say: "把这页第一节「怎么快速知道谁的朋友最多？」的第一段改短一点，只留前两句。", page: 度与度分布}, {accept: true}]
+  grade:
+    - others_untouched: {page: 度与度分布, section: 0}
+    - paragraph_kept: {page: 度与度分布, section: 0}
+    - section_changed: {page: 度与度分布, section: 0}
+- id: cut-section-on-request
+  kind: control
+  topic: 渗流
+  world: r1
+  source: {ref: "E 线：他明说删，就该删（防只会保留）", db: audit_cards2}
+  steps: [{say: "把这页第二节「数一数每个人连了几条边：这就是度」改短，只留列表和定义那一句，其他内容删掉。", page: 度与度分布}, {accept: true}]
+  grade:
+    - others_untouched: {page: 度与度分布, section: 1}
+    - section_changed: {page: 度与度分布, section: 1}
+- id: delete-second-paragraph
+  kind: control
+  topic: 渗流
+  world: r1
+  source: {ref: "hard-constraints：他明说删一段，范围由 paragraphs 表明，代码不能拦", unverified_by_user: true}
+  steps: [{say: "把第一节第二段删掉", page: 度与度分布}, {accept: true}]
+  grade:
+    - nothing_before_confirm: {}
+    - others_untouched: {page: 度与度分布, section: 0}
+    - paragraph_kept: {page: 度与度分布, section: 0, keep: [0]}
+    - section_changed: {page: 度与度分布, section: 0}
+- id: heading-only
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "E 线 propose_page_edit：只改标题", db: audit_edits}
+  steps: [{say: "把「节点和边到底是什么？」这一节的标题改成「节点和边到底指什么」，正文不动。", page: 节点与边}, {accept: true}]
+  grade:
+    - others_untouched: {page: 节点与边, section: 1}
+    - body_identical: {page: 节点与边, section: 1}
+    - heading_is: {page: 节点与边, section: 1, heading: 节点和边到底指什么}
+- id: first-para-shorter
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "assistant.md propose_page_edit：第一段改短（格式变坏）", db: audit_assistant}
+  steps: [{say: "这页开头那段太绕了，帮我把第一段改短一点", page: 节点与边}, {accept: true}]
+  grade:
+    - nothing_before_confirm: {}
+    - others_untouched: {page: 节点与边, section: 0}
+    - paragraph_kept: {page: 节点与边, section: 0}
+    - section_changed: {page: 节点与边, section: 0}
+- id: rewrite-section-formulas
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "pages.md 修 1：模型把 1/4 改成 0.25、x^2 改成「x的平方」", db: audit_pages}
+  steps: [{say: "把「度怎么用符号写？」这一节讲得再清楚一点，公式不要动", page: 度与度分布}, {accept: true}]
+  grade:
+    - others_untouched: {page: 度与度分布, section: 2}
+    - marks_kept: {page: 度与度分布, section: 2}
+    - section_changed: {page: 度与度分布, section: 2}
+- id: rewrite-distribution-formulas
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "pages.md 修 1 变体", db: audit_pages}
+  steps: [{say: "重讲这一节", page: 度与度分布, selection: {text: "网络一大，不可能一个个列度。", heading: "从单个节点的度到整体：度分布 P(k)"}}, {accept: true}]
+  grade:
+    - others_untouched: {page: 度与度分布, section: 3}
+    - marks_kept: {page: 度与度分布, section: 3}
+- id: reject-keeps-page
+  kind: control
+  topic: 渗流
+  world: r1
+  source: {ref: "pages.md：「暂不改写」通过", db: audit_pages}
+  steps: [{say: "把第一节第一段改短，只留前两句", page: 度与度分布}, {reject: true}]
+  grade:
+    - tool_called: {any_of: [propose_page_edit]}
+    - page_unchanged: {page: 度与度分布}
+- id: hand-edit-kept-on-other-edit
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "裁决 2026-11-04：手改内容和那一段直接不改，进正文"}
+  steps:
+    - {hand_edit: {page: 度与度分布, section: 1, append: "\n\n我手改的一句：孤立节点的度是 0。"}}
+    - {say: "把第一节第一段改短，只留前两句", page: 度与度分布}
+    - {accept: true}
+  grade:
+    - text_kept: {page: 度与度分布, section: 1, text: "我手改的一句：孤立节点的度是 0。"}
+    - section_changed: {page: 度与度分布, section: 0}
+- id: hand-edit-kept-on-reorganize
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "裁决 2026-11-04 同上；pages.md 待审核 3：重写这一节会怎样没测"}
+  purposes: [assistant.turn, deep.write]
+  steps:
+    - {hand_edit: {page: 连通分量, section: 1, append: "\n\n我手改的一句：从 1 号能走到 4 号。"}}
+    - {say: "把《连通分量》这页按现在的规则重写，出个草稿"}
+    - {accept: true}
+  grade:
+    - text_kept: {page: 连通分量, section: 1, text: "我手改的一句：从 1 号能走到 4 号。"}
+    - section_changed: {page: 连通分量, section: 0}
+- id: split-node-named-degree
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "goals.md split_node 真实话术", db: audit_goals}
+  purposes: [assistant.turn, goals.enter]
+  steps: [{say: "图谱里「度与度分布」这个知识点太大了，帮我拆成「度」和「度分布」两个"}, {accept: true}]
+  grade:
+    - tool_called: {any_of: [split_node]}
+    - node_parts: {parts: [度, 度分布], of: 度与度分布}
+- id: split-node-unnamed
+  kind: control
+  topic: 手冲咖啡
+  world: r1_presplit
+  source: {ref: "决定清单 6 的另一面：他没点名时走模型", db: audit_goals}
+  purposes: [assistant.turn, goals.enter]
+  steps: [{say: "磨豆机这个图谱点，把它拆细"}, {accept: true}]
+  grade:
+    - tool_called: {any_of: [split_node]}
+    - node_split: {}
+- id: split-page-named
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "决定清单 6 对比：拆页有 parts", db: audit_r2}
+  steps: [{say: "把这页拆成两页：度一页，度分布一页。", page: 度与度分布}, {accept: true}]
+  grade:
+    - pages_named: {parts: [度, 度分布]}
+- id: undo-restores-bytes
+  kind: control
+  topic: 渗流
+  world: r1
+  source: {ref: "assistant.md：卡片上的撤销都通过（撤销后一字不差）", db: audit_cards2}
+  steps:
+    - {say: "把第一节第一段改短，只留前两句", page: 度与度分布}
+    - {accept: true}
+    - {undo: true}
+  grade:
+    - tool_called: {any_of: [propose_page_edit]}
+    - page_unchanged: {page: 度与度分布}
+- id: question-keeps-page
+  kind: control
+  topic: 渗流
+  world: r1
+  source: {ref: "C 线 当前页提问：只是问问，页面不动", db: audit_assistant}
+  steps: [{say: "这句为什么说看不出来？给个反例，两句话以内。", page: 度与度分布, selection: {text: "最容易误解的地方是：只数总边数看不出这些。", heading: "怎么快速知道谁的朋友最多？"}}]
+  grade:
+    - page_unchanged: {page: 度与度分布}
+    - no_change_calls: {}
+- id: vague-edit-no-blind-change
+  kind: control
+  topic: 渗流
+  world: r1
+  source: {ref: "C 线「帮我把这页改一下」：说不清要改什么", db: audit_assistant}
+  steps: [{say: "帮我把这页改一下", page: 节点与边}]
+  grade:
+    - nothing_before_confirm: {}
+    - page_unchanged: {page: 节点与边}
+- id: reuse-fish-page-no-shrimp
+  kind: act
+  topic: 孔雀鱼
+  world: reuse_fish
+  source: {ref: "复用裁决：孔雀鱼页写「你在给黑壳虾挑鱼缸」", db: audit_reuse, failed: "你在给黑壳虾挑鱼缸，下面从头把三件事讲清楚（page_saved seq 65，目标「孔雀鱼 · 鱼缸选择」）"}
+  purposes: [deep.write]
+  steps: [{organize: 鱼缸选择@孔雀鱼}]
+  grade:
+    - page_terms: {page: 鱼缸选择, present: [孔雀鱼], absent: [黑壳虾]}
+- id: reuse-shrimp-page-control
+  kind: control
+  topic: 黑壳虾
+  world: reuse_shrimp
+  source: {ref: "同上的正例：目标自己的专名要在，防止优化成不提任何物种", db: audit_reuse}
+  purposes: [deep.write]
+  steps: [{organize: 鱼缸选择@黑壳虾}]
+  grade:
+    - page_terms: {page: 鱼缸选择, present: [虾], absent: [孔雀鱼]}
+
+# ---- added 2026-11-05. Each is a failure that happened (source) on another real page of world r1; the
+# page changes, the failure shape does not.
+- id: cut-first-para-components
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "决定清单 3 变体：另一页（连通分量第 3 节第一段 3 句），同一条「只留前两句」", db: audit_cards2}
+  steps: [{say: "把第三节第一段改短，只留前两句，其余段落原样保留", page: 连通分量}, {accept: true}]
+  grade:
+    - others_untouched: {page: 连通分量, section: 2}
+    - paragraph_kept: {page: 连通分量, section: 2}
+    - section_changed: {page: 连通分量, section: 2}
+- id: cut-first-para-giant
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "决定清单 3 变体：巨分量第 2 节有 6 段", db: audit_cards2}
+  steps: [{say: "把第二节第一段改短，只留前两句，其余段落原样保留", page: 巨分量}, {accept: true}]
+  grade:
+    - others_untouched: {page: 巨分量, section: 1}
+    - paragraph_kept: {page: 巨分量, section: 1}
+    - section_changed: {page: 巨分量, section: 1}
+- id: cut-first-para-grinder
+  kind: act
+  topic: 手冲咖啡
+  world: r1
+  source: {ref: "决定清单 3 变体：非数学页（磨豆机第 3 节第二段 4 句）", db: audit_cards2}
+  steps: [{say: "把第三节第二段改短，只留前两句，其余段落原样保留", page: 磨豆机}, {accept: true}]
+  grade:
+    - others_untouched: {page: 磨豆机, section: 2}
+    - paragraph_kept: {page: 磨豆机, section: 2, keep: [0, 2, 3, 4]}
+    - section_changed: {page: 磨豆机, section: 2}
+- id: cut-first-para-roast
+  kind: act
+  topic: 手冲咖啡
+  world: r1
+  source: {ref: "决定清单 3 变体：烘焙度第 3 节第二段 4 句", db: audit_cards2}
+  steps: [{say: "把第三节第二段改短，只留前两句，其余段落原样保留", page: 烘焙度}, {accept: true}]
+  grade:
+    - others_untouched: {page: 烘焙度, section: 2}
+    - paragraph_kept: {page: 烘焙度, section: 2, keep: [0, 2, 3, 4]}
+    - section_changed: {page: 烘焙度, section: 2}
+- id: hand-edit-kept-components
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "裁决 2026-11-04（手改的内容不动）变体：连通分量"}
+  steps:
+    - {hand_edit: {page: 连通分量, section: 1, append: "\n\n我手改的一句：连通分量里任意两点都有路径。"}}
+    - {say: "把第三节第一段改短，只留前两句", page: 连通分量}
+    - {accept: true}
+  grade:
+    - text_kept: {page: 连通分量, section: 1, text: "我手改的一句：连通分量里任意两点都有路径。"}
+    - section_changed: {page: 连通分量, section: 2}
+- id: practice-lands-on-open-page
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "pages.md 第二轮 7：助手加交互把草稿加到别的页（实际发生 3 次：鱼缸、连通分量、节点与边）"}
+  purposes: [assistant.turn, deep.write]
+  steps: [{say: "给这页加几道练习题", page: 连通分量}, {accept: true}]
+  grade:
+    - only_pages_changed: {pages: [连通分量]}
+    - no_text_lost: {page: 连通分量}
+- id: practice-lands-on-open-page-coffee
+  kind: act
+  topic: 手冲咖啡
+  world: r1
+  source: {ref: "pages.md 第二轮 7 变体：咖啡豆选择"}
+  purposes: [assistant.turn, deep.write]
+  steps: [{say: "给这页加几道练习题", page: 咖啡豆选择}, {accept: true}]
+  grade:
+    - only_pages_changed: {pages: [咖啡豆选择]}
+    - no_text_lost: {page: 咖啡豆选择}
+- id: rewrite-distribution-section-formulas
+  kind: act
+  topic: 渗流
+  world: r1
+  source: {ref: "pages.md 修 1 变体：P(k) 一节的公式（度与度分布第 4 节）", db: audit_pages}
+  steps: [{say: "把「P(k) 的分母是节点数 N 还是边数 L？」这一节讲得再清楚一点，公式不要动", page: 度与度分布}, {accept: true}]
+  grade:
+    - others_untouched: {page: 度与度分布, section: 3}
+    - marks_kept: {page: 度与度分布, section: 3}
+    - section_changed: {page: 度与度分布, section: 3}

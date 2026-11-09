@@ -1,0 +1,852 @@
+{
+ "concepts": [
+  {
+   "difficulty": 1,
+   "domain": "la",
+   "id": "linear_algebra",
+   "name_en": "Linear Algebra",
+   "name_zh": "线性代数"
+  },
+  {
+   "difficulty": 1,
+   "domain": "la",
+   "id": "vector",
+   "name_en": "Vector",
+   "name_zh": "向量"
+  },
+  {
+   "difficulty": 1,
+   "domain": "la",
+   "id": "matrix",
+   "name_en": "Matrix",
+   "name_zh": "矩阵"
+  },
+  {
+   "difficulty": 2,
+   "domain": "la",
+   "id": "linear_transformation",
+   "name_en": "Linear Transformation",
+   "name_zh": "线性变换"
+  },
+  {
+   "difficulty": 3,
+   "domain": "la",
+   "id": "eigenvalue",
+   "name_en": "Eigenvalue",
+   "name_zh": "特征值"
+  },
+  {
+   "difficulty": 2,
+   "domain": "prob",
+   "id": "variance",
+   "name_en": "Variance",
+   "name_zh": "方差"
+  },
+  {
+   "difficulty": 3,
+   "domain": "prob",
+   "id": "covariance",
+   "name_en": "Covariance Matrix",
+   "name_zh": "协方差矩阵"
+  },
+  {
+   "difficulty": 4,
+   "domain": "la",
+   "id": "svd",
+   "name_en": "SVD",
+   "name_zh": "奇异值分解"
+  },
+  {
+   "difficulty": 4,
+   "domain": "ml",
+   "id": "pca",
+   "name_en": "PCA",
+   "name_zh": "主成分分析"
+  },
+  {
+   "difficulty": 3,
+   "domain": "dl",
+   "id": "neural_network",
+   "name_en": "Neural Network",
+   "name_zh": "神经网络"
+  },
+  {
+   "difficulty": 4,
+   "domain": "dl",
+   "id": "autoencoder",
+   "name_en": "Autoencoder",
+   "name_zh": "自编码器"
+  },
+  {
+   "difficulty": 5,
+   "domain": "dl",
+   "id": "lora",
+   "name_en": "LoRA",
+   "name_zh": "低秩适配"
+  }
+ ],
+ "connections": [
+  {
+   "path": [
+    "pca",
+    "svd"
+   ],
+   "segment_id": "conn.pca_svd.en"
+  }
+ ],
+ "content_version": {
+  "created_at": "2026-10-01T00:00:00Z",
+  "id": "cv_runtimefixture",
+  "snapshot_ref": "versions/cv_runtimefixture/graph.json"
+ },
+ "edges": [
+  {
+   "dst": "matrix",
+   "kind": "formal",
+   "relation": "prerequisite_of",
+   "src": "vector",
+   "strength": 0.95
+  },
+  {
+   "dst": "linear_transformation",
+   "kind": "formal",
+   "relation": "prerequisite_of",
+   "src": "matrix",
+   "strength": 0.9
+  },
+  {
+   "dst": "eigenvalue",
+   "kind": "formal",
+   "relation": "prerequisite_of",
+   "src": "linear_transformation",
+   "strength": 0.9
+  },
+  {
+   "dst": "eigenvalue",
+   "kind": "formal",
+   "relation": "prerequisite_of",
+   "src": "matrix",
+   "strength": 0.95
+  },
+  {
+   "dst": "covariance",
+   "kind": "formal",
+   "relation": "prerequisite_of",
+   "src": "variance",
+   "strength": 0.9
+  },
+  {
+   "dst": "pca",
+   "kind": "formal",
+   "relation": "prerequisite_of",
+   "src": "eigenvalue",
+   "strength": 0.95
+  },
+  {
+   "dst": "pca",
+   "kind": "formal",
+   "relation": "prerequisite_of",
+   "src": "covariance",
+   "strength": 0.9
+  },
+  {
+   "dst": "svd",
+   "kind": "pedagogical",
+   "relation": "prerequisite_of",
+   "src": "eigenvalue",
+   "strength": 0.6
+  },
+  {
+   "dst": "autoencoder",
+   "kind": "formal",
+   "relation": "prerequisite_of",
+   "src": "neural_network",
+   "strength": 0.9
+  },
+  {
+   "dst": "lora",
+   "kind": "pedagogical",
+   "relation": "prerequisite_of",
+   "src": "svd",
+   "strength": 0.7
+  },
+  {
+   "dst": "svd",
+   "relation": "related_to",
+   "src": "pca",
+   "strength": 0.8
+  },
+  {
+   "dst": "autoencoder",
+   "relation": "related_to",
+   "src": "pca",
+   "strength": 0.7
+  },
+  {
+   "dst": "linear_algebra",
+   "relation": "part_of",
+   "src": "vector",
+   "strength": 1.0
+  },
+  {
+   "dst": "linear_algebra",
+   "relation": "part_of",
+   "src": "neural_network",
+   "strength": 1.0
+  }
+ ],
+ "passages": [
+  {
+   "id": "p_autoencoder.one_line.en",
+   "locator": "autoencoder.one_line.en",
+   "source_id": "src_fixture",
+   "text": "A network trained to reconstruct its input through a bottleneck."
+  },
+  {
+   "id": "p_conn.pca_svd.en",
+   "locator": "conn.pca_svd.en",
+   "source_id": "src_fixture",
+   "text": "PCA is the SVD of centered data."
+  },
+  {
+   "id": "p_covariance.definition.en",
+   "locator": "covariance.definition.en",
+   "source_id": "src_fixture",
+   "text": "Cov(X) = E[(X - mu)(X - mu)^T]."
+  },
+  {
+   "id": "p_eigenvalue.one_line.en",
+   "locator": "eigenvalue.one_line.en",
+   "source_id": "src_fixture",
+   "text": "A scale factor lambda with Av = lambda v."
+  },
+  {
+   "id": "p_linear_algebra.one_line.en",
+   "locator": "linear_algebra.one_line.en",
+   "source_id": "src_fixture",
+   "text": "The study of vectors and linear maps."
+  },
+  {
+   "id": "p_linear_transformation.one_line.en",
+   "locator": "linear_transformation.one_line.en",
+   "source_id": "src_fixture",
+   "text": "A map that preserves addition and scaling."
+  },
+  {
+   "id": "p_lora.one_line.en",
+   "locator": "lora.one_line.en",
+   "source_id": "src_fixture",
+   "text": "Fine-tuning with a low-rank weight update."
+  },
+  {
+   "id": "p_matrix.one_line.en",
+   "locator": "matrix.one_line.en",
+   "source_id": "src_fixture",
+   "text": "A rectangular array representing a linear map."
+  },
+  {
+   "id": "p_neural_network.one_line.en",
+   "locator": "neural_network.one_line.en",
+   "source_id": "src_fixture",
+   "text": "A composition of affine maps and nonlinearities."
+  },
+  {
+   "id": "p_pca.advanced.en",
+   "locator": "pca.advanced.en",
+   "source_id": "src_fixture",
+   "text": "Probabilistic PCA."
+  },
+  {
+   "id": "p_pca.definition.en",
+   "locator": "pca.definition.en",
+   "source_id": "src_fixture",
+   "text": "Principal components are eigenvectors of the covariance matrix."
+  },
+  {
+   "id": "p_pca.derivation.en",
+   "locator": "pca.derivation.en",
+   "source_id": "src_fixture",
+   "text": "Maximize w^T S w subject to |w| = 1."
+  },
+  {
+   "id": "p_pca.example.en.1",
+   "locator": "pca.example.en.1",
+   "source_id": "src_fixture",
+   "text": "2-D Gaussian cloud."
+  },
+  {
+   "id": "p_pca.example.en.2",
+   "locator": "pca.example.en.2",
+   "source_id": "src_fixture",
+   "text": "Eigenfaces."
+  },
+  {
+   "id": "p_pca.example.en.3",
+   "locator": "pca.example.en.3",
+   "source_id": "src_fixture",
+   "text": "Gene expression."
+  },
+  {
+   "id": "p_pca.intuition.en",
+   "locator": "pca.intuition.en",
+   "source_id": "src_fixture",
+   "text": "Rotate the axes so the first axis follows the spread of the data."
+  },
+  {
+   "id": "p_pca.misconception_fix.en",
+   "locator": "pca.misconception_fix.en",
+   "source_id": "src_fixture",
+   "text": "PCA does not select original features."
+  },
+  {
+   "id": "p_pca.one_line.en",
+   "locator": "pca.one_line.en",
+   "source_id": "src_fixture",
+   "text": "Project data onto directions of maximal variance."
+  },
+  {
+   "id": "p_svd.one_line.en",
+   "locator": "svd.one_line.en",
+   "source_id": "src_fixture",
+   "text": "A = U S V^T for any matrix A."
+  },
+  {
+   "id": "p_variance.one_line.en",
+   "locator": "variance.one_line.en",
+   "source_id": "src_fixture",
+   "text": "Expected squared deviation from the mean."
+  },
+  {
+   "id": "p_vector.one_line.en",
+   "locator": "vector.one_line.en",
+   "source_id": "src_fixture",
+   "text": "An element of a vector space."
+  }
+ ],
+ "perspectives": [],
+ "quiz_items": [
+  {
+   "answer_key": "a",
+   "answer_verified_by_human": true,
+   "concept_ids": [
+    "eigenvalue"
+   ],
+   "difficulty": 3,
+   "id": "q_eig_1",
+   "kind": "recall",
+   "stem": "Fixture question q_eig_1"
+  },
+  {
+   "answer_key": "a",
+   "answer_verified_by_human": true,
+   "concept_ids": [
+    "pca"
+   ],
+   "difficulty": 4,
+   "id": "q_pca_1",
+   "kind": "application",
+   "stem": "Fixture question q_pca_1"
+  },
+  {
+   "answer_key": "a",
+   "answer_verified_by_human": true,
+   "concept_ids": [
+    "pca",
+    "eigenvalue"
+   ],
+   "difficulty": 4,
+   "id": "q_pca_eig",
+   "kind": "transfer",
+   "stem": "Fixture question q_pca_eig"
+  },
+  {
+   "answer_key": "a",
+   "answer_verified_by_human": true,
+   "concept_ids": [
+    "covariance"
+   ],
+   "difficulty": 3,
+   "id": "q_cov_1",
+   "kind": "recall",
+   "stem": "Fixture question q_cov_1"
+  }
+ ],
+ "segments": [
+  {
+   "concept_id": "autoencoder",
+   "id": "autoencoder.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_autoencoder.one_line.en"
+     ],
+     "text": "A network trained to reconstruct its input through a bottleneck."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "conn.pca_svd.en",
+   "kind": "connection",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_conn.pca_svd.en"
+     ],
+     "text": "PCA is the SVD of centered data."
+    }
+   ]
+  },
+  {
+   "concept_id": "covariance",
+   "id": "covariance.definition.en",
+   "kind": "definition",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_covariance.definition.en"
+     ],
+     "text": "Cov(X) = E[(X - mu)(X - mu)^T]."
+    }
+   ]
+  },
+  {
+   "concept_id": "eigenvalue",
+   "id": "eigenvalue.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_eigenvalue.one_line.en"
+     ],
+     "text": "A scale factor lambda with Av = lambda v."
+    }
+   ]
+  },
+  {
+   "concept_id": "linear_algebra",
+   "id": "linear_algebra.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_linear_algebra.one_line.en"
+     ],
+     "text": "The study of vectors and linear maps."
+    }
+   ]
+  },
+  {
+   "concept_id": "linear_transformation",
+   "id": "linear_transformation.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "auto_verified",
+   "sentences": [
+    {
+     "citations": [
+      "p_linear_transformation.one_line.en"
+     ],
+     "text": "A map that preserves addition and scaling."
+    }
+   ]
+  },
+  {
+   "concept_id": "lora",
+   "id": "lora.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_lora.one_line.en"
+     ],
+     "text": "Fine-tuning with a low-rank weight update."
+    }
+   ]
+  },
+  {
+   "concept_id": "matrix",
+   "id": "matrix.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_matrix.one_line.en"
+     ],
+     "text": "A rectangular array representing a linear map."
+    }
+   ]
+  },
+  {
+   "concept_id": "neural_network",
+   "id": "neural_network.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_neural_network.one_line.en"
+     ],
+     "text": "A composition of affine maps and nonlinearities."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "pca.advanced.en",
+   "kind": "advanced",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_pca.advanced.en"
+     ],
+     "text": "Probabilistic PCA."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "pca.definition.en",
+   "kind": "definition",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_pca.definition.en"
+     ],
+     "text": "Principal components are eigenvectors of the covariance matrix."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "pca.derivation.en",
+   "kind": "derivation",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_pca.derivation.en"
+     ],
+     "text": "Maximize w^T S w subject to |w| = 1."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "pca.example.en.1",
+   "kind": "example",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_pca.example.en.1"
+     ],
+     "text": "2-D Gaussian cloud."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "pca.example.en.2",
+   "kind": "example",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "auto_verified",
+   "sentences": [
+    {
+     "citations": [
+      "p_pca.example.en.2"
+     ],
+     "text": "Eigenfaces."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "pca.example.en.3",
+   "kind": "example",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "auto_verified",
+   "sentences": [
+    {
+     "citations": [
+      "p_pca.example.en.3"
+     ],
+     "text": "Gene expression."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "pca.intuition.en",
+   "kind": "intuition",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_pca.intuition.en"
+     ],
+     "text": "Rotate the axes so the first axis follows the spread of the data."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "pca.misconception_fix.en",
+   "kind": "misconception_fix",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_pca.misconception_fix.en"
+     ],
+     "text": "PCA does not select original features."
+    }
+   ]
+  },
+  {
+   "concept_id": "pca",
+   "id": "pca.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_pca.one_line.en"
+     ],
+     "text": "Project data onto directions of maximal variance."
+    }
+   ]
+  },
+  {
+   "concept_id": "svd",
+   "id": "svd.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_svd.one_line.en"
+     ],
+     "text": "A = U S V^T for any matrix A."
+    }
+   ]
+  },
+  {
+   "concept_id": "variance",
+   "id": "variance.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_variance.one_line.en"
+     ],
+     "text": "Expected squared deviation from the mean."
+    }
+   ]
+  },
+  {
+   "concept_id": "vector",
+   "id": "vector.one_line.en",
+   "kind": "one_line",
+   "lang": "en",
+   "license_obligations": {
+    "attribution": [
+     "Fixture Notes (CC BY 4.0)"
+    ],
+    "non_commercial": false,
+    "share_alike": false
+   },
+   "review_status": "human_approved",
+   "sentences": [
+    {
+     "citations": [
+      "p_vector.one_line.en"
+     ],
+     "text": "An element of a vector space."
+    }
+   ]
+  }
+ ],
+ "sources": [
+  {
+   "attribution_required": true,
+   "commercial_allowed": true,
+   "derivative_allowed": true,
+   "id": "src_fixture",
+   "license": "CC-BY-4.0",
+   "license_verified_at": "2026-10-01T00:00:00Z",
+   "locator": "https://example.org/fixture",
+   "redistribution_allowed": true,
+   "share_alike": false,
+   "title": "Fixture Notes"
+  }
+ ]
+}

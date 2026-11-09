@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root { color-scheme: light dark; }
+body {
+  margin: 0; padding: var(--size-4-4, 16px);
+  font-family: var(--font-text, system-ui, sans-serif);
+  background: var(--background-primary, Canvas); color: var(--text-normal, CanvasText);
+}
+.hint { color: var(--text-muted, GrayText); margin: 0 0 var(--size-4-3, 12px); }
+.out { font-size: 1.6em; margin: var(--size-4-3, 12px) 0; }
+button {
+  font: inherit; cursor: pointer; padding: var(--size-4-2, 8px) var(--size-4-4, 16px);
+  border: 1px solid var(--background-modifier-border, GrayText); border-radius: var(--radius-m, 8px);
+  background: var(--interactive-accent, AccentColor); color: var(--text-on-accent, AccentColorText);
+}
+@media (prefers-color-scheme: dark) { .hint { opacity: 0.9; } }
+</style>
+</head>
+<body>
+<p class="hint">z 每加 1，这个数就离均值再远一个标准差。</p>
+<button id="step" type="button">再远一个标准差</button>
+<p class="out">z = <span id="z">0</span></p>
+<script>
+(function () {
+  var z = 0;
+  var out = document.getElementById("z");
+  document.getElementById("step").addEventListener("click", function () {
+    z += 1;
+    out.textContent = String(z);
+  });
+})();
+</script>
+</body>
+</html>

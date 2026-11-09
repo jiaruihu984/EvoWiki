@@ -1,0 +1,2103 @@
+{
+ "component_id": "step-process",
+ "name": "分步过程",
+ "description": "把一个过程拆成几步，每步用表格或方框显示当前状态，变化的格子被标出；上一步/下一步逐步看，可选在某一步故意出错，看错误怎样一路传下去，再回到正确路径。",
+ "learning_question": "这个过程每一步改变了什么？某一步出错会怎样传下去？",
+ "scenarios": [
+  "DNA 复制",
+  "二分查找",
+  "算法执行过程",
+  "协议握手",
+  "推导步骤",
+  "化学反应步骤",
+  "游戏流程"
+ ],
+ "params": {
+  "步骤": "上一步、下一步、重来",
+  "故意出错": "在指定的一步切到出错路径，看后果，再回到正确路径"
+ },
+ "html_path": "src/evowiki/deep/components/step-process.html",
+ "height": 600,
+ "probes": [
+  {
+   "target": "#next",
+   "action": "click",
+   "expect_change": "#result"
+  },
+  {
+   "target": "#reset",
+   "action": "click",
+   "expect_change": "#result"
+  }
+ ],
+ "source": "component-library: step-through with a deliberate mistake, from the replication / pairing prototypes",
+ "config_schema": {
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+   "title",
+   "question",
+   "layout",
+   "columns",
+   "steps",
+   "mistake"
+  ],
+  "properties": {
+   "title": {
+    "type": "string",
+    "description": "组件标题，说清是什么过程"
+   },
+   "question": {
+    "type": "string",
+    "description": "这个交互回答的学习问题，一句话"
+   },
+   "layout": {
+    "type": "string",
+    "enum": [
+     "table",
+     "boxes"
+    ],
+    "description": "状态怎么画：table 是表格（有列标题），boxes 是一排排带名字的方框"
+   },
+   "columns": {
+    "type": "array",
+    "items": {
+     "type": "string"
+    },
+    "description": "layout 为 table 时的列标题（如下标 0,1,2…），与每行格数对应；boxes 或不需要时给空数组"
+   },
+   "steps": {
+    "type": "array",
+    "minItems": 1,
+    "description": "正确做法的 3–10 个步骤，按顺序",
+    "items": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "title",
+      "explain",
+      "rows"
+     ],
+     "properties": {
+      "title": {
+       "type": "string",
+       "description": "这一步的短标题（一行），说清这一步做了什么"
+      },
+      "explain": {
+       "type": "string",
+       "description": "1–2 句话解释这一步为什么这样做"
+      },
+      "rows": {
+       "type": "array",
+       "minItems": 1,
+       "description": "这一步的状态：表格或方框的若干行；所有步骤的行数、每行格数保持一致，便于对比",
+       "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+         "label",
+         "cells"
+        ],
+        "properties": {
+         "label": {
+          "type": "string",
+          "description": "这一行的名字（短），没有就给空字符串"
+         },
+         "cells": {
+          "type": "array",
+          "minItems": 1,
+          "description": "这一行的格子，最多 12 个",
+          "items": {
+           "type": "object",
+           "additionalProperties": false,
+           "required": [
+            "text",
+            "changed"
+           ],
+           "properties": {
+            "text": {
+             "type": "string",
+             "description": "格子里的短字符串（几个字以内）"
+            },
+            "changed": {
+             "type": "boolean",
+             "description": "这一步这一格是新出现或改变的就为 true"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "mistake": {
+    "anyOf": [
+     {
+      "type": "null"
+     },
+     {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "at_step",
+       "button_label",
+       "consequence",
+       "wrong_steps"
+      ],
+      "properties": {
+       "at_step": {
+        "type": "integer",
+        "description": "在第几步（从 1 数起）出现“故意出错”按钮；按下后这一步起改走 wrong_steps"
+       },
+       "button_label": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "description": "按钮文字，null 时用“在这一步故意出错”"
+       },
+       "consequence": {
+        "type": "string",
+        "description": "出错路径上一直显示的后果说明，一两句，说清错误为什么会传下去"
+       },
+       "wrong_steps": {
+        "type": "array",
+        "minItems": 1,
+        "description": "从 at_step 起的出错版本：第 1 项替换正确的第 at_step 步，之后依次替换；格子结构要和正确步骤对应，才能标出哪一格错了",
+        "items": {
+         "type": "object",
+         "additionalProperties": false,
+         "required": [
+          "title",
+          "explain",
+          "rows"
+         ],
+         "properties": {
+          "title": {
+           "type": "string",
+           "description": "这一步的短标题（一行），说清这一步做了什么"
+          },
+          "explain": {
+           "type": "string",
+           "description": "1–2 句话解释这一步为什么这样做"
+          },
+          "rows": {
+           "type": "array",
+           "minItems": 1,
+           "description": "这一步的状态：表格或方框的若干行；所有步骤的行数、每行格数保持一致，便于对比",
+           "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+             "label",
+             "cells"
+            ],
+            "properties": {
+             "label": {
+              "type": "string",
+              "description": "这一行的名字（短），没有就给空字符串"
+             },
+             "cells": {
+              "type": "array",
+              "minItems": 1,
+              "description": "这一行的格子，最多 12 个",
+              "items": {
+               "type": "object",
+               "additionalProperties": false,
+               "required": [
+                "text",
+                "changed"
+               ],
+               "properties": {
+                "text": {
+                 "type": "string",
+                 "description": "格子里的短字符串（几个字以内）"
+                },
+                "changed": {
+                 "type": "boolean",
+                 "description": "这一步这一格是新出现或改变的就为 true"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    ],
+    "description": "可选：学习者可以故意走错的一处；不需要就 null"
+   }
+  }
+ },
+ "example_configs": [
+  {
+   "title": "复制一份 DNA：每一格按规则配对",
+   "question": "只靠“A 对 T、G 对 C”这一条规则，为什么能得到两份和原来一样的 DNA？配错一格会怎样？",
+   "layout": "boxes",
+   "columns": [],
+   "steps": [
+    {
+     "title": "原来的一份 DNA",
+     "explain": "双链 DNA 由两条链配对而成：上链的 A 对着 T，T 对着 A，G 对着 C，C 对着 G。",
+     "rows": [
+      {
+       "label": "原 DNA 上链",
+       "cells": [
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "原 DNA 下链",
+       "cells": [
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "两条链拉开，各自当模板",
+     "explain": "解旋酶把两条链拉开。每条旧链都露出一排没配对的碱基，等着配新链。",
+     "rows": [
+      {
+       "label": "旧链甲（当模板）",
+       "cells": [
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "新链甲",
+       "cells": [
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        }
+       ]
+      },
+      {
+       "label": "旧链乙（当模板）",
+       "cells": [
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "新链乙",
+       "cells": [
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        },
+        {
+         "text": "?",
+         "changed": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "新链甲：按规则配",
+     "explain": "新链甲逐格配对：旧链甲是 A 就配 T，是 T 就配 A，是 G 就配 C，是 C 就配 G。",
+     "rows": [
+      {
+       "label": "旧链甲（当模板）",
+       "cells": [
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "新链甲",
+       "cells": [
+        {
+         "text": "T",
+         "changed": true
+        },
+        {
+         "text": "A",
+         "changed": true
+        },
+        {
+         "text": "C",
+         "changed": true
+        },
+        {
+         "text": "G",
+         "changed": true
+        },
+        {
+         "text": "G",
+         "changed": true
+        },
+        {
+         "text": "T",
+         "changed": true
+        }
+       ]
+      },
+      {
+       "label": "旧链乙（当模板）",
+       "cells": [
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "新链乙",
+       "cells": [
+        {
+         "text": "?",
+         "changed": false
+        },
+        {
+         "text": "?",
+         "changed": false
+        },
+        {
+         "text": "?",
+         "changed": false
+        },
+        {
+         "text": "?",
+         "changed": false
+        },
+        {
+         "text": "?",
+         "changed": false
+        },
+        {
+         "text": "?",
+         "changed": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "新链乙：同样按规则配",
+     "explain": "另一条旧链也一样当模板，规则没有变。",
+     "rows": [
+      {
+       "label": "旧链甲（当模板）",
+       "cells": [
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "新链甲",
+       "cells": [
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "旧链乙（当模板）",
+       "cells": [
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "新链乙",
+       "cells": [
+        {
+         "text": "A",
+         "changed": true
+        },
+        {
+         "text": "T",
+         "changed": true
+        },
+        {
+         "text": "G",
+         "changed": true
+        },
+        {
+         "text": "C",
+         "changed": true
+        },
+        {
+         "text": "C",
+         "changed": true
+        },
+        {
+         "text": "A",
+         "changed": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "得到两份相同的 DNA",
+     "explain": "每份 DNA 都是“一条旧链 + 一条新链”。两份的碱基顺序和原来完全一样，这叫半保留复制。",
+     "rows": [
+      {
+       "label": "DNA① 上链（旧）",
+       "cells": [
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "DNA① 下链（新）",
+       "cells": [
+        {
+         "text": "T",
+         "changed": true
+        },
+        {
+         "text": "A",
+         "changed": true
+        },
+        {
+         "text": "C",
+         "changed": true
+        },
+        {
+         "text": "G",
+         "changed": true
+        },
+        {
+         "text": "G",
+         "changed": true
+        },
+        {
+         "text": "T",
+         "changed": true
+        }
+       ]
+      },
+      {
+       "label": "DNA② 上链（新）",
+       "cells": [
+        {
+         "text": "A",
+         "changed": true
+        },
+        {
+         "text": "T",
+         "changed": true
+        },
+        {
+         "text": "G",
+         "changed": true
+        },
+        {
+         "text": "C",
+         "changed": true
+        },
+        {
+         "text": "C",
+         "changed": true
+        },
+        {
+         "text": "A",
+         "changed": true
+        }
+       ]
+      },
+      {
+       "label": "DNA② 下链（旧）",
+       "cells": [
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "下一轮：用 DNA① 的下链当模板",
+     "explain": "再复制一轮时，DNA① 的下链也要当模板。它是什么，新配出的链就是什么。",
+     "rows": [
+      {
+       "label": "模板（DNA① 下链）",
+       "cells": [
+        {
+         "text": "T",
+         "changed": false
+        },
+        {
+         "text": "A",
+         "changed": false
+        },
+        {
+         "text": "C",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "G",
+         "changed": false
+        },
+        {
+         "text": "T",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "新配的上链",
+       "cells": [
+        {
+         "text": "A",
+         "changed": true
+        },
+        {
+         "text": "T",
+         "changed": true
+        },
+        {
+         "text": "G",
+         "changed": true
+        },
+        {
+         "text": "C",
+         "changed": true
+        },
+        {
+         "text": "C",
+         "changed": true
+        },
+        {
+         "text": "A",
+         "changed": true
+        }
+       ]
+      },
+      {
+       "label": "和最初的上链比",
+       "cells": [
+        {
+         "text": "一致",
+         "changed": false
+        },
+        {
+         "text": "一致",
+         "changed": false
+        },
+        {
+         "text": "一致",
+         "changed": false
+        },
+        {
+         "text": "一致",
+         "changed": false
+        },
+        {
+         "text": "一致",
+         "changed": false
+        },
+        {
+         "text": "一致",
+         "changed": false
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "mistake": {
+    "at_step": 3,
+    "button_label": "在这一步故意出错",
+    "consequence": "错配的一格留在了新链里，它再被拿去当模板，错误就被抄给下一代。",
+    "wrong_steps": [
+     {
+      "title": "新链甲：第 4 格配错了",
+      "explain": "旧链甲第 4 格是 C，应该配 G，这里却放了 A。A 只能配 T，这一格配不上。",
+      "rows": [
+       {
+        "label": "旧链甲（当模板）",
+        "cells": [
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "T",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "新链甲",
+        "cells": [
+         {
+          "text": "T",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": true
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "T",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "旧链乙（当模板）",
+        "cells": [
+         {
+          "text": "T",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "T",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "新链乙",
+        "cells": [
+         {
+          "text": "?",
+          "changed": false
+         },
+         {
+          "text": "?",
+          "changed": false
+         },
+         {
+          "text": "?",
+          "changed": false
+         },
+         {
+          "text": "?",
+          "changed": false
+         },
+         {
+          "text": "?",
+          "changed": false
+         },
+         {
+          "text": "?",
+          "changed": false
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "新链乙：照常配对",
+      "explain": "另一条链配对没有问题，错误只在新链甲里。",
+      "rows": [
+       {
+        "label": "旧链甲（当模板）",
+        "cells": [
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "T",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "新链甲",
+        "cells": [
+         {
+          "text": "T",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "T",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "旧链乙（当模板）",
+        "cells": [
+         {
+          "text": "T",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "T",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "新链乙",
+        "cells": [
+         {
+          "text": "A",
+          "changed": true
+         },
+         {
+          "text": "T",
+          "changed": true
+         },
+         {
+          "text": "G",
+          "changed": true
+         },
+         {
+          "text": "C",
+          "changed": true
+         },
+         {
+          "text": "C",
+          "changed": true
+         },
+         {
+          "text": "A",
+          "changed": true
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "得到两份 DNA，其中一份有错配",
+      "explain": "DNA① 的上下链在第 4 格对不上（C 对 A）。DNA② 是好的。细胞里的修复系统有机会发现它，但这里假设没被修复。",
+      "rows": [
+       {
+        "label": "DNA① 上链（旧）",
+        "cells": [
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "T",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "DNA① 下链（新）",
+        "cells": [
+         {
+          "text": "T",
+          "changed": true
+         },
+         {
+          "text": "A",
+          "changed": true
+         },
+         {
+          "text": "C",
+          "changed": true
+         },
+         {
+          "text": "A",
+          "changed": true
+         },
+         {
+          "text": "G",
+          "changed": true
+         },
+         {
+          "text": "T",
+          "changed": true
+         }
+        ]
+       },
+       {
+        "label": "DNA② 上链（新）",
+        "cells": [
+         {
+          "text": "A",
+          "changed": true
+         },
+         {
+          "text": "T",
+          "changed": true
+         },
+         {
+          "text": "G",
+          "changed": true
+         },
+         {
+          "text": "C",
+          "changed": true
+         },
+         {
+          "text": "C",
+          "changed": true
+         },
+         {
+          "text": "A",
+          "changed": true
+         }
+        ]
+       },
+       {
+        "label": "DNA② 下链（旧）",
+        "cells": [
+         {
+          "text": "T",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "T",
+          "changed": false
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "下一轮：错的链当模板",
+      "explain": "这条下链第 4 格是 A，所以新配出的上链这一格是 T，而不是原来的 C。",
+      "rows": [
+       {
+        "label": "模板（DNA① 下链）",
+        "cells": [
+         {
+          "text": "T",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "C",
+          "changed": false
+         },
+         {
+          "text": "A",
+          "changed": false
+         },
+         {
+          "text": "G",
+          "changed": false
+         },
+         {
+          "text": "T",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "新配的上链",
+        "cells": [
+         {
+          "text": "A",
+          "changed": true
+         },
+         {
+          "text": "T",
+          "changed": true
+         },
+         {
+          "text": "G",
+          "changed": true
+         },
+         {
+          "text": "T",
+          "changed": true
+         },
+         {
+          "text": "C",
+          "changed": true
+         },
+         {
+          "text": "A",
+          "changed": true
+         }
+        ]
+       },
+       {
+        "label": "和最初的上链比",
+        "cells": [
+         {
+          "text": "一致",
+          "changed": false
+         },
+         {
+          "text": "一致",
+          "changed": false
+         },
+         {
+          "text": "一致",
+          "changed": false
+         },
+         {
+          "text": "不同",
+          "changed": true
+         },
+         {
+          "text": "一致",
+          "changed": false
+         },
+         {
+          "text": "一致",
+          "changed": false
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "title": "二分查找：在有序数组里找 59",
+   "question": "每一步为什么能一下子排除一半？指针多挪一格（差 1）会出什么问题？",
+   "layout": "table",
+   "columns": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7"
+   ],
+   "steps": [
+    {
+     "title": "开始：整个数组都可能",
+     "explain": "数组已经从小到大排好。lo 指向最左，hi 指向最右，目标 59 还没排除。",
+     "rows": [
+      {
+       "label": "值",
+       "cells": [
+        {
+         "text": "3",
+         "changed": false
+        },
+        {
+         "text": "8",
+         "changed": false
+        },
+        {
+         "text": "15",
+         "changed": false
+        },
+        {
+         "text": "21",
+         "changed": false
+        },
+        {
+         "text": "34",
+         "changed": false
+        },
+        {
+         "text": "47",
+         "changed": false
+        },
+        {
+         "text": "59",
+         "changed": false
+        },
+        {
+         "text": "72",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "状态",
+       "cells": [
+        {
+         "text": "lo",
+         "changed": true
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "hi",
+         "changed": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "看中间：mid = (0+7)//2 = 3",
+     "explain": "中间是 21。21 小于 59，所以 59 只可能在 mid 右边，mid 和它左边的都不用看了。",
+     "rows": [
+      {
+       "label": "值",
+       "cells": [
+        {
+         "text": "3",
+         "changed": false
+        },
+        {
+         "text": "8",
+         "changed": false
+        },
+        {
+         "text": "15",
+         "changed": false
+        },
+        {
+         "text": "21",
+         "changed": false
+        },
+        {
+         "text": "34",
+         "changed": false
+        },
+        {
+         "text": "47",
+         "changed": false
+        },
+        {
+         "text": "59",
+         "changed": false
+        },
+        {
+         "text": "72",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "状态",
+       "cells": [
+        {
+         "text": "lo",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "mid",
+         "changed": true
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "hi",
+         "changed": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "lo 移到 mid+1 = 4",
+     "explain": "排除下标 0 到 3。注意是 mid+1：mid 本身已经看过，不是答案。",
+     "rows": [
+      {
+       "label": "值",
+       "cells": [
+        {
+         "text": "3",
+         "changed": false
+        },
+        {
+         "text": "8",
+         "changed": false
+        },
+        {
+         "text": "15",
+         "changed": false
+        },
+        {
+         "text": "21",
+         "changed": false
+        },
+        {
+         "text": "34",
+         "changed": false
+        },
+        {
+         "text": "47",
+         "changed": false
+        },
+        {
+         "text": "59",
+         "changed": false
+        },
+        {
+         "text": "72",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "状态",
+       "cells": [
+        {
+         "text": "排除",
+         "changed": true
+        },
+        {
+         "text": "排除",
+         "changed": true
+        },
+        {
+         "text": "排除",
+         "changed": true
+        },
+        {
+         "text": "排除",
+         "changed": true
+        },
+        {
+         "text": "lo",
+         "changed": true
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "hi",
+         "changed": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "看中间：mid = (4+7)//2 = 5",
+     "explain": "中间是 47。47 小于 59，目标还在右边。",
+     "rows": [
+      {
+       "label": "值",
+       "cells": [
+        {
+         "text": "3",
+         "changed": false
+        },
+        {
+         "text": "8",
+         "changed": false
+        },
+        {
+         "text": "15",
+         "changed": false
+        },
+        {
+         "text": "21",
+         "changed": false
+        },
+        {
+         "text": "34",
+         "changed": false
+        },
+        {
+         "text": "47",
+         "changed": false
+        },
+        {
+         "text": "59",
+         "changed": false
+        },
+        {
+         "text": "72",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "状态",
+       "cells": [
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "lo",
+         "changed": false
+        },
+        {
+         "text": "mid",
+         "changed": true
+        },
+        {
+         "text": "",
+         "changed": false
+        },
+        {
+         "text": "hi",
+         "changed": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "lo 移到 mid+1 = 6",
+     "explain": "再排除下标 4 和 5，只剩下标 6 和 7 两个候选。",
+     "rows": [
+      {
+       "label": "值",
+       "cells": [
+        {
+         "text": "3",
+         "changed": false
+        },
+        {
+         "text": "8",
+         "changed": false
+        },
+        {
+         "text": "15",
+         "changed": false
+        },
+        {
+         "text": "21",
+         "changed": false
+        },
+        {
+         "text": "34",
+         "changed": false
+        },
+        {
+         "text": "47",
+         "changed": false
+        },
+        {
+         "text": "59",
+         "changed": false
+        },
+        {
+         "text": "72",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "状态",
+       "cells": [
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": true
+        },
+        {
+         "text": "排除",
+         "changed": true
+        },
+        {
+         "text": "lo",
+         "changed": true
+        },
+        {
+         "text": "hi",
+         "changed": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "看中间：mid = (6+7)//2 = 6，找到了",
+     "explain": "下标 6 的值是 59，正好等于目标。总共只看了 3 个数，而不是 7 个。",
+     "rows": [
+      {
+       "label": "值",
+       "cells": [
+        {
+         "text": "3",
+         "changed": false
+        },
+        {
+         "text": "8",
+         "changed": false
+        },
+        {
+         "text": "15",
+         "changed": false
+        },
+        {
+         "text": "21",
+         "changed": false
+        },
+        {
+         "text": "34",
+         "changed": false
+        },
+        {
+         "text": "47",
+         "changed": false
+        },
+        {
+         "text": "59",
+         "changed": false
+        },
+        {
+         "text": "72",
+         "changed": false
+        }
+       ]
+      },
+      {
+       "label": "状态",
+       "cells": [
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "排除",
+         "changed": false
+        },
+        {
+         "text": "找到",
+         "changed": true
+        },
+        {
+         "text": "hi",
+         "changed": false
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "mistake": {
+    "at_step": 5,
+    "button_label": "在这一步故意出错",
+    "consequence": "lo 多跳了一格（写成 mid+2），把正确答案所在的下标 6 跳过去了，结果报告“没找到”，但 59 明明在数组里。",
+    "wrong_steps": [
+     {
+      "title": "lo 错写成 mid+2 = 7",
+      "explain": "本该是 mid+1 = 6，这里多加了 1，下标 6（59 所在的位置）被一起排除了。",
+      "rows": [
+       {
+        "label": "值",
+        "cells": [
+         {
+          "text": "3",
+          "changed": false
+         },
+         {
+          "text": "8",
+          "changed": false
+         },
+         {
+          "text": "15",
+          "changed": false
+         },
+         {
+          "text": "21",
+          "changed": false
+         },
+         {
+          "text": "34",
+          "changed": false
+         },
+         {
+          "text": "47",
+          "changed": false
+         },
+         {
+          "text": "59",
+          "changed": false
+         },
+         {
+          "text": "72",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "状态",
+        "cells": [
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": true
+         },
+         {
+          "text": "排除",
+          "changed": true
+         },
+         {
+          "text": "排除",
+          "changed": true
+         },
+         {
+          "text": "lo",
+          "changed": true
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "看中间：mid = (7+7)//2 = 7",
+      "explain": "下标 7 的值是 72，大于 59，于是认为目标在 mid 左边。",
+      "rows": [
+       {
+        "label": "值",
+        "cells": [
+         {
+          "text": "3",
+          "changed": false
+         },
+         {
+          "text": "8",
+          "changed": false
+         },
+         {
+          "text": "15",
+          "changed": false
+         },
+         {
+          "text": "21",
+          "changed": false
+         },
+         {
+          "text": "34",
+          "changed": false
+         },
+         {
+          "text": "47",
+          "changed": false
+         },
+         {
+          "text": "59",
+          "changed": false
+         },
+         {
+          "text": "72",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "状态",
+        "cells": [
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "mid",
+          "changed": true
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": "hi 移到 mid-1 = 6，lo > hi",
+      "explain": "lo 是 7，hi 是 6，候选区间是空的，程序结束并报告“没找到”。",
+      "rows": [
+       {
+        "label": "值",
+        "cells": [
+         {
+          "text": "3",
+          "changed": false
+         },
+         {
+          "text": "8",
+          "changed": false
+         },
+         {
+          "text": "15",
+          "changed": false
+         },
+         {
+          "text": "21",
+          "changed": false
+         },
+         {
+          "text": "34",
+          "changed": false
+         },
+         {
+          "text": "47",
+          "changed": false
+         },
+         {
+          "text": "59",
+          "changed": false
+         },
+         {
+          "text": "72",
+          "changed": false
+         }
+        ]
+       },
+       {
+        "label": "状态",
+        "cells": [
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "排除",
+          "changed": false
+         },
+         {
+          "text": "hi",
+          "changed": true
+         },
+         {
+          "text": "lo",
+          "changed": true
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

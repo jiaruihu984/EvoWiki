@@ -1,0 +1,7 @@
+node_modules/
+main.js
+test-vault/.obsidian/plugins/evowiki/
+test-vault/.obsidian/workspace*.json
+test-vault/.obsidian/*
+!test-vault/.obsidian/community-plugins.json
+dev/harness/dist/

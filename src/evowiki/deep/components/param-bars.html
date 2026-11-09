@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E5%8F%82%E6%95%B0%E4%B8%8E%E6%9D%A1%E5%BD%A2%E5%9B%BE%22-->参数与条形图</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+.nm{fill:var(--tx);font:600 13px var(--font)}
+.vv{fill:var(--tx);font:600 13px var(--mono);font-variant-numeric:tabular-nums}
+.trk{fill:var(--bg-2)}
+.fill{fill:var(--accent)}
+.fill.topJ{stroke:var(--warn);stroke-width:2.5}
+.thr{stroke:var(--tx-3);stroke-width:1.5;stroke-dasharray:3 3}
+.mk{fill:var(--warn)}
+.mkTx{fill:var(--tx);font:600 12px var(--font)}
+.notes{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--tx-2)}
+.notes b{color:var(--tx)}
+.formulas{margin:0}
+.formulas div{margin-bottom:4px}
+</style>
+<script data-evowiki-locale="param-bars"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage">
+      <svg id="plot" viewBox="0 0 320 200" role="img" aria-labelledby="plotDesc"><desc id="plotDesc"></desc></svg>
+      <ul class="notes" id="notes" aria-label="提示" data-ew-attrs='{"aria-label":"提示"}'></ul>
+    </div>
+    <div class="side">
+      <div id="sliders" class="side"></div>
+      <div class="row"><button type="button" id="reset"><!--ew-t:%22%E6%81%A2%E5%A4%8D%E5%88%9D%E5%A7%8B%E5%80%BC%22-->恢复初始值</button></div>
+      <div class="read" id="read" aria-label="每个结果的算法" data-ew-attrs='{"aria-label":"每个结果的算法"}'></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("模型多复杂才合适：偏差、方差与总误差"),"question": ewt("把模型调得更复杂，为什么偏差降了、方差却升了？多给数据能不能缓解？"),"sliders":[{"name": ewt("模型复杂度（多项式次数）"),"unit":null,"min":1,"max":10,"step":1,"initial":3},{"name": ewt("训练样本数"),"unit": ewt("条"),"min":20,"max":500,"step":10,"initial":100}],"outputs":[{"name": ewt("偏差的平方"),"unit":null,"formula":{"kind":"power","weights":null,"factors":null,"num":null,"den":null,"base":0,"exp":-1,"terms":null,"scale":8,"bias":null},"notes":[{"when":"above","threshold":4,"text": ewt("模型太简单：连数据里的规律都没抓住，这叫欠拟合，偏差大。")}]},{"name": ewt("方差"),"unit":null,"formula":{"kind":"ratio","weights":null,"factors":null,"num":0,"den":1,"base":null,"exp":null,"terms":null,"scale":30,"bias":null},"notes":[{"when":"above","threshold":2.5,"text": ewt("模型太复杂或数据太少：模型被训练数据里的偶然波动带着走，这叫过拟合，方差大。")}]},{"name": ewt("总误差"),"unit":null,"formula":{"kind":"combine","weights":null,"factors":null,"num":null,"den":null,"base":null,"exp":null,"terms":[{"output":0,"weight":1},{"output":1,"weight":1}],"scale":null,"bias":0.5},"notes":[{"when":"below","threshold":3.8,"text": ewt("接近最低点：偏差和方差互相抵消得比较好。再往复杂走，方差涨得比偏差降得快。")}]}]};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?(Math.abs(x)>=1000?x.toFixed(0):x.toFixed(d)):'—';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+const nf=v=>{if(!Number.isFinite(v))return '—';const a=Math.abs(v);return v.toLocaleString('en-US',{maximumFractionDigits:a<10?2:a<100?1:0})};
+
+// ---- sliders (clamped) ----
+const SL=(C.sliders||[]).slice(0,4).map(s=>{let mn=Number(s.min),mx=Number(s.max);if(!Number.isFinite(mn))mn=0;if(!Number.isFinite(mx)||mx<=mn)mx=mn+1;
+  let st=Number(s.step);if(!(st>0))st=(mx-mn)/100;
+  const dec=Math.min(6,(EvoWikiLocale.string(st).split('.')[1]||'').length);
+  const clamp=v=>{v=Number(v);if(!Number.isFinite(v))v=mn;v=Math.round((v-mn)/st)*st+mn;return Math.min(mx,Math.max(mn,Number(v.toFixed(dec))))};
+  return {name:EvoWikiLocale.string(s.name|| ewt("参数")),unit:s.unit||'',min:mn,max:mx,step:st,clamp,init:clamp(s.initial)}});
+if(!SL.length)SL.push({name: ewt("参数"),unit:'',min:0,max:1,step:.1,clamp:v=>Math.min(1,Math.max(0,+v||0)),init:0});
+const idx=(i,n)=>{i=Math.round(Number(i));return i>=0&&i<n?i:-1};
+const nm=i=>i>=0?SL[i].name:'?';
+
+// ---- outputs: whitelisted formula kinds only, never eval ----
+const OU=(C.outputs||[]).slice(0,6).map(o=>{const f=o.formula||{};return {name:EvoWikiLocale.string(o.name|| ewt("结果")),unit:o.unit||'',f,
+  notes:(o.notes||[]).slice(0,4).map(n=>({above:n.when!=='below',t:Number(n.threshold)||0,text:EvoWikiLocale.string(n.text||'')}))}});
+if(!OU.length)OU.push({name: ewt("结果"),unit:'',f:{kind:'linear',weights:[{slider:0,weight:1}],bias:0},notes:[]});
+const k0=(v,d)=>Number.isFinite(Number(v))&&v!==null?Number(v):d;
+function evalOut(o,x,outs,j){const f=o.f,sc=k0(f.scale,1),b=k0(f.bias,0);let r=0;
+  switch(f.kind){
+    case 'linear':r=b+(f.weights||[]).reduce((a,w)=>{const i=idx(w.slider,x.length);return a+(i<0?0:k0(w.weight,0)*x[i])},0);break;
+    case 'product':r=b+sc*(f.factors||[]).reduce((a,i)=>{i=idx(i,x.length);return a*(i<0?1:x[i])},1);break;
+    case 'ratio':{const n=idx(f.num,x.length),d=idx(f.den,x.length);r=(n<0||d<0||x[d]===0)?NaN:b+sc*x[n]/x[d];break}
+    case 'power':{const i=idx(f.base,x.length);r=i<0?NaN:b+sc*Math.pow(x[i],k0(f.exp,1));break}
+    case 'combine':r=b+(f.terms||[]).reduce((a,t)=>{const i=idx(t.output,j);return a+(i<0?0:k0(t.weight,0)*(outs[i]||0))},0);break;
+    default:r=NaN}
+  return Number.isFinite(r)?r:0}
+function evalAll(x){const outs=[];OU.forEach((o,j)=>outs.push(evalOut(o,x,outs,j)));return outs}
+function join(b,ts){let r=b?nf(b):'';ts.forEach(([w,n])=>{const a=Math.abs(w),t=(a===1?'':nf(a)+' × ')+n;r+=r?(w<0?' − ':' + ')+t:(w<0?'−':'')+t});return r||'0'}
+function ftext(o,j){const f=o.f,sc=k0(f.scale,1),b=k0(f.bias,0);const bs=b?` + ${nf(b)}`:'',s1=sc!==1?nf(sc)+' × ':'';
+  switch(f.kind){
+    case 'linear':return join(b,(f.weights||[]).map(w=>[k0(w.weight,0),nm(idx(w.slider,SL.length))]));
+    case 'product':return s1+(f.factors||[]).map(i=>nm(idx(i,SL.length))).join(' × ')+bs;
+    case 'ratio':return `${s1}${nm(idx(f.num,SL.length))} ÷ ${nm(idx(f.den,SL.length))}${bs}`;
+    case 'power':return  ewt("{0}{1} 的 {2} 次方{3}", [s1,nm(idx(f.base,SL.length)),nf(k0(f.exp,1)),bs]);
+    case 'combine':return join(b,(f.terms||[]).map(t=>{const i=idx(t.output,j);return [k0(t.weight,0),i<0?'?':OU[i].name]}));
+    default:return '—'}}
+
+// ---- fixed display range per output, sampled over the whole slider box ----
+const RNG=OU.map(()=>({lo:Infinity,hi:-Infinity}));
+(function(){const P=5;const x=SL.map(s=>s.min);const tot=Math.pow(P,SL.length);
+  for(let n=0;n<tot;n++){let q=n;for(let i=0;i<SL.length;i++){x[i]=SL[i].min+(SL[i].max-SL[i].min)*(q%P)/(P-1);q=Math.floor(q/P)}
+    evalAll(x).forEach((v,j)=>{RNG[j].lo=Math.min(RNG[j].lo,v);RNG[j].hi=Math.max(RNG[j].hi,v)})}})();
+
+let X=SL.map(s=>s.init),outs=evalAll(X),prev=null,topJ=-1,lastMoved=-1;
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title||'');EvoWikiLocale.prop($('question'),"textContent",()=>C.question||'');
+
+SL.forEach((s,i)=>{const d=document.createElement('div');d.className='ctl';
+  EvoWikiLocale.prop(d,"innerHTML",()=>`<label for="slider-${i}">${esc(s.name)}：<b id="sv-${i}"></b></label><input id="slider-${i}" type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${s.init}">`);
+  $('sliders').append(d);
+  $('slider-'+i).addEventListener('input',e=>{const v=s.clamp(e.target.value);X[i]=v;prev=outs;outs=evalAll(X);lastMoved=i;
+    let best=-1,bd=0;outs.forEach((o,j)=>{const r=(RNG[j].hi-RNG[j].lo)||1,dd=Math.abs(o-prev[j])/r;if(dd>bd+1e-9){bd=dd;best=j}});topJ=best;draw();
+    setResult(()=>topJ<0? ewt("把「{0}」调到 {1}{2}，所有结果都没变：这个参数在算法里没有起作用，或者这一步太小。", [s.name,nf(v),s.unit])
+      : ewt("把「{0}」调到 {1}{2}：「{3}」变化最大，从 {4} 变成 {5}{6}。{7}", [s.name,nf(v),s.unit,OU[topJ].name,nf(prev[topJ]),nf(outs[topJ]),OU[topJ].unit?' '+OU[topJ].unit:'',firstNote(topJ)]))});
+});
+$('reset').addEventListener('click',()=>{X=SL.map(s=>s.init);outs=evalAll(X);prev=null;topJ=-1;lastMoved=-1;
+  SL.forEach((s,i)=>$('slider-'+i).value=s.init);draw();setResult(()=> ewt("已回到初始值：")+OU.map((o,j)=>`${o.name} ${nf(outs[j])}${o.unit?' '+o.unit:''}`).join('，')+ ewt("。再拖一个滑块，看哪个结果变得最多。"))});
+function setResult(f){EvoWikiLocale.prop($('result'),"textContent",()=>f())}
+const trig=j=>OU[j].notes.filter(n=>n.above?outs[j]>n.t:outs[j]<n.t);
+function firstNote(j){const t=trig(j);return t.length?t[0].text:''}
+
+function draw(){
+  SL.forEach((s,i)=>EvoWikiLocale.prop($('sv-'+i),"textContent",()=>nf(X[i])+(s.unit?' '+s.unit:'')));
+  const svg=$('plot'),W=Math.max(260,Math.round($('stage').clientWidth-16)),RH=80,L=4,R=W-4;
+  EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} ${OU.length*RH}`);svg.querySelectorAll(':scope > :not(desc)').forEach(c=>c.remove());
+  OU.forEach((o,j)=>{const y=j*RH,span=Math.max(RNG[j].hi,1e-9),pos=v=>L+Math.max(0,Math.min(1,v/span))*(R-L);
+    svg.append(el('text',{x:L,y:y+14,class:'nm'},o.name));
+    svg.append(el('text',{x:R,y:y+14,'text-anchor':'end',class:'vv'},nf(outs[j])+(o.unit?' '+o.unit:'')));
+    svg.append(el('rect',{x:L,y:y+22,width:R-L,height:18,rx:3,class:'trk'}));
+    svg.append(el('rect',{x:L,y:y+22,width:Math.max(outs[j]>0?3:0,pos(outs[j])-L),height:18,rx:3,class:'fill'+(j===topJ?' topJ':'')}));
+    o.notes.forEach(n=>{if(n.t>0&&n.t<span){const tx=pos(n.t);svg.append(el('line',{x1:tx,y1:y+19,x2:tx,y2:y+43,class:'thr'}))}});
+    if(j===topJ){svg.append(el('polygon',{points:`${L+1},${y+62} ${L+13},${y+62} ${L+7},${y+51}`,class:'mk'}));
+      svg.append(el('text',{x:L+20,y:y+62,class:'mkTx'}, ewt("这次变化最大")))}});
+  EvoWikiLocale.prop($('plotDesc'),"textContent",()=>OU.map((o,j)=>o.name+' '+nf(outs[j])+o.unit).join('；'));
+  const ul=$('notes');EvoWikiLocale.prop(ul,"innerHTML",()=>'');let any=false;
+  OU.forEach((o,j)=>trig(j).forEach(n=>{any=true;const li=document.createElement('li');EvoWikiLocale.prop(li,"innerHTML",()=> ewt("<b>{0}</b>（{1} {2}）：{3}", [esc(o.name),n.above? ewt("高于"): ewt("低于"),nf(n.t),esc(n.text)]));ul.append(li)}));
+  if(!any){const li=document.createElement('li');li.className='muted';EvoWikiLocale.prop(li,"textContent",()=> ewt("现在没有结果越过提示线（条形里的虚线）。"));ul.append(li)}}
+EvoWikiLocale.prop($('read'),"innerHTML",()=> ewt("<span class=\"k\">每个结果怎么算</span><div class=\"formulas\">")+OU.map((o,j)=>`<div><b>${esc(o.name)}</b> = ${esc(ftext(o,j))}</div>`).join('')+'</div>');
+new ResizeObserver(()=>draw()).observe($('stage'));
+draw();setResult(()=> ewt("拖动任何一个滑块，看哪个结果变化最大、有没有越过虚线的提示线。"));
+
+EvoWikiLocale.onChange(()=>{draw()});</script>
+</body>
+</html>

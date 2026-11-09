@@ -1,0 +1,1234 @@
+{
+  "nodes": [
+    {
+      "id": "synthetic-id-001",
+      "name": "示例001",
+      "definition": "",
+      "band": "gap",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.6666666666666666,
+        "none": 0.3333333333333333
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.6666666666666666,
+        "none": 0.3333333333333333
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [
+        "示例002",
+        "示例003",
+        "示例004"
+      ],
+      "kind": "",
+      "x": -0.408586,
+      "y": 0.11589,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-002",
+      "name": "示例005",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-070"
+      ],
+      "evidence": [],
+      "kind": "",
+      "x": -0.173615,
+      "y": 0.193123,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-003",
+      "name": "示例006",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "parents": [
+        "synthetic-id-070"
+      ],
+      "evidence": [],
+      "kind": "",
+      "x": -0.950977,
+      "y": -0.255035,
+      "can_split": false
+    },
+    {
+      "id": "synthetic-id-004",
+      "name": "示例007",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [],
+      "kind": "",
+      "x": 1.144281,
+      "y": 0.806341,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-005",
+      "name": "示例008",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [
+        "示例009"
+      ],
+      "kind": "",
+      "x": 0.871108,
+      "y": 0.692459,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-006",
+      "name": "示例010",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [
+        "示例009"
+      ],
+      "kind": "",
+      "x": 0.973907,
+      "y": 0.416931,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-007",
+      "name": "示例011",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [
+        "示例009"
+      ],
+      "kind": "",
+      "x": 1.290964,
+      "y": 0.53698,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-008",
+      "name": "示例012",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [
+        "示例013"
+      ],
+      "kind": "",
+      "x": -0.042986,
+      "y": -0.715009,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-009",
+      "name": "示例014",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [],
+      "kind": "",
+      "x": 0.182252,
+      "y": -0.882819,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-010",
+      "name": "示例016",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [],
+      "kind": "",
+      "x": 0.458234,
+      "y": -0.848136,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-011",
+      "name": "示例017",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [],
+      "kind": "",
+      "x": 0.60719,
+      "y": -0.627767,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-012",
+      "name": "示例019",
+      "definition": "",
+      "band": "gap",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.6666666666666666,
+        "none": 0.3333333333333333
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.6666666666666666,
+        "none": 0.3333333333333333
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-070"
+      ],
+      "evidence": [
+        "示例002",
+        "示例020"
+      ],
+      "kind": "",
+      "x": 0.013698,
+      "y": 0.316381,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-013",
+      "name": "示例021",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [],
+      "kind": "",
+      "x": 0.489589,
+      "y": -0.398482,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-014",
+      "name": "示例022",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [],
+      "kind": "",
+      "x": 0.234295,
+      "y": -0.30199,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-017",
+      "name": "示例027",
+      "definition": "",
+      "band": "gap",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-070"
+      ],
+      "evidence": [
+        "示例002"
+      ],
+      "kind": "",
+      "x": -0.037938,
+      "y": -0.42903,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-028",
+      "name": "示例048",
+      "definition": "",
+      "band": "gap",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-070"
+      ],
+      "evidence": [
+        "示例002"
+      ],
+      "kind": "",
+      "x": 0.056987,
+      "y": 0.528022,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-039",
+      "name": "示例069",
+      "definition": "",
+      "band": "gap",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-070"
+      ],
+      "evidence": [
+        "示例002"
+      ],
+      "kind": "",
+      "x": -0.047137,
+      "y": 0.713208,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-050",
+      "name": "示例090",
+      "definition": "",
+      "band": "gap",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0.5,
+        "gap": 0.5,
+        "none": 0
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0.5,
+        "gap": 0.5,
+        "none": 0
+      },
+      "aggregate": {},
+      "parents": [],
+      "evidence": [
+        "示例091",
+        "示例092",
+        "示例093"
+      ],
+      "kind": "",
+      "x": -0.236782,
+      "y": 0.818187,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-061",
+      "name": "示例114",
+      "definition": "",
+      "band": "gap",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-070"
+      ],
+      "evidence": [
+        "示例115"
+      ],
+      "kind": "",
+      "x": -0.479305,
+      "y": 0.845633,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-068",
+      "name": "示例128",
+      "definition": "",
+      "band": "gap",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.5,
+        "none": 0.5
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-070"
+      ],
+      "evidence": [
+        "示例129"
+      ],
+      "kind": "",
+      "x": -0.690938,
+      "y": 0.701044,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-069",
+      "name": "示例130",
+      "definition": "",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-070"
+      ],
+      "evidence": [],
+      "kind": "",
+      "x": -0.699183,
+      "y": 0.463287,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-070",
+      "name": "示例131",
+      "definition": "",
+      "band": "gap",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.2413793103448276,
+        "none": 0.7586206896551724
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0.28,
+        "none": 0.72
+      },
+      "parents": [],
+      "evidence": [],
+      "kind": "",
+      "x": -0.658875,
+      "y": 0.218494,
+      "can_split": false
+    },
+    {
+      "id": "synthetic-id-071",
+      "name": "示例133",
+      "definition": "示例134",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-003"
+      ],
+      "evidence": [],
+      "kind": "",
+      "x": -1.190232,
+      "y": -0.33114,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-072",
+      "name": "示例135",
+      "definition": "示例136",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-003"
+      ],
+      "evidence": [],
+      "kind": "",
+      "x": -1.278297,
+      "y": -0.569497,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-073",
+      "name": "示例137",
+      "definition": "示例138",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-003"
+      ],
+      "evidence": [],
+      "kind": "",
+      "x": -1.069822,
+      "y": -0.79051,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-074",
+      "name": "示例139",
+      "definition": "示例140",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-003"
+      ],
+      "evidence": [],
+      "kind": "",
+      "x": -0.765961,
+      "y": -0.676966,
+      "can_split": true
+    },
+    {
+      "id": "synthetic-id-075",
+      "name": "示例141",
+      "definition": "示例142",
+      "band": "none",
+      "mix": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "direct": {
+        "known": 0,
+        "likely": 0,
+        "shaky": 0,
+        "gap": 0,
+        "none": 1
+      },
+      "aggregate": {},
+      "parents": [
+        "synthetic-id-003"
+      ],
+      "evidence": [],
+      "kind": "",
+      "x": -0.689369,
+      "y": -0.388634,
+      "can_split": true
+    }
+  ],
+  "relations": [
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-002",
+      "dst": "synthetic-id-070",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-003",
+      "dst": "synthetic-id-070",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-012",
+      "dst": "synthetic-id-070",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-017",
+      "dst": "synthetic-id-070",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-028",
+      "dst": "synthetic-id-070",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-039",
+      "dst": "synthetic-id-070",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-061",
+      "dst": "synthetic-id-070",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-068",
+      "dst": "synthetic-id-070",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-069",
+      "dst": "synthetic-id-070",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-071",
+      "dst": "synthetic-id-003",
+      "phrase": "示例143",
+      "verified": false,
+      "split": true
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-072",
+      "dst": "synthetic-id-003",
+      "phrase": "示例144",
+      "verified": false,
+      "split": true
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-073",
+      "dst": "synthetic-id-003",
+      "phrase": "示例145",
+      "verified": false,
+      "split": true
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-074",
+      "dst": "synthetic-id-003",
+      "phrase": "示例146",
+      "verified": false,
+      "split": true
+    },
+    {
+      "kind": "part_of",
+      "src": "synthetic-id-075",
+      "dst": "synthetic-id-003",
+      "phrase": "示例147",
+      "verified": false,
+      "split": true
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-002",
+      "dst": "synthetic-id-050",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-003",
+      "dst": "synthetic-id-050",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-005",
+      "dst": "synthetic-id-004",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-005",
+      "dst": "synthetic-id-006",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-006",
+      "dst": "synthetic-id-004",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-007",
+      "dst": "synthetic-id-004",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-009",
+      "dst": "synthetic-id-008",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-010",
+      "dst": "synthetic-id-008",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-011",
+      "dst": "synthetic-id-008",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-012",
+      "dst": "synthetic-id-001",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-013",
+      "dst": "synthetic-id-008",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-014",
+      "dst": "synthetic-id-008",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-017",
+      "dst": "synthetic-id-001",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-017",
+      "dst": "synthetic-id-008",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-017",
+      "dst": "synthetic-id-009",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-017",
+      "dst": "synthetic-id-010",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-017",
+      "dst": "synthetic-id-011",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-017",
+      "dst": "synthetic-id-013",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-017",
+      "dst": "synthetic-id-014",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-017",
+      "dst": "synthetic-id-039",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-028",
+      "dst": "synthetic-id-001",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-039",
+      "dst": "synthetic-id-001",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-039",
+      "dst": "synthetic-id-012",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-061",
+      "dst": "synthetic-id-050",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-068",
+      "dst": "synthetic-id-050",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-069",
+      "dst": "synthetic-id-050",
+      "phrase": "",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-072",
+      "dst": "synthetic-id-071",
+      "phrase": "示例148",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-073",
+      "dst": "synthetic-id-074",
+      "phrase": "示例149",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-074",
+      "dst": "synthetic-id-075",
+      "phrase": "示例150",
+      "verified": false,
+      "split": false
+    },
+    {
+      "kind": "prerequisite",
+      "src": "synthetic-id-075",
+      "dst": "synthetic-id-072",
+      "phrase": "示例151",
+      "verified": false,
+      "split": false
+    }
+  ],
+  "groups": [
+    {
+      "id": "synthetic-id-076",
+      "level": 1,
+      "name": "示例153",
+      "summary": "示例154",
+      "members": [
+        "synthetic-id-001",
+        "synthetic-id-002",
+        "synthetic-id-012",
+        "synthetic-id-028",
+        "synthetic-id-039",
+        "synthetic-id-050",
+        "synthetic-id-061",
+        "synthetic-id-068",
+        "synthetic-id-069",
+        "synthetic-id-070"
+      ],
+      "parent": null,
+      "x": -0.332374,
+      "y": 0.491327,
+      "at": null
+    },
+    {
+      "id": "synthetic-id-077",
+      "level": 1,
+      "name": "示例006",
+      "summary": "示例155",
+      "members": [
+        "synthetic-id-003",
+        "synthetic-id-071",
+        "synthetic-id-072",
+        "synthetic-id-073",
+        "synthetic-id-074",
+        "synthetic-id-075"
+      ],
+      "parent": null,
+      "x": -0.990776,
+      "y": -0.501964,
+      "at": null
+    },
+    {
+      "id": "synthetic-id-078",
+      "level": 1,
+      "name": "示例156",
+      "summary": "示例157",
+      "members": [
+        "synthetic-id-004",
+        "synthetic-id-005",
+        "synthetic-id-006",
+        "synthetic-id-007"
+      ],
+      "parent": null,
+      "x": 1.070065,
+      "y": 0.613178,
+      "at": null
+    },
+    {
+      "id": "synthetic-id-104",
+      "level": 1,
+      "name": "示例158",
+      "summary": "示例159",
+      "members": [
+        "synthetic-id-008",
+        "synthetic-id-009",
+        "synthetic-id-010",
+        "synthetic-id-011",
+        "synthetic-id-013",
+        "synthetic-id-014",
+        "synthetic-id-017"
+      ],
+      "parent": null,
+      "x": 0.270091,
+      "y": -0.600462,
+      "at": null
+    }
+  ],
+  "goals": []
+}

@@ -1,0 +1,669 @@
+{
+  "component_id": "code-trace",
+  "name": "代码追踪",
+  "description": "把几行代码和一份事先写好的执行轨迹放在一起：逐步或拖动滑块前进后退，高亮当前行，看变量表（标出变了的）和输出一步步变化。代码只显示，不会被运行。",
+  "learning_question": "这段代码每一步执行到哪一行？变量此刻是多少？为什么输出是这样的顺序？",
+  "scenarios": [
+    "循环与累加",
+    "递归与调用栈",
+    "变量赋值",
+    "执行顺序",
+    "异步与事件循环",
+    "代码阅读",
+    "手动追踪"
+  ],
+  "params": {
+    "code": "要显示的几行代码",
+    "language": "语言标签",
+    "steps": "每一步：行号、变量表、新增输出、一句解释"
+  },
+  "html_path": "src/evowiki/deep/components/code-trace.html",
+  "height": 620,
+  "probes": [
+    {
+      "target": "#next",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "#slider",
+      "action": "input",
+      "value": "2",
+      "expect_change": "#result"
+    }
+  ],
+  "source": "component-library: explicit-trace stepper (display only, never executes config code)",
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "title",
+      "question",
+      "language",
+      "code",
+      "steps"
+    ],
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "组件标题，说明追踪的是哪段代码、讲什么"
+      },
+      "question": {
+        "type": "string",
+        "description": "学习问题，一句话"
+      },
+      "language": {
+        "type": "string",
+        "description": "语言名，如 Python、JavaScript；只用于显示"
+      },
+      "code": {
+        "type": "array",
+        "minItems": 1,
+        "description": "3–20 行代码，每个元素是一行，不含行号，保留缩进空格。只用来显示，永远不会被运行",
+        "items": {
+          "type": "string"
+        }
+      },
+      "steps": {
+        "type": "array",
+        "minItems": 1,
+        "description": "4–30 个追踪步骤，按执行顺序；你必须自己算好每一步的变量值，组件不会运行代码",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "line",
+            "vars",
+            "output",
+            "explain"
+          ],
+          "properties": {
+            "line": {
+              "type": "number",
+              "description": "这一步正要执行 / 刚执行的行号，从 1 开始"
+            },
+            "vars": {
+              "type": "array",
+              "description": "这一步结束后所有相关变量的值（每一步都完整列出，同名变量用同样的名字，这样才能标出哪些变了）；没有变量就空数组",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "变量名"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "值，写成显示的文字，如 [3, 5, 2]"
+                  }
+                }
+              }
+            },
+            "output": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "这一步新增的一行输出；没有输出就 null"
+            },
+            "explain": {
+              "type": "string",
+              "description": "一句话：这一步发生了什么、为什么"
+            }
+          }
+        }
+      }
+    }
+  },
+  "example_configs": [
+    {
+      "title": "用循环求和：total 每一轮怎么变？",
+      "question": "跟着每一行看：循环变量 n 和累加器 total 在每一轮里分别是多少？",
+      "language": "Python",
+      "code": [
+        "nums = [3, 5, 2]",
+        "total = 0",
+        "for n in nums:",
+        "    total = total + n",
+        "print(total)"
+      ],
+      "steps": [
+        {
+          "line": 1,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            }
+          ],
+          "output": null,
+          "explain": "创建一个列表 nums，里面有三个数。"
+        },
+        {
+          "line": 2,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            },
+            {
+              "name": "total",
+              "value": "0"
+            }
+          ],
+          "output": null,
+          "explain": "累加器 total 从 0 开始，之后每个数都加到它上面。"
+        },
+        {
+          "line": 3,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            },
+            {
+              "name": "total",
+              "value": "0"
+            },
+            {
+              "name": "n",
+              "value": "3"
+            }
+          ],
+          "output": null,
+          "explain": "进入循环：n 取列表的第一个数 3。"
+        },
+        {
+          "line": 4,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            },
+            {
+              "name": "total",
+              "value": "3"
+            },
+            {
+              "name": "n",
+              "value": "3"
+            }
+          ],
+          "output": null,
+          "explain": "total = 0 + 3，所以 total 变成 3。"
+        },
+        {
+          "line": 3,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            },
+            {
+              "name": "total",
+              "value": "3"
+            },
+            {
+              "name": "n",
+              "value": "5"
+            }
+          ],
+          "output": null,
+          "explain": "回到循环开头：n 取下一个数 5，total 暂时还是 3。"
+        },
+        {
+          "line": 4,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            },
+            {
+              "name": "total",
+              "value": "8"
+            },
+            {
+              "name": "n",
+              "value": "5"
+            }
+          ],
+          "output": null,
+          "explain": "total = 3 + 5，变成 8。"
+        },
+        {
+          "line": 3,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            },
+            {
+              "name": "total",
+              "value": "8"
+            },
+            {
+              "name": "n",
+              "value": "2"
+            }
+          ],
+          "output": null,
+          "explain": "n 取最后一个数 2。"
+        },
+        {
+          "line": 4,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            },
+            {
+              "name": "total",
+              "value": "10"
+            },
+            {
+              "name": "n",
+              "value": "2"
+            }
+          ],
+          "output": null,
+          "explain": "total = 8 + 2，变成 10。"
+        },
+        {
+          "line": 3,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            },
+            {
+              "name": "total",
+              "value": "10"
+            },
+            {
+              "name": "n",
+              "value": "2"
+            }
+          ],
+          "output": null,
+          "explain": "列表里没有下一个数了，循环结束；n 还保留着最后一次的值 2。"
+        },
+        {
+          "line": 5,
+          "vars": [
+            {
+              "name": "nums",
+              "value": "[3, 5, 2]"
+            },
+            {
+              "name": "total",
+              "value": "10"
+            },
+            {
+              "name": "n",
+              "value": "2"
+            }
+          ],
+          "output": "10",
+          "explain": "循环之外，打印 total：输出 10，等于 3 + 5 + 2。"
+        }
+      ]
+    },
+    {
+      "title": "递归求阶乘：fact(3) 的调用栈",
+      "question": "每一层 fact 都有自己的 n，它们怎么一层层压进去、再一层层带着结果返回？",
+      "language": "Python",
+      "code": [
+        "def fact(n):",
+        "    if n <= 1:",
+        "        return 1",
+        "    return n * fact(n - 1)",
+        "print(fact(3))"
+      ],
+      "steps": [
+        {
+          "line": 5,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main"
+            }
+          ],
+          "output": null,
+          "explain": "程序从第 5 行开始：要打印 fact(3)，先得算出它。"
+        },
+        {
+          "line": 1,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            }
+          ],
+          "output": null,
+          "explain": "调用 fact(3)：新开一层，这一层的 n 是 3。"
+        },
+        {
+          "line": 2,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            }
+          ],
+          "output": null,
+          "explain": "判断 3 <= 1：不成立，所以不走 return 1。"
+        },
+        {
+          "line": 4,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            }
+          ],
+          "output": null,
+          "explain": "要算 3 * fact(2)：先调用 fact(2)，这一层暂停，等结果。"
+        },
+        {
+          "line": 1,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3) → fact(2)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            },
+            {
+              "name": "n（fact(2)）",
+              "value": "2"
+            }
+          ],
+          "output": null,
+          "explain": "进入 fact(2)：又新开一层，n 是 2；外层的 n 还是 3，互不影响。"
+        },
+        {
+          "line": 2,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3) → fact(2)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            },
+            {
+              "name": "n（fact(2)）",
+              "value": "2"
+            }
+          ],
+          "output": null,
+          "explain": "判断 2 <= 1：不成立。"
+        },
+        {
+          "line": 4,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3) → fact(2)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            },
+            {
+              "name": "n（fact(2)）",
+              "value": "2"
+            }
+          ],
+          "output": null,
+          "explain": "要算 2 * fact(1)：再调用 fact(1)。"
+        },
+        {
+          "line": 1,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3) → fact(2) → fact(1)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            },
+            {
+              "name": "n（fact(2)）",
+              "value": "2"
+            },
+            {
+              "name": "n（fact(1)）",
+              "value": "1"
+            }
+          ],
+          "output": null,
+          "explain": "进入 fact(1)：栈有三层 fact，最里面的 n 是 1。"
+        },
+        {
+          "line": 2,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3) → fact(2) → fact(1)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            },
+            {
+              "name": "n（fact(2)）",
+              "value": "2"
+            },
+            {
+              "name": "n（fact(1)）",
+              "value": "1"
+            }
+          ],
+          "output": null,
+          "explain": "判断 1 <= 1：成立，到了递归的出口。"
+        },
+        {
+          "line": 3,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3) → fact(2)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            },
+            {
+              "name": "n（fact(2)）",
+              "value": "2"
+            },
+            {
+              "name": "返回值",
+              "value": "1"
+            }
+          ],
+          "output": null,
+          "explain": "fact(1) 返回 1，这一层出栈；栈回到两层。"
+        },
+        {
+          "line": 4,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main → fact(3)"
+            },
+            {
+              "name": "n（fact(3)）",
+              "value": "3"
+            },
+            {
+              "name": "返回值",
+              "value": "2"
+            }
+          ],
+          "output": null,
+          "explain": "回到 fact(2)：2 * 1 = 2，返回 2，这一层出栈。"
+        },
+        {
+          "line": 4,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main"
+            },
+            {
+              "name": "返回值",
+              "value": "6"
+            }
+          ],
+          "output": null,
+          "explain": "回到 fact(3)：3 * 2 = 6，返回 6，栈里只剩 main。"
+        },
+        {
+          "line": 5,
+          "vars": [
+            {
+              "name": "调用栈",
+              "value": "main"
+            },
+            {
+              "name": "返回值",
+              "value": "6"
+            }
+          ],
+          "output": "6",
+          "explain": "main 拿到 fact(3) 的结果 6 并打印。"
+        }
+      ]
+    },
+    {
+      "title": "JavaScript：为什么输出顺序是 A D C B？",
+      "question": "同步代码、微任务（Promise）、宏任务（setTimeout）谁先谁后？看两个任务队列怎么变。",
+      "language": "JavaScript",
+      "code": [
+        "console.log('A');",
+        "setTimeout(() => {",
+        "  console.log('B');",
+        "}, 0);",
+        "Promise.resolve().then(() => {",
+        "  console.log('C');",
+        "});",
+        "console.log('D');"
+      ],
+      "steps": [
+        {
+          "line": 1,
+          "vars": [
+            {
+              "name": "宏任务队列",
+              "value": "[]"
+            },
+            {
+              "name": "微任务队列",
+              "value": "[]"
+            }
+          ],
+          "output": "A",
+          "explain": "同步代码从上往下执行：先输出 A。"
+        },
+        {
+          "line": 2,
+          "vars": [
+            {
+              "name": "宏任务队列",
+              "value": "[回调 B]"
+            },
+            {
+              "name": "微任务队列",
+              "value": "[]"
+            }
+          ],
+          "output": null,
+          "explain": "setTimeout 不会马上执行回调，只是把回调 B 放进宏任务队列等着，哪怕延迟是 0。"
+        },
+        {
+          "line": 5,
+          "vars": [
+            {
+              "name": "宏任务队列",
+              "value": "[回调 B]"
+            },
+            {
+              "name": "微任务队列",
+              "value": "[回调 C]"
+            }
+          ],
+          "output": null,
+          "explain": "Promise 已经完成，.then 的回调 C 被放进微任务队列。"
+        },
+        {
+          "line": 8,
+          "vars": [
+            {
+              "name": "宏任务队列",
+              "value": "[回调 B]"
+            },
+            {
+              "name": "微任务队列",
+              "value": "[回调 C]"
+            }
+          ],
+          "output": "D",
+          "explain": "这一行是同步代码，直接输出 D。到这里同步代码执行完了。"
+        },
+        {
+          "line": 6,
+          "vars": [
+            {
+              "name": "宏任务队列",
+              "value": "[回调 B]"
+            },
+            {
+              "name": "微任务队列",
+              "value": "[]"
+            }
+          ],
+          "output": "C",
+          "explain": "同步代码结束后，先清空微任务队列：执行回调 C，输出 C。"
+        },
+        {
+          "line": 3,
+          "vars": [
+            {
+              "name": "宏任务队列",
+              "value": "[]"
+            },
+            {
+              "name": "微任务队列",
+              "value": "[]"
+            }
+          ],
+          "output": "B",
+          "explain": "微任务清空后，才轮到宏任务：执行回调 B，输出 B。最终顺序是 A D C B。"
+        }
+      ]
+    }
+  ]
+}

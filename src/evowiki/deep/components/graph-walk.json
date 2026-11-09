@@ -1,0 +1,478 @@
+{
+  "component_id": "graph-walk",
+  "name": "图与树的遍历",
+  "description": "在一张小图或一棵树上单步或自动运行广度优先、深度优先或 Dijkstra 最短路径，看队列或栈、已访问的节点、当前节点和边，以及最短距离怎么一步步变化。",
+  "learning_question": "这个算法每一步为什么选这个节点？队列、栈或距离表此刻装着什么？",
+  "scenarios": [
+    "广度优先搜索",
+    "深度优先搜索",
+    "Dijkstra 最短路径",
+    "图的遍历",
+    "树的遍历",
+    "队列与栈",
+    "最少步数与最短距离",
+    "连通分量",
+    "可达性"
+  ],
+  "params": {
+    "algorithm": "bfs / dfs / dijkstra",
+    "nodes": "节点，可带 0–1 的位置",
+    "edges": "边，可带权重和方向",
+    "start": "起点",
+    "target": "可选终点"
+  },
+  "html_path": "src/evowiki/deep/components/graph-walk.html",
+  "height": 600,
+  "probes": [
+    {
+      "target": "#step",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "#step",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "#reset",
+      "action": "click",
+      "expect_change": "#result"
+    }
+  ],
+  "source": "component-library: step-through BFS / DFS / Dijkstra with frontier and visited readout",
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "title",
+      "question",
+      "algorithm",
+      "weight_unit",
+      "nodes",
+      "edges",
+      "start",
+      "target"
+    ],
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "组件标题，说明这张图是什么"
+      },
+      "question": {
+        "type": "string",
+        "description": "学习问题，一句话"
+      },
+      "algorithm": {
+        "type": "string",
+        "enum": [
+          "bfs",
+          "dfs",
+          "dijkstra"
+        ],
+        "description": "bfs 广度优先（队列）、dfs 深度优先（栈）、dijkstra 最短路径（边要有权重）"
+      },
+      "weight_unit": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "边权重的单位，如 分钟、公里；没有或不是 dijkstra 就 null"
+      },
+      "nodes": {
+        "type": "array",
+        "minItems": 1,
+        "description": "4–12 个节点",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "label",
+            "x",
+            "y"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "短标识，不重复"
+            },
+            "label": {
+              "type": "string",
+              "description": "显示的名字（短，最好不超过 4 个字）"
+            },
+            "x": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "横向位置 0 到 1；只要有一个节点缺 x 或 y，所有节点自动布局（树按层、其他按圆）"
+            },
+            "y": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "纵向位置 0 到 1，同上"
+            }
+          }
+        }
+      },
+      "edges": {
+        "type": "array",
+        "minItems": 1,
+        "description": "边，按顺序给；遍历时同一个节点的邻居按这个顺序访问",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to",
+            "weight",
+            "directed"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "description": "起点节点 id"
+            },
+            "to": {
+              "type": "string",
+              "description": "终点节点 id"
+            },
+            "weight": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "权重（正数）；dijkstra 必填，其他算法给 null"
+            },
+            "directed": {
+              "type": "boolean",
+              "description": "true 表示只能从 from 走到 to；false 表示双向"
+            }
+          }
+        }
+      },
+      "start": {
+        "type": "string",
+        "description": "起点节点 id"
+      },
+      "target": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "可选的终点节点 id；找到它就停下并给出路径；null 表示遍历全图"
+      }
+    }
+  },
+  "example_configs": [
+    {
+      "title": "社交网络里，小明离小芳隔几个人？",
+      "question": "广度优先搜索（BFS）为什么一层一层往外找，就能得到最少的“中间人”？",
+      "algorithm": "bfs",
+      "weight_unit": null,
+      "nodes": [
+        {
+          "id": "a",
+          "label": "小明",
+          "x": 0.08,
+          "y": 0.5
+        },
+        {
+          "id": "b",
+          "label": "阿杰",
+          "x": 0.3,
+          "y": 0.15
+        },
+        {
+          "id": "c",
+          "label": "小红",
+          "x": 0.3,
+          "y": 0.85
+        },
+        {
+          "id": "d",
+          "label": "老王",
+          "x": 0.58,
+          "y": 0.1
+        },
+        {
+          "id": "e",
+          "label": "小李",
+          "x": 0.58,
+          "y": 0.5
+        },
+        {
+          "id": "f",
+          "label": "阿美",
+          "x": 0.58,
+          "y": 0.9
+        },
+        {
+          "id": "g",
+          "label": "小芳",
+          "x": 0.92,
+          "y": 0.5
+        }
+      ],
+      "edges": [
+        {
+          "from": "a",
+          "to": "b",
+          "weight": null,
+          "directed": false
+        },
+        {
+          "from": "a",
+          "to": "c",
+          "weight": null,
+          "directed": false
+        },
+        {
+          "from": "b",
+          "to": "d",
+          "weight": null,
+          "directed": false
+        },
+        {
+          "from": "b",
+          "to": "e",
+          "weight": null,
+          "directed": false
+        },
+        {
+          "from": "c",
+          "to": "e",
+          "weight": null,
+          "directed": false
+        },
+        {
+          "from": "c",
+          "to": "f",
+          "weight": null,
+          "directed": false
+        },
+        {
+          "from": "e",
+          "to": "g",
+          "weight": null,
+          "directed": false
+        },
+        {
+          "from": "f",
+          "to": "g",
+          "weight": null,
+          "directed": false
+        }
+      ],
+      "start": "a",
+      "target": "g"
+    },
+    {
+      "title": "地铁换乘：从火车站到机场最快多少分钟？",
+      "question": "Dijkstra 每次先确定“目前最近”的站，为什么经过的站最少的路线不一定最快？",
+      "algorithm": "dijkstra",
+      "weight_unit": "分钟",
+      "nodes": [
+        {
+          "id": "s",
+          "label": "火车站",
+          "x": 0.08,
+          "y": 0.5
+        },
+        {
+          "id": "u",
+          "label": "大学城",
+          "x": 0.34,
+          "y": 0.12
+        },
+        {
+          "id": "c",
+          "label": "市中心",
+          "x": 0.36,
+          "y": 0.84
+        },
+        {
+          "id": "g",
+          "label": "体育馆",
+          "x": 0.72,
+          "y": 0.12
+        },
+        {
+          "id": "o",
+          "label": "老城",
+          "x": 0.66,
+          "y": 0.8
+        },
+        {
+          "id": "a",
+          "label": "机场",
+          "x": 0.93,
+          "y": 0.5
+        }
+      ],
+      "edges": [
+        {
+          "from": "s",
+          "to": "u",
+          "weight": 7,
+          "directed": false
+        },
+        {
+          "from": "s",
+          "to": "c",
+          "weight": 9,
+          "directed": false
+        },
+        {
+          "from": "s",
+          "to": "o",
+          "weight": 14,
+          "directed": false
+        },
+        {
+          "from": "u",
+          "to": "c",
+          "weight": 10,
+          "directed": false
+        },
+        {
+          "from": "u",
+          "to": "g",
+          "weight": 15,
+          "directed": false
+        },
+        {
+          "from": "c",
+          "to": "g",
+          "weight": 11,
+          "directed": false
+        },
+        {
+          "from": "c",
+          "to": "o",
+          "weight": 2,
+          "directed": false
+        },
+        {
+          "from": "o",
+          "to": "a",
+          "weight": 9,
+          "directed": false
+        },
+        {
+          "from": "g",
+          "to": "a",
+          "weight": 6,
+          "directed": false
+        }
+      ],
+      "start": "s",
+      "target": "a"
+    },
+    {
+      "title": "文件夹树：深度优先怎么逛完整个项目？",
+      "question": "DFS 为什么总是先钻到最深处再退回来？栈里装的是什么？",
+      "algorithm": "dfs",
+      "weight_unit": null,
+      "nodes": [
+        {
+          "id": "r",
+          "label": "项目",
+          "x": null,
+          "y": null
+        },
+        {
+          "id": "s",
+          "label": "src",
+          "x": null,
+          "y": null
+        },
+        {
+          "id": "d",
+          "label": "docs",
+          "x": null,
+          "y": null
+        },
+        {
+          "id": "t",
+          "label": "tests",
+          "x": null,
+          "y": null
+        },
+        {
+          "id": "m",
+          "label": "main",
+          "x": null,
+          "y": null
+        },
+        {
+          "id": "u",
+          "label": "utils",
+          "x": null,
+          "y": null
+        },
+        {
+          "id": "g",
+          "label": "guide",
+          "x": null,
+          "y": null
+        },
+        {
+          "id": "n",
+          "label": "unit",
+          "x": null,
+          "y": null
+        }
+      ],
+      "edges": [
+        {
+          "from": "r",
+          "to": "s",
+          "weight": null,
+          "directed": true
+        },
+        {
+          "from": "r",
+          "to": "d",
+          "weight": null,
+          "directed": true
+        },
+        {
+          "from": "r",
+          "to": "t",
+          "weight": null,
+          "directed": true
+        },
+        {
+          "from": "s",
+          "to": "m",
+          "weight": null,
+          "directed": true
+        },
+        {
+          "from": "s",
+          "to": "u",
+          "weight": null,
+          "directed": true
+        },
+        {
+          "from": "d",
+          "to": "g",
+          "weight": null,
+          "directed": true
+        },
+        {
+          "from": "t",
+          "to": "n",
+          "weight": null,
+          "directed": true
+        }
+      ],
+      "start": "r",
+      "target": null
+    }
+  ]
+}

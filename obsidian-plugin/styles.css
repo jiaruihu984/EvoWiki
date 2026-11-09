@@ -1,0 +1,1941 @@
+/* ===== EXACT: ported from full-demo/src/shell.html by scripts/port-demo-css.py — values verbatim ===== */
+/* Obsidian styles every button / input globally; inside .ew the demo starts from the browser defaults, as the demo does. */
+/* Obsidian makes every element border-box; the demo uses the browser default (content-box) except where it says otherwise. */
+body .ew,body .ew *,body .ew *::before,body .ew *::after{box-sizing:content-box}
+body .ew button,body .ew input,body .ew textarea,body .ew select{all:revert}
+/* Obsidian's own text-field focus ring (input[type=text]:focus box-shadow) outranks the revert above; the demo has none. */
+body .ew input:focus,body .ew textarea:focus,body .ew select:focus{box-shadow:none}
+/* Obsidian also styles headings, text, lists and links globally (weights, line heights, colours); the demo uses the browser defaults. */
+body .ew :is(h1,h2,h3,h4,h5,h6,p,ul,ol,li,dl,dt,dd,details,summary,pre,code,label,a,hr,b,strong,em,small){all:revert}
+body .ew ::placeholder{all:revert}
+.ew,.evowiki-page{--bg-0:#ffffff; --bg-1:#f6f6f6; --bg-2:#ebebeb; --border:#e0e0e0;
+  --tx-1:#222222; --tx-2:#5c5c5c; --tx-3:#8a8a8a; --ph:#a6a6a6; --accent:#1f1f1f; --accent-tx:#ffffff; --accent-soft:#f2f2f2;
+  --known:#2f9e5b; --likely:#6cbf84; --shaky:#d99a1e; --gap:#d9483b; --none:#b8b8b8;
+  --ask:#0f8f8c; --m-none:#dcdcdc; --cloud-bg:#fafafa; --viz-1:#2f6fdf; --viz-2:#e07b2a; --edge:#d2d2d2; --callout:#f3f7f4; --tip:#f3f3f3; --shadow:0 10px 30px rgba(0,0,0,.14); --pg-stripe:rgba(255,255,255,.5);
+  --font-ui:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --font-text:"Noto Serif SC","Source Han Serif SC","Songti SC",Georgia,serif;
+  --font-mono:ui-monospace,"Cascadia Code",Consolas,monospace;}
+.theme-dark .ew,.theme-dark .evowiki-page,.theme-dark.ew{--bg-0:#1e1e1e; --bg-1:#262626; --bg-2:#303030; --border:#363636;
+  --tx-1:#dadada; --tx-2:#a3a3a3; --tx-3:#6f6f6f; --ph:#5a5a5a; --accent:#e8e8e8; --accent-tx:#161616; --accent-soft:#2a2a2a;
+  --known:#4cc27a; --likely:#86d39c; --shaky:#e3ad3a; --gap:#ec6a5e; --none:#5a5a5a;
+  --ask:#2ebdb8; --m-none:#3a3a3a; --cloud-bg:#1b1b1b; --viz-1:#6ea2ff; --viz-2:#f2a35c; --edge:#454545; --callout:#1f2a23; --tip:#2a2a2a; --shadow:0 10px 30px rgba(0,0,0,.5); --pg-stripe:rgba(255,255,255,.1);}
+body .ew{background:var(--bg-0);color:var(--tx-1);font:14px/1.6 var(--font-ui)}
+body .ew button{font:inherit;color:inherit}
+body .ew .ew-view{overflow:hidden;position:relative;min-width:0}
+body .ew .ew-scroll{height:100%;overflow-y:auto}
+body .ew .ew-note{max-width:680px;margin:0 auto;padding-inline:24px;padding-block:28px 80px;font-family:var(--font-text);font-size:16px;line-height:1.9}
+body .ew .ew-note h1{font-family:var(--font-ui);font-size:28px;line-height:1.3;margin:0 0 10px;font-weight:700}
+body .ew .ew-meta{display:grid;grid-template-columns:72px minmax(0,1fr);gap:4px 12px;font-family:var(--font-ui);font-size:13px;color:var(--tx-2);padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:6px}
+body .ew .ew-meta dt{color:var(--tx-3)}
+body .ew .ew-meta dd{margin:0}
+body .ew .ew-note .ew-row.ew-start{font-family:var(--font-ui);margin-top:22px}
+body .ew .ew-topline{font-family:var(--font-ui);font-size:13px;color:var(--tx-2);background:var(--bg-1);border-radius:8px;padding:7px 12px;margin:12px 0 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+body .ew .ew-goalnote{font-family:var(--font-ui);font-size:13px;line-height:1.6;color:var(--tx-2);background:var(--bg-1);border-radius:8px;padding:7px 12px;margin:12px 0 0}
+body .ew .ew-goalnote-item{margin-top:4px;color:var(--tx-1);white-space:pre-wrap}
+body .ew .ew-goalnote-item b{font-weight:600}
+body .ew .ew-topline .ew-lk{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+body .ew .ew-note p{margin:12px 0}
+body .ew .ew-note h2{font-family:var(--font-ui);font-size:20px;margin:30px 0 6px;display:flex;align-items:center;gap:8px;position:relative}
+body .ew .ew-note section{position:relative}
+body .ew .ew-note h2 .ew-tag{font-size:11.5px;font-weight:500;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:0 8px}
+body .ew .ew-note h2 .ew-pin{font-size:11.5px;font-weight:500;color:var(--tx-3)}
+body .ew .ew-note h2 .ew-more{margin-left:auto;opacity:0;border:0;background:none;color:var(--tx-3);cursor:pointer;border-radius:5px;padding:0 6px;font-size:18px;line-height:1}
+body .ew .ew-note section:hover h2 .ew-more,body .ew .ew-note h2 .ew-more:focus-visible,body .ew .ew-note h2 .ew-more[aria-expanded="true"]{opacity:1}
+body .ew .ew-note h2 .ew-more:hover{background:var(--bg-2)}
+body .ew .ew-note code{font-family:var(--font-mono);font-size:.86em;background:var(--bg-1);padding:1px 5px;border-radius:4px}
+body .ew .ew-note .ew-math{font-family:var(--font-mono);font-size:.95em;display:block;text-align:center;margin:10px 0;color:var(--tx-1)}
+body .ew .ew-note a.ew-cite{color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;cursor:pointer;font-size:.9em;white-space:nowrap;margin-left:4px}
+body .ew .ew-note .ew-cite.ew-gone{color:var(--tx-3);font-size:.9em;white-space:nowrap;margin-left:4px;cursor:default}
+body .ew .ew-amsg a.ew-cite{color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;cursor:pointer;font-size:.9em;white-space:nowrap;margin-left:4px}
+body .ew .ew-amsg .ew-cite.ew-miss{color:var(--tx-3);font-size:.9em;margin-left:4px}
+body .ew .ew-amsg .ew-cite.ew-gone,body .ew .ew-amsg .ew-cite.ew-text{color:var(--tx-3);font-size:.9em;white-space:nowrap;margin-left:4px}
+body .ew .ew-note a.ew-inl{color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;cursor:pointer}
+body .ew .ew-note figure.ew-img{margin:16px 0}
+body .ew .ew-note figure.ew-img img{display:block;max-width:100%;max-height:480px;width:auto;height:auto;margin:0 auto;border-radius:4px}
+body .ew .ew-note figure.ew-img figcaption{margin-top:6px;font-family:var(--font-ui);font-size:11px;line-height:1.5;color:var(--tx-3);text-align:center}
+body .ew .ew-note figure.ew-img figcaption a{color:inherit;text-decoration:none;border-bottom:1px solid var(--border)}
+body .ew .ew-known{background:var(--callout);border-radius:8px;padding:2px 14px;margin:14px 0;font-family:var(--font-ui);font-size:14px}
+body .ew .ew-known summary{cursor:pointer;padding:6px 0;color:var(--tx-2);list-style:none;display:flex;gap:8px;align-items:baseline}
+body .ew .ew-known summary::before{content:"▸";color:var(--tx-3)}
+body .ew .ew-known[open] summary::before{content:"▾"}
+body .ew .ew-known .ew-lbl{font-size:11.5px;color:var(--known);border:1px solid currentColor;border-radius:999px;padding:0 7px;white-space:nowrap}
+body .ew .ew-known .ew-full{font-family:var(--font-text);font-size:15px;padding-bottom:8px}
+body .ew .ew-tipcard{background:var(--tip);border-radius:8px;padding:8px 14px;margin:14px 0;font-family:var(--font-ui);font-size:14px}
+body .ew .ew-tipcard b{color:var(--accent);font-weight:600;margin-right:6px}
+body .ew .ew-writing{font-family:var(--font-ui);font-size:13px;color:var(--tx-3)}
+body .ew .ew-menu{position:absolute;z-index:30;min-width:190px;background:var(--bg-0);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);padding:5px;font-family:var(--font-ui);font-size:13.5px}
+body .ew .ew-menu button{display:flex;width:100%;text-align:left;border:0;background:none;padding:6px 10px;border-radius:5px;cursor:pointer;justify-content:space-between}
+body .ew .ew-menu button:hover:not(:disabled){background:var(--bg-2)}
+body .ew .ew-menu button:disabled{color:var(--tx-3);cursor:default}
+body .ew .ew-menu hr{border:0;border-top:1px solid var(--border);margin:4px 2px}
+body .ew .ew-ix{font-family:var(--font-ui);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:18px 0;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.6}
+body .ew .ew-ix .ew-t{font-weight:650}
+body .ew .ew-ix .ew-how{font-size:13px;color:var(--tx-2)}
+body .ew .ew-ix .ew-grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,190px);gap:14px;align-items:center}
+body .ew .ew-ix svg{width:100%;max-width:320px;height:auto;background:var(--bg-1);border-radius:8px}
+body .ew .ew-ix label{display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--tx-2)}
+body .ew .ew-ix input[type=range]{accent-color:var(--viz-1);width:100%}
+body .ew .ew-ix .ew-big{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums}
+body .ew .ew-ix .ew-ok{color:var(--known);font-weight:600}
+body .ew .ew-check{font-family:var(--font-ui);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:20px 0;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.6}
+body .ew .ew-check .ew-h{display:flex;gap:7px;align-items:center;font-weight:650}
+body .ew .ew-check .ew-h svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-check .ew-stem{font-family:var(--font-text);font-size:15.5px}
+body .ew .ew-check .ew-opts{display:flex;flex-direction:column;gap:6px}
+body .ew .ew-check .ew-o{text-align:left;border:1px solid var(--border);background:var(--bg-0);border-radius:8px;padding:6px 12px;cursor:pointer}
+body .ew .ew-check .ew-o:hover:not(:disabled){background:var(--bg-1)}
+body .ew .ew-check .ew-o.ew-idk{border-style:dashed;color:var(--tx-2)}
+body .ew .ew-check .ew-o:disabled{cursor:default}
+body .ew .ew-check .ew-o.ew-right{border-color:var(--known);color:var(--known);font-weight:600}
+body .ew .ew-check .ew-o.ew-wrong{border-color:var(--gap);color:var(--gap)}
+body .ew .ew-res{font-size:13.5px}
+body .ew .ew-follow{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--border);padding-top:10px}
+body .ew .ew-elab{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--tx-2)}
+body .ew .ew-follow .ew-btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx);opacity:1}
+body .ew .ew-follow .ew-btn[aria-pressed="true"]:hover:not(:disabled){background:var(--accent)}
+body .ew .ew-follow .ew-lab{font-size:12.5px;color:var(--tx-2)}
+body .ew .ew-follow .ew-lk{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;text-align:left;text-decoration:underline;text-underline-offset:3px;font-size:13.5px}
+body .ew .ew-endb{font-family:var(--font-ui);border-top:1px dashed var(--border);margin-top:34px;padding-top:16px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.6}
+body .ew .ew-endb h3{font-size:15px;margin:0}
+body .ew .ew-chips{display:flex;gap:8px;flex-wrap:wrap}
+body .ew .ew-pill{border:1px solid var(--border);background:var(--bg-0);border-radius:999px;padding:4px 14px;cursor:pointer;font-size:13.5px}
+body .ew .ew-pill[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+body .ew .ew-endb textarea{min-height:64px}
+body .ew .ew-endb .ew-hint{font-size:12.5px;color:var(--tx-2)}
+body .ew .ew-endb .ew-cb{display:flex;gap:7px;align-items:center;font-size:13px;color:var(--tx-2)}
+body .ew .ew-endb .ew-cb input{accent-color:var(--accent)}
+body .ew .ew-endb .ew-act{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+body .ew .ew-end-completed{margin-left:auto;color:var(--accent);font-size:18px;line-height:1;padding:4px 8px}
+body .ew .ew-endb .ew-act .ew-lk{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;font-size:13.5px}
+body .ew .ew-examb{font-family:var(--font-ui);border-top:1px dashed var(--border);margin-top:34px;padding-top:16px;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.6}
+body .ew .ew-examb h3{font-size:15px;margin:0}
+body .ew .ew-examb .ew-thead .ew-qtip .ew-tipbox{right:auto;left:-6px}
+body .ew .ew-exi{display:flex;flex-direction:column;gap:8px;border:1px solid var(--border);border-radius:12px;padding:12px 16px}
+body .ew .ew-exh{display:flex;gap:10px;align-items:baseline;font-size:13px}
+body .ew .ew-exh b{font-weight:600}
+body .ew .ew-exi .ew-stem{font-family:var(--font-text);font-size:15.5px}
+body .ew .ew-exctx{font-size:13px;color:var(--tx-2)}
+body .ew .ew-exctx summary{cursor:pointer}
+body .ew .ew-exctx div{font-family:var(--font-text);font-size:14.5px;color:var(--tx-1);padding:4px 0 0}
+body .ew .ew-exopts{display:flex;flex-direction:column;gap:2px;font-family:var(--font-text);font-size:14.5px}
+body .ew .ew-exans{display:flex;flex-direction:column;gap:2px;background:var(--bg-1);border-radius:8px;padding:8px 12px}
+body .ew .ew-exans .ew-exwhy{color:var(--tx-2);font-size:13px}
+body .ew .ew-exi .ew-btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx);opacity:1}
+body .ew .ew-exi .ew-err{font-size:12.5px;color:var(--gap)}
+body .ew .ew-mynotes h2{font-family:var(--font-ui)}
+body .ew .ew-mynotes .ew-hint{font-family:var(--font-ui);font-size:13px;color:var(--tx-3)}
+body .ew input[type=text],body .ew input[type=password],body .ew textarea,body .ew select{caret-color:var(--tx-1);font:inherit;font-size:14px;color:var(--tx-1);background:var(--bg-1);border:1px solid var(--border);border-radius:6px;padding:6px 9px;box-sizing:border-box;width:100%}
+body .ew textarea{resize:vertical;min-height:52px}
+body .ew ::placeholder{color:var(--ph);opacity:1}
+body .ew .ew-btn{font:inherit;font-size:13.5px;border:1px solid var(--border);background:var(--bg-0);color:var(--tx-1);border-radius:7px;padding:5px 12px;cursor:pointer;white-space:nowrap}
+body .ew .ew-btn:hover:not(:disabled){background:var(--bg-2)}
+body .ew .ew-btn.ew-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-tx);font-weight:600}
+body .ew .ew-btn.ew-primary:hover:not(:disabled){filter:brightness(1.06);background:var(--accent)}
+body .ew .ew-btn.ew-link{border:0;background:none;color:var(--tx-2);padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
+body .ew .ew-btn:disabled{opacity:.45;cursor:default}
+body .ew .ew-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+body .ew .ew-muted{color:var(--tx-2);font-size:12.5px}
+body .ew .ew-faint{color:var(--tx-3);font-size:12.5px}
+body .ew :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body .ew .ew-side{border-left:1px solid var(--border);background:var(--bg-0);display:grid;grid-template-rows:auto minmax(0,1fr);min-width:0}
+body .ew .ew-side-head{padding-inline:14px;padding-block:12px 10px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--border)}
+body .ew .ew-side-head .ew-brand{display:flex;gap:7px;align-items:center;font-weight:650}
+body .ew .ew-side-head .ew-brand svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:1.8}
+body .ew .ew-seg{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--bg-1);border-radius:8px;padding:3px}
+body .ew .ew-seg button{position:relative;border:0;background:none;border-radius:6px;padding:4px;cursor:pointer;color:var(--tx-2);font-size:13.5px}
+body .ew .ew-seg button[aria-selected="true"]{background:var(--bg-0);color:var(--tx-1);box-shadow:0 1px 3px rgba(0,0,0,.08);font-weight:600}
+body .ew .ew-seg button.ew-has-dot::after{content:"";position:absolute;top:3px;right:calc(50% - 22px);width:7px;height:7px;border-radius:50%;background:var(--gap)}
+body .ew .ew-side-body.ew-side-set{max-width:none;margin:0;gap:16px;padding-inline:14px;padding-block:14px}
+body .ew .ew-side-set section{padding-top:12px}
+body .ew .ew-side-set .ew-srow{grid-template-columns:minmax(0,1fr) auto;gap:10px}
+body .ew .ew-side-body{overflow-y:auto;padding-inline:14px;padding-block:14px;display:flex;flex-direction:column;gap:14px}
+body .ew .ew-side-body.ew-pz{gap:12px}
+body .ew .ew-pz-box{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--bg-0)}
+body .ew .ew-pz-hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
+body .ew .ew-pz-hd h2{font-size:15px;font-weight:650;margin:0}
+body .ew .ew-pz-it{display:flex;gap:10px;align-items:center;padding:11px 0;border-top:1px solid var(--border);font-size:13.5px;line-height:1.5}
+body .ew .ew-pz-hd+.ew-pz-it{margin-top:6px;border-top:0}
+body .ew .ew-pz-diff{margin-top:6px;font-size:12px;line-height:1.5}
+body .ew .ew-pz-diff-del{color:var(--tx-3);text-decoration:line-through}
+body .ew .ew-pz-it:has(.ew-pz-acts)>.ew-qtip{align-self:flex-end;margin-bottom:5px}
+body .ew .ew-pz-t{flex:1;min-width:0;color:var(--tx-1)}
+body .ew .ew-pz-t b{font-weight:600}
+body .ew .ew-pz-t.ew-off,body .ew .ew-pz-t.ew-off b{color:var(--tx-3)}
+body .ew .ew-pz-tag{flex:none;font-size:12px;color:var(--tx-3);white-space:nowrap}
+body .ew .ew-pz-foot{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--tx-3);padding-top:10px;border-top:1px solid var(--border)}
+body .ew .ew-btn.ew-pz-link,body .ew .ew-pz-go{font:inherit;font-size:13px;color:var(--tx-1);background:none;border:0;border-bottom:1px solid var(--border);border-radius:0;padding:0;cursor:pointer;text-align:left}
+body .ew .ew-pz-go{font-size:13.5px;line-height:1.5;border-bottom:0;text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:4px}
+body .ew .ew-pz-go.ew-pz-plain{text-decoration:none}
+body .ew .ew-pz-go:hover{text-decoration-color:var(--tx-3)}
+body .ew .ew-btn.ew-pz-link:hover{border-bottom-color:var(--tx-3)}
+body .ew .ew-pz-edit{width:100%;box-sizing:border-box;margin-top:8px;border:1px solid var(--border);border-radius:8px;padding:7px 9px;font:600 13.5px/1.5 var(--font-ui,inherit);color:var(--tx-1);background:var(--bg-0);resize:vertical}
+body .ew .ew-pz-edit:focus{outline:none;border-color:var(--tx-3)}
+body .ew .ew-pz-acts{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+body .ew .ew-btn.ew-pz-pill{border-radius:999px;padding:3px 14px;font-size:13px}
+body .ew .ew-pz-ops{display:flex;gap:12px;margin-top:2px}
+body .ew .ew-pz-ops .ew-btn.ew-link{font-size:12px;color:var(--tx-3);padding:0;text-decoration:none}
+body .ew .ew-pz-ops .ew-btn.ew-link:hover{color:var(--tx-1)}
+body .ew .ew-pz-entry{display:flex;justify-content:space-between;align-items:center;width:100%;padding:0;border:0;background:none;font:inherit;font-size:15px;color:var(--tx-1);cursor:pointer;text-align:left}
+body .ew .ew-pz-entry b{font-weight:650}
+body .ew .ew-pz-ttl{position:relative}
+body .ew .ew-pz-ttl .ew-cnt{position:absolute;top:-7px;left:calc(100% + 1px);min-width:15px;height:15px;padding:0 4px;box-sizing:border-box;border-radius:999px;background:var(--gap);color:var(--bg-0);font-size:10px;line-height:15px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+body .ew .ew-pz-chev{color:var(--tx-3);transition:transform .15s}
+body .ew .ew-pz-entry[aria-expanded="true"] .ew-pz-chev,body .ew .ew-pz-more[aria-expanded="true"] .ew-pz-chev{transform:rotate(90deg)}
+body .ew .ew-pz-log{margin-top:4px;border-top:1px solid var(--border)}
+body .ew .ew-pz-when{font-size:12px;color:var(--tx-3);margin:12px 0 0}
+body .ew .ew-pz-when+.ew-pz-it{border-top:0}
+body .ew #pz-conflicts{border-radius:12px}
+body .ew #pz-conflicts>.ew-muted{margin-top:-4px}
+body .ew #pz-conflicts>.ew-pz-mem{margin-top:4px}
+body .ew #pz-conflicts .ew-acts{margin-top:2px}
+body .ew .ew-pz-grp .ew-pz-when{margin:0 0 2px;font-size:13px;font-weight:600;color:var(--tx-1)}
+body .ew .ew-pz-grp .ew-pz-it{padding:5px 0;border-top:0}
+body .ew .ew-pz-grp .ew-pz-t{color:var(--tx-1)}
+body .ew .ew-pz-grp+.ew-pz-grp{border-top:1px solid var(--border);margin-top:8px;padding-top:12px}
+body .ew .ew-pz-more{display:flex;align-items:center;gap:6px;border:0;background:none;padding:12px 0 0;font:inherit;font-size:12.5px;color:var(--tx-3);cursor:pointer}
+body .ew .ew-pz-more:hover{color:var(--tx-1)}
+body .ew .ew-btn.ew-pz-back{align-self:flex-start;border:0;background:none;padding:0;font-size:13px;color:var(--tx-2)}
+body .ew .ew-btn.ew-pz-back:hover{background:none;color:var(--tx-1)}
+body .ew .ew-pz-box #sources .ew-src-list{display:flex;flex-direction:column}
+body .ew .ew-card{border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;background:var(--bg-0)}
+body .ew .ew-card h2{font-size:15px;margin:0;font-weight:650;text-wrap:balance}
+body .ew .ew-card.ew-feature{background:var(--accent-soft);border-color:transparent}
+body .ew .ew-blk{display:flex;flex-direction:column;gap:8px}
+body .ew .ew-blk>h2{font-size:15px;margin:0;font-weight:650}
+body .ew .ew-bigbtn{width:100%;text-align:left;border:0;border-radius:9px;padding:10px 14px;background:var(--accent);color:var(--accent-tx);font-weight:650;font-size:14.5px;cursor:pointer}
+body .ew .ew-bigbtn:hover{filter:brightness(1.06)}
+body .ew .ew-clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+body .ew .ew-rec{display:flex;flex-direction:column;gap:6px}
+body .ew .ew-rec button{text-align:left;border:1px solid var(--border);background:var(--bg-0);border-radius:8px;padding:7px 11px;cursor:pointer;display:flex;flex-direction:column}
+body .ew .ew-rec button:hover{background:var(--bg-1)}
+body .ew .ew-rec b{font-size:13.5px;font-weight:600}
+body .ew .ew-rec span{font-size:12px;color:var(--tx-2)}
+body .ew .ew-rv-src{font-size:12px;color:var(--tx-3)}
+body .ew .ew-rv-q{font-family:var(--font-text);font-size:15px}
+body .ew .ew-rv-answer{max-height:320px;overflow-y:auto;font-family:var(--font-text);line-height:1.7}
+body .ew .ew-rv-answer p{margin:8px 0}
+body .ew .ew-rv-jump{display:block;border:0;background:none;color:var(--accent);cursor:pointer;padding:0;text-align:left;margin:-6px 0 12px;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+body .ew .ew-grades{display:flex;flex-direction:column;gap:6px}
+body .ew .ew-grades .ew-btn{text-align:left}
+body .ew .ew-gls{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+body .ew .ew-gl{display:flex;flex-direction:column;gap:6px}
+body .ew .ew-glb{display:flex;flex-direction:column;gap:6px;border:0;background:none;padding:6px 8px;margin:-6px -8px;border-radius:8px;cursor:pointer;text-align:left;font:inherit;color:var(--tx-1)}
+body .ew .ew-glb:hover{background:var(--bg-1)}
+body .ew .ew-gt{font-size:13.5px;font-weight:600}
+body .ew .ew-gbar{display:flex;height:6px;border-radius:999px;overflow:hidden;gap:2px}
+body .ew .ew-gbar i{display:block;height:100%}
+body .ew .ew-gw{display:flex;gap:8px;align-items:baseline;font-size:12.5px;color:var(--tx-3);min-width:0}
+body .ew .ew-gnext{border:0;background:none;padding:0;font:inherit;color:var(--tx-2);cursor:pointer;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+body .ew .ew-gnext:hover{color:var(--tx-1);text-decoration:underline;text-underline-offset:3px}
+body .ew .ew-mini{position:relative;height:190px;border-radius:10px;background:var(--cloud-bg);overflow:hidden;cursor:pointer}
+body .ew .ew-mini canvas,body .ew .ew-bigmap canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+body .ew .ew-mini .ew-sigma{position:absolute;inset:0}
+body .ew .ew-mini .ew-mini-none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--tx-3);font-size:13px}
+body .ew .ew-mini .ew-mini-none[hidden]{display:none}
+body .ew .ew-recent{font-size:12.5px;color:var(--tx-2);display:flex;gap:6px;flex-wrap:wrap;align-items:baseline}
+body .ew .ew-recent .ew-lk{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;font-size:12.5px}
+body .ew .ew-attn .ew-from{font-size:13px;color:var(--tx-2)}
+body .ew .ew-attn label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--tx-2)}
+body .ew .ew-attn .ew-old{font-size:13px;background:var(--bg-1);border-radius:6px;padding:6px 9px;color:var(--tx-2)}
+body .ew .ew-attn details{font-size:12.5px;color:var(--tx-2)}
+body .ew .ew-attn details>div{display:grid;gap:6px;margin-top:6px}
+body .ew .ew-attn details p{margin:0;background:var(--bg-1);border-radius:6px;padding:6px 9px;font-family:var(--font-text);font-size:13.5px;color:var(--tx-1)}
+body .ew .ew-prop{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--border);padding-top:10px;font-size:13px}
+body .ew .ew-asst{display:flex;flex-direction:column;height:100%;min-height:0}
+body .ew .ew-asst .ew-thread{flex:1;min-height:0}
+body .ew .ew-ahead{display:flex;align-items:center;gap:4px;padding-inline:14px 8px;padding-block:8px;border-bottom:1px solid var(--border)}
+body .ew .ew-atitle{flex:1;min-width:0;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body .ew .ew-iconbtn{width:28px;height:28px;border:0;background:none;border-radius:6px;color:var(--tx-2);cursor:pointer;display:grid;place-items:center}
+body .ew .ew-iconbtn:hover,body .ew .ew-iconbtn[aria-pressed="true"]{background:var(--bg-2);color:var(--tx-1)}
+body .ew .ew-iconbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-hist{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;padding-inline:10px;padding-block:10px}
+body .ew .ew-hlist{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+body .ew .ew-hgroup{font-size:11.5px;color:var(--tx-3);padding:10px 6px 4px}
+body .ew .ew-hrow{display:flex;flex-direction:column;gap:1px;text-align:left;border:0;background:none;border-radius:8px;padding:7px 8px;cursor:pointer;color:var(--tx-1);font:inherit}
+body .ew .ew-hrow:hover{background:var(--bg-1)}
+body .ew .ew-hrow.ew-on{background:var(--bg-2)}
+body .ew .ew-hrow .ew-ht{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body .ew .ew-hrow .ew-hs{font-size:11.5px;color:var(--tx-3)}
+body .ew .ew-hempty{font-size:12.5px;color:var(--tx-3);padding:16px 8px}
+body .ew .ew-hitem{position:relative}
+body .ew .ew-hitem .ew-hrow{box-sizing:border-box;width:100%;padding-right:28px}
+body .ew .ew-hitem .ew-more{position:absolute;right:4px;top:7px;opacity:0;border:0;background:none;color:var(--tx-3);cursor:pointer;border-radius:5px;padding:0 6px;font-size:18px;line-height:1}
+body .ew .ew-hitem:hover .ew-more,body .ew .ew-hitem .ew-more:focus-visible,body .ew .ew-hitem .ew-more[aria-expanded="true"]{opacity:1}
+body .ew .ew-hitem .ew-more:hover{color:var(--tx-1);background:var(--bg-2)}
+body .ew .ew-hrow.ew-del{cursor:default}
+body .ew .ew-hrow.ew-del:hover{background:none}
+body .ew .ew-hrow.ew-del .ew-ht{color:var(--tx-3)}
+body .ew .ew-modal.ew-fg{width:min(560px,calc(100vw - 32px));padding:22px 24px 18px;gap:0}
+body .ew .ew-fg-head{display:flex;align-items:center;gap:10px}
+body .ew .ew-fg-head h2{font-size:19px}
+body .ew .ew-fg-ic{display:grid;place-items:center;color:var(--gap)}
+body .ew .ew-fg-ic svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-fg-title{font-size:16px;font-weight:500;margin-top:12px}
+body .ew .ew-fg-desc{font-size:13.5px;line-height:1.75;color:var(--tx-2);margin-top:8px}
+body .ew .ew-fg-desc b{color:var(--tx-1);font-weight:600}
+body .ew .ew-fg-hr{border:0;border-top:1px solid var(--border);margin:16px 0 12px}
+body .ew .ew-fg-sh{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:0;text-align:left;cursor:pointer}
+body .ew .ew-fg-sh>div{flex:1;min-width:0}
+body .ew .ew-fg-st{font-size:14.5px;font-weight:600}
+body .ew .ew-fg-ss{font-size:12.5px;color:var(--tx-2);margin-top:2px}
+body .ew .ew-fg-ch{display:grid;place-items:center;color:var(--tx-2)}
+body .ew .ew-fg-ch svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+body .ew .ew-fg-sh[aria-expanded="false"] .ew-fg-ch svg{transform:rotate(180deg)}
+body .ew .ew-fg-box{background:var(--bg-1);border-radius:10px;padding:6px 16px;margin-top:12px}
+body .ew .ew-fg-box[hidden]{display:none}
+body .ew .ew-fg-item{display:flex;align-items:flex-start;gap:12px;padding:8px 0;cursor:pointer}
+body .ew .ew-fg-item input{appearance:none;box-sizing:border-box;flex:none;width:18px;height:18px;margin:2px 0 0;border:1.5px solid var(--tx-3);border-radius:5px;background:var(--bg-0);cursor:pointer;display:grid;place-items:center}
+body .ew .ew-fg-item input:checked{background:var(--accent);border-color:var(--accent)}
+body .ew .ew-fg-item input:checked::after{content:"";width:9px;height:5px;border-left:2px solid var(--accent-tx);border-bottom:2px solid var(--accent-tx);transform:translateY(-1px) rotate(-45deg)}
+body .ew .ew-fg-item input:focus-visible{outline:2px solid var(--tx-2);outline-offset:2px}
+body .ew .ew-fg-it{font-size:14px}
+body .ew .ew-fg-ik{font-size:12.5px;color:var(--tx-3)}
+body .ew .ew-fg-used{display:flex;align-items:center;gap:4px}
+body .ew .ew-fg-ops{display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--border);margin:16px -24px 0;padding:14px 24px 0}
+body .ew .ew-fg-ops .ew-btn{border-radius:999px;padding:6px 20px;font-size:14px}
+body .ew .ew-btn.ew-fg-yes{background:var(--gap);border-color:var(--gap);color:#fff;font-weight:600}
+body .ew .ew-btn.ew-fg-yes:hover:not(:disabled){background:var(--gap);filter:brightness(1.06)}
+body .ew .ew-thread{overflow-y:auto;overflow-x:hidden;padding-inline:16px;padding-block:18px;display:flex;flex-direction:column;gap:18px}
+body .ew .ew-umsg{align-self:flex-end;max-width:86%;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+body .ew .ew-uquote{font-size:12px;line-height:1.5;color:var(--tx-2);border-left:2px solid var(--border);padding-left:9px;white-space:pre-line;text-align:left;align-self:stretch}
+body .ew .ew-ubub{background:var(--bg-2);color:var(--tx-1);border-radius:18px;padding:8px 14px;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
+body .ew .ew-amsg pre{position:relative;margin:0;padding:10px 12px;background:var(--bg-2);border-radius:8px;overflow-x:auto;font-size:13px}
+body .ew .ew-amsg pre .ew-copy-code-button{position:absolute;top:4px;right:4px;padding:2px 6px;border:0;border-radius:4px;background:var(--bg-1,#fff);font-size:12px;color:var(--tx-2);cursor:pointer;opacity:0}
+body .ew .ew-amsg pre:hover .ew-copy-code-button,body .ew .ew-amsg pre .ew-copy-code-button:focus-visible{opacity:1}
+body .ew .ew-amsg{min-width:0;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.7;color:var(--tx-1)}
+body .ew .ew-amsg :is(.ew-math-block,body .ew mjx-container[display="true"],body .ew pre){display:block;max-width:100%;overflow-x:auto}
+body .ew .ew-amsg p{margin:0}
+body .ew .ew-tools{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx-3)}
+body .ew .ew-tools svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+body .ew .ew-trows{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+body .ew .ew-trow{display:flex;align-items:center;gap:4px;background:none;border:0;padding:1px 0;margin:0;font:inherit;font-size:12px;line-height:1.5;color:var(--tx-3);text-align:left}
+body .ew button.ew-trow{cursor:pointer}
+body .ew button.ew-trow:hover{color:var(--tx-2)}
+body .ew .ew-trow.ew-run{color:var(--tx-2)}
+body .ew .ew-trow .ew-chev{display:inline-flex}
+body .ew .ew-trow .ew-chev svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;transition:transform .15s}
+body .ew .ew-trow[aria-expanded="true"] .ew-chev svg{transform:rotate(180deg)}
+body .ew .ew-titems{list-style:none;margin:0 0 2px 5px;padding:0 0 0 10px;border-left:1px solid var(--border);font-size:12px;line-height:1.6;color:var(--tx-3)}
+body .ew .ew-srcl{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-size:12px;color:var(--tx-3)}
+body .ew .ew-srclink{background:none;border:0;padding:0;font:inherit;font-size:12px;color:var(--tx-2);cursor:pointer;text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:3px}
+body .ew .ew-srclink:hover{color:var(--tx-1)}
+body .ew .ew-typing{display:flex;gap:4px;padding:6px 0}
+body .ew .ew-typing i{width:6px;height:6px;border-radius:50%;background:var(--tx-3);animation:ew-blink 1.2s infinite ease-in-out}
+body .ew .ew-typing i:nth-child(2){animation-delay:.15s}
+body .ew .ew-typing i:nth-child(3){animation-delay:.3s}
+@keyframes ew-blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+body .ew .ew-arow{display:flex;flex-direction:column;gap:6px;margin-top:-2px}
+body .ew .ew-arow .ew-rbtns{display:flex;align-items:center;gap:2px;opacity:.55;transition:opacity .12s}
+body .ew .ew-amsg:not(.ew-last) .ew-arow:not(.ew-rated) .ew-rbtns{opacity:0}
+body .ew .ew-amsg:hover .ew-arow .ew-rbtns,body .ew .ew-arow.ew-rated .ew-rbtns,body .ew .ew-arow .ew-rbtns:focus-within{opacity:1}
+body .ew .ew-arow .ew-qtip .ew-tipbox{right:auto;left:-6px;white-space:nowrap;pointer-events:none}
+body .ew .ew-amsg.ew-last .ew-arow{margin-bottom:24px}
+body .ew .ew-amsg .ew-arow.ew-ask{margin:0}
+body .ew .ew-askq{display:flex;align-items:flex-start;gap:8px}
+body .ew .ew-askq>p{flex:1;min-width:0}
+body .ew .ew-arow .ew-ib[aria-pressed="true"] svg{fill:currentColor}
+body .ew .ew-arow .ew-ib[aria-pressed="true"]{color:var(--accent)}
+body .ew .ew-arow .ew-rpanel{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:2px;padding:8px;border:1px solid var(--border);border-radius:12px;background:var(--bg-0)}
+body .ew .ew-arow .ew-rpanel::before{content:"";position:absolute;top:-5px;left:59px;width:8px;height:8px;background:inherit;border-left:1px solid var(--border);border-top:1px solid var(--border);transform:rotate(45deg)}
+body .ew .ew-arow.ew-ask .ew-rpanel::before{left:auto;right:7px}
+body .ew .ew-arow .ew-rpanel .ew-chips{display:contents}
+body .ew .ew-arow .ew-rpanel .ew-pill{border:1px solid transparent;background:var(--bg-1);color:var(--tx-2);border-radius:999px;padding:0 9px;font-size:12.5px;line-height:22px;white-space:nowrap}
+body .ew .ew-arow .ew-rpanel .ew-pill:hover{background:var(--bg-2);color:var(--tx-1)}
+body .ew .ew-arow .ew-rpanel .ew-pill[aria-pressed="true"]{background:var(--bg-1);border-color:var(--tx-1);color:var(--tx-1)}
+body .ew .ew-arow .ew-rnote{box-sizing:border-box;width:auto;height:24px;min-width:6em;max-width:100%;field-sizing:content;border:1px solid transparent;background:var(--bg-1);color:var(--tx-1);border-radius:999px;padding:0 9px;font:inherit;font-size:12.5px;line-height:22px;outline:none}
+body .ew .ew-arow .ew-rnote::placeholder{color:var(--ph)}
+body .ew .ew-arow .ew-rnote:focus{border-color:var(--tx-3);background:var(--bg-0)}
+body .ew .ew-propcard{border:1px solid var(--border);background:var(--bg-1);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+body .ew .ew-propcard b{font-size:13.5px}
+body .ew .ew-propcard .ew-row{flex-wrap:wrap}
+body .ew .ew-aacts{margin-left:auto;display:flex;gap:6px;align-items:center}
+body .ew .ew-alist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+body .ew .ew-alist li{display:grid;grid-template-columns:16px minmax(0,1fr) auto;gap:8px;align-items:baseline}
+body .ew .ew-alist .ew-n{color:var(--tx-3);font-variant-numeric:tabular-nums;font-size:12px}
+body .ew .ew-alist .ew-x{border:0;background:none;color:var(--tx-3);cursor:pointer;font-size:15px;line-height:1;padding:2px 5px;border-radius:5px}
+body .ew .ew-alist .ew-x:hover{background:var(--bg-2);color:var(--tx-1)}
+body .ew .ew-alist.ew-drag li{padding:2px 0}
+body .ew .ew-alist.ew-drag .ew-t{font-weight:600;font-size:13px}
+body .ew .ew-aadd{margin-top:6px;flex-wrap:nowrap}
+body .ew .ew-aadd input{flex:1;min-width:0;font-size:13px;padding:4px 8px}
+body .ew .ew-alist.ew-drag li{cursor:grab;border-radius:6px;transition:background .15s,opacity .15s}
+body .ew .ew-alist.ew-drag li:hover{background:var(--bg-2)}
+body .ew .ew-alist.ew-drag li.ew-sort-ghost{opacity:.4;box-shadow:inset 0 2px 0 var(--accent)}
+body .ew .ew-alist.ew-drag li.ew-sort-drag{background:var(--bg-0);box-shadow:var(--shadow)}
+body .ew .ew-alist.ew-drag li:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+body .ew .ew-alist .ew-t{border:0;background:none;padding:0;font:inherit;font-size:13px;font-weight:600;color:var(--tx-1);cursor:pointer;text-align:left}
+body .ew .ew-alist .ew-t:hover{text-decoration:underline;text-underline-offset:3px}
+body .ew .ew-alist .ew-s{font-size:12px;color:var(--tx-2)}
+body .ew .ew-alist .ew-tg{font-size:11px;border:1px solid currentColor;border-radius:999px;padding:0 6px;color:var(--tx-2);margin-left:6px;white-space:nowrap}
+body .ew .ew-ws{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--tx-3);white-space:nowrap}
+body .ew .ew-ws i,body .ew .ew-wline i{width:6px;height:6px;border-radius:50%;background:var(--tx-2);animation:wpulse 1.2s infinite ease-in-out}
+body .ew .ew-wline{display:flex;align-items:center;gap:6px}
+@keyframes wpulse{0%,100%{opacity:.25}50%{opacity:1}}
+body .ew .ew-propcard .ew-diff{background:var(--bg-0)}
+body .ew .ew-propdiff summary{cursor:pointer;font-size:12.5px;color:var(--tx-2);display:list-item}
+body .ew .ew-propdiff summary .ew-faint{margin-left:8px;font-size:12px}
+body .ew .ew-propdiff .ew-diff{margin-top:6px;max-height:320px;overflow-y:auto}
+body .ew .ew-propdiff .ew-dl>span:last-child{white-space:pre-wrap;overflow-wrap:anywhere}
+body .ew .ew-propres{display:flex;gap:8px;align-items:baseline}
+body .ew .ew-check.ew-qz{margin:0;padding:12px 14px;background:var(--bg-0)}
+body .ew .ew-dg-sq{width:12px;height:12px;border-radius:4px;background:var(--m-none);flex:none;display:inline-block}
+body .ew .ew-dg-sq.ew-know{background:var(--known)}
+body .ew .ew-dg-sq.ew-some{background:var(--shaky)}
+body .ew .ew-dg-sq.ew-gap{background:var(--gap)}
+body .ew .ew-dg-sq.ew-asking{background:var(--ask)}
+body .ew .ew-dg-btn{height:34px;padding:0 16px;border-radius:10px;font:700 13.5px var(--font-ui);display:inline-flex;align-items:center;border:1px solid var(--border);background:var(--bg-0);color:var(--tx-1);cursor:pointer}
+body .ew .ew-dg-btn.ew-pri{background:var(--tx-1);border-color:#000;color:var(--bg-0)}
+body .ew .ew-dg-btn:disabled{opacity:.4;cursor:default}
+body .ew .ew-dg-mat{border:1px solid var(--border);border-radius:12px;padding:10px 12px 12px;background:var(--bg-0)}
+body .ew .ew-dg-row{display:grid;grid-template-columns:minmax(0,1fr) 48px 48px 48px;align-items:center;gap:6px;padding:4px 0;font-size:13.5px}
+body .ew .ew-dg-row.ew-hd{font-size:12px;color:var(--tx-3);text-align:center;padding-bottom:6px}
+body .ew .ew-dg-cell{height:34px;border-radius:8px;border:1px solid var(--border);background:var(--bg-0);cursor:pointer;padding:0}
+body .ew .ew-dg-cell:hover{background:var(--bg-1)}
+body .ew .ew-dg-cell.ew-know{background:var(--known);border-color:color-mix(in srgb,var(--known) 70%,#000)}
+body .ew .ew-dg-cell.ew-some{background:var(--shaky);border-color:color-mix(in srgb,var(--shaky) 70%,#000)}
+body .ew .ew-dg-cell.ew-gap{background:var(--gap);border-color:color-mix(in srgb,var(--gap) 70%,#000)}
+body .ew .ew-dg-go{display:flex;justify-content:flex-end;margin-top:10px}
+body .ew .ew-dg-mini{display:flex;gap:4px;align-items:center;font-size:12.5px;color:var(--tx-3)}
+body .ew .ew-dg-mini .ew-dg-mt{margin-left:6px}
+body .ew .ew-dg-qk{font-size:12.5px;color:var(--ask);font-weight:700;display:flex;gap:7px;align-items:center;margin-bottom:6px}
+body .ew .ew-dg-qq{font-size:16px;font-weight:700;line-height:1.5;margin-bottom:12px}
+body .ew .ew-dg-ob{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg-0);color:var(--tx-1);font:500 14px var(--font-ui);margin-bottom:8px;cursor:pointer}
+body .ew .ew-dg-ob:hover{background:var(--bg-1)}
+body .ew .ew-dg-ob.ew-idk{color:var(--tx-2)}
+body .ew .ew-dg-foot{margin-top:2px}
+body .ew .ew-dg-foot .ew-askq{justify-content:flex-end}
+body .ew .ew-check.ew-rough .ew-rrow{display:flex;align-items:center;justify-content:space-between;gap:6px 10px;flex-wrap:wrap;font-size:13.5px;padding:2px 0}
+body .ew .ew-check.ew-rough .ew-rps{display:flex;gap:5px}
+body .ew .ew-check.ew-rough .ew-pill{font-size:12.5px;padding:2px 10px}
+body .ew .ew-check.ew-rough .ew-pill:disabled{cursor:default}
+body .ew .ew-wcard{--pg-fill:color-mix(in srgb,var(--known) 22%,transparent);position:relative;overflow:hidden;border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:var(--bg-0)}
+body .ew .ew-wcard>*:not(.ew-fill){position:relative}
+body .ew .ew-wcard .ew-t{font-weight:600;color:var(--tx-1)}
+body .ew .ew-wcard .ew-t .ew-btn.ew-link{font:inherit;color:inherit;padding:0;background:none;text-decoration:none;cursor:pointer}
+body .ew .ew-wcard .ew-s{font-size:12.5px;color:var(--tx-2);margin-top:2px}
+body .ew .ew-wcard .ew-fill{position:absolute;inset:0 auto 0 0;width:0;background-color:var(--pg-fill);transition:width 1s ease-out;pointer-events:none}
+body .ew .ew-goalrun .ew-fill[data-indeterminate=true]{background-color:transparent;opacity:.35;mask:none;-webkit-mask:none}
+body .ew .ew-wcard .ew-fill[data-state=writing]{background-image:linear-gradient(45deg,var(--pg-stripe) 25%,transparent 25% 50%,var(--pg-stripe) 50% 75%,transparent 75%);background-size:32px 32px;
+  -webkit-mask:linear-gradient(#000,#000) 0 0/calc(100% - 3px) 100% no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='48'%3E%3Cpath d='M0 0 H2 Q4 12 2 24 Q0 36 2 48 H0 Z'/%3E%3C/svg%3E") 100% 0/4px 48px repeat-y;
+  mask:linear-gradient(#000,#000) 0 0/calc(100% - 3px) 100% no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='48'%3E%3Cpath d='M0 0 H2 Q4 12 2 24 Q0 36 2 48 H0 Z'/%3E%3C/svg%3E") 100% 0/4px 48px repeat-y}
+body .ew .ew-check.ew-qz .ew-stem{font-size:15px}
+body .ew .ew-qres{display:flex;flex-direction:column;gap:3px;font-size:13px}
+body .ew .ew-starters{margin-top:auto;padding-bottom:0}
+@media (prefers-reduced-motion:reduce){body .ew .ew-ws i,body .ew .ew-wline i{animation:none;opacity:.6}}
+body .ew .ew-composer{padding-inline:12px;padding-block:10px 12px}
+body .ew .ew-cbox{border:1px solid var(--border);border-radius:16px;background:var(--bg-0);box-shadow:0 2px 10px rgba(0,0,0,.06);padding:8px 8px 6px 12px;display:flex;flex-direction:column;gap:6px}
+body .ew .ew-cbox:focus-within{border-color:var(--accent)}
+body .ew .ew-cbox textarea{border:0;background:none;padding:4px 0;min-height:24px;max-height:160px;resize:none;font-size:14px;line-height:1.55;outline:none}
+body .ew .ew-cbar{display:flex;justify-content:space-between;align-items:center}
+body .ew .ew-btn.ew-ghost{border:0;background:none;color:var(--tx-3);font-size:12.5px;padding:3px 6px}
+body .ew .ew-btn.ew-ghost:hover{background:var(--bg-1);color:var(--tx-2)}
+body .ew .ew-send{width:30px;height:30px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-tx);display:grid;place-items:center;cursor:pointer}
+body .ew .ew-send svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-send:disabled{background:var(--bg-2);color:var(--tx-3);cursor:default}
+body .ew .ew-send svg.ew-stopi{fill:currentColor;stroke:none}
+body .ew .ew-qchip{display:flex;gap:8px;align-items:flex-start;background:var(--bg-1);border-radius:10px;padding:6px 9px;font-size:12px;color:var(--tx-2);white-space:pre-line}
+body .ew .ew-qchip button{border:0;background:none;color:var(--tx-3);cursor:pointer;margin-left:auto;padding:0 2px}
+@media (prefers-reduced-motion:reduce){body .ew .ew-typing i{animation:none;opacity:.6}}
+body .ew .ew-asst{position:relative}
+body .ew .ew-asst.ew-drop::after{content:"放到这里";position:absolute;inset:6px;z-index:20;display:grid;place-items:center;border:2px dashed var(--accent);border-radius:14px;background:var(--bg-1);opacity:.94;font-size:15px;font-weight:600;color:var(--tx-1);pointer-events:none}
+body .ew .ew-cleft{display:flex;align-items:center;gap:8px;min-width:0}
+body .ew .ew-mpickw{position:relative;display:inline-flex;flex:none}
+body .ew .ew-mpick{display:inline-flex;align-items:center;gap:2px;height:28px;border:0;background:none;border-radius:8px;padding:0 4px 0 7px;color:var(--tx-3);font-size:12.5px;cursor:pointer}
+body .ew .ew-mpick:hover,body .ew .ew-mpick[aria-expanded="true"]{background:var(--bg-1);color:var(--tx-2)}
+body .ew .ew-mpick svg,body .ew .ew-mitem svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-mmenu{position:absolute;left:0;bottom:calc(100% + 6px);z-index:30;min-width:170px;background:var(--bg-0);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);padding:5px;font-size:13.5px}
+body .ew .ew-mrow{display:flex;align-items:center;gap:4px}
+body .ew .ew-mitem{flex:1;display:flex;justify-content:space-between;align-items:center;gap:12px;border:0;background:none;padding:6px 10px;border-radius:5px;cursor:pointer;text-align:left;color:var(--tx-1);font-size:13.5px}
+body .ew .ew-mitem:hover:not(:disabled){background:var(--bg-2)}
+body .ew .ew-mitem:disabled{color:var(--tx-3);cursor:default}
+body .ew .ew-mmenu hr{border:0;border-top:1px solid var(--border);margin:4px 2px}
+body .ew .ew-mrow .ew-qtip{margin-right:6px}
+body .ew .ew-mmenu .ew-qtip .ew-tipbox{top:auto;bottom:calc(100% + 6px)}
+body .ew .ew-elink{border:0;background:none;padding:0;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+body .ew .ew-clip{width:28px;height:28px;border-radius:8px;border:0;background:none;color:var(--tx-3);display:grid;place-items:center;cursor:pointer}
+body .ew .ew-clip:hover{background:var(--bg-1);color:var(--tx-2)}
+body .ew .ew-clip svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-cwait{font-size:12px;color:var(--tx-3)}
+body .ew .ew-atts{display:flex;gap:6px;flex-wrap:wrap;padding-right:4px}
+body .ew .ew-atts[hidden]{display:none}
+body .ew .ew-att{position:relative;display:flex;flex-direction:column;gap:6px;border:1px solid var(--border);border-radius:10px;padding:6px 26px 6px 7px;background:var(--bg-0);font-size:12px;min-width:150px;max-width:100%}
+body .ew .ew-atts .ew-att{flex-direction:row;align-items:center;gap:8px}
+body .ew .ew-att .ew-ab{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+body .ew .ew-att .ew-an{color:var(--tx-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+body .ew .ew-att .ew-as{color:var(--tx-3);font-size:11.5px}
+body .ew .ew-att .ew-as.ew-err{color:var(--gap)}
+body .ew .ew-att.ew-bad{border-color:var(--gap)}
+body .ew .ew-att .ew-th{flex:none;width:32px;height:32px;border-radius:6px;background:var(--bg-2);display:grid;place-items:center;font-size:10px;font-weight:600;color:var(--tx-2)}
+body .ew .ew-att .ew-th.ew-img{background:linear-gradient(135deg,var(--bg-2) 0 50%,var(--border) 50% 100%)}
+body .ew .ew-att .ew-th.ew-big{width:96px;height:64px}
+body .ew .ew-att .ew-x{position:absolute;top:3px;right:5px;border:0;background:none;color:var(--tx-3);cursor:pointer;padding:0 2px;font-size:14px}
+body .ew .ew-att .ew-x:hover{color:var(--tx-1)}
+body .ew .ew-att.ew-m{padding:8px 10px;gap:6px;min-width:200px;align-items:stretch;text-align:left}
+body .ew .ew-att.ew-m .ew-atop{display:flex;gap:8px;align-items:center}
+body .ew .ew-att.ew-gone{background:var(--bg-1)}
+body .ew .ew-att.ew-gone .ew-an,body .ew .ew-att.ew-gone .ew-as{color:var(--tx-3)}
+body .ew .ew-ajoin{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--tx-1)}
+body .ew .ew-aexam{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--tx-1)}
+body .ew .ew-aerr{font-size:13px;color:var(--gap)}
+body .ew .ew-att .ew-ad{color:var(--tx-2);font-size:11.5px}
+body .ew .ew-att .ew-as.ew-warn{color:var(--shaky)}
+body .ew .ew-att.ew-warn{border-color:var(--shaky)}
+body .ew .ew-aexp{font-size:11.5px;color:var(--tx-3)}
+body .ew .ew-bigmap{position:absolute;inset:0;background:var(--cloud-bg)}
+body .ew .ew-legend{position:absolute;left:8px;bottom:8px;padding:4px 8px;border-radius:6px;background:var(--cloud-bg);display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--tx-2);font-family:var(--font-ui)}
+body .ew .ew-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+body .ew .ew-ctip{position:absolute;pointer-events:none;background:var(--bg-0);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;box-shadow:0 6px 20px rgba(0,0,0,.12);max-width:240px}
+body .ew .ew-ccard{position:absolute;right:16px;top:16px;width:260px;background:var(--bg-0);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:10px;font-size:13px}
+body .ew .ew-ccard h3{margin:0;font-size:16px}
+body .ew .ew-ccard .ew-lst{display:flex;flex-direction:column;gap:2px}
+body .ew .ew-ccard .ew-x{position:absolute;right:10px;top:8px;border:0;background:none;color:var(--tx-3);cursor:pointer;font-size:15px}
+body .ew .ew-dotw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+body .ew .ew-learn{position:absolute;inset:0;border:0;width:100%;height:100%;background:var(--bg-0)}
+body .ew .ew-set{max-width:720px;margin:0 auto;padding-inline:24px;padding-block:24px 80px;display:flex;flex-direction:column;gap:22px}
+body .ew .ew-set h1{font-size:22px;margin:0}
+body .ew .ew-set section{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--border);padding-top:14px}
+body .ew .ew-set section>h2{font-size:15px;margin:0 0 6px}
+body .ew .ew-srow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,240px);gap:16px;align-items:center;padding-block:10px;border-bottom:1px solid var(--border)}
+body .ew .ew-srow:last-child{border-bottom:0}
+body .ew .ew-srow .ew-n{font-size:14px}
+body .ew .ew-srow .ew-d{font-size:12.5px;color:var(--tx-2)}
+body .ew .ew-rule{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;padding-block:9px;border-bottom:1px solid var(--border)}
+body .ew .ew-rule .ew-s{font-size:12px;color:var(--tx-3)}
+body .ew .ew-switch{width:34px;height:20px;border-radius:999px;border:0;background:var(--bg-2);position:relative;cursor:pointer;justify-self:end}
+body .ew .ew-switch::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--bg-0);transition:left .15s}
+body .ew .ew-switch[aria-checked="true"]{background:var(--accent)}
+body .ew .ew-switch[aria-checked="true"]::after{left:17px}
+body .ew .ew-scrim{position:fixed;inset:0;background:rgba(0,0,0,.3);display:grid;place-items:start center;padding-top:12vh;z-index:50}
+body .ew .ew-modal{width:min(520px,calc(100vw - 32px));background:var(--bg-0);border-radius:12px;box-shadow:var(--shadow);padding:18px 20px;display:flex;flex-direction:column;gap:12px;max-height:72vh;overflow-y:auto}
+body .ew .ew-modal h2{margin:0;font-size:17px}
+body .ew .ew-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+body .ew .ew-tiles div{background:var(--bg-1);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column}
+body .ew .ew-tiles b{font-size:24px;font-variant-numeric:tabular-nums}
+body .ew .ew-tiles span{font-size:12.5px;color:var(--tx-2)}
+body .ew .ew-chg{display:flex;flex-direction:column;gap:6px;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:10px;background:var(--bg-0);font-size:13px}
+body .ew .ew-prow{display:flex;align-items:baseline;gap:8px;width:100%;text-align:left;border:0;border-bottom:1px solid var(--border);background:none;padding:10px 0;font:inherit;font-size:13.5px;color:var(--tx-1);cursor:pointer}
+body .ew .ew-prow:hover{color:var(--tx-1);background:var(--bg-1)}
+body .ew .ew-prow .ew-faint{margin-left:auto;font-size:12px}
+body .ew .ew-ped{width:100%;min-height:360px;font-family:var(--font-mono);font-size:13px;line-height:1.6;padding:12px 14px;border-radius:8px;resize:vertical}
+body .ew .ew-cgroup{display:flex;flex-direction:column;margin-top:14px}
+body .ew .ew-btn.ew-sm{font-size:12.5px;padding:3px 10px;border-radius:6px;flex:none}
+body .ew .ew-btn.ew-xs{font-size:11.5px;line-height:16px;padding:0 6px;border-radius:5px;flex:none;vertical-align:middle}
+body .ew .ew-wcard .ew-s{display:flex;align-items:flex-start;gap:6px}
+body .ew .ew-wcard .ew-s>span{min-width:0}
+body .ew .ew-wcard .ew-s>.ew-btn.ew-xs{margin-top:1px}
+body .ew .ew-qbtn{flex:none;width:18px;height:18px;border:0;background:none;padding:0;color:var(--tx-3);cursor:pointer;display:inline-grid;place-items:center;border-radius:50%}
+body .ew .ew-qbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+body .ew .ew-qbtn:hover,body .ew .ew-qbtn[aria-expanded="true"]{color:var(--tx-1)}
+body .ew #bot-runs .ew-chg>.ew-row:first-child{flex-wrap:nowrap;align-items:center;gap:6px}
+body .ew #bot-runs .ew-rt{flex:1;min-width:0}
+body .ew .ew-cgroup>h3{font-size:12.5px;font-weight:600;color:var(--tx-3);margin:0 0 2px}
+body .ew .ew-ci{position:relative;gap:4px;font-size:13.5px;margin-top:8px}
+body .ew .ew-ci.ew-go,body .ew .ew-chg.ew-go{cursor:pointer}
+body .ew .ew-ci.ew-go:hover,body .ew .ew-chg.ew-go:hover{border-color:var(--tx-3)}
+body .ew .ew-ci.ew-go:focus-visible,body .ew .ew-chg.ew-go:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body .ew .ew-ci-top{display:flex;align-items:flex-start;gap:10px}
+body .ew .ew-ci-t{flex:1;min-width:0;color:var(--tx-1);line-height:1.5}
+body .ew .ew-ci-s{display:flex;gap:8px;align-items:baseline;font-size:12.5px;color:var(--tx-2);line-height:1.5}
+body .ew .ew-ci-d{margin-left:auto;flex:none;color:var(--tx-3);font-size:12px}
+body .ew .ew-ci.ew-off .ew-ci-t{color:var(--tx-3);text-decoration:line-through;text-decoration-color:var(--border)}
+body .ew .ew-ci-undo{flex:none;font-size:12.5px;color:var(--tx-2)}
+body .ew .ew-ci-more{display:flex;gap:14px}
+body .ew .ew-ci-more .ew-btn.ew-link{font-size:12px;color:var(--tx-3);padding:0}
+body .ew .ew-ci-more .ew-btn.ew-link:hover,body .ew .ew-ci-undo:hover{color:var(--tx-1)}
+body .ew .ew-ci-why{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--tx-3);padding:6px 10px;border-left:2px solid var(--border);margin-top:2px}
+body .ew .ew-ci .ew-diff{margin-top:6px}
+body .ew .ew-ci.ew-wait .ew-row{margin-top:8px}
+body .ew .ew-ci .ew-btn.ew-link{text-decoration:none}
+body .ew .ew-ci-more{opacity:.85}
+body .ew .ew-ci:not(:hover):not(:focus-within) .ew-ci-more .ew-btn.ew-link:not([aria-expanded="true"]){color:var(--tx-3)}
+body .ew .ew-chg .ew-st{font-size:11.5px;border:1px solid currentColor;border-radius:999px;padding:0 8px;width:fit-content}
+body .ew .ew-st.ew-live{color:var(--known)}
+body .ew .ew-st.ew-wait{color:var(--accent)}
+body .ew .ew-st.ew-undone{color:var(--tx-3)}
+body .ew .ew-pal input{font-size:15px}
+body .ew .ew-pal .ew-it{display:block;width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:14px}
+body .ew .ew-pal .ew-it:hover,body .ew .ew-pal .ew-it.ew-on{background:var(--bg-2)}
+body .ew .ew-notices{position:fixed;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;z-index:60;max-width:330px}
+body .ew .ew-notice{background:var(--bg-0);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);padding:9px 12px;font-size:13px;display:flex;gap:10px;align-items:center}
+body .ew .ew-notice .ew-lk{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;margin-left:auto;font-weight:600}
+body .ew .ew-seg .ew-cnt{position:absolute;top:-3px;left:calc(50% + 12px);min-width:15px;height:15px;padding:0 4px;box-sizing:border-box;border-radius:999px;background:var(--gap);color:var(--bg-0);font-size:10px;line-height:15px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+body .ew .ew-task{gap:6px}
+body .ew .ew-task .ew-kind{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:22px}
+body .ew .ew-task .ew-kind .ew-btn.ew-link{padding:0 2px;font-size:12px}
+body .ew .ew-task h2{font-size:14.5px}
+body .ew .ew-task .ew-acts{display:flex;gap:6px;align-items:center;margin-top:4px}
+body .ew .ew-task .ew-acts .ew-btn{padding:4px 10px;font-size:13px}
+body .ew .ew-task .ew-acts .ew-whyb{margin-left:auto;padding:4px 2px;font-size:12.5px}
+body .ew .ew-task .ew-st,body .ew .ew-chg .ew-st{font-size:11.5px;border:1px solid currentColor;border-radius:999px;padding:0 8px;width:fit-content}
+body .ew .ew-st.ew-bad{color:var(--gap)}
+body .ew .ew-why{display:grid;grid-template-columns:56px minmax(0,1fr);gap:6px 10px;margin:4px 0 0;font-size:12.5px;line-height:1.55;border-top:1px dashed var(--border);padding-top:10px}
+body .ew .ew-why dt{color:var(--tx-3)}
+body .ew .ew-why dd{margin:0;color:var(--tx-2)}
+body .ew .ew-chg .ew-whyb{align-self:flex-start;padding:0 2px;font-size:12.5px}
+body .ew .ew-chg .ew-cost{margin-left:auto;font-variant-numeric:tabular-nums}
+body .ew .ew-sugg{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding-bottom:8px}
+body .ew .ew-sugg button{border:1px solid var(--border);background:var(--bg-0);border-radius:999px;padding:3px 12px;font-size:12.5px;color:var(--tx-2);cursor:pointer;text-align:left;max-width:100%}
+body .ew .ew-sugg button:hover{background:var(--bg-1);color:var(--tx-1)}
+body .ew .ew-diff{background:var(--bg-1);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;font-family:var(--font-text);font-size:13px;line-height:1.6}
+body .ew .ew-dl{display:grid;grid-template-columns:12px minmax(0,1fr);gap:6px}
+body .ew .ew-dl .ew-mk{font-family:var(--font-mono);color:var(--tx-3)}
+body .ew .ew-dl.ew-add .ew-mk{color:var(--known)}
+body .ew .ew-dl.ew-del{color:var(--tx-3);text-decoration:line-through}
+body .ew .ew-dl.ew-del .ew-mk{color:var(--gap)}
+body .ew .ew-dl.ew-ctx{color:var(--tx-3)}
+body .ew .ew-side-set .ew-sub{font-size:12px;color:var(--tx-3);padding-top:12px}
+body .ew .ew-side-set select{width:auto;max-width:150px}
+body .ew input.ew-num{width:48px;text-align:center;padding:4px 6px}
+body .ew .ew-switch:disabled{opacity:.4;cursor:default}
+body .ew .ew-lhead{display:flex;flex-direction:column;gap:2px}
+body .ew .ew-lquote{font-size:12px;color:var(--tx-2)}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+body .ew .ew-o.ew-right.ew-pop{animation:pop .35s ease-out}
+body .ew .ew-okline{display:flex;align-items:center;gap:6px;color:var(--known);font-weight:600;font-size:13.5px}
+body .ew .ew-okline svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-okline.ew-anim path{stroke-dasharray:22;stroke-dashoffset:22;animation:draw .35s .1s ease-out forwards}
+body .ew .ew-rvbar{height:4px;border-radius:999px;background:var(--bg-2);overflow:hidden}
+body .ew .ew-rvbar i{display:block;height:100%;border-radius:inherit;background:var(--known);transition:width .45s ease-out}
+body .ew .ew-donec{position:relative;overflow:hidden;gap:12px}
+body .ew .ew-dclose{position:absolute;top:6px;right:8px;z-index:1;width:24px;height:24px;border:0;background:none;border-radius:6px;color:var(--tx-3);cursor:pointer;font-size:16px;line-height:1}
+body .ew .ew-dclose:hover{background:var(--bg-2);color:var(--tx-1)}
+body .ew .ew-chg{position:relative}
+body .ew .ew-ants{position:absolute;left:-6px;top:-6px;pointer-events:none;overflow:visible;transition:opacity .8s ease-out}
+body .ew .ew-ants rect{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-dasharray:7 5;animation:ants .8s linear infinite}
+body .ew .ew-ants.ew-out{opacity:0}
+body .ew .ew-src-top{align-items:center;gap:8px;flex-wrap:wrap}
+body .ew .ew-src-top .ew-btn.ew-link{font-size:12.5px}
+body .ew .ew-src-list{display:flex;flex-direction:column;border-radius:10px;border:1px dashed transparent;margin-top:2px}
+body .ew .ew-src-list.ew-drag{border-color:var(--accent);background:var(--bg-1)}
+body .ew .ew-src-empty{padding:14px 0}
+body .ew .ew-src-box{position:relative}
+body .ew .ew-src-add{position:absolute;left:49px;top:13px;display:grid;place-items:center;width:18px;height:18px;padding:0;border:0;border-radius:4px;background:none;box-shadow:none;color:var(--tx-3);cursor:pointer}
+body .ew .ew-src-add:hover{color:var(--tx-1);background:var(--bg-1)}
+body .ew .ew-src-add:disabled{opacity:.5;cursor:default}
+body .ew .ew-src-t{overflow-wrap:anywhere}
+body .ew .ew-src-t .ew-faint{font-size:12px;white-space:nowrap}
+body .ew .ew-src-st.ew-warn{color:var(--shaky)}
+body .ew .ew-src-st.ew-err{color:var(--gap)}
+body .ew .ew-src-exam.ew-err{color:var(--gap)}
+body .ew .ew-src .ew-rvbar{margin-top:2px}
+body .ew .ew-src>.ew-row{margin-top:6px;gap:6px}
+body .ew .ew-src-warn{color:var(--tx-1)}
+@keyframes ants{to{stroke-dashoffset:-12}}
+body .ew .ew-alldone{display:flex;gap:12px;align-items:center;border:1.5px solid var(--known);background:var(--callout);border-radius:10px;padding:12px 14px}
+body .ew .ew-alldone b{font-size:15px;color:var(--known)}
+body .ew .ew-adck{width:28px;height:28px;flex:none;border-radius:50%;background:var(--known);display:grid;place-items:center}
+body .ew .ew-adck svg{width:18px;height:18px;stroke:var(--bg-0);fill:none;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-alldone.ew-anim .ew-adck{animation:pop .45s .1s ease-out}
+body .ew .ew-alldone.ew-anim path{stroke-dasharray:20;stroke-dashoffset:20;animation:draw .35s .25s ease-out forwards}
+body .ew .ew-notice .ew-lk+.ew-lk{margin-left:0}
+body .ew .ew-dhead{display:flex;gap:12px;align-items:center}
+body .ew .ew-dtext{display:flex;flex-direction:column;gap:2px;min-width:0}
+body .ew .ew-ring{width:52px;height:52px;flex:none}
+body .ew .ew-ring svg{width:100%;height:100%;display:block}
+body .ew .ew-ring .ew-tr{fill:none;stroke:var(--bg-2);stroke-width:5}
+body .ew .ew-ring .ew-fg{fill:none;stroke:var(--known);stroke-width:5;stroke-linecap:round;stroke-dasharray:170;stroke-dashoffset:0}
+body .ew .ew-ring .ew-ck{fill:none;stroke:var(--known);stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:32;stroke-dashoffset:0}
+body .ew .ew-donec.ew-anim .ew-fg{stroke-dashoffset:170;animation:draw .7s ease-out forwards}
+body .ew .ew-donec.ew-anim .ew-ck{stroke-dashoffset:32;animation:draw .3s .65s ease-out forwards}
+body .ew .ew-donec.ew-anim .ew-ring{animation:pop .4s .9s ease-out}
+body .ew .ew-dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+body .ew .ew-dstats div{background:var(--bg-1);border-radius:8px;padding:6px 10px;display:flex;flex-direction:column}
+body .ew .ew-dstats b{font-size:16px;font-variant-numeric:tabular-nums}
+body .ew .ew-dstats span{font-size:11.5px;color:var(--tx-2)}
+body .ew .ew-donec.ew-anim .ew-dstats div{opacity:0;animation:rise .35s ease-out forwards}
+body .ew .ew-donec.ew-anim .ew-dstats div:nth-child(1){animation-delay:.8s}
+body .ew .ew-donec.ew-anim .ew-dstats div:nth-child(2){animation-delay:.9s}
+body .ew .ew-donec.ew-anim .ew-dstats div:nth-child(3){animation-delay:1s}
+body .ew .ew-confetti{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+@media (prefers-reduced-motion:reduce){body .ew *{transition:none!important}}
+body .ew .ew-qtip{position:relative;display:inline-flex;flex:none}
+body .ew .ew-qtip .ew-tipbox{position:absolute;right:-6px;top:calc(100% + 6px);z-index:20;width:max-content;max-width:240px;display:none;flex-direction:column;gap:3px;background:var(--accent);color:var(--accent-tx);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.55;font-weight:400;text-align:left;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+body .ew .ew-qtip .ew-tipd{opacity:.72}
+body .ew .ew-qtip:hover .ew-tipbox,body .ew .ew-qtip:focus-within .ew-tipbox,body .ew .ew-qtip.ew-open .ew-tipbox{display:flex}
+body .ew .ew-thead{display:flex;align-items:center;gap:8px}
+body .ew .ew-thead>h2,body .ew .ew-thead>b{flex:1;min-width:0;margin:0}
+body .ew .ew-rvtop{display:flex;align-items:center;gap:8px}
+body .ew .ew-rvtop .ew-rvbar{flex:1}
+body .ew .ew-ib{flex:none;width:24px;height:24px;border:0;background:none;border-radius:6px;color:var(--tx-3);cursor:pointer;display:inline-grid;place-items:center}
+body .ew .ew-ib:hover,body .ew .ew-ib:focus-visible{background:var(--bg-2);color:var(--tx-1)}
+body .ew .ew-ib svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-dstats b small{font-size:11.5px;font-weight:400;color:var(--tx-3);margin-left:2px}
+body .ew .ew-spin{display:inline-block;flex:none;width:11px;height:11px;border:1.5px solid var(--tx-3);border-right-color:transparent;border-radius:50%;margin-right:6px;vertical-align:-1px;animation:ew-spin .9s linear infinite}
+@keyframes ew-spin{to{transform:rotate(360deg)}}
+@keyframes ew-spinfade{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){body .ew .ew-spin{animation-duration:1.6s}}
+body .ew .ew-asec{font-size:13px;font-weight:600;color:var(--tx-1);margin-top:4px}
+body .ew .ew-propcard .ew-chip,body .ew .ew-task .ew-thead .ew-chip{font-size:11.5px;border:1px solid var(--border);border-radius:999px;padding:0 8px;color:var(--tx-2);white-space:nowrap}
+body .ew .ew-propcard .ew-alist{background:var(--bg-0);border-radius:8px;padding:8px 10px}
+body .ew .ew-propcard .ew-alist:not(.ew-drag) li{grid-template-columns:minmax(0,1fr) auto}
+body .ew .ew-afoot{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--border);padding-top:8px;margin-top:2px}
+body .ew .ew-btn.ew-round{border-radius:999px}
+body .ew .ew-endb hr{border:0;border-top:1px solid var(--border);margin:2px 0;width:100%}
+body .ew .ew-rfirst{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px}
+body .ew .ew-rfirst-go{display:flex;gap:6px}
+body .ew .ew-side-set .ew-sline{grid-template-columns:minmax(0,1fr)}
+body .ew .ew-revbar{position:sticky;top:10px;z-index:5;display:flex;align-items:center;gap:8px;margin:14px 0 0;padding:6px 8px 6px 14px;font-family:var(--font-ui);font-size:13.5px;line-height:1.4;color:var(--tx-1);background:var(--bg-0);border:1px solid var(--border);border-radius:10px;box-shadow:0 -10px 0 2px var(--bg-0),0 4px 14px rgba(0,0,0,.07)}
+body .ew .ew-revbar .ew-rb-t{font-weight:600;min-width:0}
+body .ew .ew-revbar .ew-chip{font-size:11.5px;font-weight:500;border:1px solid var(--border);border-radius:999px;padding:0 8px;color:var(--tx-2);white-space:nowrap}
+body .ew .ew-revbar .ew-qtip .ew-tipbox{right:auto;left:-6px}
+body .ew .ew-revbar .ew-rb-acts{margin-left:auto;display:flex;gap:6px;flex:none}
+body .ew .ew-note .ew-trk{margin:12px 0}
+body .ew .ew-trk del,body .ew .ew-trk ins,body .ew .ew-insblk{border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+body .ew .ew-trk del{color:var(--tx-2);background:color-mix(in srgb,var(--gap) 13%,var(--bg-0));text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--gap) 75%,var(--tx-1));text-decoration-thickness:1.5px;padding:1px 2px}
+body .ew .ew-trk ins{color:var(--tx-1);background:color-mix(in srgb,var(--known) 17%,var(--bg-0));text-decoration:none;padding:1px 2px}
+body .ew .ew-insblk{display:block;text-decoration:none;background:color-mix(in srgb,var(--known) 13%,var(--bg-0));padding:2px 8px;margin:6px 0}
+body .ew .ew-note .ew-insblk .ew-srcnote{margin:4px 0}
+body .ew .ew-note .ew-insblk.ew-prac{padding:10px 12px;margin:12px 0}
+body .ew .ew-propcard .ew-subrow{display:flex;align-items:baseline;gap:8px}
+body .ew .ew-propcard .ew-subrow .ew-seepage{margin-left:auto}
+body .ew .ew-propcard .ew-row .ew-retry,body .ew .ew-revbar .ew-rb-acts .ew-retry{color:var(--tx-3);font-size:12px;padding:0}
+body .ew .ew-note .ew-netframe{display:block;width:100%;height:560px;border:0;border-radius:8px;background:var(--bg-0)}
+body .ew .ew-trk del::before,body .ew .ew-trk ins::before,body .ew .ew-insblk::before{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+body .ew .ew-trk del::before{content:"删去："}
+body .ew .ew-trk ins::before,body .ew .ew-insblk::before{content:"新增："}
+body .ew .ew-trk .ew-rchips{vertical-align:2px;font-family:var(--font-ui)}
+body .ew .ew-revmini{flex-direction:row;align-items:center;gap:8px;text-align:left;width:100%;font:inherit;font-size:13px;color:var(--tx-1)}
+body .ew .ew-revmini .ew-ri svg{width:16px;height:16px;display:block;fill:none;stroke:var(--tx-2);stroke-width:1.6;stroke-linejoin:round}
+body .ew .ew-revmini .ew-rt{flex:1;min-width:0;font-weight:600}
+body .ew .ew-revmini .ew-ra{margin-left:auto;display:flex;gap:10px;align-items:center}
+body .ew .ew-revmini.ew-done .ew-rt{font-weight:400;color:var(--tx-2)}
+body .ew .ew-revmini.ew-go{cursor:pointer;transition:background .15s,border-color .15s}
+body .ew .ew-revmini.ew-go:hover{background:var(--bg-2)}
+body .ew .ew-revmini.ew-go:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body .ew .ew-revmini .ew-rg svg{width:15px;height:15px;display:block;fill:none;stroke:var(--tx-3);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body .ew .ew-revrow .ew-ci-top{align-items:center}
+body .ew .ew-rchips{display:inline-flex;gap:5px;flex-wrap:wrap}
+body .ew .ew-rchip{font-size:11.5px;font-weight:500;border:1px solid;border-radius:999px;padding:0 8px;white-space:nowrap}
+body .ew .ew-rchip.ew-mat{color:var(--viz-1);border-color:color-mix(in srgb,var(--viz-1) 45%,transparent);background:color-mix(in srgb,var(--viz-1) 10%,var(--bg-0))}
+body .ew .ew-ufile{display:inline-flex;align-items:center;gap:8px;max-width:100%;font-size:13px;color:var(--tx-1);border:1px solid var(--border);background:var(--bg-1);border-radius:10px;padding:6px 10px 6px 8px}
+body .ew .ew-ufile svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--tx-2);stroke-width:1.6;stroke-linejoin:round}
+body .ew .ew-ufile .ew-fn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+body .ew .ew-ufile .ew-ft{font-size:11px;color:var(--tx-3);letter-spacing:.02em}
+body .ew .ew-srcnote{color:var(--tx-2);font-size:12.5px;line-height:1.6}
+body .ew .ew-srcnote .ew-snl{display:inline-block;font-size:11px;font-weight:600;color:var(--tx-2);background:var(--bg-2);border:1px solid var(--border);border-radius:999px;padding:0 7px;margin-right:6px;line-height:18px;vertical-align:1px}
+body .ew .ew-note .ew-srcnote{margin:6px 0;font-family:var(--font-ui);font-size:13.5px}
+body .ew .ew-task .ew-wline{font-size:12.5px}
+/* ===== /EXACT ===== */
+body .ew .ew-elapsed{font-variant-numeric:tabular-nums}
+
+/* chat attachments: only what the demo has no markup for (the real thumbnail, and [hidden] beating display:grid and the
+   EXACT block's input reset, which would show the hidden file input as Chromium's own file button). */
+body .ew .ew-asst .ew-clip[hidden],body .ew .ew-asst .ew-cwait[hidden],body .ew .ew-asst input[type="file"][hidden]{display:none}
+body .ew .ew-att .ew-th{overflow:hidden}
+body .ew .ew-att .ew-th img{width:100%;height:100%;object-fit:cover;display:block}
+/* T2 notices: ew-notice.ts puts one div.ew.ew-layer on document.body; the layer itself draws no box (the .ew background
+   would cover the window), its .ew-notices child is position:fixed / z-index:60 per the EXACT block. */
+body .ew.ew-layer{display:contents}
+/* ===== /T2 ===== */
+/* ===== T7 assistant ===== */
+/* The old standalone 陪读助手 view: its .ew wrapper fills the view so the .ew-asst grid (height:100%) has a height. */
+body .ew.ew-asst-host{height:100%}
+/* A finished answer is Obsidian-rendered Markdown inside .ew-answer. The wrapper is transparent, so its blocks are the
+   .ew-amsg's own flex children (gap 8), and each block looks like the demo's `.amsg p`: margin 0, 14px/1.7. */
+body .ew .ew-amsg .ew-answer{display:contents}
+body .ew .ew-amsg .ew-answer>*{margin:0;font-size:14px;line-height:1.7}
+/* a preference the assistant recorded: one quiet line 记下了：… · 撤销 (action-card.ts buildNoteLine) */
+body .ew .ew-noteline{font-size:12.5px;line-height:1.6;color:var(--tx-2);margin:2px 0}
+body .ew .ew-noteline .ew-btn.ew-link{display:inline;padding:0;margin-left:8px;font-size:12.5px;color:var(--tx-3)}
+body .ew .ew-noteline .ew-btn.ew-link:hover{color:var(--tx-1)}
+body .ew .ew-noteline.ew-done .ew-nt{color:var(--tx-3)}
+/* 删除对话's checkboxes: Obsidian's own input[type=checkbox]:checked::after (absolute, a masked white tick) would cover the
+   demo's border-drawn tick; only the demo's rule stays. */
+body .ew .ew-fg-item input:checked::after{position:static;inset:auto;-webkit-mask-image:none;mask-image:none;background:none}
+/* ===== /T7 ===== */
+/* ===== T10 note: a wiki note (cssclasses evowiki-page) = app.js renderNote. Obsidian draws the note, so the demo's
+   .note rules are re-created on Obsidian's DOM here (values verbatim from shell.html); plugin-drawn parts sit in
+   .ew.ew-inline wrappers and use the EXACT block directly. ===== */
+body .ew.ew-inline{display:contents}
+/* .note: max-width 680px is its content box (content-box sizing) + 24px side padding, centred, padding 28px top / 80px bottom, text font 16px/1.9 */
+.markdown-preview-view.evowiki-page,.markdown-source-view.is-live-preview.evowiki-page{--file-line-width:680px;--p-spacing:12px;--heading-spacing:30px;--font-text-size:16px;--line-height-normal:1.9;--h2-size:20px;--h2-weight:700;--h2-line-height:1.9;--h2-font:var(--font-ui);--h2-color:var(--tx-1);--h2-letter-spacing:normal;--h2-variant:normal;--h2-style:normal;background:var(--bg-0);color:var(--tx-1)}
+.markdown-preview-view.evowiki-page{font-family:var(--font-text);font-size:16px;line-height:1.9;padding:0 24px}
+.markdown-preview-view.evowiki-page .markdown-preview-sizer{max-width:680px;width:100%;margin:0 auto;padding-top:28px;padding-bottom:80px!important}
+.markdown-source-view.is-live-preview.evowiki-page .cm-content{font-family:var(--font-text);font-size:16px;line-height:1.9}
+.markdown-preview-view.evowiki-page p{margin:12px 0}
+/* .note h2: ui font 20px, bold, margin 30px 0 6px, a flex row (gap 8) so the ⋯ button sits at the right end */
+.markdown-preview-view.evowiki-page h2{font-family:var(--font-ui);font-size:20px;font-weight:700;line-height:1.9;letter-spacing:normal;font-variant:normal;color:var(--tx-1);margin:30px 0 6px;display:flex;align-items:center;gap:8px;position:relative}
+/* No heading fold arrows, collapse indicators or anchors; no inline title and no properties (the header replaces them). */
+.markdown-preview-view.evowiki-page .heading-collapse-indicator,.markdown-preview-view.evowiki-page .collapse-indicator,.is-live-preview.evowiki-page .cm-fold-indicator,.markdown-preview-view.evowiki-page .heading-anchor,
+.markdown-preview-view.evowiki-page .inline-title,.markdown-preview-view.evowiki-page .metadata-container,
+.is-live-preview.evowiki-page .inline-title,.is-live-preview.evowiki-page .metadata-container{display:none}
+/* Source mode is unchanged: no drawn header there (the editor sizer is shared by both editing modes). */
+.markdown-source-view:not(.is-live-preview) .evowiki-note-header{display:none}
+.markdown-preview-view.evowiki-page .mod-header{margin:0;padding:0}
+/* .note code (inline only) and a.inl (Obsidian's internal / external links) */
+.markdown-preview-view.evowiki-page :not(pre)>code,.markdown-source-view.is-live-preview.evowiki-page .cm-inline-code{font-family:var(--font-mono);font-size:.86em;background:var(--bg-1);padding:1px 5px;border-radius:4px;color:inherit}
+.markdown-preview-view.evowiki-page a.internal-link,.markdown-preview-view.evowiki-page a.external-link{color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;cursor:pointer;background-image:none;padding-inline-end:0}
+/* A page link (`[text](#p:<id>)`, note-links.ts) in Live Preview: the marked link text gets the same a.inl look; Obsidian's
+   own link spans around or inside it (.cm-link / .cm-underline) add no colour or underline of their own. */
+.markdown-source-view.is-live-preview.evowiki-page .evowiki-page-link{color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor;cursor:pointer}
+.markdown-source-view.is-live-preview.evowiki-page .evowiki-page-link :is(.cm-link,.cm-underline),
+.markdown-source-view.is-live-preview.evowiki-page :is(.cm-link,.cm-underline):has(.evowiki-page-link){color:inherit;text-decoration:none}
+/* The header (note-page/header.ts): .note h1 (the dl is .ew-meta from the EXACT block) */
+.evowiki-page .evowiki-note-header h1{font-family:var(--font-ui);font-size:28px;line-height:1.3;margin:0 0 10px;font-weight:700;color:var(--tx-1);letter-spacing:normal;font-variant:normal}
+/* Section heading parts (section-menu.ts): they inherit the heading's font as in app.js; .note h2 .tag / .pin / .more */
+.evowiki-page h2>.ew.ew-inline,.evowiki-page .HyperMD-header-2 .ew.ew-inline{font:inherit;color:inherit}
+.evowiki-page h2 .ew-tag,.evowiki-page .HyperMD-header-2 .ew-tag{font-size:11.5px;font-weight:500;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:0 8px}
+.evowiki-page h2 .ew-pin,.evowiki-page .HyperMD-header-2 .ew-pin{font-size:11.5px;font-weight:500;color:var(--tx-3);white-space:nowrap}
+.evowiki-page h2 .ew-more,.evowiki-page .HyperMD-header-2 .ew-more{margin-left:auto;opacity:0;border:0;background:none;color:var(--tx-3);cursor:pointer;border-radius:5px;padding:0 6px;font-size:18px;line-height:1}
+.evowiki-page .HyperMD-header-2 .ew-tag,.evowiki-page .HyperMD-header-2 .ew-pin,.evowiki-page .HyperMD-header-2 .ew-writing{margin-left:8px}
+.evowiki-page .HyperMD-header-2{position:relative;padding-right:30px!important}
+.evowiki-page .HyperMD-header-2 .ew-more{position:absolute;right:0;bottom:.55em;margin:0}
+.evowiki-page h2 .ew-more:hover,.evowiki-page .HyperMD-header-2 .ew-more:hover{background:var(--bg-2)}
+/* .note section:hover h2 .more — Obsidian has no section element: the heading's block, or any later block up to the next
+   heading block (Reading view: .el-h2 blocks; Live Preview: .HyperMD-header-2 lines), is hovered. */
+.evowiki-page h2 .ew-more:focus-visible,.evowiki-page h2 .ew-more[aria-expanded="true"],
+.evowiki-page .HyperMD-header-2 .ew-more:focus-visible,.evowiki-page .HyperMD-header-2 .ew-more[aria-expanded="true"],
+.markdown-preview-view.evowiki-page div:has(>h2):hover .ew-more,
+.markdown-preview-view.evowiki-page .el-h2:has(~ div:hover):not(:has(~ .el-h2:hover)):not(:has(~ .el-h2 ~ div:hover)) .ew-more,
+.markdown-source-view.is-live-preview.evowiki-page .HyperMD-header-2:hover .ew-more,
+.markdown-source-view.is-live-preview.evowiki-page .HyperMD-header-2:has(~ :hover):not(:has(~ .HyperMD-header-2:hover)):not(:has(~ .HyperMD-header-2 ~ :hover)) .ew-more{opacity:1}
+/* 已掌握 (`[!evowiki-known]` callouts) = .known details: ▸/▾ in tx-3, the .lbl pill, the title in tx-2, .full in text font */
+.evowiki-page .callout[data-callout="evowiki-known"]{background:var(--callout);border:0;border-radius:8px;padding:2px 14px;margin:14px 0;font-family:var(--font-ui);font-size:14px;line-height:1.9;color:var(--tx-1);mix-blend-mode:normal;box-shadow:none}
+.evowiki-page .callout[data-callout="evowiki-known"] .callout-title{padding:6px 0;color:var(--tx-2);display:flex;gap:8px;align-items:baseline;cursor:pointer;font-size:inherit;font-weight:normal;line-height:inherit}
+.evowiki-page .callout[data-callout="evowiki-known"] .callout-title::before{content:"▾";color:var(--tx-3);order:-2}
+.evowiki-page .callout[data-callout="evowiki-known"].is-collapsed .callout-title::before{content:"▸"}
+.evowiki-page .callout[data-callout="evowiki-known"] .callout-title::after{content:"已掌握";order:-1;font-size:11.5px;color:var(--known);border:1px solid currentColor;border-radius:999px;padding:0 7px;white-space:nowrap}
+.evowiki-page .callout[data-callout="evowiki-known"] .callout-icon,.evowiki-page .callout[data-callout="evowiki-known"] .callout-fold{display:none}
+.evowiki-page .callout[data-callout="evowiki-known"] .callout-title-inner{font-weight:normal;color:var(--tx-2)}
+.evowiki-page .callout[data-callout="evowiki-known"] .callout-content{font-family:var(--font-text);font-size:15px;padding:0 0 8px;background:none}
+/* Interactive blocks (embedded-html, evoui) in a wiki note: the .ix box; the iframe takes the full width, no border of its own. */
+.evowiki-page .evowiki-embed,.evowiki-page .evowiki-evoui{font-family:var(--font-ui);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:18px 0;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.6}
+.evowiki-page .evowiki-embed-title{margin:0;font-size:inherit;font-weight:650;color:var(--tx-1)}
+.evowiki-page .evowiki-embed-frame{width:100%;border:0;border-radius:0}
+.evowiki-page .evowiki-evoui .evoui{border:0;border-radius:0;padding:0;background:none}
+/* 我的笔记's hint line = .mynotes .hint (ui 13px tx-3, right under the heading) */
+.evowiki-mine-hint{font-family:var(--font-ui);font-size:13px;color:var(--tx-3)}
+.markdown-preview-view.evowiki-page p:has(>.evowiki-mine-hint:only-child){margin:0;font-family:var(--font-ui);font-size:13px}
+/* Live Preview widget hosts (CodeMirror needs an element of its own; the drawn DOM inside is the same as Reading view). */
+.evowiki-end-widget,.evowiki-topline-widget{display:block}
+.evowiki-heading-host{display:inline}
+.evowiki-note-header,.evowiki-end-host,.evowiki-exam-host,.evowiki-topline-host,.evowiki-heading-parts,.evowiki-menu-layer{display:contents}
+/* fixture/math: a math line in a wiki note (`<span class="ew-math">…</span>`, the demo fixture's pages) = the demo's
+   `.note .math`, values verbatim; --tx-1 comes from the `.ew,.evowiki-page` token block. */
+.evowiki-page .ew-math{font-family:var(--font-mono);font-size:.95em;display:block;text-align:center;margin:10px 0;color:var(--tx-1)}
+/* ===== /T10 ===== */
+/* ===== T13 fixes: differences found side by side in real Obsidian ===== */
+/* Plugin-drawn parts inside a note inherit the note's text (app.js draws them inside .note, not under the .ew body font). */
+body .evowiki-page .ew.ew-inline{font:inherit;color:inherit;background:none}
+/* The `%% evowiki:start %%` comment line leaves an empty first line (a <br>) in the paragraph right after it. */
+.markdown-preview-view.evowiki-page p>br:first-child{display:none}
+/* The demo has no view header (back / forward / breadcrumb row) above a wiki note or EvoWiki's own tabs. */
+.workspace-leaf-content:has(>.view-content>.markdown-reading-view .evowiki-page)>.view-header,
+.workspace-leaf-content:has(>.view-content>.markdown-source-view.evowiki-page)>.view-header,
+.workspace-leaf-content[data-type="evowiki-starmap"]>.view-header,.workspace-leaf-content[data-type="evowiki-learn"]>.view-header,
+.workspace-leaf-content[data-type="evowiki-settings"]>.view-header{display:none}
+/* Obsidian's floating status bar would cover the bottom of the EvoWiki sidebar (the 助手 composer): hidden while it is open. */
+body:has(.mod-right-split:not(.is-sidedock-collapsed) .workspace-leaf-content[data-type="evowiki-wiki"]) .status-bar{display:none}
+/* Obsidian 1.13 shows properties in Live Preview with `.markdown-source-view.is-live-preview.show-properties
+   .metadata-container:not(.mod-error)`, which outranks the T10 rule: the same selector plus .evowiki-page hides them. */
+.markdown-source-view.is-live-preview.show-properties.evowiki-page .metadata-container:not(.mod-error),
+.markdown-preview-view.show-properties.evowiki-page .metadata-container:not(.mod-error){display:none}
+/* Live Preview draws `%% … %%` comments as dimmed text: the evowiki:start / evowiki:end marker lines are hidden. */
+.is-live-preview.evowiki-page .cm-line:has(>.cm-comment-start):not(:has(>:not(.cm-comment))){display:none}
+/* ===== /T13 ===== */
+.evowiki-muted { color: var(--text-muted); }
+.evowiki-row { display: flex; gap: var(--size-4-1); flex-wrap: wrap; align-items: center; }
+.evowiki-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---- wiki ---- */
+.evowiki-wiki { display: flex; flex-direction: column; gap: var(--size-4-3); padding: var(--size-4-2); font-size: var(--font-ui-small); }
+.evowiki-wiki h2 { margin: 0; font-size: var(--font-ui-large); }
+.evowiki-wiki h3 { margin: 0 0 var(--size-4-1); font-size: var(--font-ui-medium); }
+.evowiki-wiki h4 { margin: 0 0 var(--size-4-1); font-size: var(--font-ui-smaller); color: var(--text-muted); }
+.evowiki-wiki-page { display: flex; flex-direction: column; gap: var(--size-4-2); }
+/* Result lines and notes may span several lines: keep the line breaks (text only, never markup). */
+.evowiki-wiki-status-line, .evowiki-wiki-inline, .evowiki-wiki-sync, .evowiki-wiki-note, .evowiki-wiki-error, .evowiki-wiki-ok { white-space: pre-line; }
+.evowiki-wiki-error { color: var(--text-error); }
+.evowiki-wiki-status { display: flex; flex-direction: column; gap: var(--size-4-1); }
+.evowiki-wiki-status:not(:empty) { padding: var(--size-4-1) var(--size-4-2); border-radius: var(--radius-s); background: color-mix(in srgb, var(--interactive-accent) 12%, var(--background-secondary)); }
+.evowiki-wiki-status:has(.evowiki-wiki-error) { background: color-mix(in srgb, var(--text-error) 12%, var(--background-secondary)); }
+.evowiki-wiki-collapsed { padding: var(--size-4-1) var(--size-4-2); border-radius: var(--radius-s); background: var(--background-secondary); }
+.evowiki-wiki-related { display: flex; flex-wrap: wrap; gap: var(--size-4-1) var(--size-4-2); align-items: baseline; }
+.evowiki-wiki-link { height: auto; padding: 0; background: none; box-shadow: none; color: var(--text-accent); text-decoration: underline; }
+.evowiki-wiki-chip { display: inline-block; padding: 0 var(--size-4-1); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s); font-size: var(--font-ui-smaller); color: var(--text-muted); }
+button.evowiki-wiki-chip { height: auto; box-shadow: none; }
+.evowiki-wiki-chip.is-band-known { color: var(--color-green); border-color: var(--color-green); }
+.evowiki-wiki-chip.is-band-likely { color: var(--color-cyan); border-color: var(--color-cyan); }
+.evowiki-wiki-chip.is-band-shaky { color: var(--color-yellow); border-color: var(--color-yellow); }
+.evowiki-wiki-chip.is-band-gap { color: var(--color-blue); border-color: var(--color-blue); }
+.evowiki-wiki-chip.is-band-none { color: var(--text-muted); }
+.evowiki-wiki-chip.is-stale { color: var(--color-orange); border-color: var(--color-orange); }
+.evowiki-wiki-chip.is-done { color: var(--color-green); }
+.evowiki-wiki-inline { padding: var(--size-4-1) var(--size-4-2); border-radius: var(--radius-s); background: var(--background-secondary); }
+.evowiki-wiki-inline.evowiki-wiki-error { background: color-mix(in srgb, var(--text-error) 12%, var(--background-secondary)); }
+.evowiki-wiki-ask { display: flex; flex-direction: column; gap: var(--size-4-1); }
+.evowiki-wiki-ask input[type=text] { width: 100%; }
+.evowiki-wiki-note { padding: var(--size-4-1) var(--size-4-2); border-radius: var(--radius-s); background: var(--background-secondary); }
+
+/* In the wiki sidebar: the 助手 tab fills the view; the transcript scrolls and the input stays at the bottom. */
+.evowiki-wiki.is-assistant { height: 100%; box-sizing: border-box; }
+/* ---- K4: learning path, review, recap, usage ---- */
+
+/* 和资料不同: the demo's .topline strip (grey card, 13px ui font) in the page text. */
+.evowiki-differs {
+  display: inline-block; padding: 7px 12px; border-radius: 8px; background: var(--background-secondary);
+  color: var(--text-muted); font-family: var(--font-interface); font-size: 13px; line-height: 1.6;
+}
+/* A citation (a wikilink to the original at its page = the demo's a.cite). Page links are not internal links, so this reaches citations only. */
+.markdown-preview-view.evowiki-page a.internal-link, .markdown-source-view.is-live-preview.evowiki-page .cm-hmd-internal-link a {
+  color: var(--interactive-accent); text-decoration: none; border-bottom: 1px solid currentColor; font-size: .9em; white-space: nowrap; margin-left: 4px;
+}
+
+/* 待查证: a small dashed amber pill after the claim; its tooltip says what to check. */
+.evowiki-unverified {
+  display: inline-flex; align-items: center; margin-left: var(--size-4-1); padding: 0 var(--size-4-2);
+  border: 1px dashed rgba(var(--color-orange-rgb), .7); border-radius: var(--radius-xl);
+  background: rgba(var(--color-yellow-rgb), .08); color: var(--color-orange);
+  font-family: var(--font-interface); font-size: var(--font-ui-smaller); line-height: 1.6; white-space: nowrap; vertical-align: .1em; cursor: help;
+}
+/* 交互 (embedded-html block in a note): a small title, then the sandboxed iframe; 「还没取回」 + 取回 when the file is missing. */
+.evowiki-embed { margin: var(--size-4-4) 0; font-family: var(--font-interface); }
+.evowiki-embed-title { margin-bottom: var(--size-4-2); color: var(--text-muted); font-size: var(--font-ui-small); }
+.evowiki-embed-frame {
+  display: block; width: 100%; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m);
+  background: var(--background-primary);
+}
+.evowiki-embed-missing {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--size-4-2); padding: var(--size-4-3) var(--size-4-4);
+  border: 1px dashed var(--background-modifier-border); border-radius: var(--radius-m);
+}
+.evowiki-embed-hint { color: var(--text-muted); font-size: var(--font-ui-small); }
+.evowiki-embed-error { flex-basis: 100%; color: var(--text-error); font-size: var(--font-ui-small); }
+
+/* 图片 (an `evowiki-image` block in a note) = shell.html `.note figure.img`: the image centred, under it one line of
+   small grey text (title · author · licence · source). Outside a wiki note --tx-3 / --border fall back to Obsidian's. */
+.evowiki-figure { margin: 16px 0; }
+.evowiki-figure-img { display: block; max-width: 100%; max-height: 480px; width: auto; height: auto; margin: 0 auto; border-radius: 4px; }
+.evowiki-figure-caption {
+  margin-top: 6px; font-family: var(--font-ui, var(--font-interface)); font-size: 11px; line-height: 1.5;
+  color: var(--tx-3, var(--text-faint)); text-align: center;
+}
+.evowiki-figure-caption a.evowiki-figure-link {
+  color: inherit; text-decoration: none; border-bottom: 1px solid var(--border, var(--background-modifier-border));
+}
+
+/* 交互块 (an `evoui` block in a note, drawn by D1's evoui.js; its own stylesheet is not used). Everything below restyles the
+   renderer's class names with theme variables: no colors of its own, no external fonts, no motion.
+   Colours: the chrome is monochrome, the data keeps the approved demo's data palette. Inside a wiki note (.evowiki-page)
+   the demo tokens come from the EXACT block; elsewhere each falls back to an Obsidian variable. Tone → token:
+     accent  → --viz-1 (primary series / highlight; also the selected choice and slider / toggle accent-color)
+     warning → --viz-2 in data marks (plot strokes / fills / labels / shapes, chart series 2, legend swatches);
+               --shaky where it is a caution state (text, badge, icon, number, the quiz's partly-right line)
+     success → --known      danger → --gap      quiz option right → --known, wrong → --gap
+     series 1–4 (evoui.js SERIES_TONES) → --viz-1, --viz-2, --known, --gap */
+.evowiki-evoui {
+  margin: var(--size-4-4) 0; font-family: var(--font-interface);
+  --evoui-viz-1: var(--viz-1, var(--interactive-accent)); --evoui-viz-2: var(--viz-2, var(--color-orange));
+  --evoui-known: var(--known, var(--color-green)); --evoui-gap: var(--gap, var(--color-red)); --evoui-shaky: var(--shaky, var(--color-yellow));
+  --evoui-chrome: var(--accent, var(--interactive-accent)); --evoui-chrome-tx: var(--accent-tx, var(--text-on-accent));
+}
+.evowiki-evoui-host { min-width: 0; }
+.evowiki-evoui-offer { display: flex; align-items: center; gap: var(--size-4-2); margin-top: var(--size-4-2); }
+.evowiki-evoui-run { flex: none; }
+.evowiki-evoui-frame { display: block; width: 100%; border: 0; background: transparent; color-scheme: normal; }
+.evowiki-evoui.evowiki-evoui-framed { margin: 0; border: 0; padding: 0; border-radius: 0; }
+.evowiki-evoui-fallback {
+  padding: var(--size-4-3) var(--size-4-4); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m);
+  color: var(--text-muted); font-size: var(--font-ui-small); line-height: var(--line-height-normal); white-space: pre-wrap; max-width: 65ch;
+}
+.evowiki-evoui .evoui {
+  display: flex; flex-direction: column; gap: var(--size-4-3); min-width: 0; max-width: 100%; box-sizing: border-box;
+  padding: var(--size-4-4); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m);
+  background: var(--background-primary); color: var(--text-normal); font-size: var(--font-ui-medium); line-height: var(--line-height-normal);
+}
+.evowiki-evoui .evoui * { box-sizing: border-box; transition: none; animation: none; }
+.evowiki-evoui .evoui-title { font-weight: var(--font-semibold); line-height: var(--line-height-tight); text-wrap: balance; }
+.evowiki-evoui .evoui-box, .evowiki-evoui .evoui-row { display: flex; min-width: 0; }
+.evowiki-evoui .evoui-box { flex-direction: column; }
+.evowiki-evoui .evoui-row { flex-direction: row; align-items: center; }
+.evowiki-evoui .evoui-row.wrap { flex-wrap: wrap; }
+.evowiki-evoui .g0 { gap: 0; }
+.evowiki-evoui .g1 { gap: var(--size-4-1); }
+.evowiki-evoui .g2 { gap: var(--size-4-2); }
+.evowiki-evoui .g3 { gap: var(--size-4-3); }
+.evowiki-evoui .g4 { gap: var(--size-4-4); }
+.evowiki-evoui .j-between { justify-content: space-between; }
+.evowiki-evoui .j-center { justify-content: center; }
+.evowiki-evoui .bordered { padding: var(--size-4-3); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); }
+.evowiki-evoui .surface { padding: var(--size-4-2) var(--size-4-3); border-radius: var(--radius-s); background: var(--background-secondary); }
+.evowiki-evoui .evoui-text { min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.evowiki-evoui .evoui-text.s-sm { font-size: var(--font-ui-small); }
+.evowiki-evoui .evoui-text.s-lg { font-size: var(--font-ui-large); }
+.evowiki-evoui .w-bold { font-weight: var(--font-semibold); }
+.evowiki-evoui .t-secondary { color: var(--text-muted); }
+.evowiki-evoui .t-success { color: var(--evoui-known); }
+.evowiki-evoui .t-warning { color: var(--evoui-shaky); }
+.evowiki-evoui .t-danger { color: var(--evoui-gap); }
+.evowiki-evoui .t-accent { color: var(--evoui-viz-1); }
+.evowiki-evoui .evoui-badge {
+  padding: 0 var(--size-4-2); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s);
+  background: var(--background-secondary); font-size: var(--font-ui-smaller); white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.evowiki-evoui .evoui-slider { display: flex; flex-direction: column; gap: var(--size-2-1); min-width: 0; color: var(--text-muted); font-size: var(--font-ui-small); }
+/* only side by side in a row (evoui.css .evoui-row>.evoui-slider): in a column box the basis would be its height (160 px) */
+.evowiki-evoui .evoui-row > .evoui-slider { flex: 1 1 10rem; }
+.evowiki-evoui .evoui-slider input[type="range"] { width: 100%; margin: var(--size-4-1) 0; accent-color: var(--evoui-viz-1); }
+.evowiki-evoui .evoui-choice { display: flex; flex-wrap: wrap; gap: var(--size-4-2); max-width: 100%; }
+.evowiki-evoui .evoui-choice.segmented { gap: 0; width: fit-content; padding: var(--size-2-1); border-radius: var(--radius-m); background: var(--background-secondary); }
+.evowiki-evoui .evoui-choice button { font-size: var(--font-ui-small); }
+.evowiki-evoui .evoui-choice.segmented button { background: transparent; box-shadow: none; }
+.evowiki-evoui .evoui-choice button[aria-pressed="true"], .evowiki-evoui .evoui-choice button[aria-pressed="true"]:hover { background: var(--evoui-viz-1); color: var(--evoui-chrome-tx); }
+.evowiki-evoui .evoui-toggle { display: flex; align-items: center; gap: var(--size-4-2); font-size: var(--font-ui-small); }
+.evowiki-evoui .evoui-toggle input { accent-color: var(--evoui-viz-1); }
+.evowiki-evoui .evoui-plotwrap { display: flex; flex-direction: column; gap: var(--size-4-1); min-width: 0; }
+.evowiki-evoui .evoui-plot { display: block; width: 100%; max-width: 32rem; height: auto; border-radius: var(--radius-s); background: var(--background-secondary); }
+.evowiki-evoui .evoui-plot .grid { stroke: var(--background-modifier-border); stroke-width: 1; }
+.evowiki-evoui .evoui-plot .axis { stroke: var(--text-faint); stroke-width: 1.2; }
+.evowiki-evoui .evoui-plot .stroke { fill: none; stroke-width: 2.4; }
+.evowiki-evoui .evoui-plot .dashed { stroke-dasharray: 6 4; }
+.evowiki-evoui .evoui-plot .nofill { fill: none; }
+.evowiki-evoui .evoui-plot .stroke.t-default { stroke: var(--text-normal); }
+.evowiki-evoui .evoui-plot .stroke.t-accent { stroke: var(--evoui-viz-1); }
+.evowiki-evoui .evoui-plot .stroke.t-warning { stroke: var(--evoui-viz-2); }
+.evowiki-evoui .evoui-plot .stroke.t-success { stroke: var(--evoui-known); }
+.evowiki-evoui .evoui-plot .stroke.t-danger { stroke: var(--evoui-gap); }
+.evowiki-evoui .evoui-plot .stroke.t-secondary { stroke: var(--text-muted); }
+.evowiki-evoui .evoui-plot .fill.t-default { fill: var(--text-normal); }
+.evowiki-evoui .evoui-plot .fill.t-accent { fill: var(--evoui-viz-1); }
+.evowiki-evoui .evoui-plot .fill.t-warning { fill: var(--evoui-viz-2); }
+.evowiki-evoui .evoui-plot .fill.t-success { fill: var(--evoui-known); }
+.evowiki-evoui .evoui-plot .fill.t-danger { fill: var(--evoui-gap); }
+.evowiki-evoui .evoui-plot .fill.t-secondary { fill: var(--text-muted); }
+.evowiki-evoui .evoui-plot .shape { stroke-width: 2; fill: none; }
+.evowiki-evoui .evoui-plot .shape.filled { fill-opacity: .18; }
+.evowiki-evoui .evoui-plot .shape.t-default { stroke: var(--text-normal); }
+.evowiki-evoui .evoui-plot .shape.t-accent { stroke: var(--evoui-viz-1); }
+.evowiki-evoui .evoui-plot .shape.t-warning { stroke: var(--evoui-viz-2); }
+.evowiki-evoui .evoui-plot .shape.t-success { stroke: var(--evoui-known); }
+.evowiki-evoui .evoui-plot .shape.t-danger { stroke: var(--evoui-gap); }
+.evowiki-evoui .evoui-plot .shape.t-secondary { stroke: var(--text-muted); }
+.evowiki-evoui .evoui-plot .shape.filled.t-default { fill: var(--text-normal); }
+.evowiki-evoui .evoui-plot .shape.filled.t-accent { fill: var(--evoui-viz-1); }
+.evowiki-evoui .evoui-plot .shape.filled.t-warning { fill: var(--evoui-viz-2); }
+.evowiki-evoui .evoui-plot .shape.filled.t-success { fill: var(--evoui-known); }
+.evowiki-evoui .evoui-plot .shape.filled.t-danger { fill: var(--evoui-gap); }
+.evowiki-evoui .evoui-plot .shape.filled.t-secondary { fill: var(--text-muted); }
+.evowiki-evoui .evoui-plot .slice { stroke: var(--background-primary); stroke-width: 1.5; }
+.evowiki-evoui .evoui-plot .lbl { fill: var(--text-normal); font-size: 12px; }
+.evowiki-evoui .evoui-plot .lbl.t-accent { fill: var(--evoui-viz-1); }
+.evowiki-evoui .evoui-plot .lbl.t-warning { fill: var(--evoui-viz-2); }
+.evowiki-evoui .evoui-plot .lbl.t-success { fill: var(--evoui-known); }
+.evowiki-evoui .evoui-plot .lbl.t-danger { fill: var(--evoui-gap); }
+.evowiki-evoui .evoui-plot .lbl.t-secondary { fill: var(--text-muted); }
+.evowiki-evoui .evoui-plot .tick { fill: var(--text-muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+.evowiki-evoui .evoui-plot .tick.end { text-anchor: end; }
+.evowiki-evoui .evoui-plot .tick.mid { text-anchor: middle; }
+.evowiki-evoui .evoui-legend { display: flex; flex-wrap: wrap; gap: var(--size-4-3); font-size: var(--font-ui-smaller); }
+.evowiki-evoui .evoui-legend i { display: inline-block; width: 10px; height: 10px; margin-inline-end: var(--size-4-1); border-radius: 50%; background: currentcolor; vertical-align: -1px; }
+.evowiki-evoui .evoui-legend .t-default { color: var(--text-normal); }
+.evowiki-evoui .evoui-legend .t-warning { color: var(--evoui-viz-2); }
+.evowiki-evoui .evoui-quiz { display: flex; flex-direction: column; gap: var(--size-4-3); }
+.evowiki-evoui .evoui-quiz fieldset {
+  display: flex; flex-direction: column; gap: var(--size-4-1); min-width: 0; margin: 0;
+  padding: var(--size-4-2) var(--size-4-3); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m);
+}
+.evowiki-evoui .evoui-quiz legend { padding: 0 var(--size-4-1); font-weight: var(--font-semibold); }
+.evowiki-evoui .evoui-quiz .opt { display: flex; align-items: flex-start; gap: var(--size-4-2); font-size: var(--font-ui-medium); }
+.evowiki-evoui .evoui-quiz .opt.right { color: var(--evoui-known); }
+.evowiki-evoui .evoui-quiz .opt.wrong { color: var(--evoui-gap); text-decoration: line-through; }
+.evowiki-evoui .evoui-check, .evowiki-evoui .evoui-check:hover:not(:disabled) { align-self: flex-start; background: var(--evoui-chrome); color: var(--evoui-chrome-tx); }
+.evowiki-evoui .evoui-slot { display: contents; }
+.evowiki-evoui .evoui-error { color: var(--text-error); font-size: var(--font-ui-small); }
+
+/* ---- wiki: 本页 tab ---- */
+.evowiki-wiki-page { gap: var(--size-4-5); }
+.evowiki-wiki .evowiki-wiki-page-title { font-size: var(--font-ui-medium); font-weight: var(--font-semibold); }
+.evowiki-wiki-block { display: flex; flex-direction: column; }
+.evowiki-wiki-block-title { margin-bottom: var(--size-4-2); font-size: var(--font-ui-smaller); color: var(--text-muted); }
+
+/* 这一页: one row per section; the whole row jumps to the section in the note. */
+.evowiki-wiki-toc-list { display: flex; flex-direction: column; gap: var(--size-2-1); }
+.evowiki-wiki-toc-line { display: flex; align-items: center; gap: var(--size-4-1); }
+.evowiki-wiki-toc-row { flex: 1 1 auto; min-width: 0; display: flex; justify-content: space-between; align-items: baseline; gap: var(--size-4-2);
+  height: auto; margin: 0; padding: var(--size-4-1) var(--size-4-2); border: 0; border-radius: var(--radius-s); background: transparent; box-shadow: none;
+  color: var(--text-normal); font-size: var(--font-ui-small); text-align: left; cursor: pointer; }
+.evowiki-wiki-toc-row:hover:not([disabled]) { background: var(--background-modifier-hover); }
+.evowiki-wiki-toc-row[disabled] { cursor: default; opacity: 1; }
+.evowiki-wiki-toc-item.is-folded .evowiki-wiki-toc-name { color: var(--text-muted); }
+.evowiki-wiki-toc-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.evowiki-wiki-toc-status { flex: none; font-size: var(--font-ui-smaller); color: var(--text-muted); }
+.evowiki-wiki-toc-status.is-folded { color: var(--color-cyan); }
+.evowiki-wiki-toc-status.is-learning { color: var(--text-accent); }
+.evowiki-wiki-toc-status.is-new { color: var(--color-orange); }
+.evowiki-wiki-toc-status.is-writing { color: var(--text-muted); }
+/* 折起 / 展开: quiet, shown on hover or keyboard focus (always on touch screens). */
+.evowiki-wiki-toc-fold { flex: none; height: auto; padding: 0 var(--size-4-1); border: 0; background: none; box-shadow: none;
+  color: var(--text-muted); font-size: var(--font-ui-smaller); opacity: 0; cursor: pointer; }
+.evowiki-wiki-toc-item:hover .evowiki-wiki-toc-fold, .evowiki-wiki-toc-fold:focus-visible { opacity: 1; }
+.evowiki-wiki-toc-fold:hover { color: var(--text-normal); }
+@media (hover: none) { .evowiki-wiki-toc-fold { opacity: 1; } }
+.evowiki-wiki-toc-item .evowiki-wiki-inline { padding: 0 var(--size-4-2) var(--size-4-1); font-size: var(--font-ui-smaller); }
+/* 这页里的概念，你掌握到哪: name + plain sentence, then one bar cell per aspect. */
+.evowiki-wiki-concepts { display: flex; flex-direction: column; gap: var(--size-4-3); }
+.evowiki-wiki-concept-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--size-4-2); }
+.evowiki-wiki-concept-name { font-weight: var(--font-medium, 500); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.evowiki-wiki-concept-say { flex: none; max-width: 65%; text-align: right; font-size: var(--font-ui-smaller); }
+.evowiki-wiki-concept-say.is-new { color: var(--color-orange); }
+.evowiki-wiki-concept-say.is-learning { color: var(--text-accent); }
+.evowiki-wiki-concept-say.is-known { color: var(--color-green); }
+.evowiki-wiki-bar { display: flex; gap: var(--size-2-1); margin-top: var(--size-4-1); }
+.evowiki-wiki-bar-cell { flex: 1 1 0; height: var(--size-2-3); border-radius: var(--radius-s); background: var(--background-modifier-border); }
+.evowiki-wiki-bar-cell.is-known, .evowiki-wiki-swatch.is-known { background: var(--color-green); }
+.evowiki-wiki-bar-cell.is-likely { background: rgba(var(--color-green-rgb), .45); }
+.evowiki-wiki-bar-cell.is-fuzzy, .evowiki-wiki-swatch.is-fuzzy { background: var(--color-yellow); }
+.evowiki-wiki-bar-cell.is-unknown, .evowiki-wiki-swatch.is-unknown { background: var(--background-modifier-border); }
+.evowiki-wiki-bar-cell.is-absent { background: transparent; box-shadow: inset 0 0 0 1px var(--background-modifier-border); }
+.evowiki-wiki-bar-legend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--size-4-1) var(--size-4-3); font-size: var(--font-ui-smaller); color: var(--text-muted); }
+.evowiki-wiki-bar-legend > span { display: inline-flex; align-items: center; gap: var(--size-2-2); }
+.evowiki-wiki-swatch { display: inline-block; width: var(--size-4-2); height: var(--size-4-2); border-radius: var(--radius-s); }
+.evowiki-wiki-legend-hint { margin-left: auto; }
+.evowiki-wiki-secondary button { font-size: var(--font-ui-smaller); }
+
+.evowiki-wiki-chip.is-shelf { color: var(--color-green); border-color: transparent; }
+
+/* The full change list (render-rsi.ts, used by the 最近为你改了什么 dialog): 改前 / 改后 side by side, stacked when the sidebar is narrow */
+.evowiki-wiki-rsi { display: flex; flex-direction: column; gap: var(--size-4-2); min-width: 0; }
+.evowiki-wiki-rsi-card { display: flex; flex-direction: column; gap: var(--size-4-1); padding: var(--size-4-3); margin-bottom: var(--size-4-2);
+  border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); background: var(--background-primary); min-width: 0; }
+.evowiki-wiki-rsi-card.is-busy { opacity: 0.7; }
+.evowiki-wiki-rsi-head { display: flex; align-items: center; gap: var(--size-4-2); font-size: var(--font-ui-smaller); color: var(--text-muted); }
+.evowiki-wiki-rsi-tag.is-waiting { color: var(--text-on-accent); background: var(--interactive-accent); }
+.evowiki-wiki-rsi-tag.is-live { background: rgba(var(--color-green-rgb), 0.15); }
+.evowiki-wiki-rsi-tag.is-declined, .evowiki-wiki-rsi-tag.is-undone { color: var(--text-faint); }
+.evowiki-wiki-rsi-summary { font-weight: var(--font-semibold, 600); overflow-wrap: anywhere; }
+.evowiki-wiki-rsi-why { color: var(--text-muted); font-size: var(--font-ui-smaller); overflow-wrap: anywhere; }
+.evowiki-wiki-rsi-diff { display: flex; flex-wrap: wrap; gap: var(--size-4-2); margin-top: var(--size-4-1); }
+.evowiki-wiki-rsi-side { flex: 1 1 12em; min-width: 0; display: flex; flex-direction: column; gap: var(--size-4-1); }
+.evowiki-wiki-rsi-side-label { font-size: var(--font-ui-smaller); color: var(--text-muted); }
+.evowiki-wiki-rsi-side-text { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 12em; overflow-y: auto; padding: var(--size-4-2);
+  border-radius: var(--radius-s); background: var(--background-secondary); font-size: var(--font-ui-small); }
+.evowiki-wiki-rsi-card > .evowiki-row { margin-top: var(--size-4-2); }
+
+/* A link-styled button (the wrong-answer follow-up: 去复习 / 学这个): Obsidian variables only, no colors of its own. */
+
+/* 今天 · 想学点新的？ (a card of its own): Obsidian variables only. */
+.evowiki-learn { display: flex; flex-direction: column; gap: var(--size-4-2); padding: var(--size-4-3) var(--size-4-4); background: var(--background-secondary); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); }
+
+/* ===== T9 知识图谱 (app.js renderMap): the tab's .view-content has no padding; div.ew.ew-mapview fills it and holds the
+   EXACT .ew-bigmap (absolute fill). [hidden] beats the EXACT display values (canvas block, legend flex) for the states. ===== */
+.workspace-leaf-content[data-type="evowiki-starmap"] > .view-content { padding: 0; overflow: hidden; }
+body .ew.ew-mapview { position: relative; height: 100%; overflow: hidden; }
+body .ew .ew-bigmap [hidden] { display: none; }
+body .ew .ew-bigmap > .ew-mapstate { position: absolute; left: 16px; right: 16px; top: 50%; transform: translateY(-50%); text-align: center; }
+/* Visible to screen readers and the keyboard, not to the eye: the concept list that stands in for the canvas. */
+.evowiki-sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+/* ===== /T9 ===== */
+/* ===== No Obsidian hover tooltips: Obsidian shows every [aria-label] as a tooltip unless the element's computed
+   --no-tooltip is "true". The custom property inherits, so one rule on each of our roots keeps the accessible names
+   (inputs, lists, icon buttons) without a tooltip; our own circled-? tipbox is the only tooltip. ===== */
+.ew, .evowiki-page, [class^="ew-"], [class*=" ew-"], [class^="evowiki-"], [class*=" evowiki-"] { --no-tooltip: true; }
+/* ===== /no tooltips ===== */
+/* ===== A 参数 change card's jump (note-frame.ts): the changed section of the note gets the demo's ants frame, drawn
+   on a box laid over its lines inside the view's scroller (Obsidian draws the note, so it is outside .ew). ===== */
+.evowiki-sec-frame { position: absolute; pointer-events: none; }
+.evowiki-sec-frame .ew-ants { position: absolute; left: -6px; top: -6px; pointer-events: none; overflow: visible; transition: opacity .8s ease-out; }
+.evowiki-sec-frame .ew-ants rect { fill: none; stroke: var(--text-normal); stroke-width: 1.6; stroke-dasharray: 7 5; animation: ants .8s linear infinite; }
+.evowiki-sec-frame .ew-ants.ew-out { opacity: 0; }
+/* ===== /section frame ===== */
+/* ===== T5 sidebar shell (shell.html aside.side): the wiki view's .view-content has no padding; the .ew wrapper and the
+   EXACT .ew-side grid (rows auto / minmax(0,1fr)) fill the leaf, so .ew-side-body scrolls and .ew-asst fills the body. ===== */
+.workspace-leaf-content[data-type="evowiki-wiki"] > .view-content { padding: 0; overflow: hidden; }
+.workspace-leaf-content[data-type="evowiki-wiki"] > .view-content > .ew { height: 100%; }
+body .ew > .ew-side { height: 100%; box-sizing: border-box; }
+/* ===== /T5 ===== */
+/* ===== T11 learn: big-goal-demo.html lines 22–78 after build.py's token swaps (no header, one grid row), value for
+   value; every class prefixed ew- and scoped under div.ew.ew-learn. Where the EXACT block styles the same class
+   differently (.ew-btn font-size / nowrap, inputs at 14px with width 100%), the rules here restore the big-goal values. ===== */
+.workspace-leaf-content[data-type="evowiki-learn"] > .view-content { padding: 0; overflow: hidden; }
+body .ew.ew-learn{height:100%;background:var(--bg-0);color:var(--tx-1);font:14px/1.6 var(--font-ui)}
+body .ew-learn .ew-app{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100%}
+body .ew-learn .ew-panel{overflow-y:auto;scrollbar-gutter:stable;padding-inline:16px;padding-block:16px;display:flex;flex-direction:column;gap:14px;border-right:1px solid var(--border);background:var(--bg-0)}
+body .ew-learn .ew-cloudwrap{position:relative;min-height:360px;background:var(--cloud-bg)}
+body .ew-learn canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+body .ew-learn .ew-sigma{position:absolute;inset:0;cursor:grab}body .ew-learn .ew-sigma:active{cursor:grabbing}
+/* the cloud's group titles (sigma-cloud.ts: an HTML layer over the canvas; background and colour set from the tokens) */
+body .ew .ew-gwash{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}body .ew .ew-gtitles{position:absolute;inset:0;pointer-events:none;overflow:hidden}body .ew .ew-gtitle{position:absolute;transform:translate(-50%,-100%);padding:1px 6px;border-radius:4px;font-weight:700;line-height:1.3;white-space:nowrap;pointer-events:auto;cursor:pointer}body .ew .ew-gtitle-top{font-size:16px}body .ew .ew-gtitle-l1{font-size:13px}
+body .ew-learn .ew-cloud-empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--tx-3);font-size:13px;pointer-events:none}body .ew-learn .ew-cloud-empty[hidden]{display:none}
+body .ew-learn .ew-tip{position:absolute;z-index:2;pointer-events:none;background:var(--bg-0);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;box-shadow:0 6px 20px rgba(0,0,0,.12);max-width:240px}
+body .ew-learn .ew-tip[hidden]{display:none}
+body .ew-learn .ew-legend{position:absolute;left:8px;bottom:8px;padding:4px 8px;border-radius:6px;background:var(--cloud-bg);display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--tx-2);font-family:inherit}
+body .ew-learn .ew-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0}
+body .ew-learn .ew-card{border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;background:var(--bg-0)}
+body .ew-learn .ew-card.ew-done{background:var(--bg-1)}
+body .ew-learn .ew-eyebrow{font-size:11px;letter-spacing:.06em;color:var(--tx-3)}
+body .ew-learn .ew-card h2{font-size:15px;margin:0;font-weight:650;text-wrap:balance}
+body .ew-learn .ew-why{font-size:12.5px;color:var(--tx-2);background:var(--accent-soft);border-radius:6px;padding:6px 9px}
+body .ew-learn .ew-why b{color:var(--accent);font-weight:600}
+body .ew-learn label.ew-field{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--tx-2)}
+body .ew-learn input[type=text],body .ew-learn textarea{font:inherit;color:var(--tx-1);background:var(--bg-1);border:1px solid var(--border);border-radius:6px;padding:6px 9px;box-sizing:content-box;width:auto}
+body .ew-learn textarea{resize:vertical;min-height:52px}
+body .ew-learn .ew-btn{font:inherit;border:1px solid var(--border);background:var(--bg-0);color:var(--tx-1);border-radius:7px;padding:5px 12px;cursor:pointer;white-space:normal}
+body .ew-learn .ew-btn:hover{background:var(--bg-2)}
+body .ew-learn .ew-btn.ew-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-tx);font-weight:600}
+body .ew-learn .ew-btn.ew-primary:hover{filter:brightness(1.06);background:var(--accent)}
+body .ew-learn .ew-btn.ew-link{border:0;background:none;color:var(--tx-2);padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
+body .ew-learn .ew-btn:disabled{opacity:.45;cursor:default}
+body .ew-learn .ew-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+body .ew-learn .ew-q{display:flex;flex-direction:column;gap:5px;border-top:1px dashed var(--border);padding-top:9px}
+body .ew-learn .ew-q:first-of-type{border-top:0;padding-top:0}
+body .ew-learn .ew-q .ew-stem{font-family:var(--font-text);font-size:14.5px}
+body .ew-learn .ew-q .ew-kind{font-size:11px;color:var(--tx-3)}
+body .ew-learn .ew-q .ew-qwhy{font-size:12px;color:var(--tx-2)}
+body .ew-learn .ew-opt{display:flex;gap:7px;align-items:flex-start;font-size:13.5px;cursor:pointer}
+body .ew-learn .ew-opt input{margin-top:4px;accent-color:var(--accent)}
+body .ew-learn .ew-opt.ew-right{color:var(--known)}
+body .ew-learn .ew-opt.ew-wrong{color:var(--gap)}
+body .ew-learn .ew-regions{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+body .ew-learn .ew-regions li{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;align-items:start;font-size:13px}
+body .ew-learn .ew-regions .ew-dot{width:10px;height:10px;border-radius:50%;margin-top:6px}
+body .ew-learn .ew-regions .ew-scope{color:var(--tx-2);font-size:12.5px}
+body .ew-learn .ew-chip{font-size:11.5px;border:1px solid currentColor;border-radius:999px;padding:0 8px;white-space:nowrap}
+body .ew-learn .ew-chip.ew-skip{color:var(--known)}
+body .ew-learn .ew-chip.ew-next{color:var(--accent)}
+body .ew-learn .ew-chip.ew-later{color:var(--tx-3)}
+body .ew-learn .ew-skipped .ew-rname{text-decoration:line-through;color:var(--tx-3)}
+body .ew-learn .ew-pages{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:13px}
+body .ew-learn .ew-pages span{color:var(--tx-2)}
+body .ew-learn .ew-thinking{font-size:12.5px;color:var(--tx-3);display:flex;align-items:center}
+body .ew-learn .ew-thinking .ew-spin{margin-right:8px}
+body .ew-learn .ew-goaltext{font-size:14px;color:var(--tx-1)}
+body .ew-learn .ew-assess{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:650;color:var(--tx-1)}
+body .ew-learn .ew-assess svg{width:15px;height:15px;stroke:var(--tx-2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body .ew-learn .ew-lead{display:flex;flex-direction:column;gap:2px;padding-left:12px}
+body .ew-learn .ew-lead .ew-sub{font-size:14px;color:var(--tx-1)}
+body .ew-learn .ew-lead .ew-desc{font-size:12.5px;color:var(--tx-2)}
+body .ew-learn :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* 上传附件 and the material card (full-demo big-goal-demo.html at 08b25fb7: .attach, .card.dragover, .mat, .faint, .toc) */
+body .ew-learn .ew-attach{align-self:flex-start;font:inherit;font-size:12.5px;border:0;background:none;color:var(--tx-2);cursor:pointer;padding:2px 0}
+body .ew-learn .ew-attach:hover{color:var(--tx-1)}
+body .ew-learn .ew-card.ew-dragover{border-color:var(--accent);border-style:dashed}
+body .ew-learn .ew-mat{display:flex;flex-direction:column;gap:5px;border:1px solid var(--border);border-radius:8px;padding:8px 10px;background:var(--bg-1);font-size:12.5px}
+body .ew-learn .ew-mat .ew-mt{display:flex;gap:8px;align-items:baseline}
+body .ew-learn .ew-mat .ew-mn{font-weight:600;font-size:13px;word-break:break-all}
+body .ew-learn .ew-mat .ew-ms{color:var(--tx-2);margin-left:auto;white-space:nowrap}
+body .ew-learn .ew-mat .ew-x{border:0;background:none;color:var(--tx-3);cursor:pointer;font-size:15px;line-height:1;padding:2px 5px;border-radius:5px}
+body .ew-learn .ew-mat .ew-x:hover{background:var(--bg-2);color:var(--tx-1)}
+body .ew-learn .ew-faint{font-size:12px;color:var(--tx-3)}
+body .ew-learn .ew-pages .ew-sec{font-size:12px;font-weight:400;color:var(--tx-3);margin-left:8px;white-space:nowrap}
+body .ew-learn .ew-pages .ew-exam{font-size:11px;color:var(--tx-2);border:1px solid var(--border);border-radius:4px;padding:0 5px;margin-left:6px;white-space:nowrap}
+body .ew-learn .ew-pages .ew-exam+.ew-qtip{vertical-align:-4px;margin-left:2px}
+body .ew-learn .ew-pages .ew-qtip .ew-tipbox{color:var(--accent-tx)}
+body .ew-learn .ew-toc{list-style:none;margin:2px 0;padding:0;display:flex;flex-direction:column;gap:2px}
+body .ew-learn .ew-toc li{display:flex;align-items:center;gap:6px;font-size:12.5px}
+body .ew-learn .ew-toc .ew-tn{flex:1;min-width:0;text-align:left;font:inherit;border:0;background:none;color:var(--tx-1);cursor:text;padding:1px 4px;border-radius:5px}
+body .ew-learn .ew-toc .ew-tn:hover{background:var(--bg-2)}
+body .ew-learn .ew-toc .ew-pg{color:var(--tx-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+body .ew-learn .ew-toc .ew-lv{border:1px solid var(--border);background:var(--bg-0);color:var(--tx-2);border-radius:5px;font-size:11px;line-height:1;padding:2px 6px;cursor:pointer}
+body .ew-learn .ew-toc .ew-lv:hover:not(:disabled){background:var(--bg-2)}
+body .ew-learn .ew-toc .ew-lv:disabled{opacity:.35;cursor:default}
+body .ew-learn input[type=file][hidden]{display:none}
+/* editable rows: the 学习路径 card and a block's pages (big-goal-demo.html .elist / .ops / .grip / .more / .menu, 2026-10-23) */
+body .ew-learn .ew-tg{font-size:11px;font-weight:400;border:1px solid currentColor;border-radius:999px;padding:0 6px;color:var(--tx-2);margin-left:6px;white-space:nowrap}
+body .ew-learn .ew-elist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+body .ew-learn .ew-elist li{position:relative;display:grid;grid-template-columns:12px minmax(0,1fr) 48px 40px;gap:8px;align-items:center;font-size:13px;border-bottom:1px dashed var(--border);padding:6px 6px 6px 8px;border-radius:8px}
+body .ew-learn .ew-elist.ew-pg>li{grid-template-columns:16px minmax(0,1fr) 40px}
+body .ew-learn .ew-elist.ew-units li{grid-template-columns:12px minmax(0,1fr) auto}
+body .ew-learn .ew-elist li:last-child{border-bottom:0}
+body .ew-learn .ew-elist li[draggable="true"]{cursor:grab}
+body .ew-learn .ew-elist li.ew-sort-ghost{opacity:.4;border-top:2px solid var(--tx-2)}
+body .ew-learn .ew-elist li.ew-sort-drag{background:var(--bg-0);box-shadow:0 10px 30px rgba(0,0,0,.14)}
+body .ew-learn .ew-elist .ew-dot{width:10px;height:10px;border-radius:50%;transition:background-color .3s}
+body .ew-learn .ew-elist .ew-dot.ew-asking{animation:ew-ask 1.2s ease-in-out infinite}
+@keyframes ew-ask{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--shaky) 55%,transparent)}50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--shaky) 0%,transparent)}}
+@media (prefers-reduced-motion:reduce){body .ew-learn .ew-elist .ew-dot.ew-asking{animation:none}}
+/* the EXACT block's .ew-known is a 讲解 callout: the state word keeps only its own look */
+body .ew-learn .ew-elist li.ew-cur{background:var(--bg-1);border-bottom-color:transparent}body .ew-learn .ew-elist li.ew-cur .ew-rname{font-weight:650}
+body .ew-learn .ew-elist .ew-act{display:flex;justify-content:flex-end}
+body .ew-learn .ew-elist .ew-go{width:64px;height:26px;font:inherit;font-size:12.5px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--tx-2);cursor:pointer;padding:0}
+body .ew-learn .ew-elist .ew-go:hover{background:var(--bg-2);color:var(--tx-1)}
+body .ew-learn .ew-elist.ew-pg .ew-go:not(:disabled),body .ew-learn .ew-elist .ew-go[data-pct]:not(:disabled){position:relative;z-index:1;background:var(--bg-0);border-color:var(--tx-3);color:var(--tx-1)}
+body .ew-learn .ew-elist .ew-ops{justify-content:flex-end;opacity:0;transition:opacity .15s}
+body .ew-learn .ew-elist li:not(.ew-nest):hover>.ew-ops,body .ew-learn .ew-elist li:not(.ew-nest):focus-within>.ew-ops,body .ew-learn .ew-elist .ew-ops:has([aria-expanded="true"]){opacity:1}
+@media (hover:none){body .ew-learn .ew-elist .ew-ops{opacity:1}}
+body .ew-learn .ew-cloudwrap canvas{cursor:default}
+/* 学点新的's pinned block names (sigma-cloud.ts pinned: the grow demo's region labels, 600 13px, placed clear of others) */
+body .ew-learn .ew-gtitle.ew-gpin{font-size:13px;font-weight:600;padding:0;background:none;white-space:nowrap}
+body .ew-learn .ew-elist .ew-n{color:var(--tx-3);font-variant-numeric:tabular-nums}
+body .ew-learn .ew-elist .ew-t{font-weight:600}
+body .ew-learn .ew-elist .ew-scope{color:var(--tx-2);font-size:12.5px}
+body .ew-learn .ew-elist .ew-sec{font-size:12px;font-weight:400;color:var(--tx-3);margin-left:8px;white-space:nowrap}
+body .ew-learn .ew-elist .ew-exam{font-size:11px;font-weight:400;color:var(--tx-2);border:1px solid var(--border);border-radius:4px;padding:0 5px;margin-left:6px;white-space:nowrap}
+body .ew-learn .ew-elist .ew-exam+.ew-qtip{vertical-align:-4px;margin-left:2px}
+body .ew-learn .ew-elist .ew-qtip .ew-tipbox{color:var(--accent-tx)}
+body .ew-learn .ew-elist .ew-edit{grid-column:2 / -1}
+/* a block's pages are cards; each title's background is its page's writing progress (--p: sections written / all, real
+   status from /wiki/writes; 0% = the card's own background, 100% = all pale green). big-goal-demo.html .elist.pg, 2026-10-24 */
+@property --p{syntax:"<percentage>";inherits:false;initial-value:0%}
+body .ew-learn{--pg-fill:color-mix(in srgb,var(--known) 22%,transparent)}
+body .ew-learn{--pg-stripe:rgba(255,255,255,.5)}
+/* dark: the white stripes at the light theme's strength drown the text; the same stripes, faint */
+body.theme-dark .ew-learn{--pg-stripe:rgba(255,255,255,.1)}
+body .ew-learn .ew-elist.ew-pg{gap:8px}
+body .ew-learn .ew-elist.ew-pg>li{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:var(--bg-0)}
+/* a page card being written (writing-fill.ts; the approved writing-card demo): the whole card fills with the pale green to its
+   progress, white 45° stripes scroll on it and its right edge is a small wave (a mask); written: full and plain */
+body .ew-learn .ew-elist.ew-pg>li>*:not(.ew-fill){position:relative}
+body .ew-learn .ew-elist.ew-pg .ew-fill{position:absolute;inset:0 auto 0 0;width:0;background-color:var(--pg-fill);transition:width 1s ease-out;pointer-events:none}
+body .ew-learn .ew-elist.ew-pg .ew-fill[data-state=writing]{background-image:linear-gradient(45deg,var(--pg-stripe) 25%,transparent 25% 50%,var(--pg-stripe) 50% 75%,transparent 75%);background-size:32px 32px;
+  -webkit-mask:linear-gradient(#000,#000) 0 0/calc(100% - 3px) 100% no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='48'%3E%3Cpath d='M0 0 H2 Q4 12 2 24 Q0 36 2 48 H0 Z'/%3E%3C/svg%3E") 100% 0/4px 48px repeat-y;
+  mask:linear-gradient(#000,#000) 0 0/calc(100% - 3px) 100% no-repeat,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='48'%3E%3Cpath d='M0 0 H2 Q4 12 2 24 Q0 36 2 48 H0 Z'/%3E%3C/svg%3E") 100% 0/4px 48px repeat-y}
+body .ew-learn .ew-elist.ew-pg>li:last-child{border-bottom:1px solid var(--border)}
+
+/* 学习路径's rows: the text takes the column's whole width: the one button, ⋮⋮ / ⋯ at the first line's right end,
+   room kept for them there so no text is ever under them; name and 基础 on one line while they fit, flush left when they wrap */
+body .ew-learn .ew-elist.ew-blocks>li{grid-template-columns:12px minmax(0,1fr) auto}
+body .ew-learn .ew-elist.ew-blocks>li>.ew-act:empty{display:none}
+body .ew-learn .ew-elist.ew-blocks>li>.ew-ops{position:absolute;right:6px;top:6px}
+body .ew-learn .ew-elist.ew-blocks>li:has(>.ew-act>*)>.ew-ops{right:78px}
+@media (hover:none){body .ew-learn .ew-elist.ew-blocks>li{grid-template-columns:12px minmax(0,1fr) auto auto}body .ew-learn .ew-elist.ew-blocks>li>.ew-ops{position:static}body .ew-learn .ew-elist.ew-blocks .ew-rname{padding-right:0}}
+body .ew-learn .ew-elist.ew-blocks .ew-rname{display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;padding-right:48px}
+body .ew-learn .ew-elist.ew-blocks .ew-rname>.ew-tg{margin:0}
+/* what a row of 学习路径 opens stays in the list, under it and indented, like a folder: its parts (the same rows), or its pages */
+body .ew-learn .ew-elist.ew-parts>li>.ew-ops>.ew-grip{display:none}
+body .ew-learn .ew-elist.ew-parts>li>div>.ew-rname{padding-right:24px}
+body .ew-learn .ew-elist.ew-parts>li>.ew-ops{top:4px}
+body .ew-learn .ew-elist>li:has(+li.ew-nest){margin-bottom:-6px;background:var(--bg-1);border-bottom-color:transparent;border-radius:8px 8px 0 0}
+body .ew-learn .ew-elist>li.ew-nest{display:block;padding:0 8px 8px 16px;border:0;border-radius:0 0 8px 8px;background:var(--bg-1)}
+body .ew-learn .ew-nest .ew-elist:not(.ew-pg)>li:not(.ew-nest){border-bottom:0;background:none}
+body .ew-learn .ew-nest .ew-elist>li.ew-nest{padding:0 0 4px 16px;background:none}
+body .ew-learn .ew-elist.ew-pg{margin-bottom:8px}
+body .ew-learn .ew-elist.ew-pg>li{grid-template-columns:16px minmax(0,1fr) auto;padding-right:6px}
+body .ew-learn .ew-elist.ew-pg>li>.ew-ops{position:absolute;right:78px;top:6px}
+@media (hover:none){body .ew-learn .ew-elist.ew-pg>li{grid-template-columns:16px minmax(0,1fr) auto auto}body .ew-learn .ew-elist.ew-pg>li>.ew-ops{position:static}}
+body .ew-learn .ew-elist.ew-pg .ew-t{padding-right:48px}
+body .ew-learn .ew-elist .ew-pct{display:block;width:64px;height:26px;line-height:26px;text-align:center;font-size:12.5px;color:var(--tx-2);font-variant-numeric:tabular-nums}
+body .ew-learn .ew-elist .ew-rowhit{cursor:pointer}
+body .ew-learn .ew-ops{display:flex;gap:4px;align-items:center}
+body .ew-learn .ew-grip{color:var(--tx-3);cursor:grab;user-select:none;font-size:14px;line-height:1.4}
+body .ew-learn .ew-more{border:0;background:none;color:var(--tx-3);cursor:pointer;border-radius:5px;padding:0 6px;font-size:16px;line-height:1.3}
+body .ew-learn .ew-more:hover,body .ew-learn .ew-more[aria-expanded="true"]{background:var(--bg-2);color:var(--tx-1)}
+body .ew-learn .ew-menu{position:absolute;z-index:30;right:0;top:24px;min-width:150px;background:var(--bg-0);border:1px solid var(--border);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:5px;font-size:13.5px}
+body .ew-learn .ew-menu button{display:flex;width:100%;text-align:left;border:0;background:none;padding:6px 10px;border-radius:5px;cursor:pointer;color:var(--tx-1);font:inherit;justify-content:flex-start}
+body .ew-learn .ew-menu button:hover{background:var(--bg-2)}
+body .ew-learn .ew-card input[type=text]{font:inherit;font-size:13px;color:var(--tx-1);background:var(--bg-1);border:1px solid var(--border);border-radius:6px;padding:5px 9px;min-width:0;flex:1}
+/* the demo's iframe narrows with its pane; in Obsidian the pane narrows inside a wide window (a 1000×800 window leaves
+   学点新的 about 360px): the same rule on the tab's own width */
+body .ew-learn{container-type:inline-size}
+@container (max-width:760px){
+  body .ew-learn .ew-app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;align-content:start;height:100%;overflow-y:auto}
+  body .ew-learn .ew-cloudwrap{min-height:max(520px,var(--cloud-min,0px))}
+  body .ew-learn .ew-panel{border-right:0;overflow:visible}
+}
+/* ===== /T11 ===== */
+/* ===== T12 设置 (app.js renderSettings): the 设置 tab's .view-content has no padding; div.ew fills it and its EXACT
+   .ew-scroll (height 100%) scrolls the .ew-set. [hidden] beats the EXACT display of a row (隔几天整理一次 while the mode
+   is not 每隔几天). ===== */
+.workspace-leaf-content[data-type="evowiki-settings"] > .view-content { padding: 0; overflow: hidden; }
+.workspace-leaf-content[data-type="evowiki-settings"] > .view-content > .ew { height: 100%; }
+body .ew .ew-srow[hidden] { display: none; }
+/* ===== /T12 ===== */
+/* ===== T14 知识图谱 graph page: graph.html lines 22–74 value for value (tokens = the EXACT block's, light and dark, which
+   are graph.html's); every class prefixed ew- and scoped under div.ew.ew-graph (the T9 rule gives the tab's .view-content
+   no padding). Where the EXACT block styles the same class differently (.ew-btn 13.5px / 5px 12px / nowrap, .ew-card
+   background, h2 text-wrap, .ew-faint 12.5px, .ew-legend wrap, :focus-visible in the accent, the primary button's hover
+   filter), the rules here restore graph.html's values. The view switch (.seg / .chips) and the change log (.log) are not
+   in the plugin. ===== */
+body .ew.ew-graph{height:100%;background:var(--bg-0);color:var(--tx-1);font:14px/1.6 var(--font-ui)}
+body .ew-graph [hidden]{display:none!important}
+body .ew-graph .ew-app{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100%}
+body .ew-graph .ew-panel{overflow-y:auto;padding-inline:16px;padding-block:16px;display:flex;flex-direction:column;gap:14px;border-right:1px solid var(--border)}
+body .ew-graph .ew-cloudwrap{position:relative;min-height:420px;background:var(--cloud-bg);overflow:hidden;touch-action:none}
+body .ew-graph .ew-sigma{position:absolute;inset:0;cursor:grab}body .ew-graph .ew-sigma:active{cursor:grabbing}
+body .ew-graph .ew-legend{position:absolute;left:8px;bottom:8px;padding:4px 8px;border-radius:6px;background:var(--cloud-bg);display:flex;gap:12px;font-size:12px;color:var(--tx-2);flex-wrap:nowrap;font-family:inherit}
+body .ew-graph .ew-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+body .ew-graph .ew-zoom{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+body .ew-graph .ew-zoom .ew-btns{display:flex;gap:6px}
+body .ew-graph .ew-tip{position:absolute;z-index:2;pointer-events:none;background:var(--bg-0);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12.5px;box-shadow:0 6px 20px rgba(0,0,0,.12);max-width:280px;display:flex;flex-direction:column;gap:3px}
+body .ew-graph .ew-tip .ew-rel{color:var(--tx-2)}
+body .ew-graph .ew-card{border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;background:none}
+body .ew-graph .ew-card h2{font-size:15px;margin:0;font-weight:650;text-wrap:wrap}
+body .ew-graph .ew-goal{display:flex;flex-direction:column;gap:6px;text-align:left;border:1px solid var(--border);background:var(--bg-0);color:var(--tx-1);border-radius:9px;padding:8px 11px;cursor:pointer;font:inherit}
+body .ew-graph .ew-goal:hover{background:var(--bg-1)}
+body .ew-graph .ew-goal[aria-pressed="true"]{border-color:var(--tx-2);background:var(--bg-1)}
+body .ew-graph .ew-gname{font-size:13.5px;font-weight:600}
+body .ew-graph .ew-bar{display:flex;height:6px;border-radius:999px;overflow:hidden;gap:2px}
+body .ew-graph .ew-bar i{display:block;height:100%}
+body .ew-graph .ew-pages li[draggable="true"]{cursor:pointer}
+body .ew-graph .ew-pages li.ew-sort-ghost{opacity:.4;border-top:2px solid var(--tx-2)}
+body .ew-graph .ew-pages li.ew-sort-drag{background:var(--bg-0);box-shadow:0 10px 30px rgba(0,0,0,.14)}
+body .ew-graph .ew-pages .ew-grip{color:var(--tx-3);cursor:grab;user-select:none;font-size:14px;line-height:1.4}
+body .ew-graph .ew-btn{font:inherit;font-size:13px;border:1px solid var(--border);background:var(--bg-0);color:var(--tx-1);border-radius:7px;padding:4px 11px;cursor:pointer;white-space:normal}
+body .ew-graph .ew-btn:hover:not(:disabled){background:var(--bg-2)}
+body .ew-graph .ew-btn.ew-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-tx);font-weight:600}
+body .ew-graph .ew-btn.ew-primary:hover:not(:disabled){filter:brightness(1.06);background:var(--accent)}
+body .ew-graph .ew-btn.ew-icon{padding:2px 8px;font-size:12px}
+body .ew-graph .ew-btn.ew-link{border:0;background:none;color:var(--tx-2);text-decoration:underline;text-underline-offset:3px;padding:2px}
+body .ew-graph .ew-btn:disabled{opacity:.4;cursor:default}
+body .ew-graph .ew-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+body .ew-graph .ew-muted{font-size:12.5px;color:var(--tx-2)}
+body .ew-graph .ew-faint{font-size:12px;color:var(--tx-3)}
+body .ew-graph .ew-pages{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+body .ew-graph .ew-pages li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:start;font-size:13px;border-bottom:1px dashed var(--border);padding-bottom:6px}
+body .ew-graph .ew-pages li:last-child{border-bottom:0}
+body .ew-graph .ew-pages .ew-n{color:var(--tx-3);font-variant-numeric:tabular-nums}
+body .ew-graph .ew-pages .ew-t{font-weight:600}
+body .ew-graph .ew-pages .ew-s{color:var(--tx-2);font-size:12.5px}
+body .ew-graph .ew-pages .ew-skip .ew-t{text-decoration:line-through;color:var(--tx-3)}
+body .ew-graph .ew-pages .ew-ops{display:flex;gap:4px}
+body .ew-graph .ew-mine{white-space:nowrap;font-size:11px;border:1px solid currentColor;border-radius:999px;padding:0 6px;color:var(--tx-2);margin-left:6px;font-weight:400}
+body .ew-graph .ew-pages .ew-sec{font-size:12px;font-weight:400;color:var(--tx-3);margin-left:8px;white-space:nowrap}
+body .ew-graph .ew-pages .ew-exam{font-size:11px;font-weight:400;color:var(--tx-2);border:1px solid var(--border);border-radius:4px;padding:0 5px;margin-left:8px;white-space:nowrap}
+body .ew-graph .ew-pages .ew-exam+.ew-qtip{vertical-align:-4px;margin-left:2px}
+body .ew-graph input[type=text]{font:inherit;font-size:13px;caret-color:var(--tx-1);color:var(--tx-1);background:var(--bg-1);border:1px solid var(--border);border-radius:6px;padding:5px 9px;min-width:0;flex:1}
+body .ew-graph .ew-ev{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--tx-2)}
+body .ew-graph .ew-ev b{color:var(--tx-1);font-weight:600}
+body .ew-graph .ew-card h2.ew-nh{display:flex;align-items:center}
+body .ew-graph .ew-bandw{margin-left:auto;font-size:11.5px;font-weight:400;color:var(--tx-3)}
+body .ew-graph .ew-prh{font-size:12px;color:var(--tx-3);margin-top:4px}
+body .ew-graph .ew-prow{display:flex;align-items:center;gap:0}
+body .ew-graph .ew-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
+body .ew-graph :focus-visible{outline:2px solid var(--tx-2);outline-offset:2px}
+/* Obsidian turns every aria-label into a hover tooltip (the canvas's long label, ＋ / －, the path rows, ×); graph.html
+   shows none (a browser reads aria-label aloud, never on hover). Obsidian skips an element whose --no-tooltip is true. */
+body .ew-graph [aria-label]{--no-tooltip:true}
+/* The EXACT reset's all:revert on li also drops the draggable attribute's own -webkit-user-drag (a presentational hint),
+   so in real Obsidian a path row never started a drag. Put it back. */
+body .ew-graph .ew-pages li[draggable="true"]{-webkit-user-drag:element}
+/* The same for every other draggable row (学点新的's 学习路径 / page lists, the 助手's draft lists): without it a mouse drag
+   never starts in real Obsidian (only Alt + ↑ / ↓ moved a row). */
+body .ew [draggable="true"]{-webkit-user-drag:element}
+/* 学点新的 and the 助手's draft lists: the rows' and ⋯'s aria-labels are for screen readers (the demo shows no hover text
+   there); × keeps its title (去掉这一块), as the demo's browser shows it. */
+body .ew-learn [aria-label],body .ew .ew-alist [aria-label]{--no-tooltip:true}
+/* Path rows (graph.html 77-89): the ⋯ menu, the live status, a row rising in. The menu is positioned from the row. */
+body .ew-graph .ew-pages li{position:relative}
+body .ew-graph .ew-pages .ew-more{border:0;background:none;color:var(--tx-3);cursor:pointer;border-radius:5px;padding:0 6px;font-size:16px;line-height:1.3}
+body .ew-graph .ew-pages .ew-more:hover,body .ew-graph .ew-pages .ew-more[aria-expanded="true"]{background:var(--bg-2);color:var(--tx-1)}
+body .ew-graph .ew-pages .ew-w{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx-3)}
+body .ew-graph .ew-pages .ew-w i{width:6px;height:6px;border-radius:50%;background:var(--tx-2);animation:wpulse 1.2s infinite ease-in-out}
+body .ew-graph .ew-pages li.ew-fresh{animation:grise .35s ease-out}
+@keyframes grise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+body .ew-graph .ew-menu{right:0;top:24px;min-width:150px;box-shadow:0 10px 30px rgba(0,0,0,.14)}
+body .ew-graph .ew-menu button{color:var(--tx-1);font:inherit;justify-content:flex-start}
+@media (prefers-reduced-motion:reduce){body .ew-graph .ew-pages .ew-w i{animation:none}}
+/* Loading / error / empty: one line centred in the cloud (as T9's .ew-bigmap > .ew-mapstate). */
+body .ew-graph .ew-cloudwrap > .ew-mapstate{position:absolute;left:16px;right:16px;top:50%;transform:translateY(-50%);text-align:center}
+/* Offline over a drawn graph: the one 未连接到服务器 · 重试 line at the top of the cloud (no new colours). */
+body .ew-graph .ew-cloudwrap > .ew-mapbanner{position:absolute;left:16px;right:16px;top:12px;text-align:center}
+body .ew-graph{container-type:inline-size}
+@container (max-width:760px){
+  body .ew-graph .ew-app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;align-content:start;height:100%;overflow-y:auto}
+  body .ew-graph .ew-cloudwrap{grid-row:1;min-height:max(56vh,var(--cloud-min,0px))}
+  body .ew-graph .ew-panel{grid-row:2;border-right:0}
+}
+/* ===== /T14 ===== */
+
+
+/* ===== caret ===== */
+/* The text caret in the plugin's inputs follows the text colour. */
+body .ew :is(input,textarea){caret-color:var(--tx-1)}
+/* ===== /caret ===== */
+/* ===== T17 evoui port: src/evowiki/deep/evoui/evoui.css rules for the classes the hand-written rules above never name, value for
+   value, scoped under .evowiki-evoui (generated by scripts/port-evoui-css.py; do not edit by hand) ===== */
+.evowiki-evoui .evoui{
+  --eu-bg:var(--bg-0,var(--background-primary));--eu-fg:var(--tx-1,var(--text-normal));--eu-fg2:var(--tx-2,var(--text-muted));
+  --eu-line:var(--border,var(--background-modifier-border));--eu-surface:var(--bg-1,var(--background-secondary));
+  --eu-accent:var(--evoui-chrome);--eu-accent-tx:var(--evoui-chrome-tx);
+  --eu-success:var(--evoui-known);--eu-warning:var(--evoui-shaky);--eu-danger:var(--evoui-gap);--eu-secondary:var(--eu-fg2);
+  --eu-right:var(--evoui-known);--eu-wrong:var(--evoui-gap);--eu-shaky:var(--evoui-shaky);--eu-mark-tx:var(--bg-0,var(--background-primary));
+  --eu-hover:color-mix(in srgb,var(--eu-fg) 5%,transparent);--eu-strong:color-mix(in srgb,var(--eu-fg) 30%,transparent);
+  --eu-faint:color-mix(in srgb,var(--eu-fg) 32%,transparent);--eu-blue:var(--evoui-viz-1);--eu-miss:var(--evoui-viz-2);
+  --eu-card:var(--eu-bg);--eu-card-line:color-mix(in srgb,var(--eu-fg) 9%,transparent);
+  --eu-card-shadow:0 1px 2px rgb(0 0 0 / .04),0 10px 28px -14px rgb(0 0 0 / .22)}
+.evowiki-evoui .evoui{--eu-sky:var(--viz-1,var(--color-blue));--eu-teal:var(--ask,var(--color-cyan));--eu-c6:color-mix(in srgb,var(--color-red) 45%,var(--color-blue))}
+.evowiki-evoui .evoui-each{display:contents}
+.evowiki-evoui .evoui-row>.evoui-text,.evowiki-evoui .evoui-row>.evoui-num{min-width:min-content;overflow-wrap:break-word}
+.evowiki-evoui .evoui-svgwrap{min-width:0}
+.evowiki-evoui .evoui-svg{display:block;width:100%;height:auto;margin:0 auto;overflow:visible;fill:var(--eu-fg);font-size:13px;font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-svg line,.evowiki-evoui .evoui-svg path,.evowiki-evoui .evoui-svg polyline{stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-svg .halo{paint-order:stroke;stroke:var(--eu-bg);stroke-width:3px;stroke-linejoin:round}
+.evowiki-evoui .evoui-svg .axis text{fill:var(--eu-fg2)}
+.evowiki-evoui .evoui-svg .axis line.grid{stroke:var(--eu-line);stroke-width:.6}
+.evowiki-evoui .evoui-svg .axis line.base{stroke:var(--eu-fg2);stroke-width:1}
+.evowiki-evoui .evoui-svg text{pointer-events:none}
+.evowiki-evoui .evoui-svg text.evoui-hit,.evowiki-evoui .evoui-svg text.evoui-drag{pointer-events:auto}
+.evowiki-evoui .evoui-hit{cursor:pointer}
+.evowiki-evoui .evoui-hit:hover{opacity:.82}
+.evowiki-evoui .evoui-hit:focus-visible,.evowiki-evoui .evoui-drag:focus-visible{outline:2px solid var(--eu-accent);outline-offset:1px}
+.evowiki-evoui .evoui-svg .evoui-drag{cursor:grab;touch-action:none}
+.evowiki-evoui .evoui-svg .evoui-drag:active{cursor:grabbing}
+.evowiki-evoui .evoui-text.s-xs{font-size:12px}
+.evowiki-evoui .evoui .w-medium{font-weight:550}
+.theme-dark .evowiki-evoui .evoui{--eu-hover:color-mix(in srgb,var(--eu-fg) 7%,transparent);
+  --eu-card:color-mix(in srgb,var(--eu-fg) 7%,var(--eu-surface));--eu-card-line:color-mix(in srgb,var(--eu-fg) 10%,transparent);
+  --eu-card-shadow:0 1px 2px rgb(0 0 0 / .3),0 10px 28px -14px rgb(0 0 0 / .6)}
+.evowiki-evoui .evoui .evoui-fc-btn:focus-visible,.evowiki-evoui .evoui .evoui-tm-btn:focus-visible,.evowiki-evoui .evoui .evoui-pl-btn:focus-visible,.evowiki-evoui .evoui .evoui-rv-btn:focus-visible,.evowiki-evoui .evoui .evoui-pl-speed button:focus-visible{border-radius:999px}
+.evowiki-evoui .evoui-plot:not(.evoui-ch):not(.pie){max-width:720px;margin:0 auto}
+.evowiki-evoui .evoui-plotwrap:not(.evoui-chart)>.evoui-legend{justify-content:center}
+.evowiki-evoui .evoui-plot.evoui-ch{background:none;border-radius:0;overflow:visible}
+.evowiki-evoui .evoui-chartmain{display:flex;flex-direction:column;gap:6px;min-width:0}
+.evowiki-evoui .evoui-chartmain.pie{flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px 28px}
+.evowiki-evoui .evoui-chartbox{position:relative;min-width:0;border-radius:8px;touch-action:pan-y}
+.evowiki-evoui .evoui-chartbox:focus-visible{outline-offset:4px}
+.evowiki-evoui .evoui-chartbox:has(svg.windowed){cursor:grab}
+.evowiki-evoui .evoui-tip{position:absolute;top:4px;left:0;z-index:2;pointer-events:none;min-width:96px;max-width:min(240px,70%);
+  background:var(--eu-card);border:1px solid var(--eu-card-line);box-shadow:var(--eu-card-shadow);border-radius:8px;
+  padding:6px 9px;font-size:12px;line-height:1.45;display:flex;flex-direction:column;gap:1px}
+.evowiki-evoui .evoui-tip[hidden]{display:none}
+.evowiki-evoui .evoui-tip-x{font-weight:650;color:var(--eu-fg);margin-bottom:1px;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-tip-row{display:flex;align-items:center;gap:6px;color:var(--eu-fg2)}
+.evowiki-evoui .evoui-tip-row i{flex:none;width:8px;height:8px;border-radius:50%;background:currentColor}
+.evowiki-evoui .evoui-tip-row span{color:var(--eu-fg2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.evowiki-evoui .evoui-tip-row b{margin-left:auto;padding-left:10px;color:var(--eu-fg);font-weight:650;font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-ch-scroll{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--eu-fg2);min-width:0}
+.evowiki-evoui .evoui-ch-scroll[hidden]{display:none}
+.evowiki-evoui .evoui-ch-scroll span{flex:none}
+.evowiki-evoui .evoui-ch-scroll input{flex:1 1 auto;min-width:0;width:100%;margin:0;height:18px;background:none;-webkit-appearance:none;appearance:none;cursor:pointer}
+.evowiki-evoui .evoui-ch-scroll input::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--eu-line)}
+.evowiki-evoui .evoui-ch-scroll input::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:44px;height:10px;margin-top:-3px;border-radius:5px;background:var(--eu-faint)}
+.evowiki-evoui .evoui-ch-scroll input::-moz-range-track{height:4px;border-radius:2px;background:var(--eu-line)}
+.evowiki-evoui .evoui-ch-scroll input::-moz-range-thumb{width:44px;height:10px;border:0;border-radius:5px;background:var(--eu-faint)}
+.evowiki-evoui .evoui-legend .evoui-lg{display:inline-flex;align-items:center;gap:6px;color:var(--eu-fg2)}
+.evowiki-evoui .evoui-legend .evoui-lg.t-default i{background:var(--eu-fg)}
+.evowiki-evoui .evoui-legend .evoui-lg.t-secondary i{background:var(--eu-secondary)}
+.evowiki-evoui .evoui-legend .evoui-lg.t-accent i{background:var(--eu-blue)}
+.evowiki-evoui .evoui-legend .evoui-lg.t-warning i{background:var(--eu-miss)}
+.evowiki-evoui .evoui-legend .evoui-lg.t-success i{background:var(--eu-right)}
+.evowiki-evoui .evoui-legend .evoui-lg.t-danger i{background:var(--eu-wrong)}
+.evowiki-evoui .evoui-legend button.evoui-lg{border:0;background:none;font:inherit;font-size:12px;padding:3px 6px;margin:-3px -6px;border-radius:6px;cursor:pointer}
+.evowiki-evoui .evoui-legend button.evoui-lg:hover{background:var(--eu-hover);color:var(--eu-fg)}
+.evowiki-evoui .evoui-legend button.evoui-lg.off{color:var(--eu-faint);text-decoration:line-through}
+.evowiki-evoui .evoui-legend button.evoui-lg.off i{background:none;box-shadow:inset 0 0 0 1.5px var(--eu-faint)}
+.evowiki-evoui .evoui-pielegend{flex-direction:column;gap:4px;min-width:0;flex:1 1 180px;max-width:320px}
+.evowiki-evoui .evoui-pielegend .evoui-lg{gap:8px;padding:3px 8px;border-radius:6px;font-size:13px;transition:opacity .15s}
+.evowiki-evoui .evoui-pielegend .evoui-lg.hi{background:var(--eu-hover);color:var(--eu-fg)}
+.evowiki-evoui .evoui-pielegend .evoui-lg.dim{opacity:.5}
+.evowiki-evoui .evoui-lg-name{min-width:0;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-lg-pct{margin-left:auto;padding-left:12px;color:var(--eu-fg);font-weight:600;font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-quiz-title{font-weight:600}
+.evowiki-evoui .evoui-optfb{font-size:13px;color:var(--eu-fg2);margin:-2px 0 2px 22px;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-hintbtn{align-self:flex-start;border:0;background:none;padding:0 2px;font:inherit;font-size:12px;color:var(--eu-fg2);cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+.evowiki-evoui .evoui-hint{font-size:13px;color:var(--eu-fg2);background:var(--eu-surface);border-radius:6px;padding:4px 8px;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-grid{display:grid;grid-template-columns:repeat(var(--eu-cols,2),minmax(0,1fr));min-width:0}
+.evowiki-evoui .evoui-grid.c1{--eu-cols:1}
+.evowiki-evoui .evoui-grid.c2{--eu-cols:2}
+.evowiki-evoui .evoui-grid.c3{--eu-cols:3}
+.evowiki-evoui .evoui-grid.c4{--eu-cols:4}
+@container (max-width:300px){.evowiki-evoui .evoui-grid.c3,.evowiki-evoui .evoui-grid.c4{grid-template-columns:minmax(0,1fr)}.evowiki-evoui .evoui-grid>*{grid-column:auto!important}}
+@container (max-width:220px){.evowiki-evoui .evoui-grid.c2{grid-template-columns:minmax(0,1fr)}.evowiki-evoui .evoui-grid>*{grid-column:auto!important}}
+.evowiki-evoui .evoui-num{font-weight:650;line-height:1.15;font-variant-numeric:tabular-nums;min-width:0;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-num.z-md{font-size:17px}
+.evowiki-evoui .evoui-num.z-lg{font-size:22px}
+.evowiki-evoui .evoui-num.z-xl{font-size:28px}
+.evowiki-evoui .evoui-num.z-2xl{font-size:34px}
+.evowiki-evoui .evoui-math code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;background:var(--eu-surface);border-radius:4px;padding:1px 5px;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-math.display{display:block;text-align:center;overflow-x:auto;max-width:100%}
+.evowiki-evoui .evoui-tablewrap{overflow-x:auto;max-width:100%;display:flex;flex-direction:column;gap:4px}
+.evowiki-evoui .evoui-table{border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;width:max-content;min-width:100%}
+.evowiki-evoui .evoui-table th,.evowiki-evoui .evoui-table td{border-bottom:1px solid var(--eu-line);padding:5px 10px;text-align:left;vertical-align:top}
+.evowiki-evoui .evoui-table th{font-weight:600;color:var(--eu-fg2)}
+.evowiki-evoui .evoui-icon{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;align-self:center}
+.evowiki-evoui .evoui-icon.t-default{color:var(--eu-fg)}
+.evowiki-evoui .evoui-divider{border:0;border-top:1px solid var(--eu-line);margin:2px 0;width:100%}
+.evowiki-evoui .evoui-input,.evowiki-evoui .evoui-select{display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--eu-fg2);min-width:0}
+.evowiki-evoui .evoui-input input,.evowiki-evoui .evoui-select select{font:inherit;font-size:14px;color:var(--eu-fg);background:var(--eu-bg);border:1px solid var(--eu-line);
+  border-radius:6px;padding:4px 8px;min-height:32px;width:100%;max-width:220px;font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-btn{align-self:flex-start;border:1px solid var(--eu-line);background:var(--eu-bg);color:var(--eu-fg);border-radius:6px;padding:5px 11px;min-height:32px;
+  cursor:pointer;font:inherit;font-size:13px}
+.evowiki-evoui .evoui-btn:hover{border-color:var(--eu-fg2)}
+.evowiki-evoui .evoui-btn.t-accent{background:var(--eu-accent);border-color:var(--eu-accent);color:var(--eu-accent-tx)}
+.evowiki-evoui .evoui-xlabel{text-align:center}
+.evowiki-evoui .evoui-quizsum{display:flex;flex-direction:column;gap:2px}
+.evowiki-evoui .evoui:has(> div > .evoui-fc:only-child){border:0;padding:0;gap:8px}
+.evowiki-evoui .evoui:has(> div > .evoui-fc:only-child) > .evoui-title{padding:0 4px}
+.evowiki-evoui .evoui-fc{--fc-h:180px;position:relative;background:var(--eu-surface);border-radius:28px;padding:12px 12px 4px;min-width:0;overflow:hidden}
+@container (min-width:600px){.evowiki-evoui .evoui-fc{--fc-h:240px;padding:14px 16px 6px}}
+.evowiki-evoui .evoui-fc [hidden]{display:none!important}
+.evowiki-evoui .evoui-fc-col{max-width:400px;margin:0 auto;display:flex;flex-direction:column;min-width:0}
+.evowiki-evoui .evoui-fc-title{font-size:13px;line-height:1.4;color:var(--eu-fg2);text-align:center;padding:0 8px 10px;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-fc-stage{position:relative;height:calc(var(--fc-h) + 18px);outline:none;-webkit-tap-highlight-color:transparent}
+.evowiki-evoui .evoui-fc-card,.evowiki-evoui .evoui-fc-peek{position:absolute;left:0;right:0;top:0;height:var(--fc-h);border-radius:32px}
+.evowiki-evoui .evoui-fc-card{z-index:3;perspective:1200px;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.evowiki-evoui .evoui .evoui-fc-stage:focus-visible{outline:none}
+.evowiki-evoui .evoui-fc:not(.dragging) .evoui-fc-stage:focus-visible:not(.advance) .evoui-fc-card:not(.return):not(.spring){box-shadow:0 0 0 2px var(--eu-surface),0 0 0 4px var(--eu-accent)}
+.evowiki-evoui .evoui-fc.dragging .evoui-fc-card{cursor:grabbing}
+.evowiki-evoui .evoui-fc-card.fly{transition:transform 240ms cubic-bezier(.45,0,.85,.55)}
+.evowiki-evoui .evoui-fc-card.return{transition:transform 300ms cubic-bezier(.2,.85,.25,1)}
+.evowiki-evoui .evoui-fc-card.spring{transition:transform 220ms cubic-bezier(.3,1.45,.5,1)}
+.evowiki-evoui .evoui-fc-flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 300ms cubic-bezier(.35,.1,.25,1)}
+.evowiki-evoui .evoui-fc-card.flipped .evoui-fc-flip{transform:rotateY(180deg)}
+.evowiki-evoui .evoui-fc-face{position:absolute;inset:0;display:flex;flex-direction:column;padding:20px 22px 14px;border-radius:32px;overflow:hidden;
+  background:var(--eu-card);border:1px solid var(--eu-card-line);box-shadow:var(--eu-card-shadow);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.evowiki-evoui .evoui-fc-face.back{transform:rotateY(180deg)}
+.evowiki-evoui .evoui-fc-scroll{flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin}
+.evowiki-evoui .evoui-fc-text{margin:auto 0;text-align:center;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--eu-fg);font-size:22px;line-height:28px;font-weight:450}
+.evowiki-evoui .evoui-fc-text.top{margin:0 0 auto}
+.evowiki-evoui .evoui-fc-text.list{text-align:left}
+.evowiki-evoui .evoui-fc-text[data-z="l"]{font-size:20px;line-height:25px}
+.evowiki-evoui .evoui-fc-text[data-z="m"]{font-size:17px;line-height:24px}
+.evowiki-evoui .evoui-fc-text[data-z="s"]{font-size:15px;line-height:21px}
+.evowiki-evoui .evoui-fc-text[data-z="xs"]{font-size:12px;line-height:17px}
+.evowiki-evoui .evoui-fc-text[data-z="one"]{font-size:48px;line-height:56px;font-weight:500}
+@container (min-width:600px){.evowiki-evoui .evoui-fc-text[data-z="one"]{font-size:56px;line-height:64px}}
+.evowiki-evoui .evoui-fc-cardhint{flex:none;font-size:14px;line-height:1.45;color:var(--eu-fg2);text-align:center;padding:8px 6px 0;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-fc-tip{flex:none;font-size:13px;line-height:20px;color:var(--eu-fg2);text-align:center;padding-top:6px;transition:opacity 160ms}
+.evowiki-evoui .evoui-fc-tip.swap{opacity:0}
+.evowiki-evoui .evoui-fc-card::after{content:"";position:absolute;inset:0;border-radius:32px;pointer-events:none;opacity:var(--edge,0);transition:opacity 160ms;
+  box-shadow:inset 0 0 0 2.5px var(--fc-edge,transparent),0 0 0 1px var(--fc-edge,transparent),0 12px 34px -10px var(--fc-edge,transparent)}
+.evowiki-evoui .evoui-fc-card[data-edge="left"]{--fc-edge:var(--eu-miss)}
+.evowiki-evoui .evoui-fc-card[data-edge="right"]{--fc-edge:var(--eu-right)}
+.evowiki-evoui .evoui-fc-card.return::after{transition:opacity 300ms}
+.evowiki-evoui .evoui-fc-peek{z-index:2;pointer-events:none;transform-origin:50% 100%;transform:translateY(9px) scale(.95);
+  transition:transform 240ms cubic-bezier(.2,.7,.2,1),opacity 240ms}
+.evowiki-evoui .evoui-fc-peek[data-depth="2"]{z-index:1;transform:translateY(18px) scale(.9);opacity:.7}
+.evowiki-evoui .evoui-fc-peek .evoui-fc-face{box-shadow:none}
+.evowiki-evoui .evoui-fc-stage.advance .evoui-fc-peek[data-depth="1"]{transform:none!important}
+.evowiki-evoui .evoui-fc-stage.advance .evoui-fc-peek[data-depth="2"]{transform:translateY(9px) scale(.95);opacity:1}
+.evowiki-evoui .evoui-fc.dragging .evoui-fc-card,.evowiki-evoui .evoui-fc.dragging .evoui-fc-card::after,.evowiki-evoui .evoui-fc.dragging .evoui-fc-peek,.evowiki-evoui .evoui-fc-stage.still,.evowiki-evoui .evoui-fc-stage.still *,.evowiki-evoui .evoui-fc-stage.still .evoui-fc-card::after{transition:none!important}
+.evowiki-evoui .evoui-fc-stage.shuffling .evoui-fc-card{animation:evoui-fc-shuffle 300ms ease-in-out}
+.evowiki-evoui .evoui-fc-stage.shuffling .evoui-fc-peek{animation:evoui-fc-shuffle-peek 300ms ease-in-out}
+.evowiki-evoui .evoui-fc-bar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;height:60px;padding:0 2px}
+.evowiki-evoui .evoui-fc-count{padding-left:10px;font-size:14px;color:var(--eu-fg2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.evowiki-evoui .evoui-fc-rate{display:flex;align-items:center;gap:10px}
+.evowiki-evoui .evoui-fc-btn{--fc-c:var(--eu-miss);position:relative;width:40px;height:40px;flex:none;padding:0;border-radius:50%;border:1px solid var(--eu-card-line);
+  background:var(--eu-card);color:var(--eu-fg);display:grid;place-items:center;cursor:pointer;transition:color 120ms,border-color 120ms,transform 120ms}
+.evowiki-evoui .evoui-fc-btn.know{--fc-c:var(--eu-right)}
+.evowiki-evoui .evoui-fc-btn::before{content:"";position:absolute;inset:-1px;border-radius:50%;background:var(--fc-c);opacity:var(--lit,0);transition:opacity 160ms}
+.evowiki-evoui .evoui-fc.dragging .evoui-fc-btn::before{transition:none}
+.evowiki-evoui .evoui-fc-btn svg{position:relative;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-fc-btn:hover{color:var(--fc-c);border-color:color-mix(in srgb,var(--fc-c) 55%,transparent)}
+.evowiki-evoui .evoui-fc-btn:active{transform:scale(.94)}
+.evowiki-evoui .evoui-fc-btn[data-hot="true"]{color:var(--eu-mark-tx);border-color:transparent}
+.evowiki-evoui .evoui-fc-tools{display:flex;align-items:center;justify-content:flex-end;gap:0;min-width:0}
+.evowiki-evoui .evoui-fc-tools .evoui-pq-icon svg{width:18px;height:18px}
+.evowiki-evoui .evoui-fc-sum{display:flex;flex-direction:column}
+.evowiki-evoui .evoui-fc-sumcard{min-height:var(--fc-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:22px 20px;
+  border-radius:32px;background:var(--eu-card);border:1px solid var(--eu-card-line);box-shadow:var(--eu-card-shadow);text-align:center}
+.evowiki-evoui .evoui-fc-round{font-size:13px;color:var(--eu-fg2)}
+.evowiki-evoui .evoui-fc-verdict{font-size:20px;line-height:1.35;font-weight:600;text-wrap:balance}
+.evowiki-evoui .evoui-fc-tally{display:flex;align-items:center;justify-content:center;gap:28px}
+.evowiki-evoui .evoui-fc-chip{display:flex;align-items:center;gap:7px;font-size:20px;font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-fc-chip i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--eu-miss);color:var(--eu-mark-tx)}
+.evowiki-evoui .evoui-fc-chip[data-k="know"] i{background:var(--eu-right)}
+.evowiki-evoui .evoui-fc-chip svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-fc-sumbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;min-height:60px;padding:10px 2px 8px}
+@container (max-width:420px){.evowiki-evoui .evoui-fc-sumbar .primary{flex:1 1 auto}.evowiki-evoui .evoui-fc-face{padding:18px 18px 12px}}
+.evowiki-evoui .evoui-enter{animation:evoui-enter 180ms ease-out both}
+.evowiki-evoui .evoui-fadein{animation:evoui-fadein 180ms ease-out both}
+.evowiki-evoui .evoui-leaving{pointer-events:none;animation:evoui-exit 120ms ease-in both;z-index:1;overflow:hidden}
+.evowiki-evoui .evoui-tr{position:relative;min-width:0;display:flex;flex-direction:column}
+.evowiki-evoui .evoui-animate,.evowiki-evoui .evoui-tr-inner{min-width:0}
+.evowiki-evoui .evoui-rv{display:flex;flex-direction:column;gap:8px;min-width:0}
+.evowiki-evoui .evoui-rv-body{display:flex;flex-direction:column;gap:10px;min-width:0}
+.evowiki-evoui .evoui-rv[data-shown="0"] .evoui-rv-body{display:none}
+.evowiki-evoui .evoui-rv-step{display:flex;flex-direction:column;gap:8px;min-width:0;outline:none}
+.evowiki-evoui .evoui-rv [hidden]{display:none!important}
+.evowiki-evoui .evoui-rv[data-mode="steps"] .evoui-rv-step{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:10px;align-items:start}
+.evowiki-evoui .evoui-rv[data-mode="steps"] .evoui-rv-step::before{content:attr(data-step);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--eu-fg2);background:var(--eu-surface);border:1px solid var(--eu-line);margin-top:1px}
+.evowiki-evoui .evoui-rv-mask{display:flex;align-items:center;justify-content:center;gap:8px;min-height:76px;padding:14px;border-radius:14px;color:var(--eu-fg2);cursor:pointer;
+  border:1px dashed color-mix(in srgb,var(--eu-fg) 18%,transparent);
+  background:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--eu-fg) 5%,transparent) 0 6px,transparent 6px 13px),var(--eu-surface)}
+.evowiki-evoui .evoui-rv[data-mode="after"] .evoui-rv-mask{cursor:default;font-size:13px;text-align:center}
+.evowiki-evoui .evoui-rv-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--eu-line);background:var(--eu-bg);color:var(--eu-fg);border-radius:999px;
+  padding:6px 16px;min-height:36px;font:inherit;font-size:14px;font-weight:550;cursor:pointer;box-shadow:0 1px 2px rgb(0 0 0 / .06);
+  transition:transform .12s ease,box-shadow .15s ease;font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-rv-btn:hover{box-shadow:0 3px 10px -3px rgb(0 0 0 / .22)}
+.evowiki-evoui .evoui-rv-btn:active{transform:scale(.97)}
+.evowiki-evoui .evoui-rv-icon{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-rv-again{align-self:flex-end;border:0;background:none;color:var(--eu-fg2);font:inherit;font-size:12px;padding:2px 4px;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+.evowiki-evoui .evoui-tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;min-width:0}
+.evowiki-evoui .evoui-tl-ev{position:relative;margin:0;padding:0;display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:10px;align-items:start;min-width:0}
+.evowiki-evoui .evoui-tl-ev:not(:last-child)::before{content:"";position:absolute;left:10.5px;top:26px;bottom:-12px;width:1px;background:var(--eu-line)}
+.evowiki-evoui .evoui-tl-dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;
+  font-variant-numeric:tabular-nums;color:var(--eu-fg2);background:var(--eu-surface);border:1px solid var(--eu-line);margin-top:1px}
+.evowiki-evoui .evoui-tl-ev.dated .evoui-tl-dot{width:11px;height:11px;margin:6px 0 0 5.5px;background:var(--eu-bg);border:2px solid currentColor}
+.evowiki-evoui .evoui-tl-ev.dated:not(:last-child)::before{top:20px}
+.evowiki-evoui .evoui .evoui-tl-dot.t-default{color:var(--eu-fg2)}
+.evowiki-evoui .evoui .evoui-tl-dot.t-secondary{color:var(--eu-faint)}
+.evowiki-evoui .evoui .evoui-tl-dot.t-accent{color:var(--eu-blue);border-color:currentColor}
+.evowiki-evoui .evoui .evoui-tl-dot.t-warning{color:var(--eu-miss);border-color:currentColor}
+.evowiki-evoui .evoui .evoui-tl-dot.t-success{color:var(--eu-right);border-color:currentColor}
+.evowiki-evoui .evoui .evoui-tl-dot.t-danger{color:var(--eu-wrong);border-color:currentColor}
+.evowiki-evoui .evoui-tl-body{display:flex;flex-direction:column;gap:2px;min-width:0;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-tl-when{font-size:12px;line-height:1.4;color:var(--eu-fg2);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.evowiki-evoui .evoui-tl-title{font-weight:600}
+.evowiki-evoui .evoui-tl-text{font-size:14px;color:var(--eu-fg2);white-space:pre-line}
+.evowiki-evoui .evoui-dd{border:1px solid var(--eu-line);border-radius:12px;min-width:0}
+.evowiki-evoui .evoui-dd-sum{display:flex;align-items:center;gap:8px;padding:9px 14px;min-height:40px;cursor:pointer;list-style:none;border-radius:11px;
+  font-weight:550;color:var(--eu-fg);user-select:none}
+.evowiki-evoui .evoui-dd-sum::-webkit-details-marker{display:none}
+.evowiki-evoui .evoui-dd-sum:hover{background:var(--eu-hover)}
+.evowiki-evoui .evoui-dd-icon{width:14px;height:14px;flex:none;fill:none;stroke:var(--eu-fg2);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s ease}
+.evowiki-evoui .evoui-dd[open]>.evoui-dd-sum .evoui-dd-icon{transform:rotate(90deg)}
+.evowiki-evoui .evoui-dd[open]>.evoui-dd-sum{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.evowiki-evoui .evoui-dd-body{padding:4px 14px 14px;min-width:0}
+.evowiki-evoui .evoui>div>.evoui-box>.evoui-dd{border:0;border-radius:0}
+.evowiki-evoui .evoui>div>.evoui-box>.evoui-dd>.evoui-dd-sum{margin:0 -8px;padding:7px 8px;border-radius:8px}
+.evowiki-evoui .evoui>div>.evoui-box>.evoui-dd>.evoui-dd-body{padding:6px 0 0}
+.evowiki-evoui .evoui-tm-btn,.evowiki-evoui .evoui-pl-btn{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--eu-line);background:var(--eu-bg);color:var(--eu-fg);
+  display:grid;place-items:center;padding:0;cursor:pointer;transition:transform .12s ease,background-color .15s ease,opacity .15s ease}
+.evowiki-evoui .evoui-tm-btn:hover:not(:disabled),.evowiki-evoui .evoui-pl-btn:hover:not(:disabled){background:color-mix(in srgb,var(--eu-fg) 6%,var(--eu-bg))}
+.evowiki-evoui .evoui-tm-btn:active:not(:disabled),.evowiki-evoui .evoui-pl-btn:active:not(:disabled){transform:scale(.94)}
+.evowiki-evoui .evoui-tm-btn.primary,.evowiki-evoui .evoui-pl-btn.primary{background:var(--eu-fg);border-color:var(--eu-fg);color:var(--eu-bg)}
+.evowiki-evoui .evoui-tm-btn.primary:hover:not(:disabled),.evowiki-evoui .evoui-pl-btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--eu-fg) 86%,var(--eu-bg))}
+.evowiki-evoui .evoui-tm-btn:disabled,.evowiki-evoui .evoui-pl-btn:disabled{opacity:.35;cursor:default}
+.evowiki-evoui .evoui-tm-btn[hidden]{display:none}
+.evowiki-evoui .evoui-tm-btn svg,.evowiki-evoui .evoui-pl-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-tm-btn svg path[d$="Z"],.evowiki-evoui .evoui-pl-btn svg path[d$="Z"]{fill:currentColor}
+.evowiki-evoui .evoui-tm{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;min-width:0;overflow:hidden;
+  padding:14px 16px 16px;border-radius:18px;background:var(--eu-surface);border:1px solid var(--eu-line);
+  transition:background-color .3s ease,border-color .3s ease,color .3s ease}
+.evowiki-evoui .evoui-tm-label{flex:1 0 100%;margin-bottom:-6px;font-size:13px;color:var(--eu-fg2);overflow-wrap:anywhere}
+.evowiki-evoui .evoui-tm-label[hidden]{display:none}
+.evowiki-evoui .evoui-tm-read{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;min-width:0;max-width:100%;flex-shrink:0;font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-tm-digits{min-width:0;overflow-wrap:anywhere;font-size:36px;font-weight:650;line-height:1.1;letter-spacing:-.01em}
+.evowiki-evoui .evoui-tm-frac{font-size:22px;font-weight:600;color:var(--eu-fg2);margin-left:-5px}
+.evowiki-evoui .evoui-tm-of{font-size:15px;color:var(--eu-fg2);white-space:nowrap}
+@container (max-width:420px){.evowiki-evoui .evoui-tm-digits{font-size:28px}.evowiki-evoui .evoui-tm-frac{font-size:17px;margin-left:-4px}}
+.evowiki-evoui .evoui-tm-btns{display:flex;gap:8px;margin-left:auto}
+.evowiki-evoui .evoui-tm[data-state="paused"] .evoui-tm-digits{color:color-mix(in srgb,var(--eu-fg) 72%,transparent)}
+.evowiki-evoui .evoui-tm-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:color-mix(in srgb,var(--eu-fg) 7%,transparent)}
+.evowiki-evoui .evoui-tm-bar i{display:block;height:100%;background:var(--eu-fg);transform-origin:left center;transition:transform .1s linear}
+.evowiki-evoui .evoui-tm[data-state="done"]{background:var(--eu-right);border-color:var(--eu-right);color:var(--eu-mark-tx)}
+.evowiki-evoui .evoui-tm[data-state="done"] .evoui-tm-label{color:color-mix(in srgb,var(--eu-mark-tx) 80%,transparent)}
+.evowiki-evoui .evoui-tm[data-state="done"] .evoui-tm-bar,.evowiki-evoui .evoui-tm[data-state="idle"] .evoui-tm-bar{display:none}
+.evowiki-evoui .evoui-tm[data-state="done"] .evoui-tm-btn.primary{background:var(--eu-mark-tx);border-color:var(--eu-mark-tx);color:var(--eu-right)}
+.evowiki-evoui .evoui-pl{display:flex;flex-direction:column;gap:6px;min-width:0;padding:10px 10px 10px 12px;border-radius:16px;background:var(--eu-surface)}
+.evowiki-evoui .evoui-pl-top{display:flex;align-items:baseline;gap:10px;min-width:0}
+.evowiki-evoui .evoui-pl-label{font-size:14px;font-weight:550;min-width:0;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-pl-label[hidden]{display:none}
+.evowiki-evoui .evoui-pl-count{margin-left:auto;font-size:12px;color:var(--eu-fg2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.evowiki-evoui .evoui-pl-scrub{-webkit-appearance:none;appearance:none;display:block;width:100%;height:20px;margin:0;background:transparent;cursor:pointer;--pct:0%}
+.evowiki-evoui .evoui-pl-scrub::-webkit-slider-runnable-track{height:4px;border-radius:2px;
+  background:linear-gradient(to right,var(--eu-fg) var(--pct),color-mix(in srgb,var(--eu-fg) 14%,transparent) var(--pct))}
+.evowiki-evoui .evoui-pl-scrub::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5px;border-radius:50%;background:var(--eu-fg);
+  border:2px solid var(--eu-surface);box-sizing:content-box}
+.evowiki-evoui .evoui-pl-scrub::-moz-range-track{height:4px;border-radius:2px;background:color-mix(in srgb,var(--eu-fg) 14%,transparent)}
+.evowiki-evoui .evoui-pl-scrub::-moz-range-progress{height:4px;border-radius:2px;background:var(--eu-fg)}
+.evowiki-evoui .evoui-pl-scrub::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--eu-fg);border:2px solid var(--eu-surface)}
+.evowiki-evoui .evoui-pl-scrub:focus-visible{outline-offset:4px}
+.evowiki-evoui .evoui-pl-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-left:-6px}
+.evowiki-evoui .evoui-pl-transport{display:flex;align-items:center;gap:4px}
+.evowiki-evoui .evoui-pl-btn{width:36px;height:36px;background:transparent;border-color:transparent}
+.evowiki-evoui .evoui-pl-btn.primary{width:44px;height:44px}
+.evowiki-evoui .evoui-pl-btn svg{width:17px;height:17px}
+.evowiki-evoui .evoui-pl-speed{display:flex;gap:2px;padding:2px;border-radius:999px;background:color-mix(in srgb,var(--eu-fg) 6%,transparent)}
+.evowiki-evoui .evoui-pl-speed button{border:0;background:none;color:var(--eu-fg2);font:inherit;font-size:12px;font-variant-numeric:tabular-nums;min-height:28px;
+  padding:3px 9px;border-radius:999px;cursor:pointer}
+.evowiki-evoui .evoui-pl-speed button[aria-pressed="true"]{background:var(--eu-bg);color:var(--eu-fg);font-weight:600;box-shadow:0 1px 2px rgb(0 0 0 / .14)}
+.evowiki-evoui .evoui-pc{display:flex;flex-direction:column;gap:14px;min-width:0;max-width:720px;padding:14px 20px 18px;border:1px solid var(--eu-line);border-radius:24px;background:var(--eu-bg)}
+.evowiki-evoui .evoui-pc:focus,.evowiki-evoui .evoui-pg-page:focus{outline:none}
+.evowiki-evoui .evoui-pc [hidden]{display:none!important}
+.evowiki-evoui .evoui-pc-head{display:flex;align-items:center;gap:8px;min-height:32px;color:var(--eu-fg2);font-size:14px;font-weight:500}
+.evowiki-evoui .evoui-pc-icon{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-pc-rule{height:1px;background:color-mix(in srgb,var(--eu-fg) 8%,transparent);margin:2px 0}
+.evowiki-evoui .evoui-sx{font-size:16px;line-height:42px;min-width:0;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-sx-text{white-space:pre-wrap}
+.evowiki-evoui .evoui-sx-slot{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;box-sizing:border-box;min-width:76px;max-width:100%;
+  height:36px;margin:0 4px;padding:0 14px;border:1px dashed color-mix(in srgb,var(--eu-fg) 34%,transparent);border-radius:999px;line-height:1.3;
+  font-weight:500;color:var(--eu-fg);transition:background-color .16s ease,border-color .16s ease,color .16s ease}
+.evowiki-evoui .evoui-sx.multi .evoui-sx-slot{min-width:62px}
+.evowiki-evoui .evoui-sx-word{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.evowiki-evoui .evoui-sx-slot[data-s="active"]{border-style:solid;border-color:var(--eu-blue);background:color-mix(in srgb,var(--eu-blue) 10%,transparent)}
+.evowiki-evoui .evoui-sx-slot[data-s="filled"]{border-style:solid;border-color:color-mix(in srgb,var(--eu-fg) 8%,transparent);background:color-mix(in srgb,var(--eu-fg) 7%,transparent)}
+.evowiki-evoui .evoui-sx-slot[data-s="right"]{border-style:solid;border-color:var(--eu-right);background:color-mix(in srgb,var(--eu-right) 15%,transparent);color:var(--eu-right)}
+.evowiki-evoui .evoui-sx-slot[data-s="wrong"]{border-style:solid;border-color:var(--eu-wrong);background:color-mix(in srgb,var(--eu-wrong) 13%,transparent);color:var(--eu-wrong)}
+.evowiki-evoui .evoui-pills{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.evowiki-evoui .evoui-pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%;min-height:40px;padding:6px 16px;border:0;border-radius:999px;
+  background:color-mix(in srgb,var(--eu-fg) 5%,transparent);color:var(--eu-fg);font:inherit;font-size:15px;line-height:1.35;text-align:center;cursor:pointer;
+  transition:background-color .16s ease,color .16s ease}
+.evowiki-evoui .evoui-pill:hover:not(:disabled){background:color-mix(in srgb,var(--eu-fg) 9%,transparent)}
+.evowiki-evoui .evoui-pill:active:not(:disabled){transform:scale(.97)}
+.evowiki-evoui .evoui-pill:disabled{cursor:default}
+.evowiki-evoui .evoui-pill[data-dim="true"]{background:color-mix(in srgb,var(--eu-fg) 2%,transparent);color:color-mix(in srgb,var(--eu-fg) 36%,transparent)}
+.evowiki-evoui .evoui-pill-label{min-width:0;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-pill-n{display:none;flex:none;width:20px;height:20px;border-radius:50%;place-items:center;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;
+  background:color-mix(in srgb,var(--eu-fg) 10%,transparent);color:var(--eu-fg2)}
+.evowiki-evoui .evoui-pill[data-used="true"] .evoui-pill-n{display:grid}
+.evowiki-evoui .evoui .evoui-pill:focus-visible{border-radius:999px}
+.evowiki-evoui .evoui .evoui-rt-opt:focus-visible{border-radius:16px}
+.evowiki-evoui .evoui-fbk{display:flex;flex-direction:column;gap:4px;min-width:0}
+.evowiki-evoui .evoui-fbk-status{display:flex;align-items:center;gap:6px;min-height:34px;font-size:14px;font-weight:600;color:var(--eu-right)}
+.evowiki-evoui .evoui-fbk-status[data-ok="false"]{color:var(--eu-wrong)}
+.evowiki-evoui .evoui-fbk-status .evoui-retry{margin-left:auto;height:34px;padding:0 14px 0 11px;font-size:14px;font-weight:500;color:var(--eu-fg);display:inline-flex;align-items:center;gap:6px}
+.evowiki-evoui .evoui-fbk-status .evoui-retry svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-fbk-status>svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-fbk-label{font-size:13px;color:var(--eu-fg2);margin-top:4px}
+.evowiki-evoui .evoui-fbk-correct{font-size:16px;line-height:1.5;font-weight:500;white-space:pre-wrap;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-fbk-why{font-size:14px;line-height:1.55;color:var(--eu-fg2);overflow-wrap:anywhere}
+.evowiki-evoui .evoui-sb-top{display:flex;align-items:flex-start;gap:8px;min-width:0}
+.evowiki-evoui .evoui-sb-top .evoui-sx{flex:1 1 0}
+.evowiki-evoui .evoui-sb-undo{margin-top:4px}
+.evowiki-evoui .evoui:has(> div > .evoui-pg:only-child){border:0;padding:0;gap:8px}
+.evowiki-evoui .evoui:has(> div > .evoui-pg:only-child) > .evoui-title{padding:0 4px}
+.evowiki-evoui .evoui-pg{display:flex;flex-direction:column;min-width:0;max-width:720px;border:1px solid var(--eu-line);border-radius:24px;background:var(--eu-bg);overflow:hidden}
+.evowiki-evoui .evoui-pg [hidden]{display:none!important}
+.evowiki-evoui .evoui-pg-head{display:flex;align-items:center;gap:12px;min-height:52px;padding:6px 10px 0 20px}
+.evowiki-evoui .evoui-pg-bar{flex:1 1 auto;display:flex;gap:4px;min-width:0;max-width:240px}
+.evowiki-evoui .evoui-pg-bar i{flex:1 1 0;min-width:3px;max-width:28px;height:4px;border-radius:2px;background:color-mix(in srgb,var(--eu-fg) 12%,transparent);transition:background-color .2s ease}
+.evowiki-evoui .evoui-pg-bar i[data-on="past"]{background:color-mix(in srgb,var(--eu-fg) 45%,transparent)}
+.evowiki-evoui .evoui-pg-bar i[data-on="now"]{background:var(--eu-fg)}
+.evowiki-evoui .evoui-pg-head .evoui-pq-nav{margin-left:auto}
+.evowiki-evoui .evoui-pg-view{position:relative;min-width:0}
+.evowiki-evoui .evoui-pg-page{display:flex;flex-direction:column;gap:10px;min-width:0;padding:4px 20px 6px}
+.evowiki-evoui .evoui-pg-page .evoui-pc{border:0;border-radius:0;background:none;padding:0}
+.evowiki-evoui .evoui-pg-page .evoui-pq{border:0;border-radius:0;background:none;margin:0 -20px}
+.evowiki-evoui .evoui-pg-page .evoui-fc{border:0;background:none;margin:0 -10px}
+.evowiki-evoui .evoui-pg-foot{display:flex;align-items:center;gap:12px;min-height:64px;padding:6px 20px 14px}
+.evowiki-evoui .evoui-pg-tip{font-size:14px;color:var(--eu-fg2);min-width:0}
+.evowiki-evoui .evoui-pg-tip[data-done="true"]{font-size:15px;font-weight:600;color:var(--eu-fg);font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-pg-foot .evoui-pq-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px}
+.evowiki-evoui .evoui-pg-ok{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;color:var(--eu-right)}
+.evowiki-evoui .evoui-rt{display:flex;flex-direction:column;gap:12px;min-width:0}
+.evowiki-evoui .evoui-rt-prompt{font-size:16px;font-weight:550;line-height:1.45;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-rt-opts{max-width:720px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:8px}
+.evowiki-evoui .evoui-rt-opt{display:flex;align-items:center;gap:12px;min-height:56px;padding:12px 14px 12px 16px;border:1px solid color-mix(in srgb,var(--eu-fg) 10%,transparent);
+  border-radius:16px;background:var(--eu-bg);color:var(--eu-fg);font:inherit;text-align:left;cursor:pointer;
+  transition:background-color .16s ease,border-color .16s ease,opacity .16s ease,box-shadow .16s ease}
+.evowiki-evoui .evoui-rt-opt:hover{background:var(--eu-hover);border-color:color-mix(in srgb,var(--eu-fg) 22%,transparent)}
+.evowiki-evoui .evoui-rt-opt:active{transform:scale(.985)}
+.evowiki-evoui .evoui-rt-body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.evowiki-evoui .evoui-rt-label{font-size:15px;font-weight:550;line-height:1.4;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-rt-desc{font-size:13px;line-height:1.45;color:var(--eu-fg2);overflow-wrap:anywhere}
+.evowiki-evoui .evoui-rt-mark{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:var(--eu-fg2)}
+.evowiki-evoui .evoui-rt-mark svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-rt-opt[data-state="chosen"]{border-color:var(--eu-fg);background:color-mix(in srgb,var(--eu-fg) 4%,var(--eu-bg));box-shadow:0 0 0 1px var(--eu-fg) inset}
+.evowiki-evoui .evoui-rt-opt[data-state="chosen"] .evoui-rt-mark{background:var(--eu-fg);color:var(--eu-bg)}
+.evowiki-evoui .evoui-rt-opt[data-state="chosen"] .evoui-rt-mark svg{stroke-width:2.4}
+.evowiki-evoui .evoui-rt-opt[data-state="other"]{opacity:.55}
+.evowiki-evoui .evoui-rt-opt[data-state="other"]:hover{opacity:.85}
+.evowiki-evoui .evoui-app{position:relative;display:flex;flex-direction:column;gap:10px;min-width:0}
+.evowiki-evoui .evoui-app-frame{display:block;width:100%;min-width:0;border:0;border-radius:10px;background:transparent;transition:height .2s cubic-bezier(.2,.7,.2,1)}
+.evowiki-evoui .evoui-app-fallback{border-top:1px dashed var(--eu-line);padding-top:10px;display:flex;flex-direction:column;gap:4px}
+.evowiki-evoui .evoui-app-fallback[hidden]{display:none}
+.evowiki-evoui .evoui-app-credit{font-size:11px;line-height:1.5;color:var(--eu-fg2)}
+.evowiki-evoui .evoui-app-reload{align-self:flex-start;margin-top:6px}
+.evowiki-evoui .evoui-app-reload[hidden]{display:none}
+.evowiki-evoui .evoui-app-fallback-label{font-size:12px;color:var(--eu-fg2)}
+.evowiki-evoui .evoui-app-fallback-text{font-size:14px;line-height:1.6;white-space:pre-wrap}
+/* ===== /T17 ===== */
+/* ===== T15 evoui paged quiz (layout "paged": the 真题练习 quiz and the writer's paged quizzes): src/evowiki/deep/evoui/evoui.css
+   lines 189–256 value for value, scoped under .evowiki-evoui; its --eu-* tokens map to the note's demo tokens, else Obsidian's. ===== */
+.evowiki-evoui .evoui:has(.evoui-pq){container-type:inline-size;
+  --eu-bg:var(--bg-0,var(--background-primary));--eu-fg:var(--tx-1,var(--text-normal));--eu-fg2:var(--tx-2,var(--text-muted));
+  --eu-line:var(--border,var(--background-modifier-border));--eu-surface:var(--bg-1,var(--background-secondary));
+  --eu-right:var(--evoui-known);--eu-wrong:var(--evoui-gap);--eu-mark-tx:var(--bg-0,var(--background-primary));
+  --eu-hover:color-mix(in srgb,var(--eu-fg) 5%,transparent);--eu-strong:color-mix(in srgb,var(--eu-fg) 30%,transparent);
+  --eu-faint:color-mix(in srgb,var(--eu-fg) 32%,transparent)}
+.evowiki-evoui .evoui-pq-btn:focus-visible,.evowiki-evoui .evoui-pq-icon:focus-visible{outline:2px solid var(--eu-fg);outline-offset:2px;border-radius:999px}
+.evowiki-evoui .evoui-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* the 真题练习 block has its own heading: the block's and the quiz's titles are not drawn there */
+.ew-examq .evowiki-evoui,.evowiki-page .ew-examq .evowiki-evoui{margin:0;border:0;padding:0}
+.ew-examq .evowiki-evoui .evoui-title,.ew-examq .evowiki-evoui .evoui-pq-title{display:none}
+.evowiki-evoui .evoui:has(> div > .evoui-pq:only-child){border:0;padding:0;gap:8px}
+.evowiki-evoui .evoui:has(> div > .evoui-pq:only-child) > .evoui-title{padding:0 4px}
+.evowiki-evoui .evoui-pq{border:1px solid var(--eu-line);border-radius:24px;background:var(--eu-bg);min-width:0;overflow:hidden}
+.evowiki-evoui .evoui-pq-page{padding:10px 0 4px;display:flex;flex-direction:column}
+.evowiki-evoui .evoui-pq-head{display:flex;flex-wrap:wrap-reverse;align-items:flex-end;row-gap:4px;column-gap:16px;min-height:50px;padding:0 20px}
+.evowiki-evoui .evoui-pq-stem{flex:999 1 340px;min-width:0;padding:6px 0 16px;display:flex;flex-direction:column;gap:2px}
+.evowiki-evoui .evoui-pq-stem.hinted{padding-bottom:8px}
+.evowiki-evoui .evoui-pq-title{font-size:13px;color:var(--eu-fg2);line-height:1.4;padding:4px 20px 0;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-pq-q{font-size:16px;line-height:1.5;font-weight:500;overflow-wrap:anywhere;white-space:pre-wrap}
+.evowiki-evoui .evoui-pq-hint{padding-top:6px;font-size:15px;line-height:1.5;color:var(--eu-fg2);overflow-wrap:anywhere}
+.evowiki-evoui .evoui-pq-tools{flex:1 0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.evowiki-evoui .evoui-pq-nav,.evowiki-evoui .evoui-pq-util{display:flex;align-items:center;gap:5px}
+.evowiki-evoui .evoui-pq-util{margin-right:-8px}
+.evowiki-evoui .evoui-pq-icon{width:36px;height:36px;flex:none;border:0;border-radius:999px;background:none;color:var(--eu-fg2);padding:0; display:grid;place-items:center;cursor:pointer}
+.evowiki-evoui .evoui-pq-icon:hover:not(:disabled){background:var(--eu-hover);color:var(--eu-fg)}
+.evowiki-evoui .evoui-pq-icon:disabled{color:var(--eu-faint);cursor:default}
+.evowiki-evoui .evoui-pq-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-pq-hintbtn.on{color:var(--eu-fg)}
+.evowiki-evoui .evoui-pq-hintbtn.on svg{fill:currentColor;fill-opacity:.9}
+.evowiki-evoui .evoui-pq-count{min-width:48px;text-align:center;font-size:14px;color:var(--eu-fg2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.evowiki-evoui .evoui-pq-opts{display:flex;flex-direction:column;padding:0 8px}
+.evowiki-evoui .evoui-pq-opt{display:flex;align-items:flex-start;gap:16px;width:100%;min-height:46px;padding:7px 8px;border:0;border-radius:23px; background:none;color:var(--eu-fg);font:inherit;text-align:left;cursor:pointer}
+.evowiki-evoui .evoui-pq-opt:hover:not(:disabled){background:var(--eu-hover)}
+.evowiki-evoui .evoui-pq-opt:disabled{cursor:default;color:var(--eu-fg)}
+.evowiki-evoui .evoui-pq-ind{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--eu-strong); font-size:14px;font-weight:500;line-height:1;color:var(--eu-fg);font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-pq-ind svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.evowiki-evoui .evoui-pq-opt[data-mark="sel"] .evoui-pq-ind{background:var(--eu-fg);border-color:var(--eu-fg);color:var(--eu-bg)}
+.evowiki-evoui .evoui-pq-opt[data-mark="right"] .evoui-pq-ind,.evowiki-evoui .evoui-pq-ind[data-mark="right"]{background:var(--eu-right);border-color:var(--eu-right);color:var(--eu-mark-tx)}
+.evowiki-evoui .evoui-pq-opt[data-mark="wrong"] .evoui-pq-ind,.evowiki-evoui .evoui-pq-ind[data-mark="wrong"]{background:var(--eu-wrong);border-color:var(--eu-wrong);color:var(--eu-mark-tx)}
+.evowiki-evoui .evoui-pq-opt[data-mark="missed"] .evoui-pq-ind{border:2px solid var(--eu-right);color:var(--eu-right)}
+.evowiki-evoui .evoui-pq-opt[data-mark="off"] .evoui-pq-ind{border-color:color-mix(in srgb,var(--eu-fg) 16%,transparent);color:var(--eu-fg2)}
+.evowiki-evoui .evoui-pq-opt[data-mark="off"] .evoui-pq-label{color:var(--eu-fg2)}
+.evowiki-evoui .evoui-pq-body{flex:1;min-width:0;display:flex;flex-direction:column}
+.evowiki-evoui .evoui-pq-label{min-height:32px;display:flex;align-items:center;font-size:16px;line-height:1.45;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-pq-fb{font-size:14px;line-height:1.5;color:var(--eu-fg2);padding:0 0 4px;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-pq-foot{display:flex;align-items:center;gap:12px;min-height:60px;padding:4px 24px 6px 20px}
+.evowiki-evoui .evoui-pq-tip{font-size:15px;color:var(--eu-fg2);min-width:0}
+.evowiki-evoui .evoui-pq-btn{flex:none;height:40px;padding:0 18px;border:1px solid var(--eu-line);border-radius:999px;background:var(--eu-bg);color:var(--eu-fg); font:inherit;font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap}
+.evowiki-evoui .evoui-pq-foot .evoui-pq-btn{margin-left:auto}
+.evowiki-evoui .evoui-pq-btn:hover:not(:disabled){background:var(--eu-hover)}
+.evowiki-evoui .evoui-pq-btn:disabled{color:var(--eu-faint);cursor:default}
+.evowiki-evoui .evoui-pq-btn.primary{background:var(--eu-fg);border-color:var(--eu-fg);color:var(--eu-bg)}
+.evowiki-evoui .evoui-pq-btn.primary:hover:not(:disabled){background:color-mix(in srgb,var(--eu-fg) 85%,var(--eu-bg))}
+.evowiki-evoui .evoui-pq-btn.primary:disabled{background:var(--eu-surface);border-color:var(--eu-line);color:var(--eu-fg2)}
+.evowiki-evoui .evoui-pq-results{display:flex;flex-direction:column}
+.evowiki-evoui .evoui-pq-rhead{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:0 20px;font-size:15px;color:var(--eu-fg2)}
+.evowiki-evoui .evoui-pq-round{font-size:13px;font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-pq-score{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;padding:0 20px 14px}
+.evowiki-evoui .evoui-pq-num{font-size:30px;font-weight:650;line-height:1.1;font-variant-numeric:tabular-nums}
+.evowiki-evoui .evoui-pq-verdict{font-size:15px;color:var(--eu-fg2)}
+.evowiki-evoui .evoui-pq-cases{display:flex;flex-direction:column;gap:2px;margin:0 20px 12px;padding:10px 14px;border-radius:14px;background:var(--eu-surface)}
+.evowiki-evoui .evoui-pq-case{font-size:14px;line-height:1.5;overflow-wrap:anywhere;padding-left:16px;position:relative}
+.evowiki-evoui .evoui-pq-case::before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;border-radius:50%;background:var(--eu-right)}
+.evowiki-evoui .evoui-pq-case[data-ok="false"]::before{background:var(--eu-wrong)}
+.evowiki-evoui .evoui-pq-rows{list-style:none;margin:0;padding:0 8px;display:flex;flex-direction:column}
+.evowiki-evoui .evoui-pq-row{display:flex;align-items:flex-start;gap:16px;min-height:46px;padding:7px 8px}
+.evowiki-evoui .evoui-pq-row+.evoui-pq-row{border-top:1px solid color-mix(in srgb,var(--eu-line) 60%,transparent)}
+.evowiki-evoui .evoui-pq-rbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding-top:5px}
+.evowiki-evoui .evoui-pq-rq{font-size:15px;line-height:1.45;font-weight:500;overflow-wrap:anywhere}
+.evowiki-evoui .evoui-pq-rsub{font-size:14px;line-height:1.5;color:var(--eu-fg2);overflow-wrap:anywhere}
+.evowiki-evoui .evoui-pq-rfoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:16px 20px 18px}
+.evowiki-evoui .evoui-pq-rbtns{display:flex;flex-wrap:wrap;gap:10px}
+@container (max-width:520px){.evowiki-evoui .evoui-pq-head{padding:0 12px 0 20px}.evowiki-evoui .evoui-pq-title{padding-top:8px}.evowiki-evoui .evoui-pq-foot{min-height:52px;padding:4px 16px 6px 20px}.evowiki-evoui .evoui-pq-rfoot{padding:14px 16px 16px}.evowiki-evoui .evoui-pq-rfoot .primary{flex:1 1 auto}}
+/* ===== /T15 ===== */
+/* ===== Task 13: 「正在写」 in the file tree (the demo's `.item.wr span.ws`: 11px text, no dot) ===== */
+.nav-file-title.ew-writing .ew-writing-mark {
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+/* ===== Materials D: a draft in the page as track changes (revise/overlay.ts). The marks, the bar and the 和资料不同 line use
+   the EXACT .trk / .revbar / .srcnote rules; these only give the plugin-drawn parts the note's own type (.note p / h2) and
+   hide the note's blocks the marks replace (Reading view; Live Preview replaces the lines). ===== */
+.markdown-preview-view.evowiki-page .evowiki-rv-off>:not(.evowiki-trk-host){display:none}
+.evowiki-page .evowiki-trk-host p.ew-trk{margin:12px 0;font-family:var(--font-text);font-size:16px;line-height:1.9;color:var(--tx-1)}
+.evowiki-page .evowiki-trk-host h2.ew-trk{margin:30px 0 6px;font-family:var(--font-ui);font-size:20px;font-weight:700;line-height:1.9;color:var(--tx-1)}
+.evowiki-page .evowiki-trk-host .ew-insblk .ew-srcnote{margin:4px 0}
+.evowiki-page .evowiki-trk-host>.ew-srcnote,.evowiki-page .evowiki-srcnote-host .ew-srcnote{margin:6px 0;font-family:var(--font-ui);font-size:13.5px}
+.evowiki-page .evowiki-trk-widget{padding:0}
+/* A changed paragraph rendered as the note renders it (revise/marks.ts): the rendered blocks keep the note's own Markdown
+   styles; a block that cannot carry word marks (code, display math, a table) is shown old struck, then new added. */
+.evowiki-page .evowiki-trk-host div.ew-trk{margin:0}
+body .ew .ew-delblk{display:block;color:var(--tx-2);background:color-mix(in srgb,var(--gap) 10%,var(--bg-0));text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--gap) 75%,var(--tx-1));text-decoration-thickness:1.5px;padding:2px 8px;margin:6px 0;border-radius:3px}
+body .ew .ew-delblk::before{content:"删去：";position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* marks inside a code block: no padding, so the columns stay aligned (the block keeps its monospace and grey box) */
+body .ew .ew-trk pre del,body .ew .ew-trk pre ins{padding:0;border-radius:0}
+/* a code block among the marks keeps the note's own code block look (the .ew reset reverts pre / code to the browser's) */
+.evowiki-page .evowiki-trk-host .evowiki-trk-md pre{background:var(--code-background);padding:12px 16px;border-radius:4px;margin:1em 0;overflow-x:auto}
+.evowiki-page .evowiki-trk-host .evowiki-trk-md pre code{font-family:var(--font-monospace);font-size:var(--code-size);background:none;padding:0}
+body .ew .ew-delblk pre,body .ew .ew-insblk pre{margin:4px 0}
+/* the assistant's practice draft: an added EvoUI block, drawn live (EXACT .note .insblk.prac) */
+.evowiki-page .evowiki-trk-host .ew-trk.ew-prac .ew-insblk{padding:10px 12px;margin:12px 0}
+/* ===== /Materials D ===== */
+
+/* a code block in the chat: Obsidian's copy button sits in its corner and shows on hover, as in a note */
+.ew-asst pre { position: relative; }
+.ew-asst pre .copy-code-button { position: absolute; top: 4px; right: 4px; margin: 0; padding: 2px 4px; height: auto; background: var(--background-secondary); border: none; box-shadow: none; opacity: 0; }
+.ew-asst pre:hover .copy-code-button, .ew-asst pre .copy-code-button:focus-visible { opacity: 1; }
+
+/* Initial setup reuses the existing settings controls. */
+body .ew.ew-setup{display:flex;flex-direction:column;gap:16px;min-width:0}
+body .ew-setup .ew-setup-stage{display:flex;flex-direction:column;gap:10px;min-width:0;max-height:65vh;overflow-y:auto;padding-right:4px}
+body .ew-setup .ew-setup-progress{font-size:12px;color:var(--text-muted);font-variant-numeric:tabular-nums}
+body .ew-setup .ew-setup-path{display:block;white-space:pre-wrap;overflow-wrap:anywhere}
+body .ew-setup .ew-setup-background{width:100%;min-height:88px;resize:vertical;box-sizing:border-box}
+body .ew-setup [data-setup-step=background] .ew-srow{grid-template-columns:minmax(0,1fr);gap:6px}
+body .ew-setup .ew-row{flex-wrap:wrap}
+
+/* Keep the model list inside the available viewport. */
+body .ew .ew-mmenu{max-height:65vh;overflow-y:auto}

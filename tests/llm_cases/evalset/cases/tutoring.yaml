@@ -1,0 +1,115 @@
+# 第 5 类 讲解和辅导: a binary rubric per case, each item asked of the judge alone; critical items decide.
+
+- id: tutor-wrong-zscore
+  kind: act
+  topic: 辅导-统计
+  world: r1
+  source:
+    ref: tests/llm_cases/fixtures/rubric_zh.json 的 zh-wrong-zscore（自写 rubric，二元逐条；TutorBench 的 critical 做法）
+  steps:
+  - say: z 分数是什么？
+  - say: 看不懂，我为什么错了？（刚才那道题：z = −1 表示什么？ 选项：比平均高一个标准差、比平均低一个标准差。我选了「比平均高一个标准差」）
+  grade:
+  - rubric:
+      items:
+      - text: 回答开头就点明他错在方向或符号：负的 z 在平均值以下，他选成了以上。
+        critical: true
+      - text: 回答给出正确读法：z = −1 表示比平均低一个标准差。
+        critical: true
+      - text: 回答给出一个帮他以后不再读反的办法（例如一个具体数值例子或看符号的口诀）。
+        critical: false
+      - text: 回答不责备学习者，语气平和。
+        critical: false
+      - text: 回答不重新从头讲一遍 z 分数的定义和用途。
+        critical: false
+  - no_internal_words: {}
+- id: tutor-wrong-derivative
+  kind: act
+  topic: 辅导-微积分
+  world: r1
+  source:
+    ref: tests/llm_cases/fixtures/rubric_zh.json 的 zh-wrong-derivative（自写 rubric，二元逐条；TutorBench 的 critical 做法）
+  steps:
+  - say: x 的平方求导是什么？
+  - say: 我选错了，能告诉我为什么吗？（刚才那道题：x³ 的导数是什么？ 选项：3x³、3x²、x²。我选了「3x³」）
+  grade:
+  - rubric:
+      items:
+      - text: 回答开头指出他错在哪一步：指数没有减 1。
+        critical: true
+      - text: 回答给出正确答案 3x²。
+        critical: true
+      - text: 回答用一句话或一个例子说明“指数先挪到前面、再减 1”这两步。
+        critical: false
+      - text: 回答最多提一个检查理解的问题，不连续提问。
+        critical: false
+      - text: 回答里没有数学错误。
+        critical: false
+  - no_internal_words: {}
+- id: tutor-both-probability
+  kind: control
+  topic: 辅导-概率
+  world: r1
+  source:
+    ref: tests/llm_cases/fixtures/rubric_zh.json 的 zh-both-probability（自写 rubric，二元逐条；TutorBench 的 critical 做法）
+  steps:
+  - say: 两个独立事件同时发生的概率怎么算？
+  - say: 那为什么是乘而不是加？
+  grade:
+  - rubric:
+      items:
+      - text: 回答直接回答“为什么是乘”，而不是只重复乘法规则。
+        critical: true
+      - text: 回答在数学上正确，没有把“或”的加法规则和“且”的乘法规则混在一起。
+        critical: true
+      - text: 回答给出一个直观的理由（例如列出所有等可能结果、或“在 A 发生的那一部分里再取 B 的那一部分”）。
+        critical: false
+      - text: 回答说明什么时候用加法（互斥事件的“或”），帮他分清两者。
+        critical: false
+      - text: 回答不超过大约 300 字。
+        critical: false
+  - no_internal_words: {}
+- id: tutor-both-ohm
+  kind: control
+  topic: 辅导-电学
+  world: r1
+  source:
+    ref: tests/llm_cases/fixtures/rubric_zh.json 的 zh-both-ohm（自写 rubric，二元逐条；TutorBench 的 critical 做法）
+  steps:
+  - say: 欧姆定律是什么？
+  - say: 电阻变大电流变小，这个我老是记反，能讲得让我记住吗？
+  grade:
+  - rubric:
+      items:
+      - text: 回答里电压、电流、电阻的关系是对的（电压不变时，电阻越大电流越小）。
+        critical: true
+      - text: 回答给出一个帮他记住方向的具体办法（类比、数值例子或从公式推一步）。
+        critical: true
+      - text: 回答用一组具体数字演示一次（例如电压不变、电阻翻倍、电流减半）。
+        critical: false
+      - text: 如果用了类比，回答指出类比在哪里不成立；没用类比也算通过。
+        critical: false
+  - no_internal_words: {}
+- id: tutor-both-big-o
+  kind: control
+  topic: 辅导-算法复杂度
+  world: r1
+  source:
+    ref: tests/llm_cases/fixtures/rubric_zh.json 的 zh-both-big-o（自写 rubric，二元逐条；TutorBench 的 critical 做法）
+  steps:
+  - say: O(n log n) 是什么意思？
+  - say: log n 那部分是从哪里来的？
+  grade:
+  - rubric:
+      items:
+      - text: 回答解释 log n 的来源：每次对半分，分到大小为 1 需要大约 log₂ n 层。
+        critical: true
+      - text: 回答说明每一层合并的总工作量约为 n，所以总共约 n × log n。
+        critical: true
+      - text: 回答用一个具体的 n（例如 8 个数分 3 层）演示层数。
+        critical: false
+      - text: 回答里没有错误的复杂度说法。
+        critical: false
+      - text: 回答不展开讲与问题无关的其他排序算法。
+        critical: false
+  - no_internal_words: {}

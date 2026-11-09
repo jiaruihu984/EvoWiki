@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E6%8B%BC%E5%87%BA%E5%AF%B9%E9%9D%A2%E9%82%A3%E6%9D%A1%E9%93%BE%22-->拼出对面那条链</title>
+<style>
+:root{color-scheme:light dark;--bg:#f7f5ef;--panel:#fffdfa;--text:#211f1a;--muted:#5f5a50;--line:#b7afa1;--blue:#1f6f8b;--amber:#a45d05;--green:#247044;--purple:#6d4aa2;--red:#a53a35;--focus:#7c3aed}
+@media(prefers-color-scheme:dark){:root{--bg:#16181d;--panel:#1f2229;--text:#ecebe6;--muted:#a9a79f;--line:#5a5f6b;--blue:#6cc0de;--amber:#e8a94d;--green:#6cc58c;--purple:#b79af0;--red:#f08a84;--focus:#c4b0ff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,"Microsoft YaHei",sans-serif}
+main{max-width:980px;margin:auto;padding:14px}
+section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;overflow-wrap:anywhere}
+h1{font-size:1.35rem;margin:0 0 6px}h2{font-size:1.05rem;margin:0 0 8px}p{margin:0 0 8px}
+.q{border-left:6px solid var(--purple);padding:8px 12px;background:color-mix(in srgb,var(--panel) 88%,var(--purple))}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+label{font-weight:700;display:block}label span{display:block;font-size:.9rem;margin-bottom:3px}
+select,input,button{min-height:44px;padding:6px 10px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font:inherit}
+input{width:9em}
+button{font-weight:800;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.pieces button{min-width:76px}
+.pieces button small{display:block;font-weight:500;font-size:.72rem;color:var(--muted)}
+[hidden]{display:none!important}
+svg{width:100%;max-width:640px;height:auto;display:block;margin:0 auto}
+svg text{fill:var(--text);font-family:inherit}
+.slot{cursor:pointer}
+.legend{color:var(--muted);font-size:.88rem}
+#explain{border-left:6px solid var(--amber);padding:10px 12px;background:color-mix(in srgb,var(--panel) 88%,var(--amber));min-height:4.5em;font-weight:600}
+#out{white-space:pre-wrap;font:14px/1.7 ui-monospace,Consolas,monospace;border-left:6px solid var(--green);padding:10px 12px;background:color-mix(in srgb,var(--panel) 90%,var(--green))}
+</style>
+<script data-evowiki-locale="pairing-builder"></script>
+</head>
+<body>
+<main>
+<section>
+  <h1><!--ew-t:%22%E6%8B%BC%E5%87%BA%E5%AF%B9%E9%9D%A2%E9%82%A3%E6%9D%A1%E9%93%BE%EF%BC%9A%E6%AF%8F%E4%B8%80%E6%A0%BC%E5%8F%AA%E6%9C%89%E4%B8%80%E7%A7%8D%E7%A7%AF%E6%9C%A8%E6%94%BE%E5%BE%97%E4%B8%8A%22-->拼出对面那条链：每一格只有一种积木放得上</h1>
+  <p class="q"><!--ew-t:%22%E5%AD%A6%E4%B9%A0%E9%97%AE%E9%A2%98%EF%BC%9A%E4%B8%8A%E9%9D%A2%E8%BF%99%E6%9D%A1%E9%93%BE%E6%AF%8F%E4%B8%80%E6%A0%BC%E9%83%BD%E5%9B%BA%E5%AE%9A%E4%BA%86%EF%BC%8C%E5%AF%B9%E9%9D%A2%E8%BF%99%E4%B8%80%E6%A0%BC%E6%94%BE%E5%93%AA%E7%A7%8D%E7%A7%AF%E6%9C%A8%E6%89%8D%E8%83%BD%E9%85%8D%E4%B8%8A%EF%BC%9F%E6%94%BE%E9%94%99%E4%BA%86%EF%BC%8C%E5%88%B0%E5%BA%95%E5%8D%A1%E5%9C%A8%E5%93%AA%E9%87%8C%EF%BC%9F%22-->学习问题：上面这条链每一格都固定了，对面这一格放哪种积木才能配上？放错了，到底卡在哪里？</p>
+  <div class="row">
+    <label><span><!--ew-t:%22%E9%80%89%E4%B8%80%E6%9D%A1%E4%B8%8A%E9%93%BE%22-->选一条上链</span><select id="preset">
+      <option>ATGCCA</option><option>GGCATT</option><option>CAGTAC</option><option value="custom"><!--ew-t:%22%E8%87%AA%E5%B7%B1%E8%BE%93%E5%85%A5%E2%80%A6%22-->自己输入…</option></select></label>
+    <label id="customWrap" hidden><span><!--ew-t:%22%E8%87%AA%E5%B7%B1%E8%BE%93%E5%85%A5%EF%BC%88A%20T%20G%20C%EF%BC%8C%E6%9C%80%E5%A4%9A%208%20%E4%B8%AA%EF%BC%89%22-->自己输入（A T G C，最多 8 个）</span><input id="custom" maxlength="8" value="ATGC"></label>
+    <button id="answer"><!--ew-t:%22%E6%98%BE%E7%A4%BA%E6%AD%A3%E7%A1%AE%E7%AD%94%E6%A1%88%22-->显示正确答案</button>
+    <button id="clear"><!--ew-t:%22%E6%B8%85%E7%A9%BA%E4%B8%8B%E9%93%BE%22-->清空下链</button>
+  </div>
+</section>
+
+<section>
+  <h2><!--ew-t:%221.%20%E5%85%88%E9%80%89%E4%B8%80%E6%A0%BC%EF%BC%8C%E5%86%8D%E6%94%BE%E7%A7%AF%E6%9C%A8%22-->1. 先选一格，再放积木</h2>
+  <p class="legend"><!--ew-t:%22%E7%82%B9%E4%B8%8B%E9%93%BE%E7%9A%84%E8%99%9A%E7%BA%BF%E7%A9%BA%E4%BD%8D%E9%80%89%E6%A0%BC%EF%BC%88%E5%B8%A6%E7%B2%97%E8%BE%B9%E6%A1%86%E7%9A%84%E6%98%AF%E5%BD%93%E5%89%8D%E6%A0%BC%EF%BC%89%EF%BC%8C%E5%86%8D%E7%82%B9%E4%B8%8B%E9%9D%A2%E7%9A%84%E7%A7%AF%E6%9C%A8%E3%80%82%E5%A4%A7%E5%9D%97%EF%BC%9D%E9%AB%98%202%20%E6%A0%BC%E7%9A%84%E7%A7%AF%E6%9C%A8%EF%BC%88A%E3%80%81G%EF%BC%89%EF%BC%9B%E5%B0%8F%E5%9D%97%EF%BC%9D%E9%AB%98%201%20%E6%A0%BC%E7%9A%84%E7%A7%AF%E6%9C%A8%EF%BC%88T%E3%80%81C%EF%BC%89%E3%80%82%E6%AF%8F%E7%A7%8D%E7%A7%AF%E6%9C%A8%E8%BF%98%E6%9C%89%E4%B8%8D%E5%90%8C%E7%9A%84%E7%BA%B9%E7%90%86%EF%BC%8C%E4%B8%8D%E5%8F%AA%E9%9D%A0%E9%A2%9C%E8%89%B2%E6%88%96%E5%AD%97%E6%AF%8D%E3%80%82%22-->点下链的虚线空位选格（带粗边框的是当前格），再点下面的积木。大块＝高 2 格的积木（A、G）；小块＝高 1 格的积木（T、C）。每种积木还有不同的纹理，不只靠颜色或字母。</p>
+  <div class="row pieces" id="pieces" role="group" aria-label="可放入的积木" data-ew-attrs='{"aria-label":"可放入的积木"}'></div>
+</section>
+
+<section>
+  <h2><!--ew-t:%222.%20%E4%B8%A4%E6%9D%A1%E9%93%BE%E9%9D%A2%E5%AF%B9%E9%9D%A2%22-->2. 两条链面对面</h2>
+  <svg id="svg" role="img" aria-label="上链固定，下链由你放置的积木，中间显示是否配得上" data-ew-attrs='{"aria-label":"上链固定，下链由你放置的积木，中间显示是否配得上"}'></svg>
+  <p class="legend"><!--ew-t:%22%E4%B8%AD%E9%97%B4%E7%9A%84%E7%9F%AD%E7%AB%96%E7%BA%BF%EF%BC%9D%E5%BE%88%E5%BC%B1%E7%9A%84%E5%90%B8%E5%BC%95%E5%8A%9B%EF%BC%88%E5%90%B8%E7%82%B9%EF%BC%89%E3%80%82%E2%9C%93%EF%BC%9D%E9%85%8D%E5%BE%97%E4%B8%8A%EF%BC%8C%E2%9C%97%EF%BC%9D%E9%85%8D%E4%B8%8D%E4%B8%8A%EF%BC%9B%E9%85%8D%E4%B8%8D%E4%B8%8A%E7%9A%84%E6%A0%BC%E5%AD%90%E7%94%A8%E8%99%9A%E7%BA%BF%E6%A1%86%EF%BC%8C%E5%B9%B6%E5%86%99%E6%98%8E%E5%8E%9F%E5%9B%A0%E3%80%82%22-->中间的短竖线＝很弱的吸引力（吸点）。✓＝配得上，✗＝配不上；配不上的格子用虚线框，并写明原因。</p>
+</section>
+
+<section>
+  <h2><!--ew-t:%223.%20%E8%BF%99%E4%B8%80%E6%A0%BC%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%EF%BC%88%E4%B8%8D%E8%83%BD%EF%BC%89%E9%85%8D%E4%B8%8A%22-->3. 这一格为什么能（不能）配上</h2>
+  <div id="explain" aria-live="polite"><!--ew-t:%22%E5%85%88%E9%80%89%E4%B8%80%E4%B8%AA%E7%A9%BA%E4%BD%8D%EF%BC%8C%E5%86%8D%E6%94%BE%E4%B8%80%E7%A7%8D%E7%A7%AF%E6%9C%A8%E8%AF%95%E8%AF%95%E3%80%82%22-->先选一个空位，再放一种积木试试。</div>
+</section>
+
+<section>
+  <h2><!--ew-t:%224.%20%E7%BB%93%E6%9E%9C%EF%BC%9A%E6%8A%8A%E4%BD%A0%E6%8B%BC%E7%9A%84%E4%B8%8B%E9%93%BE%E5%86%8D%E9%85%8D%E4%B8%80%E9%81%8D%EF%BC%8C%E8%83%BD%E5%9B%9E%E5%88%B0%E4%B8%8A%E9%93%BE%E5%90%97%EF%BC%9F%22-->4. 结果：把你拼的下链再配一遍，能回到上链吗？</h2>
+  <div id="out" aria-live="polite"></div>
+</section>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const U=26,BOND=16,CW=60,G=3*U+BOND;
+const SIZE={A:2,G:2,T:1,C:1},COMP={A:'T',T:'A',G:'C',C:'G'},BONDS={A:2,T:2,G:3,C:3};
+const sizeWord=l=>SIZE[l]==2? ewt("大块"): ewt("小块");
+const $=id=>document.getElementById(id);
+let topS=[],bot=[],sel=0,last=null;
+
+function readTop(){
+  const p=$('preset').value;
+  let s=p==='custom'?$('custom').value:p;
+  s=s.toUpperCase().replace(/[^ATGC]/g,'').slice(0,8);
+  return (s||'ATGC').split('');
+}
+function init(){topS=readTop();bot=topS.map(()=>null);sel=0;last=null;render();}
+function kind(t,b){
+  if(b===COMP[t])return'ok';
+  if(SIZE[t]==2&&SIZE[b]==2)return'crowd';
+  if(SIZE[t]==1&&SIZE[b]==1)return'gap';
+  return'bond';
+}
+const KW={ok: ewt("配得上"),crowd: ewt("太挤"),gap: ewt("有空隙"),bond: ewt("吸点对不上")};
+function why(i){
+  const t=topS[i],b=bot[i];
+  if(!b)return ewt("第 {0} 格：上面是 {1}（{2}，需要 {3} 个吸点）。请在下面放一种积木。", [i+1,t,sizeWord(t),BONDS[t]]);
+  const k=kind(t,b),h= ewt("第 {0} 格：上 {1}（{2}，{3} 个吸点），下 {4}（{5}，{6} 个吸点）。", [i+1,t,sizeWord(t),BONDS[t],b,sizeWord(b),BONDS[b]]);
+  if(k==='ok')return h+ ewt("一大一小，两块加起来刚好撑满两条链之间的距离；吸点 {0} 对 {1}，对得上。✓ 配得上。", [BONDS[t],BONDS[b]]);
+  if(k==='crowd')return h+ ewt("两块都是大块，加起来比两条链之间的距离还高，下面那块会挤进上面那块。✗ 太挤，放不下。");
+  if(k==='gap')return h+ ewt("两块都是小块，加起来不够高，中间留下空隙，吸点够不着对方。✗ 有空隙，吸不住。");
+  return h+ ewt("一大一小，宽度刚好；但 {0} 需要 {1} 个吸点，{2} 只能提供 {3} 个，吸点对不上。✗ 吸不住。", [t,BONDS[t],b,BONDS[b]]);
+}
+const NS='http://www.w3.org/2000/svg';
+function el(n,a,txt){const e=document.createElementNS(NS,n);for(const k in a)EvoWikiLocale.attr(e,k,()=>a[k]);if(txt!=null)EvoWikiLocale.prop(e,"textContent",()=>txt);return e;}
+function defs(svg){
+  const d=el('defs',{});
+  const pats={A:'<path d="M0 8L8 0" stroke="currentColor" stroke-width="1.6"/>',
+   T:'<circle cx="4" cy="4" r="1.4" fill="currentColor"/>',
+   G:'<path d="M0 0L8 8M8 0L0 8" stroke="currentColor" stroke-width="1.2"/>',
+   C:'<path d="M0 4H8" stroke="currentColor" stroke-width="1.6"/>'};
+  for(const k in pats){const p=el('pattern',{id:'p'+k,width:8,height:8,patternUnits:'userSpaceOnUse'});EvoWikiLocale.prop(p,"innerHTML",()=>pats[k]);d.appendChild(p);}
+  svg.appendChild(d);
+}
+function block(svg,l,x,yAttach,dir,bad,sel0){
+  const h=SIZE[l]*U,y=dir>0?yAttach:yAttach-h,g=el('g',{});
+  g.appendChild(el('rect',{x:x+5,y:y,width:CW-10,height:h,rx:5,fill:'var(--panel)'}));
+  g.appendChild(el('rect',{x:x+5,y:y,width:CW-10,height:h,rx:5,fill:`url(#p${l})`,style:'color:var(--muted);opacity:.55'}));
+  g.appendChild(el('rect',{x:x+5,y:y,width:CW-10,height:h,rx:5,fill:'none',stroke:bad?'var(--red)':'var(--text)','stroke-width':bad?2.5:2,'stroke-dasharray':bad?'6 4':'0'}));
+  if(SIZE[l]==2)g.appendChild(el('line',{x1:x+5,x2:x+CW-5,y1:y+U,y2:y+U,stroke:'var(--text)','stroke-width':1,opacity:.6}));
+  g.appendChild(el('rect',{x:x+CW/2-13,y:y+h/2-12,width:26,height:24,rx:4,fill:'var(--panel)',opacity:.92}));
+  g.appendChild(el('text',{x:x+CW/2,y:y+h/2+7,'text-anchor':'middle','font-size':20,'font-weight':800},l));
+  svg.appendChild(g);
+}
+function render(){
+  const n=topS.length,W=n*CW+20,Y0=44,Yb=Y0+G;
+  const svg=$('svg');EvoWikiLocale.prop(svg,"innerHTML",()=>'');EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} ${Yb+72}`);
+  defs(svg);
+  svg.appendChild(el('text',{x:10,y:16,'font-size':13,'font-weight':700}, ewt("上链（固定）")));
+  svg.appendChild(el('line',{x1:6,x2:W-6,y1:Y0-6,y2:Y0-6,stroke:'var(--text)','stroke-width':4}));
+  svg.appendChild(el('line',{x1:6,x2:W-6,y1:Yb+6,y2:Yb+6,stroke:'var(--text)','stroke-width':4}));
+  svg.appendChild(el('text',{x:10,y:Yb+26,'font-size':13,'font-weight':700}, ewt("下链（由你放）")));
+  for(let i=0;i<n;i++){
+    const x=10+i*CW,t=topS[i],b=bot[i];
+    block(svg,t,x,Y0,1,false);
+    const isSel=i===sel;
+    if(!b){
+      const s=el('g',{class:'slot',tabindex:0,role:'button','aria-label': ewt("选第 {0} 格", [i+1])});
+      s.appendChild(el('rect',{x:x+5,y:Yb-1.4*U,width:CW-10,height:1.4*U,rx:5,fill:'none',stroke:'var(--text)','stroke-width':isSel?4:1.5,'stroke-dasharray':'5 4'}));
+      s.appendChild(el('text',{x:x+CW/2,y:Yb-.7*U+7,'text-anchor':'middle','font-size':20},'?'));
+      s.addEventListener('click',()=>{sel=i;render();});
+      s.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){sel=i;render();}});
+      svg.appendChild(s);
+    }else{
+      const k=kind(t,b),bad=k!=='ok';
+      const s=el('g',{class:'slot',tabindex:0,role:'button','aria-label': ewt("第 {0} 格已放 {1}，点击重选", [i+1,b])});
+      block(svg,b,x,Yb,-1,bad);
+      if(isSel)s.appendChild(el('rect',{x:x+1,y:Yb-2*U-3,width:CW-2,height:2*U+6,rx:7,fill:'none',stroke:'var(--purple)','stroke-width':4}));
+      const hit=el('rect',{x:x,y:Yb-2*U-4,width:CW,height:2*U+8,fill:'transparent'});s.appendChild(hit);
+      s.addEventListener('click',()=>{sel=i;bot[i]=null;last=i;render();});
+      svg.appendChild(s);
+      const gy=Y0+SIZE[t]*U;
+      if(k==='ok'){
+        const nb=BONDS[t];
+        for(let j=0;j<nb;j++){const bx=x+CW/2+(j-(nb-1)/2)*11;svg.appendChild(el('line',{x1:bx,x2:bx,y1:gy+2,y2:gy+BOND-2,stroke:'var(--green)','stroke-width':3}));}
+      }else if(k==='bond'){
+        for(let j=0;j<2;j++){const bx=x+CW/2+(j-.5)*14;svg.appendChild(el('line',{x1:bx,x2:bx,y1:gy+2,y2:gy+BOND-2,stroke:'var(--red)','stroke-width':3,'stroke-dasharray':'3 3'}));}
+      }
+      const L1={ok: ewt("✓ 配得上"),crowd: ewt("✗ 太挤"),gap: ewt("✗ 有空隙"),bond: ewt("✗ 吸点")}[k],L2={ok:BONDS[t]+ ewt(" 个吸点"),crowd:'',gap:'',bond: ewt("对不上")}[k];
+      svg.appendChild(el('text',{x:x+CW/2,y:Yb+44,'text-anchor':'middle','font-size':11,'font-weight':700},L1));
+      if(L2)svg.appendChild(el('text',{x:x+CW/2,y:Yb+58,'text-anchor':'middle','font-size':11,'font-weight':700},L2));
+    }
+  }
+  EvoWikiLocale.prop($('explain'),"textContent",()=>last!=null&&bot[last]?why(last):why(sel));
+  result();
+}
+function result(){
+  const n=topS.length,filled=bot.filter(Boolean).length;
+  const ok=bot.filter((b,i)=>b&&b===COMP[topS[i]]).length;
+  const again=bot.map(b=>b?COMP[b]:'?');
+  const same=again.map((a,i)=>a==='?'?'?':(a===topS[i]?'✓':'✗'));
+  let s= ewt("上链　　　　　　　　{0}\n你放的下链　　　　　{1}\n下链再配一遍　　　　{2}\n与上链相同吗　　　　{3}\n\n已放 {4}/{5} 格，其中配得上 {6} 格。\n", [topS.join(' '),bot.map(b=>b||'?').join(' '),again.join(' '),same.join(' '),filled,n,ok]);
+  if(filled===n){
+    s+=ok===n? ewt("全部配对正确：把下链再配一遍，得到的正好是上链。一条链决定了另一条，所以丢了一条也能重建。")
+      : ewt("有 {0} 格配错：再配一遍后，这些格子和上链不同（✗）。配错的那一格里，原来的信息丢了。", [n-ok]);
+  }else s+= ewt("放满所有格子后，这里会告诉你能不能回到上链。");
+  EvoWikiLocale.prop($('out'),"textContent",()=>s);
+}
+function place(l){
+  if(sel==null||sel>=topS.length)return;
+  bot[sel]=l;last=sel;
+  let nx=bot.findIndex((b,i)=>!b&&i>sel);if(nx<0)nx=bot.findIndex(b=>!b);
+  if(nx>=0)sel=nx;
+  render();
+  EvoWikiLocale.prop($('explain'),"textContent",()=>why(last));
+}
+['A','T','G','C'].forEach(l=>{
+  const b=document.createElement('button');
+  EvoWikiLocale.prop(b,"innerHTML",()=> ewt("{0}<small>{1}·{2}吸点</small>", [l,sizeWord(l),BONDS[l]]));
+  EvoWikiLocale.attr(b,'aria-label',()=> ewt("放 {0}，{1}，{2}个吸点", [l,sizeWord(l),BONDS[l]]));
+  b.onclick=()=>place(l);$('pieces').appendChild(b);
+});
+$('preset').onchange=()=>{$('customWrap').hidden=$('preset').value!=='custom';init();};
+$('custom').oninput=init;
+$('clear').onclick=()=>{bot=topS.map(()=>null);sel=0;last=null;render();};
+$('answer').onclick=()=>{bot=topS.map(t=>COMP[t]);sel=0;last=0;render();};
+init();
+
+EvoWikiLocale.onChange(()=>{render();result()});</script>
+</body>
+</html>

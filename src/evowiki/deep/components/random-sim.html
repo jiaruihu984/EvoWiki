@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><!--ew-t:%22%E9%9A%8F%E6%9C%BA%E6%A8%A1%E6%8B%9F%22-->随机模拟</title>
+<style>
+/* ---- EvoWiki component base (shared by every library component; keep identical) ---- */
+:root{
+  --bg:var(--evowiki-bg,#ffffff);--bg-1:var(--evowiki-bg-1,#f6f6f7);--bg-2:var(--evowiki-bg-2,#ececef);
+  --line:var(--evowiki-line,#d9d9de);--tx:var(--evowiki-tx,#1f1f24);--tx-2:var(--evowiki-tx-2,#55555e);
+  --tx-3:var(--evowiki-tx-3,#76767f);--accent:var(--evowiki-accent,#6b4fd6);--accent-tx:#ffffff;
+  --accent-soft:var(--evowiki-accent-soft,#eeeafc);--good:#22804d;--warn:#a66a00;--bad:#c23b2e;
+  --font:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{
+  --bg:var(--evowiki-bg,#1e1e21);--bg-1:var(--evowiki-bg-1,#26262a);--bg-2:var(--evowiki-bg-2,#313136);
+  --line:var(--evowiki-line,#3d3d44);--tx:var(--evowiki-tx,#e6e6ea);--tx-2:var(--evowiki-tx-2,#b0b0b8);
+  --tx-3:var(--evowiki-tx-3,#8c8c95);--accent:var(--evowiki-accent,#a48ff2);--accent-tx:#17141f;
+  --accent-soft:var(--evowiki-accent-soft,#2f2945);--good:#5cc98a;--warn:#e0a43a;--bad:#f0786b}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 var(--font)}
+::selection{background:var(--accent-soft);color:var(--tx)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+main{padding:14px 16px 18px;max-width:880px;margin:0 auto}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px;font-weight:650;text-wrap:balance}
+.q{margin:0 0 14px;color:var(--tx-2)}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,250px);gap:16px;align-items:start}
+@media (max-width:620px){.lab{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--bg-1);border-radius:10px;padding:8px;min-width:0}
+.stage svg{display:block;width:100%;height:auto;overflow:visible}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label,.ctl .lb{font-size:13px;color:var(--tx-2)}
+.ctl b{color:var(--tx);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;min-height:36px;cursor:pointer}
+button:hover{background:var(--bg-2)}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-tx)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--tx)}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.read{font-family:var(--mono);font-size:13px;line-height:1.6;color:var(--tx-2);font-variant-numeric:tabular-nums;
+  overflow-wrap:break-word;display:flex;flex-direction:column;gap:6px}
+.read .k{display:block;font-family:var(--font);font-size:12px;color:var(--tx-3)}
+.read b{color:var(--tx)}
+#result{background:var(--accent-soft);border-radius:8px;padding:10px 12px;line-height:1.6;margin:0}
+.muted{color:var(--tx-3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ---- component ---- */
+.axis{stroke:var(--tx-3);stroke-width:1}
+.grid{stroke:var(--line);stroke-width:1}
+.tick{fill:var(--tx-3);font:12px var(--font);font-variant-numeric:tabular-nums}
+.bar{fill:var(--accent);fill-opacity:.8;stroke:var(--accent);stroke-width:1}
+.cnt{fill:var(--tx-2);font:12px var(--mono);font-variant-numeric:tabular-nums}
+.exp{stroke:var(--warn);stroke-width:2.5;stroke-dasharray:6 4;fill:none}
+.expDot{fill:var(--bg);stroke:var(--warn);stroke-width:2}
+.expTx{fill:var(--warn);font:600 12.5px var(--font)}
+.line{stroke:var(--accent);stroke-width:2;fill:none;stroke-linejoin:round}
+.endDot{fill:var(--accent);stroke:var(--bg);stroke-width:2}
+.lblTx{fill:var(--tx-2);font:12.5px var(--font)}
+.empty{fill:var(--tx-3);font:14px var(--font)}
+.lab{grid-template-columns:minmax(0,1fr) minmax(0,260px)}
+@media (max-width:700px){.lab{grid-template-columns:minmax(0,1fr)}}
+select{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:5px 8px;min-height:36px}
+.fields{display:flex;flex-wrap:wrap;gap:10px}
+.fields .ctl{flex:1 1 110px}
+.read .rw{display:block;font-family:var(--font);font-size:13.5px;color:var(--tx-2)}
+.read .rw b{font-family:var(--mono);font-weight:600}
+</style>
+<script data-evowiki-locale="random-sim"></script>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="q" id="question"></p>
+  <div class="lab">
+    <div class="stage" id="stage"><svg id="plot" viewBox="0 0 560 280" role="img" aria-labelledby="plotDesc"><desc id="plotDesc"></desc></svg></div>
+    <div class="side">
+      <div class="fields">
+        <div class="ctl"><label for="nsel"><!--ew-t:%22%E6%AF%8F%E6%AC%A1%E8%BF%9E%E5%81%9A%22-->每次连做</label><select id="nsel"></select></div>
+        <div class="ctl" id="sizeCtl" hidden><label for="ssel"><!--ew-t:%22%E6%AF%8F%E4%B8%AA%E6%A0%B7%E6%9C%AC%E6%8A%BD%E5%87%A0%E4%B8%AA%E6%95%B0%22-->每个样本抽几个数</label><select id="ssel"></select></div>
+      </div>
+      <div class="row">
+        <button type="button" id="one"><!--ew-t:%22%E5%81%9A%201%20%E6%AC%A1%22-->做 1 次</button>
+        <button type="button" id="many"><!--ew-t:%22%E5%81%9A%2010%20%E6%AC%A1%22-->做 10 次</button>
+        <button type="button" id="reset"><!--ew-t:%22%E6%B8%85%E9%9B%B6%E9%87%8D%E6%9D%A5%22-->清零重来</button>
+      </div>
+      <div class="read" id="read" aria-label="计数与期望" data-ew-attrs='{"aria-label":"计数与期望"}'></div>
+      <p id="result" aria-live="polite"></p>
+    </div>
+  </div>
+</main>
+<script>const ewt=window.EvoWikiLocale.t;
+
+const DEFAULT={"title": ewt("抛硬币：次数多了，正面的比例会怎样？"),"question": ewt("一枚均匀硬币，每次正面的概率是 50%。抛 10 次、100 次、1000 次，正面的比例离 50% 有多远？"),"experiment":"coin","outcomes":null,"population":null,"sample_sizes":null,"runs":[10,100,1000],"plot":"running","track_label": ewt("正面"),"show_expected":true,"takeaway": ewt("这就是大数定律：次数越多，频率越靠近概率；但这不代表下一次更可能出反面，每一次仍然是 50% 对 50%。"),"seed":7};
+function readConfig(){const el=document.getElementById('evowiki-config');try{return el?JSON.parse(el.textContent):DEFAULT}catch(e){return DEFAULT}}
+const C=readConfig();
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?(Math.abs(x)>=1000?x.toFixed(0):x.toFixed(d)):'—';
+const esc=s=>EvoWikiLocale.string(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,text){const n=document.createElementNS(NS,tag);for(const k in attrs)EvoWikiLocale.attr(n,k,()=>attrs[k]);if(text!=null)EvoWikiLocale.prop(n,"textContent",()=>text);return n}
+const num=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+const clampN=(v,lo,hi,d)=>Math.min(hi,Math.max(lo,Math.round(num(v,d))));
+const CAP=100000;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const SEED=clampN(C.seed,0,2147483647,20240601);
+const MEAN=C.experiment==='sample_mean';
+const plotKind=C.plot==='running'?'running':'histogram';
+const showExp=C.show_expected!==false;
+let outcomes=[],pop=[],sizes=[];
+if(MEAN){
+  pop=(Array.isArray(C.population)?C.population:[]).slice(0,60).map(v=>num(v)).filter(Number.isFinite);
+  if(pop.length<2)pop=[1,2,3,4,5,6];
+  sizes=(Array.isArray(C.sample_sizes)?C.sample_sizes:[]).slice(0,4).map(v=>clampN(v,1,200,1));
+  if(!sizes.length)sizes=[1,5,30];
+}else{
+  let o=Array.isArray(C.outcomes)?C.outcomes.slice(0,12).map((x,i)=>({label:EvoWikiLocale.string((x&&x.label)||( ewt("结果")+(i+1))),w:Math.max(0,num(x&&x.weight,1))})):[];
+  if(o.length<2){o=C.experiment==='die'?[1,2,3,4,5,6].map(k=>({label:EvoWikiLocale.string(k),w:1})):[{label: ewt("正面"),w:1},{label: ewt("反面"),w:1}]}
+  let sw=o.reduce((a,x)=>a+x.w,0);if(sw<=0){o.forEach(x=>x.w=1);sw=o.length}
+  outcomes=o.map(x=>({...x,p:x.w/sw}));
+}
+const runs=(Array.isArray(C.runs)?C.runs:[]).slice(0,6).map(v=>clampN(v,2,5000,10));
+if(!runs.length)runs.push(10,100,1000);
+let trackIdx=0;if(!MEAN){const k=outcomes.findIndex(o=>o.label===C.track_label);trackIdx=k>=0?k:0}
+const mu=MEAN?pop.reduce((a,b)=>a+b,0)/pop.length:0;
+const sigma=MEAN?Math.sqrt(pop.reduce((a,b)=>a+(b-mu)*(b-mu),0)/pop.length):0;
+let plo=MEAN?Math.min(...pop):0,phi=MEAN?Math.max(...pop):1;if(phi-plo<1e-9){plo-=1;phi+=1}
+const NB=40;
+let size=MEAN?sizes[0]:1,rng,counts,total,tracked,sumM,sumSq,series,lastDesc;
+function init(){rng=mulberry32(SEED);counts=new Array(MEAN?NB:outcomes.length).fill(0);total=0;tracked=0;sumM=0;sumSq=0;series=[];lastDesc=''}
+function trial(){
+  if(MEAN){let s=0;for(let k=0;k<size;k++)s+=pop[Math.floor(rng()*pop.length)];const m=s/size;
+    counts[Math.min(NB-1,Math.floor((m-plo)/(phi-plo)*NB))]++;sumM+=m;sumSq+=m*m;total++;series.push(sumM/total);lastDesc= ewt("平均数 ")+m.toFixed(2)}
+  else{const u=rng();let a=0,k=0;for(;k<outcomes.length-1;k++){a+=outcomes[k].p;if(u<a)break}
+    counts[k]++;total++;if(k===trackIdx)tracked++;series.push(tracked/total);lastDesc=outcomes[k].label}}
+const pct=x=>(x*100).toFixed(1)+'%';
+const fx=(x,d=2)=>Number(x).toFixed(d);
+const nice=r=>{const p=Math.pow(10,Math.floor(Math.log10(r||1))),f=r/p;return (f<1.5?1:f<3?2:f<7?5:10)*p};
+function erf(x){const s=x<0?-1:1;x=Math.abs(x);const t=1/(1+0.3275911*x);return s*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x))}
+const Phi=z=>0.5*(1+erf(z/Math.SQRT2));
+const se=()=>sigma/Math.sqrt(size);
+function expBins(){const s=se();const bw=(phi-plo)/NB;return counts.map((_,k)=>s<1e-12?(k===Math.min(NB-1,Math.floor((mu-plo)/bw))?1:0):Phi((plo+(k+1)*bw-mu)/s)-Phi((plo+k*bw-mu)/s))}
+
+EvoWikiLocale.prop($('title'),"textContent",()=>C.title||'');EvoWikiLocale.prop($('question'),"textContent",()=>C.question||'');
+runs.forEach(n=>{const o=document.createElement('option');o.value=n;EvoWikiLocale.prop(o,"textContent",()=>n+ ewt(" 次"));$('nsel').append(o)});
+const nrun=()=>Number($('nsel').value)||runs[0];
+const syncMany=()=>{EvoWikiLocale.prop($('many'),"textContent",()=> ewt("做 ")+nrun()+ ewt(" 次"))};
+if(MEAN){$('sizeCtl').hidden=false;sizes.forEach(n=>{const o=document.createElement('option');o.value=n;EvoWikiLocale.prop(o,"textContent",()=>n+ ewt(" 个"));$('ssel').append(o)})}
+
+function draw(){
+  const svg=$('plot');svg.querySelectorAll(':scope > :not(desc)').forEach(c=>c.remove());
+  const W=Math.max(280,Math.round($('stage').clientWidth-16)),H=306,L=46,R=W-14,T=22,B=H-64;
+  const meas=(s,cls)=>{const n=el('text',{class:cls},s);svg.append(n);const w=n.getComputedTextLength();n.remove();return w};
+  const yAxis=(lo,hi,fmtv,ticks)=>{const step=nice((hi-lo)/ticks);const Y=v=>B-(v-lo)/(hi-lo)*(B-T);
+    for(let v=Math.ceil(lo/step-1e-9)*step;v<=hi+1e-9;v+=step){svg.append(el('line',{x1:L,y1:Y(v),x2:R,y2:Y(v),class:'grid'}));svg.append(el('text',{x:L-6,y:Y(v)+4,'text-anchor':'end',class:'tick'},fmtv(v)))}
+    svg.append(el('line',{x1:L,y1:B,x2:R,y2:B,class:'axis'}));return Y};
+  const ytop=(m)=>{const st=nice(m/4);return Math.ceil(m/st-1e-9)*st};
+  const legend=s=>{svg.append(el('line',{x1:L,y1:B+54,x2:L+26,y2:B+54,class:'exp'}));svg.append(el('text',{x:L+32,y:B+58,class:'lblTx'},s))};
+  let desc='';
+  if(plotKind==='histogram'&&!MEAN){
+    const n=outcomes.length;const po=counts.map(c=>total?c/total:0);
+    const ymax=ytop(Math.max(0.05,...po,...(showExp?outcomes.map(o=>o.p):[0]))*1.15);const Y=yAxis(0,ymax,v=>Math.round(v*100)+'%',4);
+    const sw=(R-L)/n,bw=Math.min(sw*0.7,64);
+    outcomes.forEach((o,k)=>{const cx=L+sw*(k+.5);const h=po[k]/ymax*(B-T);
+      if(counts[k]){svg.append(el('rect',{x:cx-bw/2,y:B-h,width:bw,height:h,class:'bar',rx:2}));svg.append(el('text',{x:cx,y:B-Math.max(h,showExp?o.p/ymax*(B-T):0)-8,'text-anchor':'middle',class:'cnt'},counts[k]))}
+      let lab=o.label;while(lab.length>1&&meas(lab,'lblTx')>sw-4)lab=lab.slice(0,-1);if(lab!==o.label)lab=lab.slice(0,-1)+'…';
+      svg.append(el('text',{x:cx,y:B+18,'text-anchor':'middle',class:'lblTx'},lab));
+      if(showExp)svg.append(el('line',{x1:cx-bw/2-6,y1:Y(o.p),x2:cx+bw/2+6,y2:Y(o.p),class:'exp'}))});
+    svg.append(el('text',{x:L,y:12,class:'lblTx'}, ewt("柱高 = 各结果占的比例；柱顶数字 = 出现次数")));
+    if(showExp)legend( ewt("虚线 = 期望比例"));
+    desc= ewt("柱状图：")+outcomes.map((o,k)=>o.label+' '+counts[k]+ ewt(" 次")).join('，');
+  }else if(plotKind==='histogram'&&MEAN){
+    const bw=(phi-plo)/NB;const po=counts.map(c=>total?c/total:0),eb=expBins();
+    const ymax=ytop(Math.max(0.05,...po,...(showExp?eb:[0]))*1.15);const Y=yAxis(0,ymax,v=>Math.round(v*100)+'%',4);
+    const X=v=>L+(v-plo)/(phi-plo)*(R-L);
+    counts.forEach((c,k)=>{if(!c)return;const h=po[k]*(B-T)/ymax;svg.append(el('rect',{x:X(plo+k*bw)+0.5,y:B-h,width:Math.max(1,(R-L)/NB-1),height:h,class:'bar'}))});
+    const st=nice((phi-plo)/Math.max(3,Math.floor(W/80)));
+    for(let v=Math.ceil(plo/st-1e-9)*st;v<=phi+1e-9;v+=st){svg.append(el('line',{x1:X(v),y1:B,x2:X(v),y2:B+5,class:'axis'}));svg.append(el('text',{x:X(v),y:B+19,'text-anchor':'middle',class:'tick'},fx(v,st<1?1:0)))}
+    if(showExp){const pts=eb.map((p,k)=>[X(plo+(k+.5)*bw),Y(p)]);svg.append(el('polyline',{points:pts.map(q=>q.join(',')).join(' '),class:'exp'}));
+      pts.forEach(q=>svg.append(el('circle',{cx:q[0],cy:q[1],r:3,class:'expDot'})))}
+    svg.append(el('line',{x1:X(mu),y1:T-6,x2:X(mu),y2:B,class:'exp'}));
+    const lt= ewt("总体均值 ")+fx(mu);const lw=meas(lt,'expTx');svg.append(el('text',{x:Math.min(Math.max(X(mu),L+lw/2),R-lw/2),y:T-9,'text-anchor':'middle',class:'expTx'},lt));
+    svg.append(el('text',{x:R,y:B+38,'text-anchor':'end',class:'lblTx'}, ewt("每个样本 ")+size+ ewt(" 个数的平均")));
+    if(showExp)legend( ewt("虚线 = 期望：总体均值，和理论上的钟形"));
+    desc= ewt("样本均值的直方图，已有 ")+total+ ewt(" 个样本");
+  }else{
+    const lo=MEAN?plo:0,hi=MEAN?phi:1;const Y=yAxis(lo,hi,v=>MEAN?fx(v,hi-lo<10?1:0):Math.round(v*100)+'%',4);
+    const xmax=Math.max(10,total);const X=v=>L+v/xmax*(R-L);
+    const st=nice(xmax/Math.max(2,Math.floor(W/110)));
+    for(let v=0;v<=xmax+1e-9;v+=st){svg.append(el('line',{x1:X(v),y1:B,x2:X(v),y2:B+5,class:'axis'}));svg.append(el('text',{x:X(v),y:B+19,'text-anchor':'middle',class:'tick'},Math.round(v)))}
+    svg.append(el('text',{x:R,y:B+38,'text-anchor':'end',class:'lblTx'}, ewt("累计试验次数")));
+    const ev=MEAN?mu:outcomes[trackIdx].p;
+    if(showExp){legend( ewt("虚线 = 期望"));svg.append(el('line',{x1:L,y1:Y(ev),x2:R,y2:Y(ev),class:'exp'}));
+      const lt= ewt("期望 ")+(MEAN?fx(ev):pct(ev));svg.append(el('text',{x:R-4,y:Y(ev)-6,'text-anchor':'end',class:'expTx'},lt))}
+    svg.append(el('text',{x:L,y:12,class:'lblTx'},MEAN? ewt("已有样本均值的平均"):'「'+outcomes[trackIdx].label+ ewt("」占已做次数的比例")));
+    if(series.length){const m=series.length,K=Math.min(m,400);const pts=[];
+      for(let q=0;q<K;q++){const idx=K===m?q:Math.round(q*(m-1)/(K-1));pts.push([X(idx+1),Y(series[idx])])}
+      svg.append(el('polyline',{points:pts.map(q=>q.join(',')).join(' '),class:'line'}));
+      const e=pts[pts.length-1];svg.append(el('circle',{cx:e[0],cy:e[1],r:4,class:'endDot'}))}
+    desc= ewt("折线图：")+(series.length? ewt("最新值 ")+(MEAN?fx(series[series.length-1]):pct(series[series.length-1])): ewt("还没有数据"));
+  }
+  if(!total)svg.append(el('text',{x:(L+R)/2,y:(T+B)/2,'text-anchor':'middle',class:'empty'}, ewt("还没有做试验，点“做 1 次”开始")));
+  EvoWikiLocale.attr(svg,'viewBox',()=>`0 0 ${W} ${H}`);EvoWikiLocale.attr(svg,'height',()=>H);EvoWikiLocale.prop($('plotDesc'),"textContent",()=>desc);
+}
+function readout(){
+  const r=$('read');EvoWikiLocale.prop(r,"textContent",()=>'');
+  const add=(k,v)=>{const d=document.createElement('span');d.className='rw';d.append(document.createTextNode(k+'：'));const b=document.createElement('b');EvoWikiLocale.prop(b,"textContent",()=>v);d.append(b);r.append(d)};
+  add( ewt("已做"),total+ ewt(" 次"));
+  if(MEAN){add( ewt("样本均值的平均"),total?fx(sumM/total,3)+ ewt("（总体均值 ")+fx(mu,3)+'）':'—');
+    const sd=total>1?Math.sqrt(Math.max(0,sumSq/total-(sumM/total)**2)):NaN;add( ewt("样本均值的标准差"),(Number.isFinite(sd)?fx(sd,3):'—')+ ewt("（理论 σ/√n = ")+fx(se(),3)+'）')}
+  else{outcomes.forEach((o,k)=>add(o.label,counts[k]+ ewt(" 次，")+(total?pct(counts[k]/total):'—')+ ewt("，期望 ")+pct(o.p)));
+    if(outcomes.length<=4){const mw=Math.min(...outcomes.map(o=>o.w).filter(w=>w>0));const mc=Math.min(...counts.filter(c=>c>0));
+      add( ewt("比值"),(total&&Number.isFinite(mc)?counts.map(c=>fx(c/mc,1)).join(' : '):'—')+ ewt("（期望 ")+outcomes.map(o=>fx(o.w/mw,1).replace(/\.0$/,'')).join(' : ')+'）')}}
+}
+function say(kind,n){
+  let s=kind==='reset'? ewt("已清零。随机数的种子没变，所以再做一遍会得到一模一样的结果。"):'';
+  if(kind==='size')s= ewt("换成每个样本抽 ")+size+ ewt(" 个数，已清零重来：平均的数越多，样本均值越集中在总体均值附近。");
+  if(kind==='one'||kind==='many'){
+    s=(kind==='one'? ewt("这次得到「")+lastDesc+'」。': ewt("又做了 ")+n+ ewt(" 次。"));
+    if(MEAN){const avg=sumM/total;s+= ewt(" 累计 ")+total+ ewt(" 个样本均值，平均 ")+fx(avg,3)+ ewt("，总体均值是 ")+fx(mu,3)+ ewt("，差 ")+fx(Math.abs(avg-mu),3)+'。'}
+    else{const o=outcomes[trackIdx],ob=tracked/total;s+= ewt(" 累计 ")+total+ ewt(" 次，「")+o.label+ ewt("」占 ")+pct(ob)+ ewt("，期望 ")+pct(o.p)+ ewt("，差 ")+fx(Math.abs(ob-o.p)*100,1)+ ewt(" 个百分点。")}
+    s+=total<30? ewt(" 次数还少，比例摇摆得厉害，多做几次就不同了。"): ewt(" 次数多了，偶然的偏差被大量试验摊薄，结果越来越靠近期望。");
+    if(total>=200&&C.takeaway)s+=' '+C.takeaway;
+    if(total>=CAP)s+= ewt(" 已到上限 ")+CAP+ ewt(" 次，请清零重来。")}
+  EvoWikiLocale.prop($('result'),"textContent",()=>s)}
+function run(n,kind){const room=Math.max(0,CAP-total);n=Math.min(n,room);for(let k=0;k<n;k++)trial();
+  $('one').disabled=$('many').disabled=total>=CAP;draw();readout();say(kind,n)}
+$('one').addEventListener('click',()=>run(1,'one'));
+$('many').addEventListener('click',()=>run(nrun(),'many'));
+$('nsel').addEventListener('change',syncMany);
+$('reset').addEventListener('click',()=>{init();$('one').disabled=$('many').disabled=false;draw();readout();say('reset')});
+$('ssel').addEventListener('change',()=>{size=Number($('ssel').value)||1;init();$('one').disabled=$('many').disabled=false;draw();readout();say('size')});
+new ResizeObserver(()=>draw()).observe($('stage'));
+init();syncMany();draw();readout();
+EvoWikiLocale.prop($('result'),"textContent",()=>MEAN? ewt("每做 1 次，就从总体里随机抽 ")+size+ ewt(" 个数，把它们的平均数记下来。点“做 1 次”或“做 ")+nrun()+ ewt(" 次”。"): ewt("每做 1 次，就按设定的概率随机得到一个结果。先点“做 1 次”，再试试一次做很多次。"));
+
+EvoWikiLocale.onChange(()=>{draw();readout()});</script>
+</body>
+</html>

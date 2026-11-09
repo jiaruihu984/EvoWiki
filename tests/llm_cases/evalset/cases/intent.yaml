@@ -1,0 +1,184 @@
+# 第 4 类 该讲还是该动手: a question gets an answer, a request for a change goes to the tool.
+
+- id: learn-goal-bayes
+  kind: act
+  topic: 贝叶斯
+  world: r1
+  source:
+    ref: docs/audit/2026-11-04/assistant.md 工具逐个结果：new_goal「我想学贝叶斯定理」修前当场开讲（没开目标）
+    failed: 当场开讲，没有调 new_goal
+  steps:
+  - say: 我想学贝叶斯定理
+  grade:
+  - tool_called:
+      any_of:
+      - new_goal
+  - turn_ok: {}
+  - no_internal_words: {}
+- id: ask-meaning-bayes
+  kind: no_act
+  topic: 贝叶斯
+  world: r1
+  source:
+    ref: 对照 learn-goal-bayes：只是问意思，不该开目标
+  steps:
+  - say: 贝叶斯定理是什么意思？
+  grade:
+  - no_change_calls: {}
+  - no_refusal: {}
+  - turn_ok: {}
+  - no_internal_words: {}
+- id: page-confusion-explain
+  kind: no_act
+  topic: 渗流
+  world: r1
+  source:
+    ref: pages.md B 线 C 线记录：「理解有困难」的回答里有乱码，还编了跑题的选项；没调工具却说已生成卡片
+    failed: 最上面 wǎng 下的语气（乱码）
+  steps:
+  - say: 这一段我看不懂
+    page: 节点与边
+    selection:
+      text: 所以两样都要写：一份名单，加一份关系。
+      heading: ''
+  grade:
+  - no_change_calls: {}
+  - no_false_claim:
+      use_judge: true
+  - turn_ok: {}
+  - no_internal_words: {}
+  - judge_fact:
+      question: 这段回答里有没有夹杂乱码、拼音或与问题无关的外文片段？
+      expect: false
+  - judge_fact:
+      question: 这段回答有没有解释他选中的那句话（两样都要写：一份名单，加一份关系）是什么意思？
+      expect: true
+- id: edit-request-draft
+  kind: act
+  topic: 渗流
+  world: r1
+  source:
+    ref: docs/audit/2026-11-04/assistant.md 工具逐个结果：propose_page_edit「第一段改短」触发；改写请求要走草稿
+  steps:
+  - say: 把这页第一节写得再细一点
+    page: 度与度分布
+  grade:
+  - tool_called:
+      any_of:
+      - propose_page_edit
+      - revise_page
+  - nothing_before_confirm: {}
+  - turn_ok: {}
+  - no_internal_words: {}
+- id: add-practice-request
+  kind: act
+  topic: 渗流
+  world: r1
+  source:
+    ref: docs/audit/2026-11-04/assistant.md 工具逐个结果：add_practice「加几道练习题」触发（首次猜错 id）
+  purposes:
+  - assistant.turn
+  - deep.write
+  steps:
+  - say: 给这页加几道练习题
+    page: 节点与边
+  grade:
+  - tool_called:
+      any_of:
+      - add_practice
+  - turn_ok: {}
+  - no_internal_words: {}
+- id: literal-s1-kept
+  kind: control
+  topic: 渗流
+  world: r1
+  source: {ref: "hard-constraints：他自己说的 s1 s2 是内容，不是内部编号，这个页面的节也叫 s1 s2", unverified_by_user: true}
+  steps: [{say: "顺便问个编程题：字符串 s1 和 s2 的最长公共子序列怎么求？一两句话说思路", page: 节点与边}]
+  grade:
+    - answer_has: {any_of: [s1, s_1]}
+    - no_change_calls: {}
+    - turn_ok: {}
+- id: why-this-order
+  kind: no_act
+  topic: 渗流
+  world: r1
+  source:
+    ref: assistant.md 记忆污染：模型说「这页排在节点与边之后」，来自没确认的改动
+  steps:
+  - say: 为什么这页排在节点与边后面？
+    page: 度与度分布
+  grade:
+  - no_change_calls: {}
+  - turn_ok: {}
+  - no_internal_words: {}
+- id: edit-confirmed-path-chat
+  kind: act
+  topic: 孔雀鱼
+  world: r1
+  source:
+    ref: audit/final-walk-a：确认后的路径，聊天说删块，修前回「我这里改不了」
+    failed: 说改不了，让他自己去学习路径上拖
+  steps:
+  - say: 复杂网络中的渗流这个目标，最后那一块我不学了，删掉吧
+  grade:
+  - tool_called:
+      any_of:
+      - edit_path_blocks
+  - turn_ok: {}
+  - no_internal_words: {}
+- id: learn-with-overview-first
+  kind: no_act
+  topic: 贝叶斯
+  world: r1
+  source:
+    ref: 用户裁定 2026-11-05（answers-to-check.md）：「我想学贝叶斯定理，先给我讲一下大概」先讲，在最后问用户要不要开
+  steps:
+  - say: 我想学贝叶斯定理，先给我讲一下大概
+  grade:
+  - tool_not_called:
+      names:
+      - new_goal
+  - turn_ok: {}
+  - no_internal_words: {}
+  - judge_fact:
+      question: 这段回答有没有讲贝叶斯定理的大意？
+      expect: true
+  - judge_fact:
+      question: 这段回答的结尾有没有问他要不要开一个学习目标（或者要不要系统地学）？
+      expect: true
+- id: tell-me-about-bayes
+  kind: no_act
+  topic: 贝叶斯
+  world: r1
+  source:
+    ref: 用户裁定 2026-11-05（answers-to-check.md）：「给我讲讲贝叶斯定理」先讲，在最后问用户要不要开
+  steps:
+  - say: 给我讲讲贝叶斯定理
+  grade:
+  - tool_not_called:
+      names:
+      - new_goal
+  - turn_ok: {}
+  - no_internal_words: {}
+  - judge_fact:
+      question: 这段回答有没有讲贝叶斯定理的大意？
+      expect: true
+  - judge_fact:
+      question: 这段回答的结尾有没有问他要不要开一个学习目标（或者要不要系统地学）？
+      expect: true
+- id: page-not-detailed-ask-first
+  kind: no_act
+  topic: 渗流
+  world: r1
+  source:
+    ref: 用户裁定 2026-11-05（answers-to-check.md）：「这页写得不够细」（没说要不要改）先问一下
+  steps:
+  - say: 这页写得不够细
+    page: 度与度分布
+  grade:
+  - no_change_calls: {}
+  - turn_ok: {}
+  - no_internal_words: {}
+  - judge_fact:
+      question: 这段回答有没有问他一句（比如要不要改、想细化哪里）？
+      expect: true

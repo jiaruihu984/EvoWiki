@@ -1,0 +1,42 @@
+do $$
+declare
+  stale constant text[] := array['H1.split'];
+  reason constant text := '0096：这一项设置对应的步骤已经没有了（知识点细分并入了知识点拆分），已移除并存档';
+  r record;
+  v integer;
+  n integer;
+begin
+  insert into harness_history_archive (source_table, user_id, key, row, reason, migrated_at)
+  select 'harness_version', h.user_id, h.key, to_jsonb(h), reason, now()
+    from harness_version h
+   where h.key = any(stale) and h.why <> reason          -- not 0096's own removal rows
+     and not exists (select 1 from harness_history_archive x
+                      where x.source_table = 'harness_version' and x.row = to_jsonb(h));
+  get diagnostics n = row_count;
+  if n > 0 then
+    raise notice '0096 harness: % history row(s) of removed settings archived', n;
+  end if;
+  insert into harness_history_archive (source_table, user_id, key, row, reason, migrated_at)
+  select 'agent_action', a.user_id, 'H1.' || (a.content ->> 'step'), to_jsonb(a), reason, now()
+    from agent_action a
+   where a.kind = 'prompt_override' and ('H1.' || (a.content ->> 'step')) = any(stale)
+     and not exists (select 1 from harness_history_archive x
+                      where x.source_table = 'agent_action'
+                        and x.row ->> 'action_id' = a.action_id);
+  get diagnostics n = row_count;
+  if n > 0 then
+    raise notice '0096 harness: % ledger row(s) of removed settings archived', n;
+  end if;
+  for r in select * from harness_value where key = any(stale) order by user_id, key for update
+  loop
+    insert into harness_value_archive (user_id, key, value, source, version, updated_at, reason,
+                                       migrated_at)
+    values (r.user_id, r.key, r.value, r.source, r.version, r.updated_at, reason, now());
+    select coalesce(max(version), 0) + 1 into v from harness_version where user_id = r.user_id;
+    insert into harness_version (user_id, version, key, before, after, source, why, created_at)
+    values (r.user_id, v, r.key, r.value, null, 'rollback', reason, now());
+    delete from harness_value where user_id = r.user_id and key = r.key;
+    raise notice '0096 %: harness setting % removed (archived; was %)', r.user_id, r.key,
+      left(r.value #>> '{}', 80);
+  end loop;
+end $$;

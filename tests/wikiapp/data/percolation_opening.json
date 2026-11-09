@@ -1,0 +1,2920 @@
+{
+ "wiki": [
+  {
+   "event_id": "wiki_started:me",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "body": {
+    "type": "wiki_started",
+    "aspect_config": "aspect-config@v1"
+   }
+  },
+  {
+   "event_id": "wev_b72d23b9c0d84448934c",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "body": {
+    "type": "concepts_named",
+    "names": [
+     {
+      "name": "概率与生成函数",
+      "subitems": [],
+      "concept_id": "c1"
+     },
+     {
+      "name": "网络表示与基础量",
+      "subitems": [],
+      "concept_id": "c2"
+     },
+     {
+      "name": "随机图与配置模型",
+      "subitems": [],
+      "concept_id": "c3"
+     },
+     {
+      "name": "巨分量与阈值",
+      "subitems": [],
+      "concept_id": "c4"
+     },
+     {
+      "name": "无标度网络",
+      "subitems": [],
+      "concept_id": "c5"
+     },
+     {
+      "name": "攻击与稳健性",
+      "subitems": [],
+      "concept_id": "c6"
+     },
+     {
+      "name": "定向与相依扩展",
+      "subitems": [],
+      "concept_id": "c7"
+     }
+    ]
+   }
+  },
+  {
+   "event_id": "wev_5cfcee5b399b43ad8c12",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "body": {
+    "type": "graph_saved",
+    "graph": {
+     "nodes": [
+      {
+       "x": -0.07332,
+       "y": -0.299717,
+       "id": "c1",
+       "name": "概率与生成函数",
+       "definition": "补上随机变量、期望和概率生成函数，后面算阈值和巨分量大小都要用它。"
+      },
+      {
+       "x": 0.188876,
+       "y": -0.216548,
+       "id": "c2",
+       "name": "网络表示与基础量",
+       "definition": "用图的语言描述网络，会看度、度分布和连通分量，知道巨分量是什么。"
+      },
+      {
+       "x": 0.369318,
+       "y": 0.001028,
+       "id": "c3",
+       "name": "随机图与配置模型",
+       "definition": "介绍两类最常用的网络系综：Erdős–Rényi 随机图和给定度序列的配置模型，它们是渗流计算的平台。"
+      },
+      {
+       "x": 0.183187,
+       "y": 0.212649,
+       "id": "c4",
+       "name": "巨分量与阈值",
+       "definition": "节点或边按概率 p 保留时，巨分量什么时候出现或消失，怎么从生成函数求出临界概率。"
+      },
+      {
+       "x": -0.063517,
+       "y": 0.2525,
+       "id": "c5",
+       "name": "无标度网络",
+       "definition": "度分布呈幂律时阈值会变得极低甚至消失，这决定了无标度网络面对随机故障的异常稳健性。"
+      },
+      {
+       "x": -0.255196,
+       "y": 0.11219,
+       "id": "c6",
+       "name": "攻击与稳健性",
+       "definition": "随机故障和按度攻击对阈值的影响完全不同，以及怎样设计更耐攻击的网络。"
+      },
+      {
+       "x": -0.293357,
+       "y": -0.130979,
+       "id": "c7",
+       "name": "定向与相依扩展",
+       "definition": "有向边、相互依赖网络和 k-core 渗流等更复杂的变体，知道它们和基本模型差在哪里。"
+      }
+     ],
+     "changes": [],
+     "relations": []
+    },
+    "action": "goal_nodes",
+    "layout": 1
+   }
+  },
+  {
+   "event_id": "wev_345c964dc5104d1d872c",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "body": {
+    "type": "goal_map_saved",
+    "action": "planned",
+    "record": {
+     "log": [],
+     "goal": "复杂网络中的渗流",
+     "nodes": [
+      {
+       "id": "c1",
+       "kind": "region",
+       "name": "概率与生成函数",
+       "level": "基础",
+       "scope": "随机变量与分布、期望与方差、概率生成函数、矩与导数",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c2",
+       "kind": "region",
+       "name": "网络表示与基础量",
+       "level": "基础",
+       "scope": "节点与边、度与度分布、连通分量、巨分量",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c3",
+       "kind": "region",
+       "name": "随机图与配置模型",
+       "level": "核心",
+       "scope": "Erdős–Rényi 图、巨分量出现条件、配置模型、度序列与度分布",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c4",
+       "kind": "region",
+       "name": "巨分量与阈值",
+       "level": "核心",
+       "scope": "节点占用、边占用、渗流阈值、相变",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c5",
+       "kind": "region",
+       "name": "无标度网络",
+       "level": "核心",
+       "scope": "幂律度分布、Molloy-Reed 准则、阈值消失、度异质性",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c6",
+       "kind": "region",
+       "name": "攻击与稳健性",
+       "level": "进阶",
+       "scope": "随机故障、故意攻击、鲁棒性、最优网络",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c7",
+       "kind": "region",
+       "name": "定向与相依扩展",
+       "level": "拓展",
+       "scope": "定向渗流、相依网络、k-core 渗流、级联失效",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      }
+     ],
+     "title": "复杂网络中的渗流",
+     "map_id": "map-190b2c942b43",
+     "sources": [],
+     "created_at": "2026-10-24T06:36:42.526324Z"
+    }
+   }
+  },
+  {
+   "event_id": "wev_50d2509fb4a74c738fd4",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "body": {
+    "type": "draft_created",
+    "draft": {
+     "goal": "复杂网络中的渗流",
+     "items": [],
+     "title": "复杂网络中的渗流",
+     "levels": [],
+     "map_id": "map-190b2c942b43",
+     "reused": 0,
+     "rounds": [
+      {
+       "why": "先粗问一下每个区域学没学过（自评是弱证据，之后用小测确认）",
+       "done": false,
+       "known": [],
+       "title": "了解你的基础",
+       "answers": null,
+       "dropped": [],
+       "decisions": [
+        {
+         "p": 0.5,
+         "name": "概率与生成函数",
+         "node": "c1",
+         "source": "none",
+         "decision": "teach"
+        },
+        {
+         "p": 0.5,
+         "name": "网络表示与基础量",
+         "node": "c2",
+         "source": "none",
+         "decision": "teach"
+        },
+        {
+         "p": 0.5,
+         "name": "随机图与配置模型",
+         "node": "c3",
+         "source": "none",
+         "decision": "teach"
+        },
+        {
+         "p": 0.5,
+         "name": "巨分量与阈值",
+         "node": "c4",
+         "source": "none",
+         "decision": "teach"
+        },
+        {
+         "p": 0.5,
+         "name": "无标度网络",
+         "node": "c5",
+         "source": "none",
+         "decision": "teach"
+        },
+        {
+         "p": 0.5,
+         "name": "攻击与稳健性",
+         "node": "c6",
+         "source": "none",
+         "decision": "teach"
+        },
+        {
+         "p": 0.5,
+         "name": "定向与相依扩展",
+         "node": "c7",
+         "source": "none",
+         "decision": "teach"
+        }
+       ],
+       "questions": [
+        {
+         "kind": "self_report",
+         "node": "c1",
+         "stem": "你对「随机变量与分布、期望与方差、概率生成函数、矩与导数」这些概率论概念掌握得怎么样？",
+         "means": [
+          "know",
+          "partly",
+          "dont",
+          "unsure"
+         ],
+         "answer": -1,
+         "intent": "self_report",
+         "target": "c1",
+         "options": [
+          "会，能熟练运用",
+          "学过但记不清",
+          "不会/没学过",
+          "说不清"
+         ],
+         "verified": false,
+         "presupposes": []
+        },
+        {
+         "kind": "self_report",
+         "node": "c2",
+         "stem": "你对「节点与边、度与度分布、连通分量、巨分量」这些网络基础量的理解程度如何？",
+         "means": [
+          "know",
+          "partly",
+          "dont",
+          "unsure"
+         ],
+         "answer": -1,
+         "intent": "self_report",
+         "target": "c2",
+         "options": [
+          "会，理解清楚",
+          "学过但记不清",
+          "不会/没学过",
+          "说不清"
+         ],
+         "verified": false,
+         "presupposes": []
+        },
+        {
+         "kind": "self_report",
+         "node": "c3",
+         "stem": "你学过「Erdős–Rényi 随机图、巨分量出现条件、配置模型、度序列与度分布」这些内容吗？",
+         "means": [
+          "know",
+          "partly",
+          "dont",
+          "unsure"
+         ],
+         "answer": -1,
+         "intent": "self_report",
+         "target": "c3",
+         "options": [
+          "会，能分析处理",
+          "学过但记不清",
+          "不会/没学过",
+          "说不清"
+         ],
+         "verified": false,
+         "presupposes": []
+        },
+        {
+         "kind": "self_report",
+         "node": "c4",
+         "stem": "关于「节点占用、边占用、渗流阈值、相变」，你的熟悉程度如何？",
+         "means": [
+          "know",
+          "partly",
+          "dont",
+          "unsure"
+         ],
+         "answer": -1,
+         "intent": "self_report",
+         "target": "c4",
+         "options": [
+          "会，能理解和计算",
+          "学过但记不清",
+          "不会/没学过",
+          "说不清"
+         ],
+         "verified": false,
+         "presupposes": []
+        },
+        {
+         "kind": "self_report",
+         "node": "c5",
+         "stem": "你在「幂律度分布、Molloy-Reed 准则、阈值消失、度异质性」方面了解多少？",
+         "means": [
+          "know",
+          "partly",
+          "dont",
+          "unsure"
+         ],
+         "answer": -1,
+         "intent": "self_report",
+         "target": "c5",
+         "options": [
+          "会，能运用原理",
+          "学过但记不清",
+          "不会/没学过",
+          "说不清"
+         ],
+         "verified": false,
+         "presupposes": []
+        },
+        {
+         "kind": "self_report",
+         "node": "c6",
+         "stem": "对「随机故障、故意攻击、鲁棒性、最优网络」这些网络稳健性主题，你掌握得怎样？",
+         "means": [
+          "know",
+          "partly",
+          "dont",
+          "unsure"
+         ],
+         "answer": -1,
+         "intent": "self_report",
+         "target": "c6",
+         "options": [
+          "会，能分析和解释",
+          "学过但记不清",
+          "不会/没学过",
+          "说不清"
+         ],
+         "verified": false,
+         "presupposes": []
+        },
+        {
+         "kind": "self_report",
+         "node": "c7",
+         "stem": "你学过「定向渗流、相依网络、k-core 渗流、级联失效」这些扩展模型吗？",
+         "means": [
+          "know",
+          "partly",
+          "dont",
+          "unsure"
+         ],
+         "answer": -1,
+         "intent": "self_report",
+         "target": "c7",
+         "options": [
+          "会，能理解其机制",
+          "学过但记不清",
+          "不会/没学过",
+          "说不清"
+         ],
+         "verified": false,
+         "presupposes": []
+        }
+       ]
+      }
+     ],
+     "sources": [],
+     "targets": [
+      "c3",
+      "c4",
+      "c5",
+      "c6",
+      "c7"
+     ],
+     "concepts": [
+      {
+       "id": "c1",
+       "name": "概率与生成函数",
+       "reused": false,
+       "target": false,
+       "aspects": [],
+       "prereqs": [],
+       "subitems": [],
+       "definition": "补上随机变量、期望和概率生成函数，后面算阈值和巨分量大小都要用它。"
+      },
+      {
+       "id": "c2",
+       "name": "网络表示与基础量",
+       "reused": false,
+       "target": false,
+       "aspects": [],
+       "prereqs": [],
+       "subitems": [],
+       "definition": "用图的语言描述网络，会看度、度分布和连通分量，知道巨分量是什么。"
+      },
+      {
+       "id": "c3",
+       "name": "随机图与配置模型",
+       "reused": false,
+       "target": true,
+       "aspects": [],
+       "prereqs": [],
+       "subitems": [],
+       "definition": "介绍两类最常用的网络系综：Erdős–Rényi 随机图和给定度序列的配置模型，它们是渗流计算的平台。"
+      },
+      {
+       "id": "c4",
+       "name": "巨分量与阈值",
+       "reused": false,
+       "target": true,
+       "aspects": [],
+       "prereqs": [],
+       "subitems": [],
+       "definition": "节点或边按概率 p 保留时，巨分量什么时候出现或消失，怎么从生成函数求出临界概率。"
+      },
+      {
+       "id": "c5",
+       "name": "无标度网络",
+       "reused": false,
+       "target": true,
+       "aspects": [],
+       "prereqs": [],
+       "subitems": [],
+       "definition": "度分布呈幂律时阈值会变得极低甚至消失，这决定了无标度网络面对随机故障的异常稳健性。"
+      },
+      {
+       "id": "c6",
+       "name": "攻击与稳健性",
+       "reused": false,
+       "target": true,
+       "aspects": [],
+       "prereqs": [],
+       "subitems": [],
+       "definition": "随机故障和按度攻击对阈值的影响完全不同，以及怎样设计更耐攻击的网络。"
+      },
+      {
+       "id": "c7",
+       "name": "定向与相依扩展",
+       "reused": false,
+       "target": true,
+       "aspects": [],
+       "prereqs": [],
+       "subitems": [],
+       "definition": "有向边、相互依赖网络和 k-core 渗流等更复杂的变体，知道它们和基本模型差在哪里。"
+      }
+     ],
+     "draft_id": "dr_64bb30bde4ef48069679",
+     "described": [],
+     "evidenced": [],
+     "region_id": null,
+     "source_use": null,
+     "described_as": [],
+     "from_background": 0,
+     "dropped_questions": 0
+    }
+   }
+  },
+  {
+   "event_id": "wev_08a9550d16ea4a81a280",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "body": {
+    "type": "probe_answered",
+    "answers": [
+     0,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "draft_id": "dr_64bb30bde4ef48069679",
+    "next_round": {
+     "why": "他说会「概率与生成函数」（会的概率 70%），但还没有答题证据：先用一道题确认",
+     "done": false,
+     "known": [],
+     "title": "聚焦关键知识",
+     "answers": null,
+     "dropped": [],
+     "decisions": [
+      {
+       "p": 0.7,
+       "name": "概率与生成函数",
+       "node": "c1",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "网络表示与基础量",
+       "node": "c2",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "随机图与配置模型",
+       "node": "c3",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "巨分量与阈值",
+       "node": "c4",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "无标度网络",
+       "node": "c5",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "攻击与稳健性",
+       "node": "c6",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "定向与相依扩展",
+       "node": "c7",
+       "source": "self_report",
+       "decision": "teach"
+      }
+     ],
+     "questions": [
+      {
+       "kind": "quiz",
+       "node": "c1",
+       "stem": "设随机变量 X 服从参数为 p 的伯努利分布（即 X=1 的概率为 p，X=0 的概率为 1-p）。则 X 的概率生成函数 G(s) 等于？",
+       "means": [],
+       "answer": 1,
+       "intent": "goal_use",
+       "target": "c1.term",
+       "options": [
+        "G(s) = 1 - p + p s^2",
+        "G(s) = 1 - p + ps",
+        "G(s) = ps + (1-p)s^2",
+        "G(s) = p + (1-p)s"
+       ],
+       "verified": true,
+       "presupposes": []
+      }
+     ]
+    },
+    "round_index": 1
+   }
+  },
+  {
+   "event_id": "wev_0039831cf94a40ba9f6f",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "body": {
+    "type": "goal_map_saved",
+    "action": "diagnosed",
+    "record": {
+     "log": [
+      "诊断第 1 轮 self_report（自评）c1 概率与生成函数：选了「会，能熟练运用」（know）",
+      "诊断第 1 轮 self_report（自评）c2 网络表示与基础量：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c3 随机图与配置模型：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c4 巨分量与阈值：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c5 无标度网络：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c6 攻击与稳健性：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c7 定向与相依扩展：选了「不会/没学过」（dont）"
+     ],
+     "goal": "复杂网络中的渗流",
+     "nodes": [
+      {
+       "id": "c1",
+       "kind": "region",
+       "name": "概率与生成函数",
+       "level": "基础",
+       "scope": "随机变量与分布、期望与方差、概率生成函数、矩与导数",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c2",
+       "kind": "region",
+       "name": "网络表示与基础量",
+       "level": "基础",
+       "scope": "节点与边、度与度分布、连通分量、巨分量",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c3",
+       "kind": "region",
+       "name": "随机图与配置模型",
+       "level": "核心",
+       "scope": "Erdős–Rényi 图、巨分量出现条件、配置模型、度序列与度分布",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c4",
+       "kind": "region",
+       "name": "巨分量与阈值",
+       "level": "核心",
+       "scope": "节点占用、边占用、渗流阈值、相变",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c5",
+       "kind": "region",
+       "name": "无标度网络",
+       "level": "核心",
+       "scope": "幂律度分布、Molloy-Reed 准则、阈值消失、度异质性",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c6",
+       "kind": "region",
+       "name": "攻击与稳健性",
+       "level": "进阶",
+       "scope": "随机故障、故意攻击、鲁棒性、最优网络",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c7",
+       "kind": "region",
+       "name": "定向与相依扩展",
+       "level": "拓展",
+       "scope": "定向渗流、相依网络、k-core 渗流、级联失效",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      }
+     ],
+     "title": "复杂网络中的渗流",
+     "map_id": "map-190b2c942b43",
+     "sources": [],
+     "created_at": "2026-10-24T06:36:42.526324Z"
+    }
+   }
+  },
+  {
+   "event_id": "wev_d3c6d556650c4d13807a",
+   "ts": "2026-10-24T14:37:49.100152+08:00",
+   "body": {
+    "type": "probe_answered",
+    "answers": [
+     1
+    ],
+    "draft_id": "dr_64bb30bde4ef48069679",
+    "next_round": {
+     "why": "「网络表示与基础量」在还没定下来的知识点里最拿不准（会的概率 30%），问一道最能分清的题",
+     "done": false,
+     "known": [],
+     "title": "聚焦关键知识",
+     "answers": null,
+     "dropped": [],
+     "decisions": [
+      {
+       "p": 0.9545,
+       "name": "概率与生成函数",
+       "node": "c1",
+       "source": "quiz",
+       "decision": "known"
+      },
+      {
+       "p": 0.3,
+       "name": "网络表示与基础量",
+       "node": "c2",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "随机图与配置模型",
+       "node": "c3",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "巨分量与阈值",
+       "node": "c4",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "无标度网络",
+       "node": "c5",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "攻击与稳健性",
+       "node": "c6",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "定向与相依扩展",
+       "node": "c7",
+       "source": "self_report",
+       "decision": "teach"
+      }
+     ],
+     "questions": [
+      {
+       "kind": "quiz",
+       "node": "c2",
+       "stem": "在一个无向网络中，某个节点的度（degree）是指：",
+       "means": [],
+       "answer": 1,
+       "intent": "goal_use",
+       "target": "c2.term",
+       "options": [
+        "该节点所属的连通分量中的节点数",
+        "与该节点相连的边的数目",
+        "经过该节点的最短路径的数目",
+        "该节点到其他所有节点的最短路径的平均长度"
+       ],
+       "verified": true,
+       "presupposes": []
+      }
+     ]
+    },
+    "round_index": 2
+   }
+  },
+  {
+   "event_id": "wev_97f810653a434f2595a6",
+   "ts": "2026-10-24T14:37:49.100152+08:00",
+   "body": {
+    "type": "goal_map_saved",
+    "action": "diagnosed",
+    "record": {
+     "log": [
+      "诊断第 1 轮 self_report（自评）c1 概率与生成函数：选了「会，能熟练运用」（know）",
+      "诊断第 1 轮 self_report（自评）c2 网络表示与基础量：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c3 随机图与配置模型：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c4 巨分量与阈值：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c5 无标度网络：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c6 攻击与稳健性：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c7 定向与相依扩展：选了「不会/没学过」（dont）",
+      "诊断第 2 轮 goal_use（目标用到的知识点）c1 概率与生成函数：答对"
+     ],
+     "goal": "复杂网络中的渗流",
+     "nodes": [
+      {
+       "id": "c1",
+       "kind": "region",
+       "name": "概率与生成函数",
+       "level": "基础",
+       "scope": "随机变量与分布、期望与方差、概率生成函数、矩与导数",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c2",
+       "kind": "region",
+       "name": "网络表示与基础量",
+       "level": "基础",
+       "scope": "节点与边、度与度分布、连通分量、巨分量",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c3",
+       "kind": "region",
+       "name": "随机图与配置模型",
+       "level": "核心",
+       "scope": "Erdős–Rényi 图、巨分量出现条件、配置模型、度序列与度分布",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c4",
+       "kind": "region",
+       "name": "巨分量与阈值",
+       "level": "核心",
+       "scope": "节点占用、边占用、渗流阈值、相变",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c5",
+       "kind": "region",
+       "name": "无标度网络",
+       "level": "核心",
+       "scope": "幂律度分布、Molloy-Reed 准则、阈值消失、度异质性",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c6",
+       "kind": "region",
+       "name": "攻击与稳健性",
+       "level": "进阶",
+       "scope": "随机故障、故意攻击、鲁棒性、最优网络",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c7",
+       "kind": "region",
+       "name": "定向与相依扩展",
+       "level": "拓展",
+       "scope": "定向渗流、相依网络、k-core 渗流、级联失效",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      }
+     ],
+     "title": "复杂网络中的渗流",
+     "map_id": "map-190b2c942b43",
+     "sources": [],
+     "created_at": "2026-10-24T06:36:42.526324Z"
+    }
+   }
+  },
+  {
+   "event_id": "wev_edd1ed83d94549db88e9",
+   "ts": "2026-10-24T14:37:57.892065+08:00",
+   "body": {
+    "type": "probe_answered",
+    "answers": [
+     -1
+    ],
+    "draft_id": "dr_64bb30bde4ef48069679",
+    "next_round": {
+     "why": "「随机图与配置模型」在还没定下来的知识点里最拿不准（会的概率 30%），问一道最能分清的题",
+     "done": false,
+     "known": [],
+     "title": "聚焦关键知识",
+     "answers": null,
+     "dropped": [],
+     "decisions": [
+      {
+       "p": 0.9545,
+       "name": "概率与生成函数",
+       "node": "c1",
+       "source": "quiz",
+       "decision": "known"
+      },
+      {
+       "p": 0.0455,
+       "name": "网络表示与基础量",
+       "node": "c2",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "随机图与配置模型",
+       "node": "c3",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "巨分量与阈值",
+       "node": "c4",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "无标度网络",
+       "node": "c5",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "攻击与稳健性",
+       "node": "c6",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "定向与相依扩展",
+       "node": "c7",
+       "source": "self_report",
+       "decision": "teach"
+      }
+     ],
+     "questions": [
+      {
+       "kind": "quiz",
+       "node": "c3",
+       "stem": "在 Erdős–Rényi 随机图 G(n, p) 中，当平均度 c = (n-1)p 小于 1 时，关于最大连通分量的大小，下列哪种说法正确？",
+       "means": [],
+       "answer": 3,
+       "intent": "goal_use",
+       "target": "c3.term",
+       "options": [
+        "最大连通分量大小的数量级为 O(n^(2/3))，且存在巨分量",
+        "最大连通分量大小的数量级为 O(n)，且存在巨分量",
+        "最大连通分量大小的数量级为 O(sqrt(n))，且不存在巨分量",
+        "最大连通分量大小的数量级为 O(log n)，且不存在巨分量"
+       ],
+       "verified": true,
+       "presupposes": []
+      }
+     ]
+    },
+    "round_index": 3
+   }
+  },
+  {
+   "event_id": "wev_50c7385cd37748ca96e4",
+   "ts": "2026-10-24T14:37:57.892065+08:00",
+   "body": {
+    "type": "goal_map_saved",
+    "action": "diagnosed",
+    "record": {
+     "log": [
+      "诊断第 1 轮 self_report（自评）c1 概率与生成函数：选了「会，能熟练运用」（know）",
+      "诊断第 1 轮 self_report（自评）c2 网络表示与基础量：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c3 随机图与配置模型：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c4 巨分量与阈值：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c5 无标度网络：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c6 攻击与稳健性：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c7 定向与相依扩展：选了「不会/没学过」（dont）",
+      "诊断第 2 轮 goal_use（目标用到的知识点）c1 概率与生成函数：答对",
+      "诊断第 3 轮 goal_use（目标用到的知识点）c2 网络表示与基础量：不知道"
+     ],
+     "goal": "复杂网络中的渗流",
+     "nodes": [
+      {
+       "id": "c1",
+       "kind": "region",
+       "name": "概率与生成函数",
+       "level": "基础",
+       "scope": "随机变量与分布、期望与方差、概率生成函数、矩与导数",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c2",
+       "kind": "region",
+       "name": "网络表示与基础量",
+       "level": "基础",
+       "scope": "节点与边、度与度分布、连通分量、巨分量",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c3",
+       "kind": "region",
+       "name": "随机图与配置模型",
+       "level": "核心",
+       "scope": "Erdős–Rényi 图、巨分量出现条件、配置模型、度序列与度分布",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c4",
+       "kind": "region",
+       "name": "巨分量与阈值",
+       "level": "核心",
+       "scope": "节点占用、边占用、渗流阈值、相变",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c5",
+       "kind": "region",
+       "name": "无标度网络",
+       "level": "核心",
+       "scope": "幂律度分布、Molloy-Reed 准则、阈值消失、度异质性",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c6",
+       "kind": "region",
+       "name": "攻击与稳健性",
+       "level": "进阶",
+       "scope": "随机故障、故意攻击、鲁棒性、最优网络",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c7",
+       "kind": "region",
+       "name": "定向与相依扩展",
+       "level": "拓展",
+       "scope": "定向渗流、相依网络、k-core 渗流、级联失效",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      }
+     ],
+     "title": "复杂网络中的渗流",
+     "map_id": "map-190b2c942b43",
+     "sources": [],
+     "created_at": "2026-10-24T06:36:42.526324Z"
+    }
+   }
+  },
+  {
+   "event_id": "wev_a9c3882651204a0d97a3",
+   "ts": "2026-10-24T14:39:35.090611+08:00",
+   "body": {
+    "type": "probe_answered",
+    "answers": [
+     -1
+    ],
+    "draft_id": "dr_64bb30bde4ef48069679",
+    "next_round": {
+     "why": "「巨分量与阈值」在还没定下来的知识点里最拿不准（会的概率 30%），问一道最能分清的题",
+     "done": false,
+     "known": [],
+     "title": "聚焦关键知识",
+     "answers": null,
+     "dropped": [],
+     "decisions": [
+      {
+       "p": 0.9545,
+       "name": "概率与生成函数",
+       "node": "c1",
+       "source": "quiz",
+       "decision": "known"
+      },
+      {
+       "p": 0.0455,
+       "name": "网络表示与基础量",
+       "node": "c2",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "随机图与配置模型",
+       "node": "c3",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "巨分量与阈值",
+       "node": "c4",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "无标度网络",
+       "node": "c5",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "攻击与稳健性",
+       "node": "c6",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "定向与相依扩展",
+       "node": "c7",
+       "source": "self_report",
+       "decision": "teach"
+      }
+     ],
+     "questions": [
+      {
+       "kind": "quiz",
+       "node": "c4",
+       "stem": "在随机网络中，将节点以概率 p 随机移除（即节点占用，保留下来），原网络为 Erdős–Rényi 随机图 G(n, p0)，其平均度为 c。在大量节点极限下，关于巨分量（giant component）的出现，下列说法正确的是：",
+       "means": [],
+       "answer": 1,
+       "intent": "goal_use",
+       "target": "c4.term",
+       "options": [
+        "当 p < 1/2 时，剩余网络不存在巨分量；当 p > 1/2 时，巨分量出现，且其大小随 p 突然跳跃式增长。",
+        "当 p < 1/c 时，剩余网络不存在巨分量；当 p > 1/c 时，巨分量出现，且其大小随 p 连续增长。",
+        "巨分量的出现与 p 无关，只要原网络的平均度 c > 1，移除节点后总会有巨分量。",
+        "巨分量总是在 p = 0 时最大，随着 p 增大而单调减小，不存在阈值现象。"
+       ],
+       "verified": true,
+       "presupposes": []
+      }
+     ]
+    },
+    "round_index": 4
+   }
+  },
+  {
+   "event_id": "wev_221139a6038c491aacec",
+   "ts": "2026-10-24T14:39:35.090611+08:00",
+   "body": {
+    "type": "goal_map_saved",
+    "action": "diagnosed",
+    "record": {
+     "log": [
+      "诊断第 1 轮 self_report（自评）c1 概率与生成函数：选了「会，能熟练运用」（know）",
+      "诊断第 1 轮 self_report（自评）c2 网络表示与基础量：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c3 随机图与配置模型：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c4 巨分量与阈值：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c5 无标度网络：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c6 攻击与稳健性：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c7 定向与相依扩展：选了「不会/没学过」（dont）",
+      "诊断第 2 轮 goal_use（目标用到的知识点）c1 概率与生成函数：答对",
+      "诊断第 3 轮 goal_use（目标用到的知识点）c2 网络表示与基础量：不知道",
+      "诊断第 4 轮 goal_use（目标用到的知识点）c3 随机图与配置模型：不知道"
+     ],
+     "goal": "复杂网络中的渗流",
+     "nodes": [
+      {
+       "id": "c1",
+       "kind": "region",
+       "name": "概率与生成函数",
+       "level": "基础",
+       "scope": "随机变量与分布、期望与方差、概率生成函数、矩与导数",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c2",
+       "kind": "region",
+       "name": "网络表示与基础量",
+       "level": "基础",
+       "scope": "节点与边、度与度分布、连通分量、巨分量",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c3",
+       "kind": "region",
+       "name": "随机图与配置模型",
+       "level": "核心",
+       "scope": "Erdős–Rényi 图、巨分量出现条件、配置模型、度序列与度分布",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c4",
+       "kind": "region",
+       "name": "巨分量与阈值",
+       "level": "核心",
+       "scope": "节点占用、边占用、渗流阈值、相变",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c5",
+       "kind": "region",
+       "name": "无标度网络",
+       "level": "核心",
+       "scope": "幂律度分布、Molloy-Reed 准则、阈值消失、度异质性",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c6",
+       "kind": "region",
+       "name": "攻击与稳健性",
+       "level": "进阶",
+       "scope": "随机故障、故意攻击、鲁棒性、最优网络",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c7",
+       "kind": "region",
+       "name": "定向与相依扩展",
+       "level": "拓展",
+       "scope": "定向渗流、相依网络、k-core 渗流、级联失效",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      }
+     ],
+     "title": "复杂网络中的渗流",
+     "map_id": "map-190b2c942b43",
+     "sources": [],
+     "created_at": "2026-10-24T06:36:42.526324Z"
+    }
+   }
+  },
+  {
+   "event_id": "wev_680dc422a9ae44fea85c",
+   "ts": "2026-10-24T14:41:08.251021+08:00",
+   "body": {
+    "type": "probe_answered",
+    "answers": [
+     -1
+    ],
+    "draft_id": "dr_64bb30bde4ef48069679",
+    "next_round": {
+     "why": "「无标度网络」在还没定下来的知识点里最拿不准（会的概率 30%），问一道最能分清的题",
+     "done": false,
+     "known": [],
+     "title": "聚焦关键知识",
+     "answers": null,
+     "dropped": [],
+     "decisions": [
+      {
+       "p": 0.9545,
+       "name": "概率与生成函数",
+       "node": "c1",
+       "source": "quiz",
+       "decision": "known"
+      },
+      {
+       "p": 0.0455,
+       "name": "网络表示与基础量",
+       "node": "c2",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "随机图与配置模型",
+       "node": "c3",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "巨分量与阈值",
+       "node": "c4",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "无标度网络",
+       "node": "c5",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "攻击与稳健性",
+       "node": "c6",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "定向与相依扩展",
+       "node": "c7",
+       "source": "self_report",
+       "decision": "teach"
+      }
+     ],
+     "questions": [
+      {
+       "kind": "quiz",
+       "node": "c5",
+       "stem": "在一个度分布为幂律 p_k ∝ k^(-γ) 且 2 < γ ≤ 3 的无标度网络中，关于渗流阈值和巨分量的说法，下列正确的是？",
+       "means": [],
+       "answer": 3,
+       "intent": "goal_use",
+       "target": "c5.term",
+       "options": [
+        "此类网络与 Erdős–Rényi 随机图一样，渗流阈值只取决于平均度，因此随机移除节点的行为效果相同。",
+        "由于度异质性很强，即使移除少量高连接度的节点也会破坏巨分量，因此网络对随机故障非常脆弱。",
+        "当 γ 在 2 和 3 之间时，网络存在正的渗流阈值；只有当 γ ≤ 2 时阈值才消失。",
+        "度异质性使得网络对随机故障极其鲁棒，渗流阈值趋近于 0；但对移除度数最高节点的故意攻击非常脆弱。"
+       ],
+       "verified": true,
+       "presupposes": []
+      }
+     ]
+    },
+    "round_index": 5
+   }
+  },
+  {
+   "event_id": "wev_4d7810f4e745470b8307",
+   "ts": "2026-10-24T14:41:08.251021+08:00",
+   "body": {
+    "type": "goal_map_saved",
+    "action": "diagnosed",
+    "record": {
+     "log": [
+      "诊断第 1 轮 self_report（自评）c1 概率与生成函数：选了「会，能熟练运用」（know）",
+      "诊断第 1 轮 self_report（自评）c2 网络表示与基础量：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c3 随机图与配置模型：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c4 巨分量与阈值：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c5 无标度网络：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c6 攻击与稳健性：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c7 定向与相依扩展：选了「不会/没学过」（dont）",
+      "诊断第 2 轮 goal_use（目标用到的知识点）c1 概率与生成函数：答对",
+      "诊断第 3 轮 goal_use（目标用到的知识点）c2 网络表示与基础量：不知道",
+      "诊断第 4 轮 goal_use（目标用到的知识点）c3 随机图与配置模型：不知道",
+      "诊断第 5 轮 goal_use（目标用到的知识点）c4 巨分量与阈值：不知道"
+     ],
+     "goal": "复杂网络中的渗流",
+     "nodes": [
+      {
+       "id": "c1",
+       "kind": "region",
+       "name": "概率与生成函数",
+       "level": "基础",
+       "scope": "随机变量与分布、期望与方差、概率生成函数、矩与导数",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c2",
+       "kind": "region",
+       "name": "网络表示与基础量",
+       "level": "基础",
+       "scope": "节点与边、度与度分布、连通分量、巨分量",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c3",
+       "kind": "region",
+       "name": "随机图与配置模型",
+       "level": "核心",
+       "scope": "Erdős–Rényi 图、巨分量出现条件、配置模型、度序列与度分布",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c4",
+       "kind": "region",
+       "name": "巨分量与阈值",
+       "level": "核心",
+       "scope": "节点占用、边占用、渗流阈值、相变",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c5",
+       "kind": "region",
+       "name": "无标度网络",
+       "level": "核心",
+       "scope": "幂律度分布、Molloy-Reed 准则、阈值消失、度异质性",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c6",
+       "kind": "region",
+       "name": "攻击与稳健性",
+       "level": "进阶",
+       "scope": "随机故障、故意攻击、鲁棒性、最优网络",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c7",
+       "kind": "region",
+       "name": "定向与相依扩展",
+       "level": "拓展",
+       "scope": "定向渗流、相依网络、k-core 渗流、级联失效",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      }
+     ],
+     "title": "复杂网络中的渗流",
+     "map_id": "map-190b2c942b43",
+     "sources": [],
+     "created_at": "2026-10-24T06:36:42.526324Z"
+    }
+   }
+  },
+  {
+   "event_id": "wev_5a7dda05b7e74430a5ce",
+   "ts": "2026-10-24T14:41:14.679987+08:00",
+   "body": {
+    "type": "probe_answered",
+    "answers": [
+     -1
+    ],
+    "draft_id": "dr_64bb30bde4ef48069679",
+    "next_round": {
+     "why": "「攻击与稳健性」在还没定下来的知识点里最拿不准（会的概率 30%），问一道最能分清的题",
+     "done": false,
+     "known": [],
+     "title": "聚焦关键知识",
+     "answers": null,
+     "dropped": [],
+     "decisions": [
+      {
+       "p": 0.9545,
+       "name": "概率与生成函数",
+       "node": "c1",
+       "source": "quiz",
+       "decision": "known"
+      },
+      {
+       "p": 0.0455,
+       "name": "网络表示与基础量",
+       "node": "c2",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "随机图与配置模型",
+       "node": "c3",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "巨分量与阈值",
+       "node": "c4",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "无标度网络",
+       "node": "c5",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "攻击与稳健性",
+       "node": "c6",
+       "source": "self_report",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "定向与相依扩展",
+       "node": "c7",
+       "source": "self_report",
+       "decision": "teach"
+      }
+     ],
+     "questions": [
+      {
+       "kind": "quiz",
+       "node": "c6",
+       "stem": "在比较无标度网络（度分布为幂律，指数 2<γ≤3）与 Erdős–Rényi 随机图对随机节点移除和故意攻击（移除度数最高的节点）的鲁棒性时，下列哪种说法正确？",
+       "means": [],
+       "answer": 1,
+       "intent": "goal_use",
+       "target": "c6.term",
+       "options": [
+        "无标度网络对随机移除和故意攻击都比 ER 随机图更鲁棒。",
+        "无标度网络对随机移除比 ER 随机图更鲁棒，但对故意攻击比 ER 随机图更脆弱。",
+        "无标度网络对随机移除比 ER 随机图更脆弱，但对故意攻击比 ER 随机图更鲁棒。",
+        "ER 随机图对随机移除和故意攻击都比无标度网络更鲁棒。"
+       ],
+       "verified": true,
+       "presupposes": []
+      }
+     ]
+    },
+    "round_index": 6
+   }
+  },
+  {
+   "event_id": "wev_d8a3a21e5738459f847d",
+   "ts": "2026-10-24T14:41:14.679987+08:00",
+   "body": {
+    "type": "goal_map_saved",
+    "action": "diagnosed",
+    "record": {
+     "log": [
+      "诊断第 1 轮 self_report（自评）c1 概率与生成函数：选了「会，能熟练运用」（know）",
+      "诊断第 1 轮 self_report（自评）c2 网络表示与基础量：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c3 随机图与配置模型：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c4 巨分量与阈值：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c5 无标度网络：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c6 攻击与稳健性：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c7 定向与相依扩展：选了「不会/没学过」（dont）",
+      "诊断第 2 轮 goal_use（目标用到的知识点）c1 概率与生成函数：答对",
+      "诊断第 3 轮 goal_use（目标用到的知识点）c2 网络表示与基础量：不知道",
+      "诊断第 4 轮 goal_use（目标用到的知识点）c3 随机图与配置模型：不知道",
+      "诊断第 5 轮 goal_use（目标用到的知识点）c4 巨分量与阈值：不知道",
+      "诊断第 6 轮 goal_use（目标用到的知识点）c5 无标度网络：不知道"
+     ],
+     "goal": "复杂网络中的渗流",
+     "nodes": [
+      {
+       "id": "c1",
+       "kind": "region",
+       "name": "概率与生成函数",
+       "level": "基础",
+       "scope": "随机变量与分布、期望与方差、概率生成函数、矩与导数",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c2",
+       "kind": "region",
+       "name": "网络表示与基础量",
+       "level": "基础",
+       "scope": "节点与边、度与度分布、连通分量、巨分量",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c3",
+       "kind": "region",
+       "name": "随机图与配置模型",
+       "level": "核心",
+       "scope": "Erdős–Rényi 图、巨分量出现条件、配置模型、度序列与度分布",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c4",
+       "kind": "region",
+       "name": "巨分量与阈值",
+       "level": "核心",
+       "scope": "节点占用、边占用、渗流阈值、相变",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c5",
+       "kind": "region",
+       "name": "无标度网络",
+       "level": "核心",
+       "scope": "幂律度分布、Molloy-Reed 准则、阈值消失、度异质性",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c6",
+       "kind": "region",
+       "name": "攻击与稳健性",
+       "level": "进阶",
+       "scope": "随机故障、故意攻击、鲁棒性、最优网络",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c7",
+       "kind": "region",
+       "name": "定向与相依扩展",
+       "level": "拓展",
+       "scope": "定向渗流、相依网络、k-core 渗流、级联失效",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      }
+     ],
+     "title": "复杂网络中的渗流",
+     "map_id": "map-190b2c942b43",
+     "sources": [],
+     "created_at": "2026-10-24T06:36:42.526324Z"
+    }
+   }
+  },
+  {
+   "event_id": "wev_1a2f95f82a3340de9649",
+   "ts": "2026-10-24T14:41:19.681990+08:00",
+   "body": {
+    "type": "probe_answered",
+    "answers": [
+     -1
+    ],
+    "draft_id": "dr_64bb30bde4ef48069679",
+    "next_round": {
+     "why": "「定向与相依扩展」在还没定下来的知识点里最拿不准（会的概率 30%），问一道最能分清的题",
+     "done": false,
+     "known": [],
+     "title": "聚焦关键知识",
+     "answers": null,
+     "dropped": [],
+     "decisions": [
+      {
+       "p": 0.9545,
+       "name": "概率与生成函数",
+       "node": "c1",
+       "source": "quiz",
+       "decision": "known"
+      },
+      {
+       "p": 0.0455,
+       "name": "网络表示与基础量",
+       "node": "c2",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "随机图与配置模型",
+       "node": "c3",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "巨分量与阈值",
+       "node": "c4",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "无标度网络",
+       "node": "c5",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "攻击与稳健性",
+       "node": "c6",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.3,
+       "name": "定向与相依扩展",
+       "node": "c7",
+       "source": "self_report",
+       "decision": "teach"
+      }
+     ],
+     "questions": [
+      {
+       "kind": "quiz",
+       "node": "c7",
+       "stem": "在相依网络（interdependent networks）的渗流模型中，网络 A 和网络 B 之间存在依赖关系：A 中的每个节点依赖 B 中的一个节点，如果 B 中对应节点失效，则 A 中的节点也失效。假设两个网络各自内部都是随机正则图，且初始随机移除一小部分节点。下列哪种说法最准确？",
+       "means": [],
+       "answer": 3,
+       "intent": "goal_use",
+       "target": "c7.term",
+       "options": [
+        "相依网络中的级联失效只发生在网络 B 中，不会影响网络 A。",
+        "级联失效总是连续的，且巨分量大小与移除比例成线性关系。",
+        "相依网络的鲁棒性与单个网络完全相同，依赖边不会改变渗流阈值。",
+        "相依网络中的渗流相变可能是一级相变（不连续），即使很小的初始失效也可能导致网络完全崩溃。"
+       ],
+       "verified": true,
+       "presupposes": []
+      }
+     ]
+    },
+    "round_index": 7
+   }
+  },
+  {
+   "event_id": "wev_92fc78355e814d4399b5",
+   "ts": "2026-10-24T14:41:19.681990+08:00",
+   "body": {
+    "type": "goal_map_saved",
+    "action": "diagnosed",
+    "record": {
+     "log": [
+      "诊断第 1 轮 self_report（自评）c1 概率与生成函数：选了「会，能熟练运用」（know）",
+      "诊断第 1 轮 self_report（自评）c2 网络表示与基础量：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c3 随机图与配置模型：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c4 巨分量与阈值：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c5 无标度网络：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c6 攻击与稳健性：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c7 定向与相依扩展：选了「不会/没学过」（dont）",
+      "诊断第 2 轮 goal_use（目标用到的知识点）c1 概率与生成函数：答对",
+      "诊断第 3 轮 goal_use（目标用到的知识点）c2 网络表示与基础量：不知道",
+      "诊断第 4 轮 goal_use（目标用到的知识点）c3 随机图与配置模型：不知道",
+      "诊断第 5 轮 goal_use（目标用到的知识点）c4 巨分量与阈值：不知道",
+      "诊断第 6 轮 goal_use（目标用到的知识点）c5 无标度网络：不知道",
+      "诊断第 7 轮 goal_use（目标用到的知识点）c6 攻击与稳健性：不知道"
+     ],
+     "goal": "复杂网络中的渗流",
+     "nodes": [
+      {
+       "id": "c1",
+       "kind": "region",
+       "name": "概率与生成函数",
+       "level": "基础",
+       "scope": "随机变量与分布、期望与方差、概率生成函数、矩与导数",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c2",
+       "kind": "region",
+       "name": "网络表示与基础量",
+       "level": "基础",
+       "scope": "节点与边、度与度分布、连通分量、巨分量",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c3",
+       "kind": "region",
+       "name": "随机图与配置模型",
+       "level": "核心",
+       "scope": "Erdős–Rényi 图、巨分量出现条件、配置模型、度序列与度分布",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c4",
+       "kind": "region",
+       "name": "巨分量与阈值",
+       "level": "核心",
+       "scope": "节点占用、边占用、渗流阈值、相变",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c5",
+       "kind": "region",
+       "name": "无标度网络",
+       "level": "核心",
+       "scope": "幂律度分布、Molloy-Reed 准则、阈值消失、度异质性",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c6",
+       "kind": "region",
+       "name": "攻击与稳健性",
+       "level": "进阶",
+       "scope": "随机故障、故意攻击、鲁棒性、最优网络",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c7",
+       "kind": "region",
+       "name": "定向与相依扩展",
+       "level": "拓展",
+       "scope": "定向渗流、相依网络、k-core 渗流、级联失效",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      }
+     ],
+     "title": "复杂网络中的渗流",
+     "map_id": "map-190b2c942b43",
+     "sources": [],
+     "created_at": "2026-10-24T06:36:42.526324Z"
+    }
+   }
+  },
+  {
+   "event_id": "wev_1585c3b707954c15a632",
+   "ts": "2026-10-24T14:41:27.415555+08:00",
+   "body": {
+    "type": "probe_answered",
+    "answers": [
+     -1
+    ],
+    "draft_id": "dr_64bb30bde4ef48069679",
+    "next_round": {
+     "why": "已经足够确定：每个知识点会的概率都已不到 20%（要学），或超过 80% 且有答题证据（会）",
+     "done": true,
+     "known": [
+      {
+       "why": "诊断：会的概率 95%（小测）",
+       "target": "c1"
+      }
+     ],
+     "title": "",
+     "answers": null,
+     "dropped": [],
+     "decisions": [
+      {
+       "p": 0.9545,
+       "name": "概率与生成函数",
+       "node": "c1",
+       "source": "quiz",
+       "decision": "known"
+      },
+      {
+       "p": 0.0455,
+       "name": "网络表示与基础量",
+       "node": "c2",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "随机图与配置模型",
+       "node": "c3",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "巨分量与阈值",
+       "node": "c4",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "无标度网络",
+       "node": "c5",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "攻击与稳健性",
+       "node": "c6",
+       "source": "quiz",
+       "decision": "teach"
+      },
+      {
+       "p": 0.0455,
+       "name": "定向与相依扩展",
+       "node": "c7",
+       "source": "quiz",
+       "decision": "teach"
+      }
+     ],
+     "questions": []
+    },
+    "round_index": 8
+   }
+  },
+  {
+   "event_id": "wev_afdce08bf9064897ab8e",
+   "ts": "2026-10-24T14:41:27.415555+08:00",
+   "body": {
+    "type": "goal_map_saved",
+    "action": "diagnosed",
+    "record": {
+     "log": [
+      "诊断第 1 轮 self_report（自评）c1 概率与生成函数：选了「会，能熟练运用」（know）",
+      "诊断第 1 轮 self_report（自评）c2 网络表示与基础量：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c3 随机图与配置模型：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c4 巨分量与阈值：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c5 无标度网络：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c6 攻击与稳健性：选了「不会/没学过」（dont）",
+      "诊断第 1 轮 self_report（自评）c7 定向与相依扩展：选了「不会/没学过」（dont）",
+      "诊断第 2 轮 goal_use（目标用到的知识点）c1 概率与生成函数：答对",
+      "诊断第 3 轮 goal_use（目标用到的知识点）c2 网络表示与基础量：不知道",
+      "诊断第 4 轮 goal_use（目标用到的知识点）c3 随机图与配置模型：不知道",
+      "诊断第 5 轮 goal_use（目标用到的知识点）c4 巨分量与阈值：不知道",
+      "诊断第 6 轮 goal_use（目标用到的知识点）c5 无标度网络：不知道",
+      "诊断第 7 轮 goal_use（目标用到的知识点）c6 攻击与稳健性：不知道",
+      "诊断第 8 轮 goal_use（目标用到的知识点）c7 定向与相依扩展：不知道",
+      "诊断结束：已经足够确定：每个知识点会的概率都已不到 20%（要学），或超过 80% 且有答题证据（会）",
+      "诊断结论 c1 概率与生成函数：会（会的概率 95%，依据：小测）",
+      "诊断结论 c2 网络表示与基础量：要学（会的概率 5%，依据：小测）",
+      "诊断结论 c3 随机图与配置模型：要学（会的概率 5%，依据：小测）",
+      "诊断结论 c4 巨分量与阈值：要学（会的概率 5%，依据：小测）",
+      "诊断结论 c5 无标度网络：要学（会的概率 5%，依据：小测）",
+      "诊断结论 c6 攻击与稳健性：要学（会的概率 5%，依据：小测）",
+      "诊断结论 c7 定向与相依扩展：要学（会的概率 5%，依据：小测）"
+     ],
+     "goal": "复杂网络中的渗流",
+     "nodes": [
+      {
+       "id": "c1",
+       "kind": "region",
+       "name": "概率与生成函数",
+       "level": "基础",
+       "scope": "随机变量与分布、期望与方差、概率生成函数、矩与导数",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c2",
+       "kind": "region",
+       "name": "网络表示与基础量",
+       "level": "基础",
+       "scope": "节点与边、度与度分布、连通分量、巨分量",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": false,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c3",
+       "kind": "region",
+       "name": "随机图与配置模型",
+       "level": "核心",
+       "scope": "Erdős–Rényi 图、巨分量出现条件、配置模型、度序列与度分布",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c4",
+       "kind": "region",
+       "name": "巨分量与阈值",
+       "level": "核心",
+       "scope": "节点占用、边占用、渗流阈值、相变",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c5",
+       "kind": "region",
+       "name": "无标度网络",
+       "level": "核心",
+       "scope": "幂律度分布、Molloy-Reed 准则、阈值消失、度异质性",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c6",
+       "kind": "region",
+       "name": "攻击与稳健性",
+       "level": "进阶",
+       "scope": "随机故障、故意攻击、鲁棒性、最优网络",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      },
+      {
+       "id": "c7",
+       "kind": "region",
+       "name": "定向与相依扩展",
+       "level": "拓展",
+       "scope": "定向渗流、相依网络、k-core 渗流、级联失效",
+       "state": "collapsed",
+       "parent": null,
+       "reused": false,
+       "target": true,
+       "members": [],
+       "page_id": null,
+       "path_id": null,
+       "prereqs": []
+      }
+     ],
+     "title": "复杂网络中的渗流",
+     "map_id": "map-190b2c942b43",
+     "sources": [],
+     "created_at": "2026-10-24T06:36:42.526324Z"
+    }
+   }
+  },
+  {
+   "event_id": "wev_8b13cac1ca32427cb0fc",
+   "ts": "2026-10-24T14:41:27.415555+08:00",
+   "body": {
+    "type": "draft_closed",
+    "map_id": "map-190b2c942b43",
+    "outcome": "answered",
+    "page_id": null,
+    "path_id": null,
+    "draft_id": "dr_64bb30bde4ef48069679"
+   }
+  }
+ ],
+ "aspect": [
+  {
+   "event_id": "aev_aa4d4009c2d445b3a3c1",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "type": "define_concept",
+   "aspects": [
+    "term",
+    "purpose"
+   ],
+   "prereqs": [],
+   "concept_id": "c1",
+   "difficulty": 3
+  },
+  {
+   "event_id": "aev_a228cc07362f435ebdb5",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "type": "define_concept",
+   "aspects": [
+    "term",
+    "purpose"
+   ],
+   "prereqs": [],
+   "concept_id": "c2",
+   "difficulty": 3
+  },
+  {
+   "event_id": "aev_20d8e2ec72104aada374",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "type": "define_concept",
+   "aspects": [
+    "term",
+    "purpose"
+   ],
+   "prereqs": [],
+   "concept_id": "c3",
+   "difficulty": 3
+  },
+  {
+   "event_id": "aev_a37ac46ce12a42dc8448",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "type": "define_concept",
+   "aspects": [
+    "term",
+    "purpose"
+   ],
+   "prereqs": [],
+   "concept_id": "c4",
+   "difficulty": 3
+  },
+  {
+   "event_id": "aev_eeb3d934b9f043ab9f69",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "type": "define_concept",
+   "aspects": [
+    "term",
+    "purpose"
+   ],
+   "prereqs": [],
+   "concept_id": "c5",
+   "difficulty": 3
+  },
+  {
+   "event_id": "aev_560575b42df344c09273",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "type": "define_concept",
+   "aspects": [
+    "term",
+    "purpose"
+   ],
+   "prereqs": [],
+   "concept_id": "c6",
+   "difficulty": 3
+  },
+  {
+   "event_id": "aev_b60f047a91de4150ade5",
+   "ts": "2026-10-24T14:36:42.526324+08:00",
+   "type": "define_concept",
+   "aspects": [
+    "term",
+    "purpose"
+   ],
+   "prereqs": [],
+   "concept_id": "c7",
+   "difficulty": 3
+  },
+  {
+   "event_id": "aev_db676d04d17e49baa2c4",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c1.term",
+    "kind": "self",
+    "quote": "会，能熟练运用",
+    "polarity": "+",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:0"
+   }
+  },
+  {
+   "event_id": "aev_feb637f358cd4067ba23",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c1.term",
+   "text": "会，能熟练运用",
+   "label": "题目：你对「随机变量与分布、期望与方差、概率生成函数、矩与导数」这些概率论概念掌握得怎么样？；选了「会，能熟练运用」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:0"
+  },
+  {
+   "event_id": "aev_50f6e8e51edc4c70a126",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c1.purpose",
+    "kind": "self",
+    "quote": "会，能熟练运用",
+    "polarity": "+",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:0"
+   }
+  },
+  {
+   "event_id": "aev_7e40fa3f890a4fa2917e",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c1.purpose",
+   "text": "会，能熟练运用",
+   "label": "题目：你对「随机变量与分布、期望与方差、概率生成函数、矩与导数」这些概率论概念掌握得怎么样？；选了「会，能熟练运用」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:0"
+  },
+  {
+   "event_id": "aev_2a0bafc31051443fab65",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c2.term",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:1"
+   }
+  },
+  {
+   "event_id": "aev_0952d6ffdfe0463e8df0",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c2.term",
+   "text": "不会/没学过",
+   "label": "题目：你对「节点与边、度与度分布、连通分量、巨分量」这些网络基础量的理解程度如何？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:1"
+  },
+  {
+   "event_id": "aev_46abf347e2384f40a2af",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c2.purpose",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:1"
+   }
+  },
+  {
+   "event_id": "aev_b55d613b510d4ac18238",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c2.purpose",
+   "text": "不会/没学过",
+   "label": "题目：你对「节点与边、度与度分布、连通分量、巨分量」这些网络基础量的理解程度如何？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:1"
+  },
+  {
+   "event_id": "aev_8d93ff25d42e4f878395",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c3.term",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:2"
+   }
+  },
+  {
+   "event_id": "aev_3402b22d88b64fd9882d",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c3.term",
+   "text": "不会/没学过",
+   "label": "题目：你学过「Erdős–Rényi 随机图、巨分量出现条件、配置模型、度序列与度分布」这些内容吗？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:2"
+  },
+  {
+   "event_id": "aev_b7a0b569e5b041d0bf4b",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c3.purpose",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:2"
+   }
+  },
+  {
+   "event_id": "aev_8492dfba395d4b6aa7ed",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c3.purpose",
+   "text": "不会/没学过",
+   "label": "题目：你学过「Erdős–Rényi 随机图、巨分量出现条件、配置模型、度序列与度分布」这些内容吗？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:2"
+  },
+  {
+   "event_id": "aev_b0d446cfa79e43d984d3",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c4.term",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:3"
+   }
+  },
+  {
+   "event_id": "aev_a3e8a0e5a0994da9b3ab",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c4.term",
+   "text": "不会/没学过",
+   "label": "题目：关于「节点占用、边占用、渗流阈值、相变」，你的熟悉程度如何？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:3"
+  },
+  {
+   "event_id": "aev_838016da1f6942edbe1a",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c4.purpose",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:3"
+   }
+  },
+  {
+   "event_id": "aev_96fce488a9924e759133",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c4.purpose",
+   "text": "不会/没学过",
+   "label": "题目：关于「节点占用、边占用、渗流阈值、相变」，你的熟悉程度如何？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:3"
+  },
+  {
+   "event_id": "aev_6cea12bf964144c0a6e3",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c5.term",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:4"
+   }
+  },
+  {
+   "event_id": "aev_40cd094a51c84ba787e5",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c5.term",
+   "text": "不会/没学过",
+   "label": "题目：你在「幂律度分布、Molloy-Reed 准则、阈值消失、度异质性」方面了解多少？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:4"
+  },
+  {
+   "event_id": "aev_e0beb0c3d5eb43bb9199",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c5.purpose",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:4"
+   }
+  },
+  {
+   "event_id": "aev_628b1de3de0240b68160",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c5.purpose",
+   "text": "不会/没学过",
+   "label": "题目：你在「幂律度分布、Molloy-Reed 准则、阈值消失、度异质性」方面了解多少？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:4"
+  },
+  {
+   "event_id": "aev_5b7fe8e479db47edae70",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c6.term",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:5"
+   }
+  },
+  {
+   "event_id": "aev_6fc705c0d40d4b8c9592",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c6.term",
+   "text": "不会/没学过",
+   "label": "题目：对「随机故障、故意攻击、鲁棒性、最优网络」这些网络稳健性主题，你掌握得怎样？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:5"
+  },
+  {
+   "event_id": "aev_9be407b9a4e84abfb1c6",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c6.purpose",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:5"
+   }
+  },
+  {
+   "event_id": "aev_e36703ea28f34e4bab69",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c6.purpose",
+   "text": "不会/没学过",
+   "label": "题目：对「随机故障、故意攻击、鲁棒性、最优网络」这些网络稳健性主题，你掌握得怎样？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:5"
+  },
+  {
+   "event_id": "aev_129ada751df54a10900e",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c7.term",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:6"
+   }
+  },
+  {
+   "event_id": "aev_2b9ec3f51ac54117b94d",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c7.term",
+   "text": "不会/没学过",
+   "label": "题目：你学过「定向渗流、相依网络、k-core 渗流、级联失效」这些扩展模型吗？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:6"
+  },
+  {
+   "event_id": "aev_781215606d11431aa120",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c7.purpose",
+    "kind": "self",
+    "quote": "不会/没学过",
+    "polarity": "-",
+    "strength": 0.5,
+    "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:6"
+   }
+  },
+  {
+   "event_id": "aev_0f51fc2d48c542008521",
+   "ts": "2026-10-24T14:37:19.040149+08:00",
+   "type": "add_note",
+   "cell": "c7.purpose",
+   "text": "不会/没学过",
+   "label": "题目：你学过「定向渗流、相依网络、k-core 渗流、级联失效」这些扩展模型吗？；选了「不会/没学过」",
+   "evidence_ref": "probeself:dr_64bb30bde4ef48069679:1:6"
+  },
+  {
+   "event_id": "aev_e23297bca1314b01b8e4",
+   "ts": "2026-10-24T14:37:49.100152+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c1.term",
+    "kind": "quiz",
+    "quote": null,
+    "polarity": "+",
+    "strength": 1.0,
+    "evidence_ref": "probe:dr_64bb30bde4ef48069679:2:0"
+   }
+  },
+  {
+   "event_id": "aev_aaeb8357fd0c48bbbf94",
+   "ts": "2026-10-24T14:37:49.100152+08:00",
+   "type": "add_note",
+   "cell": "c1.term",
+   "text": "G(s) = 1 - p + ps",
+   "label": "题目：设随机变量 X 服从参数为 p 的伯努利分布（即 X=1 的概率为 p，X=0 的概率为 1-p）。则 X 的概率生成函数 G(s) 等于？；选了「G(s) = 1 - p + ps」",
+   "evidence_ref": "probe:dr_64bb30bde4ef48069679:2:0"
+  },
+  {
+   "event_id": "aev_69a06c8672e04f698772",
+   "ts": "2026-10-24T14:37:57.892065+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c2.term",
+    "kind": "quiz",
+    "quote": null,
+    "polarity": "-",
+    "strength": 0.8,
+    "evidence_ref": "probe:dr_64bb30bde4ef48069679:3:0"
+   }
+  },
+  {
+   "event_id": "aev_d287249ca82c45e58b84",
+   "ts": "2026-10-24T14:37:57.892065+08:00",
+   "type": "add_note",
+   "cell": "c2.term",
+   "text": "在一个无向网络中，某个节点的度（degree）是指：",
+   "label": "题目：在一个无向网络中，某个节点的度（degree）是指：；选了「不知道」",
+   "evidence_ref": "probe:dr_64bb30bde4ef48069679:3:0"
+  },
+  {
+   "event_id": "aev_db8f1fb8f5fe4629aed6",
+   "ts": "2026-10-24T14:39:35.090611+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c3.term",
+    "kind": "quiz",
+    "quote": null,
+    "polarity": "-",
+    "strength": 0.8,
+    "evidence_ref": "probe:dr_64bb30bde4ef48069679:4:0"
+   }
+  },
+  {
+   "event_id": "aev_041cd20b5cf84cb2ac4e",
+   "ts": "2026-10-24T14:39:35.090611+08:00",
+   "type": "add_note",
+   "cell": "c3.term",
+   "text": "在 Erdős–Rényi 随机图 G(n, p) 中，当平均度 c = (n-1)p 小于 1 时，关于最大连通分量的大小，下列哪种说法正确？",
+   "label": "题目：在 Erdős–Rényi 随机图 G(n, p) 中，当平均度 c = (n-1)p 小于 1 时，关于最大连通分量的大小，下列哪种说法正确？；选了「不知道」",
+   "evidence_ref": "probe:dr_64bb30bde4ef48069679:4:0"
+  },
+  {
+   "event_id": "aev_6117e0b9ca714d3aab34",
+   "ts": "2026-10-24T14:41:08.251021+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c4.term",
+    "kind": "quiz",
+    "quote": null,
+    "polarity": "-",
+    "strength": 0.8,
+    "evidence_ref": "probe:dr_64bb30bde4ef48069679:5:0"
+   }
+  },
+  {
+   "event_id": "aev_4cf464d2b31c4e0c9cce",
+   "ts": "2026-10-24T14:41:08.251021+08:00",
+   "type": "add_note",
+   "cell": "c4.term",
+   "text": "在随机网络中，将节点以概率 p 随机移除（即节点占用，保留下来），原网络为 Erdős–Rényi 随机图 G(n, p0)，其平均度为 c。在大量节点极限下，关于巨分量（giant component）的出现，下列说法正确的是：",
+   "label": "题目：在随机网络中，将节点以概率 p 随机移除（即节点占用，保留下来），原网络为 Erdős–Rényi 随机图 G(n, p0)，其平均度为 c。在大量节点极限下，关于巨分量（giant component）的出现，下列说法正确的是：；选了「不知道」",
+   "evidence_ref": "probe:dr_64bb30bde4ef48069679:5:0"
+  },
+  {
+   "event_id": "aev_0eee31be01a14589845d",
+   "ts": "2026-10-24T14:41:14.679987+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c5.term",
+    "kind": "quiz",
+    "quote": null,
+    "polarity": "-",
+    "strength": 0.8,
+    "evidence_ref": "probe:dr_64bb30bde4ef48069679:6:0"
+   }
+  },
+  {
+   "event_id": "aev_d7f768e49e7f4fcc827f",
+   "ts": "2026-10-24T14:41:14.679987+08:00",
+   "type": "add_note",
+   "cell": "c5.term",
+   "text": "在一个度分布为幂律 p_k ∝ k^(-γ) 且 2 < γ ≤ 3 的无标度网络中，关于渗流阈值和巨分量的说法，下列正确的是？",
+   "label": "题目：在一个度分布为幂律 p_k ∝ k^(-γ) 且 2 < γ ≤ 3 的无标度网络中，关于渗流阈值和巨分量的说法，下列正确的是？；选了「不知道」",
+   "evidence_ref": "probe:dr_64bb30bde4ef48069679:6:0"
+  },
+  {
+   "event_id": "aev_a4bacc7106ec4b248d2a",
+   "ts": "2026-10-24T14:41:19.681990+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c6.term",
+    "kind": "quiz",
+    "quote": null,
+    "polarity": "-",
+    "strength": 0.8,
+    "evidence_ref": "probe:dr_64bb30bde4ef48069679:7:0"
+   }
+  },
+  {
+   "event_id": "aev_7fa6534f0c894917b331",
+   "ts": "2026-10-24T14:41:19.681990+08:00",
+   "type": "add_note",
+   "cell": "c6.term",
+   "text": "在比较无标度网络（度分布为幂律，指数 2<γ≤3）与 Erdős–Rényi 随机图对随机节点移除和故意攻击（移除度数最高的节点）的鲁棒性时，下列哪种说法正确？",
+   "label": "题目：在比较无标度网络（度分布为幂律，指数 2<γ≤3）与 Erdős–Rényi 随机图对随机节点移除和故意攻击（移除度数最高的节点）的鲁棒性时，下列哪种说法正确？；选了「不知道」",
+   "evidence_ref": "probe:dr_64bb30bde4ef48069679:7:0"
+  },
+  {
+   "event_id": "aev_343a364b994745cebe68",
+   "ts": "2026-10-24T14:41:27.415555+08:00",
+   "type": "observe",
+   "observation": {
+    "cell": "c7.term",
+    "kind": "quiz",
+    "quote": null,
+    "polarity": "-",
+    "strength": 0.8,
+    "evidence_ref": "probe:dr_64bb30bde4ef48069679:8:0"
+   }
+  },
+  {
+   "event_id": "aev_5105b6df303f487699d5",
+   "ts": "2026-10-24T14:41:27.415555+08:00",
+   "type": "add_note",
+   "cell": "c7.term",
+   "text": "在相依网络（interdependent networks）的渗流模型中，网络 A 和网络 B 之间存在依赖关系：A 中的每个节点依赖 B 中的一个节点，如果 B 中对应节点失效，则 A 中的节点也失效。假设两个网络各自内部都是随机正则图，且初始随机移除一小部分节点。下列哪种说法最准确？",
+   "label": "题目：在相依网络（interdependent networks）的渗流模型中，网络 A 和网络 B 之间存在依赖关系：A 中的每个节点依赖 B 中的一个节点，如果 B 中对应节点失效，则 A 中的节点也失效。假设两个网络各自内部都是随机正则图，且初始随机移除一小部分节点。下列哪种说法最准确？；选了「不知道」",
+   "evidence_ref": "probe:dr_64bb30bde4ef48069679:8:0"
+  }
+ ]
+}

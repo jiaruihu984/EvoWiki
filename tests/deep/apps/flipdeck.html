@@ -1,0 +1,155 @@
+<div id="deck">
+<style>
+  #deck{--ink:var(--text,#222);--mute:var(--text-2,#5c5c5c);--blue:var(--viz-1,#2f6fdf);--orange:var(--viz-2,#e07b2a);
+    --ok:var(--known,#2f9e5b);--bad:var(--gap,#d9483b);--panel:var(--surface,#f5f5f7);--hair:var(--line,#e3e3e3);
+    color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    padding:4px 2px 8px;max-width:640px;margin:0 auto;user-select:none}
+  #deck *{box-sizing:border-box}
+  #deck button{font:inherit;cursor:pointer;color:inherit}
+  #deck .top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+  #deck .eyebrow{font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--blue);text-transform:uppercase}
+  #deck h3{margin:2px 0 0;font-size:19px;letter-spacing:-.01em}
+  #deck .count{font-variant-numeric:tabular-nums;color:var(--mute);font-size:13px;white-space:nowrap}
+  #deck .bar{height:5px;border-radius:9px;background:color-mix(in srgb,var(--ink) 9%,transparent);overflow:hidden;margin-bottom:18px}
+  #deck .bar i{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,var(--blue),color-mix(in srgb,var(--blue) 55%,var(--ok)));transition:width .35s cubic-bezier(.2,.7,.2,1)}
+  #deck .stage{perspective:1100px;height:210px;margin:0 auto 16px;max-width:440px}
+  #deck .card{position:relative;width:100%;height:100%;border:0;padding:0;background:none;transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .24s,translate .24s;border-radius:18px}
+  #deck .card.flipped{transform:rotateY(180deg)}
+  #deck .card.out-l{translate:-60px 0;opacity:0}
+  #deck .card.out-r{translate:60px 0;opacity:0}
+  #deck .face{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:18px}
+  #deck .front{background:linear-gradient(150deg,color-mix(in srgb,var(--blue) 13%,var(--panel)),var(--panel));
+    border:1px solid color-mix(in srgb,var(--blue) 22%,transparent);box-shadow:0 1px 2px rgb(0 0 0/.05),0 14px 30px -18px color-mix(in srgb,var(--blue) 60%,transparent)}
+  #deck .back{transform:rotateY(180deg);background:linear-gradient(150deg,color-mix(in srgb,var(--blue) 86%,#0a1736),color-mix(in srgb,var(--blue) 62%,#0a1736));color:#fff;box-shadow:0 14px 30px -16px color-mix(in srgb,var(--blue) 80%,transparent)}
+  #deck .fx{font:600 clamp(28px,7vw,40px)/1.2 "Cambria Math","STIX Two Math",Georgia,serif;letter-spacing:.01em}
+  #deck .tag{font-size:12px;color:var(--mute)}
+  #deck .back .tag{color:rgb(255 255 255/.8)}
+  #deck .why{font-size:13px;opacity:.92;max-width:30ch;text-align:center}
+  #deck .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  #deck .btn{border-radius:12px;padding:10px 18px;font-weight:650;font-size:14px;border:1px solid var(--hair);background:var(--bg,#fff);
+    display:inline-flex;align-items:center;gap:8px;transition:transform .15s,background .2s,border-color .2s}
+  #deck .btn:hover{transform:translateY(-1px)}
+  #deck .btn:disabled{opacity:.4;transform:none;cursor:default}
+  #deck .btn.miss{border-color:color-mix(in srgb,var(--orange) 55%,transparent);color:var(--orange)}
+  #deck .btn.know{border-color:color-mix(in srgb,var(--ok) 55%,transparent);color:var(--ok)}
+  #deck .btn.primary{background:var(--blue);border-color:var(--blue);color:var(--bg,#fff)}
+  #deck kbd{font:600 11px/1 ui-monospace,monospace;border:1px solid currentColor;border-radius:5px;padding:2px 5px;opacity:.6}
+  #deck .done{display:none;text-align:center;padding:6px 0 4px}
+  #deck.finished .done{display:block}
+  #deck.finished .play{display:none}
+  #deck .ring{width:116px;height:116px;margin:0 auto 10px;position:relative}
+  #deck .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  #deck .ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:26px;font-variant-numeric:tabular-nums}
+  #deck .missed{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0 14px}
+  #deck .chip{font:600 14px/1 "Cambria Math",Georgia,serif;padding:7px 10px;border-radius:999px;background:color-mix(in srgb,var(--orange) 14%,transparent);color:var(--orange)}
+  canvas.fx-layer{position:fixed;inset:0;pointer-events:none;width:100%;height:100%}
+  @media (prefers-reduced-motion:reduce){#deck .card,#deck .bar i,#deck .btn{transition:none}}
+</style>
+<div class="top">
+  <div><div class="eyebrow">导数翻卡</div><h3>看函数，说出它的导数</h3></div>
+  <div class="count" id="count">1 / 5</div>
+</div>
+<div class="bar"><i id="fill"></i></div>
+<div class="play">
+  <div class="stage">
+    <button class="card" id="card" aria-label="翻面">
+      <div class="face front"><span class="tag">f(x)</span><span class="fx" id="front"></span><span class="tag">点卡片或按空格翻面</span></div>
+      <div class="face back"><span class="tag">f′(x)</span><span class="fx" id="back"></span><span class="why" id="why"></span></div>
+    </button>
+  </div>
+  <div class="row">
+    <button class="btn miss" id="miss" disabled><kbd>←</kbd>没记住</button>
+    <button class="btn know" id="know" disabled>记住了<kbd>→</kbd></button>
+  </div>
+</div>
+<div class="done">
+  <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--hair)" stroke-width="10"/>
+    <circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="var(--ok)" stroke-width="10" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327" style="transition:stroke-dashoffset .8s cubic-bezier(.2,.7,.2,1)"/></svg><b id="score">0/5</b></div>
+  <div id="verdict" style="font-weight:650;font-size:16px"></div>
+  <div class="missed" id="missed"></div>
+  <button class="btn primary" id="again">再来一轮</button>
+</div>
+<script>
+(function () {
+  var CARDS = [
+    { id: "d-sin", f: "sin x", d: "cos x", why: "正弦的斜率就是余弦" },
+    { id: "d-cos", f: "cos x", d: "−sin x", why: "别忘了负号" },
+    { id: "d-exp", f: "eˣ", d: "eˣ", why: "唯一等于自己导数的函数" },
+    { id: "d-ln", f: "ln x", d: "1 / x", why: "x > 0 时成立" },
+    { id: "d-pow", f: "xⁿ", d: "n·xⁿ⁻¹", why: "幂往下拿，指数减一" }
+  ];
+  var root = document.getElementById("deck"), card = document.getElementById("card");
+  var st = { i: 0, flipped: false, results: {} }, shownAt = Date.now(), busy = false;
+  var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function $(id) { return document.getElementById(id); }
+  function paint() {
+    var c = CARDS[st.i];
+    root.classList.toggle("finished", st.i >= CARDS.length);
+    $("fill").style.width = (100 * Object.keys(st.results).length / CARDS.length) + "%";
+    if (st.i >= CARDS.length) return finish();
+    $("count").textContent = (st.i + 1) + " / " + CARDS.length;
+    $("front").textContent = c.f; $("back").textContent = c.d; $("why").textContent = c.why;
+    card.classList.toggle("flipped", st.flipped);
+    $("miss").disabled = $("know").disabled = !st.flipped;
+  }
+  function flip() { if (st.i >= CARDS.length || busy) return; st.flipped = !st.flipped; paint(); }
+  function rate(know) {
+    if (!st.flipped || busy || st.i >= CARDS.length) return;
+    var c = CARDS[st.i];
+    st.results[c.id] = know;
+    evowiki.item(c.id, know ? "know" : "missed", know, false, Date.now() - shownAt);
+    busy = true; card.classList.add(know ? "out-r" : "out-l");
+    setTimeout(function () {
+      card.style.transition = "none"; card.classList.remove("out-r", "out-l", "flipped");
+      st.i += 1; st.flipped = false; paint(); void card.offsetWidth; card.style.transition = "";
+      busy = false; shownAt = Date.now(); evowiki.save(st);
+      if (st.i >= CARDS.length) report();
+    }, calm ? 0 : 240);
+  }
+  function right() { return CARDS.filter(function (c) { return st.results[c.id]; }).length; }
+  function report() {
+    var missed = CARDS.filter(function (c) { return !st.results[c.id]; }).map(function (c) { return c.id; });
+    evowiki.summary({ total: CARDS.length, right: right(), missed: missed });
+    if (!missed.length) confetti();
+  }
+  function finish() {
+    var r = right(), all = r === CARDS.length;
+    $("count").textContent = "完成";
+    $("score").textContent = r + "/" + CARDS.length;
+    $("arc").style.stroke = all ? "var(--ok)" : "var(--orange)";
+    requestAnimationFrame(function () { $("arc").style.strokeDashoffset = String(327 * (1 - r / CARDS.length)); });
+    setTimeout(function () { evowiki.resize(); }, 0);
+    $("verdict").textContent = all ? "全部记住了！" : "还有 " + (CARDS.length - r) + " 张要再看看";
+    var box = $("missed"); box.textContent = "";
+    CARDS.forEach(function (c) { if (!st.results[c.id]) { var s = document.createElement("span"); s.className = "chip"; s.textContent = c.f + " → " + c.d; box.appendChild(s); } });
+  }
+  function confetti() {
+    if (calm) return;
+    var cv = document.createElement("canvas"); cv.className = "fx-layer"; document.body.appendChild(cv);
+    var g = cv.getContext("2d"), W = cv.width = innerWidth, H = cv.height = innerHeight, t0 = performance.now();
+    var cs = getComputedStyle(document.documentElement), cols = ["--viz-1", "--viz-2", "--known", "--shaky"].map(function (k) { return cs.getPropertyValue(k).trim() || "#2f6fdf"; });
+    var P = []; for (var k = 0; k < 120; k++) P.push({ x: W / 2, y: H * .45, vx: (Math.random() - .5) * 9, vy: -Math.random() * 9 - 3, r: Math.random() * 6.3, s: 4 + Math.random() * 5, c: cols[k % cols.length] });
+    (function frame(now) {
+      var t = now - t0; g.clearRect(0, 0, W, H); g.globalAlpha = Math.max(0, 1 - t / 2200);
+      P.forEach(function (p) { p.vy += .28; p.x += p.vx; p.y += p.vy; p.r += .2; g.save(); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); g.restore(); });
+      if (t < 2200) requestAnimationFrame(frame); else cv.remove();
+    })(t0);
+  }
+  card.addEventListener("click", flip);
+  $("miss").addEventListener("click", function () { rate(false); });
+  $("know").addEventListener("click", function () { rate(true); });
+  $("again").addEventListener("click", function () { st = { i: 0, flipped: false, results: {} }; shownAt = Date.now(); evowiki.save(st); paint(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === " ") { e.preventDefault(); flip(); } else if (e.key === "ArrowLeft") rate(false); else if (e.key === "ArrowRight") rate(true);
+  });
+  evowiki.onInit(function (p) {
+    if (p && typeof p.i === "number" && p.results && typeof p.results === "object") { st = { i: Math.min(p.i, CARDS.length), flipped: false, results: p.results }; paint(); }
+  });
+  paint();
+  evowiki.ready();
+  evowiki.resize();
+})();
+</script>
+</div>

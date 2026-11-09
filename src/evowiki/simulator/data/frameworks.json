@@ -1,0 +1,20 @@
+{
+  "library_version": "frameworks-v1",
+  "provenance": "Hand-authored for the simulator from textbook chapter groupings and course outlines. Written without reference to the representation policy, its rules or its feature list.",
+  "frames": [
+    {"id": "linear_maps", "label": "Linear maps and their matrices",
+     "members": ["vector", "matrix", "linear_transformation", "eigenvalue"]},
+    {"id": "spectral_methods", "label": "Spectral methods",
+     "members": ["eigenvalue", "svd", "pca", "covariance"]},
+    {"id": "data_statistics", "label": "Describing the spread of data",
+     "members": ["variance", "covariance", "pca"]},
+    {"id": "dimensionality_reduction", "label": "Dimensionality reduction",
+     "members": ["pca", "svd", "autoencoder"]},
+    {"id": "representation_learning", "label": "Representation learning",
+     "members": ["pca", "autoencoder", "neural_network", "lora"]},
+    {"id": "low_rank_structure", "label": "Low-rank structure",
+     "members": ["matrix", "svd", "lora"]},
+    {"id": "neural_models", "label": "Neural network models",
+     "members": ["neural_network", "autoencoder", "lora"]}
+  ]
+}

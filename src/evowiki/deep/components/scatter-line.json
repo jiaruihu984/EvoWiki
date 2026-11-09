@@ -1,0 +1,413 @@
+{
+  "component_id": "scatter-line",
+  "name": "散点与直线",
+  "description": "一组点画在 x–y 平面上，可以拖动或用按钮移动任意一点；可开关最小二乘直线、残差、主方向，并读出相关系数 r 和协方差。",
+  "learning_question": "点的位置怎么决定相关、回归线和主方向？",
+  "scenarios": [
+    "相关",
+    "相关系数",
+    "回归",
+    "最小二乘",
+    "协方差",
+    "PCA 主方向",
+    "散点图",
+    "离群点"
+  ],
+  "params": {
+    "移动点": "拖动或用方向按钮改变某个点的位置",
+    "叠加": "开关回归线、残差、主方向、r、协方差",
+    "预设点": "一键加入 config 里的额外点"
+  },
+  "html_path": "src/evowiki/deep/components/scatter-line.html",
+  "height": 660,
+  "probes": [
+    {
+      "target": "#nudge-up",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "#nudge-right",
+      "action": "click",
+      "expect_change": "#result"
+    },
+    {
+      "target": "#reset",
+      "action": "click",
+      "expect_change": "#result"
+    }
+  ],
+  "source": "component-library: generic scatter plot with fit / principal direction / r / covariance",
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "title",
+      "question",
+      "x_label",
+      "y_label",
+      "x_unit",
+      "y_unit",
+      "x_min",
+      "x_max",
+      "y_min",
+      "y_max",
+      "points",
+      "overlays",
+      "start_on",
+      "presets",
+      "notes"
+    ],
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "组件标题，说明这些点是什么"
+      },
+      "question": {
+        "type": "string",
+        "description": "这个交互回答的学习问题，一句话"
+      },
+      "x_label": {
+        "type": "string",
+        "description": "横轴的名字，如 每周学习时间"
+      },
+      "y_label": {
+        "type": "string",
+        "description": "纵轴的名字，如 测验分数"
+      },
+      "x_unit": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "横轴单位，没有就 null"
+      },
+      "y_unit": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "纵轴单位，没有就 null"
+      },
+      "x_min": {
+        "type": "number",
+        "description": "横轴下限，点和拖动范围都在轴内"
+      },
+      "x_max": {
+        "type": "number",
+        "description": "横轴上限，大于 x_min"
+      },
+      "y_min": {
+        "type": "number",
+        "description": "纵轴下限"
+      },
+      "y_max": {
+        "type": "number",
+        "description": "纵轴上限，大于 y_min"
+      },
+      "points": {
+        "type": "array",
+        "minItems": 1,
+        "description": "4–14 个点，坐标要落在轴范围内",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label",
+            "x",
+            "y"
+          ],
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "点的名字（短）"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "overlays": {
+        "type": "array",
+        "minItems": 1,
+        "description": "提供哪些可开关的叠加：fit=最小二乘直线，residuals=竖直残差，direction=主方向（过均值的第一主成分），correlation=相关系数 r，covariance=协方差和四个象限。想讲 PCA 时给 direction；想讲回归给 fit 和 residuals",
+        "items": {
+          "type": "string",
+          "enum": [
+            "fit",
+            "residuals",
+            "direction",
+            "correlation",
+            "covariance"
+          ]
+        }
+      },
+      "start_on": {
+        "type": "array",
+        "minItems": 0,
+        "description": "一开始就打开的叠加，必须是 overlays 的子集，可以为空",
+        "items": {
+          "type": "string",
+          "enum": [
+            "fit",
+            "residuals",
+            "direction",
+            "correlation",
+            "covariance"
+          ]
+        }
+      },
+      "presets": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "array",
+            "minItems": 1,
+            "description": "最多 3 个学习者可以一键加入的点（例如离群点）",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "label",
+                "x",
+                "y"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "description": "点的名字（短）"
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "notes": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "fit",
+              "direction",
+              "correlation",
+              "covariance"
+            ],
+            "description": "各叠加打开时在结果句末尾追加的一句提示，没有就 null",
+            "properties": {
+              "fit": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "direction": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "correlation": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "covariance": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "example_configs": [
+    {
+      "title": "学习时间和测验分数：点越像一条线，相关越强",
+      "question": "移动一个点，直线、相关系数 r 和残差怎么跟着变？一个离群点能把 r 拉多少？",
+      "x_label": "每周学习时间",
+      "y_label": "测验分数",
+      "x_unit": "小时",
+      "y_unit": "分",
+      "x_min": 0,
+      "x_max": 10,
+      "y_min": 30,
+      "y_max": 100,
+      "points": [
+        {
+          "label": "A",
+          "x": 1,
+          "y": 48
+        },
+        {
+          "label": "B",
+          "x": 2,
+          "y": 55
+        },
+        {
+          "label": "C",
+          "x": 2.5,
+          "y": 52
+        },
+        {
+          "label": "D",
+          "x": 3,
+          "y": 63
+        },
+        {
+          "label": "E",
+          "x": 4,
+          "y": 60
+        },
+        {
+          "label": "F",
+          "x": 5,
+          "y": 72
+        },
+        {
+          "label": "G",
+          "x": 6,
+          "y": 70
+        },
+        {
+          "label": "H",
+          "x": 7,
+          "y": 82
+        },
+        {
+          "label": "I",
+          "x": 8,
+          "y": 78
+        },
+        {
+          "label": "J",
+          "x": 9,
+          "y": 90
+        }
+      ],
+      "overlays": [
+        "fit",
+        "residuals",
+        "correlation",
+        "covariance"
+      ],
+      "start_on": [
+        "fit",
+        "correlation"
+      ],
+      "presets": [
+        {
+          "label": "学得少却考高分",
+          "x": 1,
+          "y": 95
+        }
+      ],
+      "notes": {
+        "fit": "直线是让竖直残差平方和最小的那一条。",
+        "direction": null,
+        "correlation": "r 只衡量“像不像一条直线”，不说明谁导致谁。",
+        "covariance": "协方差的正负看点落在均值十字的哪几个象限。"
+      }
+    },
+    {
+      "title": "身高和臂展：两个量一起变大",
+      "question": "这团点最长的方向是哪条线？它和回归线有什么不同？",
+      "x_label": "身高",
+      "y_label": "臂展",
+      "x_unit": "厘米",
+      "y_unit": "厘米",
+      "x_min": 150,
+      "x_max": 190,
+      "y_min": 150,
+      "y_max": 190,
+      "points": [
+        {
+          "label": "1",
+          "x": 155,
+          "y": 156
+        },
+        {
+          "label": "2",
+          "x": 160,
+          "y": 159
+        },
+        {
+          "label": "3",
+          "x": 162,
+          "y": 164
+        },
+        {
+          "label": "4",
+          "x": 165,
+          "y": 166
+        },
+        {
+          "label": "5",
+          "x": 168,
+          "y": 167
+        },
+        {
+          "label": "6",
+          "x": 170,
+          "y": 172
+        },
+        {
+          "label": "7",
+          "x": 173,
+          "y": 172
+        },
+        {
+          "label": "8",
+          "x": 176,
+          "y": 178
+        },
+        {
+          "label": "9",
+          "x": 180,
+          "y": 179
+        },
+        {
+          "label": "10",
+          "x": 184,
+          "y": 186
+        }
+      ],
+      "overlays": [
+        "direction",
+        "fit",
+        "covariance",
+        "correlation"
+      ],
+      "start_on": [
+        "direction",
+        "correlation"
+      ],
+      "presets": null,
+      "notes": {
+        "fit": null,
+        "direction": "主方向是点云伸得最长的方向；它沿着数据的“主要变化”，两个量单位相同时才好比较。",
+        "correlation": null,
+        "covariance": "两个量同时高于或同时低于各自均值，乘积为正，协方差就为正。"
+      }
+    }
+  ]
+}

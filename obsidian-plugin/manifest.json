@@ -1,0 +1,9 @@
+{
+  "id": "evowiki",
+  "name": "EvoWiki",
+  "version": "0.1.0",
+  "minAppVersion": "1.15.0",
+  "description": "EvoWiki knowledge state, explanations and quick checks beside your notes.",
+  "author": "Jerry",
+  "isDesktopOnly": true
+}

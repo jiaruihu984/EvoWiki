@@ -1,0 +1,75 @@
+{
+  "component_id": "distribution-line",
+  "name": "数轴上的分布",
+  "description": "一组数画在数轴上，标出均值、每个数的偏差和偏差的平方（方块）；拖动分散程度，看方差和标准差怎么变，可选加入一个离群值。",
+  "learning_question": "数越分散，方差为什么变大？离群值为什么影响特别大？",
+  "scenarios": ["方差", "标准差", "离群值", "均值", "偏差", "数据的分散程度", "z 分数之前的直觉"],
+  "params": {"分散程度": "把所有数按同一比例拉开或收拢", "偏差平方": "显示或隐藏每个数的平方方块", "离群值": "加入或移除 config 里的离群点"},
+  "html_path": "src/evowiki/deep/components/distribution-line.html",
+  "height": 560,
+  "probes": [
+    {"target": "#spread", "action": "input", "value": "22", "expect_change": "#result"},
+    {"target": "#squares", "action": "click", "expect_change": "#result"}
+  ],
+  "source": "component-library: generic from the flow prototype's varianceLab()",
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["title", "question", "unit", "spread_label", "points", "outlier", "notes"],
+    "properties": {
+      "title": {"type": "string", "description": "组件标题，说明这组数是什么"},
+      "question": {"type": "string", "description": "这个交互回答的学习问题，一句话"},
+      "unit": {"type": ["string", "null"], "description": "数的单位，如 分、℃；没有就 null"},
+      "spread_label": {"type": "string", "description": "滑块的名字，如 分数拉开的程度"},
+      "points": {
+        "type": "array", "minItems": 1, "description": "3–12 个数，按原始值给出",
+        "items": {
+          "type": "object", "additionalProperties": false, "required": ["label", "value"],
+          "properties": {
+            "label": {"type": ["string", "null"], "description": "点的名字（短），null 时用 A、B、C"},
+            "value": {"type": "number"}
+          }
+        }
+      },
+      "outlier": {
+        "anyOf": [
+          {"type": "null"},
+          {"type": "object", "additionalProperties": false, "required": ["label", "value"],
+           "properties": {"label": {"type": "string"}, "value": {"type": "number"}}}
+        ],
+        "description": "可选的一个离群点，学习者可以把它加进来"
+      },
+      "notes": {
+        "anyOf": [
+          {"type": "null"},
+          {"type": "object", "additionalProperties": false, "required": ["low", "high"],
+           "properties": {"low": {"type": "string", "description": "收得很紧时的说明"},
+                          "high": {"type": "string", "description": "拉得很开时的说明"}}}
+        ]
+      }
+    }
+  },
+  "example_configs": [
+    {
+      "title": "同一个班的五次测验：分数有多散？",
+      "question": "把分数拉开或收拢，看偏差的平方和方差怎么跟着变。",
+      "unit": "分",
+      "spread_label": "分数拉开的程度",
+      "points": [{"label": "A", "value": 62}, {"label": "B", "value": 70}, {"label": "C", "value": 74},
+                 {"label": "D", "value": 79}, {"label": "E", "value": 90}],
+      "outlier": null,
+      "notes": {"low": "大家分数差不多：方块都很小，方差小。",
+                "high": "分数拉得很开：离均值远的人，方块面积按距离的平方变大，方差跟着变大。"}
+    },
+    {
+      "title": "一周的最高气温，加一个热浪日",
+      "question": "一个特别热的日子会把方差拉高多少？标准差还能代表“平常的波动”吗？",
+      "unit": "℃",
+      "spread_label": "气温起伏的程度",
+      "points": [{"label": "周一", "value": 24}, {"label": "周二", "value": 26}, {"label": "周三", "value": 25},
+                 {"label": "周四", "value": 27}, {"label": "周五", "value": 23}, {"label": "周六", "value": 26}],
+      "outlier": {"label": "热浪日", "value": 38},
+      "notes": null
+    }
+  ]
+}

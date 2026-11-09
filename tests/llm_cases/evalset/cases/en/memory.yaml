@@ -1,0 +1,51 @@
+- id: en-memory-actual-background
+  language: en
+  translated_from: two-things-one-sentence
+  kind: act
+  topic: User background
+  source: {ref: "Public explicit background memory regression, adapted to an English account"}
+  steps: [{say: "My job is mechanical engineering, and I am learning statistics for quality control. Save my job in My background."}]
+  grade:
+    - tool_called: {any_of: [remember_about_me]}
+    - profile_text: {contains: engineer}
+    - turn_ok: {}
+- id: en-memory-new-conversation
+  language: en
+  translated_from: two-things-one-sentence
+  kind: act
+  topic: Background continuity
+  source: {ref: "Public explicit memory control extended across real English conversations"}
+  steps:
+    - {say: "I work as a physiotherapist. Remember my profession in My background."}
+    - {new_session: true}
+    - {say: "What is my profession? Please use what I actually told you."}
+  grade:
+    - profile_text: {contains: physiotherapist}
+    - answer_has: {any_of: [physiotherapist, physiotherapy]}
+    - turn_ok: {}
+- id: en-memory-forget-current-chat
+  language: en
+  translated_from: forget-fact-same-conversation
+  kind: canary
+  topic: Explicit forgetting
+  source: {ref: "Public same-conversation forgetting regression translated to an invented pet name"}
+  steps:
+    - {say: "My pet hamster is called Pebblewort. Remember its name."}
+    - {say: "Forget my hamster's name everywhere, including this conversation. I explicitly authorize forgetting it now."}
+    - {accept: true}
+    - {say: "What is my hamster's name? If it was forgotten, do not recover it from earlier messages."}
+  grade:
+    - answer_lacks: {terms: [Pebblewort, pebblewort]}
+    - profile_text: {excludes: Pebblewort}
+    - turn_ok: {}
+- id: en-memory-hypothetical-is-not-me
+  language: en
+  translated_from: undone-limit-not-a-decision
+  kind: no_act
+  topic: Hypothetical information
+  source: {ref: "Public non-fact memory control adapted to a hypothetical occupation"}
+  steps: [{say: "For a fictional example, suppose I were an astronaut. Explain an average using that example. This is not my occupation; do not save it as my background."}]
+  grade:
+    - tool_not_called: {names: [remember_about_me, record_evidence]}
+    - profile_text: {excludes: astronaut}
+    - turn_ok: {}

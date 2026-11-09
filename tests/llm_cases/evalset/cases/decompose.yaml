@@ -1,0 +1,79 @@
+# 第 8 类 拆解路径: the product splits a new goal into blocks now, as the user would ask it. Gold coverage (where
+# Metacademy has the goal) reads the blocks' names, included points, summaries and definitions; off-topic, count and
+# repeats read the names.
+# `floors_unverified_by_user`: the three floors are the machine-learning ones (gold/README.md Threshold);
+# the other two goals use the same numbers.
+- id: goal-ml
+  kind: act
+  topic: 机器学习
+  world: r1
+  source: {ref: "tests/llm_cases/gold：Metacademy 机器学习（锚点 13 个，README 的三条下限）"}
+  steps: [{say: "我想学机器学习"}, {accept: true}, {settle: true}]
+  grade:
+    - turn_ok: {}
+    - gold_coverage: {goal: 机器学习}
+- id: goal-nn
+  kind: act
+  topic: 神经网络
+  world: r1
+  source: {ref: "tests/llm_cases/gold：Metacademy 神经网络", floors_unverified_by_user: true}
+  steps: [{say: "我想学神经网络"}, {accept: true}, {settle: true}]
+  grade:
+    - turn_ok: {}
+    - gold_coverage: {goal: 神经网络}
+- id: goal-svd
+  kind: act
+  topic: 奇异值分解
+  world: r1
+  source: {ref: "tests/llm_cases/gold：Metacademy 奇异值分解", floors_unverified_by_user: true}
+  steps: [{say: "我想学奇异值分解"}, {accept: true}, {settle: true}]
+  grade:
+    - turn_ok: {}
+    - gold_coverage: {goal: 奇异值分解}
+- id: goal-python-not-off-topic
+  kind: act
+  topic: python
+  world: r1
+  source: {ref: "goals.md：确认 python 出孔雀鱼方格；旧稿「渗流分成 7 块」的 goal 字段却是 python", failed: "分块跑到别的目标上"}
+  steps: [{say: "我想学 python"}, {accept: true}, {settle: true}]
+  grade:
+    - turn_ok: {}
+    - blocks_lack: {terms: [渗流, 孔雀鱼, 咖啡, 手冲]}
+    - blocks_between: {lo: 3}
+- id: goal-bayes-with-background
+  kind: control
+  topic: 贝叶斯定理
+  world: r1
+  source: {ref: "goals.md 学点新的：带背景（贝叶斯定理），分块都贴题"}
+  steps: [{say: "我想学贝叶斯定理，概率论的基础我学过"}, {accept: true}, {settle: true}]
+  grade:
+    - turn_ok: {}
+    - blocks_lack: {terms: [渗流, 孔雀鱼, 咖啡, 手冲]}
+    - blocks_between: {lo: 3}
+- id: goal-ukulele-from-zero
+  kind: act
+  topic: 尤克里里
+  world: r1
+  source: {ref: "goals.md 学点新的：零基础（尤克里里），分块都贴题"}
+  steps: [{say: "我想学尤克里里，完全零基础"}, {accept: true}, {settle: true}]
+  grade:
+    - turn_ok: {}
+    - blocks_lack: {terms: [渗流, 孔雀鱼, 咖啡, 手冲]}
+    - blocks_between: {lo: 3}
+- id: goal-python-twice
+  kind: no_act
+  topic: python
+  world: r1
+  source: {ref: "goals.md 需要你定 3：重复目标不拦，再输 python 又花 64 秒分出一份新稿，没提旧目标", failed: "又分出一份 8 块的新稿"}
+  steps: [{say: "我想学 python"}, {accept: true}, {settle: true}, {say: "我想学 python"}]
+  grade:
+    - turn_tool_not_called: {turn: 2, names: [new_goal]}
+- id: goal-shrimp-not-too-many-blocks
+  kind: act
+  topic: 黑壳虾
+  world: reuse_shrimp
+  source: {ref: "协调者转述的用户抱怨：黑壳虾的路径有 15 行，太长；上限 12 是我取的", floors_unverified_by_user: true}
+  steps: [{say: "我想学怎么养黑壳虾"}, {accept: true}, {settle: true}]
+  grade:
+    - turn_ok: {}
+    - blocks_between: {lo: 3, hi: 12}

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<style>
+  :root{--ink:var(--text,#222);--mute:var(--text-2,#5c5c5c);--blue:var(--viz-1,#2f6fdf);--orange:var(--viz-2,#e07b2a);--ok:var(--known,#2f9e5b);--bad:var(--gap,#d9483b);--hair:var(--line,#e3e3e3);--panel:var(--surface,#f5f5f7)}
+  body{color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;padding:2px 2px 8px}
+  *{box-sizing:border-box}
+  button,input{font:inherit;color:inherit}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .eyebrow{font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--blue)}
+  h3{margin:2px 0 0;font-size:19px;letter-spacing:-.01em}
+  .stat{font-variant-numeric:tabular-nums;font-size:13px;color:var(--mute);text-align:right}
+  .stat b{display:block;font-size:22px;color:var(--ink);font-weight:650}
+  .plot{position:relative;border-radius:14px;background:var(--panel);overflow:hidden}
+  canvas{display:block;width:100%;height:220px}
+  .legend{position:absolute;left:12px;top:10px;display:flex;gap:12px;font-size:12px;color:var(--mute)}
+  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+  .ctrl{display:flex;align-items:center;gap:12px;margin:14px 2px 6px;flex-wrap:wrap}
+  .ctrl label{font-size:13px;color:var(--mute);white-space:nowrap}
+  .ctrl output{font-variant-numeric:tabular-nums;font-weight:650;min-width:2ch;display:inline-block}
+  input[type=range]{flex:1;min-width:160px;accent-color:var(--blue)}
+  .pills{display:flex;gap:6px}
+  .pill{border:1px solid var(--hair);background:transparent;border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer}
+  .pill[aria-pressed=true]{background:var(--blue);border-color:var(--blue);color:var(--bg,#fff)}
+  .q{margin-top:12px;border-top:1px solid var(--hair);padding-top:12px}
+  .q p{margin:0 0 8px;font-weight:600}
+  .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .opt{border:1px solid var(--hair);background:var(--bg,#fff);border-radius:12px;padding:9px 14px;cursor:pointer;font-size:14px;transition:border-color .2s,background .2s}
+  .opt:hover{border-color:var(--blue)}
+  .opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+  .opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,transparent)}
+  .fb{font-size:13px;color:var(--mute);margin-top:8px;min-height:1.5em}
+  @media (prefers-reduced-motion:reduce){.opt{transition:none}}
+</style>
+</head>
+<body>
+<div class="head">
+  <div><div class="eyebrow">傅里叶级数</div><h3>用正弦波叠出一个方波</h3></div>
+  <div class="stat">跳变处的过冲<b id="over">—</b></div>
+</div>
+<div class="plot">
+  <canvas id="cv" aria-label="方波和它的傅里叶部分和"></canvas>
+  <div class="legend"><span><i style="background:var(--blue)"></i>前 N 项之和</span><span><i style="background:var(--mute);opacity:.5;height:2px"></i>方波</span></div>
+</div>
+<div class="ctrl">
+  <label for="n">谐波个数 N = <output id="nv">3</output></label>
+  <input id="n" type="range" min="1" max="40" step="1" value="3">
+  <div class="pills"><button class="pill" id="play" aria-pressed="true">动画</button></div>
+</div>
+<div class="q">
+  <p>N 一直增大，跳变旁边那个尖角（过冲）会消失吗？</p>
+  <div class="opts"><button class="opt" data-a="vanish">会，越来越小直到没有</button><button class="opt" data-a="stays">不会，一直多出跳变的约 9%</button></div>
+  <div class="fb" id="fb"></div>
+</div>
+<script>
+(function () {
+  var cv = document.getElementById("cv"), g = cv.getContext("2d"), slider = document.getElementById("n");
+  var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var N = 3, phase = 0, playing = !calm, raf = 0, answered = false, shown = Date.now();
+  function col(k, d) { return getComputedStyle(document.documentElement).getPropertyValue(k).trim() || d; }
+  function sum(x, n) { var s = 0; for (var k = 0; k < n; k++) { var m = 2 * k + 1; s += Math.sin(m * x) / m; } return 4 / Math.PI * s; }
+  function draw() {
+    var dpr = Math.min(2, devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    var mid = H * .58, amp = H * .3, left = 128 > W * .3 ? W * .3 : 128, x0 = left + 24, span = W - x0 - 14;
+    // square wave
+    g.strokeStyle = col("--text-2", "#888"); g.globalAlpha = .4; g.lineWidth = 1.5; g.setLineDash([5, 4]); g.beginPath();
+    for (var px = 0; px <= span; px++) { var t = px / span * 4 * Math.PI + phase, v = Math.sin(t) >= 0 ? 1 : -1, y = mid - v * amp; px ? g.lineTo(x0 + px, y) : g.moveTo(x0 + px, y); }
+    g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+    // epicycles at the left, chained circles
+    var cx = left * .5, cy = mid, blue = col("--viz-1", "#2f6fdf"), orange = col("--viz-2", "#e07b2a");
+    g.lineWidth = 1;
+    for (var k = 0; k < Math.min(N, 8); k++) {
+      var m = 2 * k + 1, r = 4 / Math.PI / m * amp * .55, a = m * phase;
+      g.globalAlpha = .35; g.strokeStyle = blue; g.beginPath(); g.arc(cx, cy, r, 0, 2 * Math.PI); g.stroke(); g.globalAlpha = 1;
+      var nx = cx + r * Math.cos(a), ny = cy - r * Math.sin(a);
+      g.strokeStyle = blue; g.beginPath(); g.moveTo(cx, cy); g.lineTo(nx, ny); g.stroke(); cx = nx; cy = ny;
+    }
+    var head = mid - sum(phase, N) * amp;
+    g.setLineDash([3, 4]); g.strokeStyle = orange; g.beginPath(); g.moveTo(cx, cy); g.lineTo(x0, head); g.stroke(); g.setLineDash([]);
+    // partial sum
+    g.strokeStyle = blue; g.lineWidth = 2.4; g.lineJoin = "round"; g.beginPath();
+    for (px = 0; px <= span; px++) { t = px / span * 4 * Math.PI + phase; y = mid - sum(t, N) * amp; px ? g.lineTo(x0 + px, y) : g.moveTo(x0 + px, y); }
+    g.stroke();
+    g.fillStyle = orange; g.beginPath(); g.arc(x0, head, 4, 0, 2 * Math.PI); g.fill();
+  }
+  function overshoot() { var best = 0; for (var i = 1; i < 2000; i++) { var v = sum(i / 2000 * Math.PI, N); if (v > best) best = v; } return (best - 1) / 2 * 100; }
+  function update() { document.getElementById("nv").textContent = N; document.getElementById("over").textContent = overshoot().toFixed(1) + "%"; draw(); }
+  function loop() { phase += .012; draw(); raf = playing ? requestAnimationFrame(loop) : 0; }
+  slider.addEventListener("input", function () { N = +slider.value; update(); evowiki.save({ n: N }); });
+  document.getElementById("play").addEventListener("click", function (e) {
+    playing = !playing; e.currentTarget.setAttribute("aria-pressed", String(playing)); if (playing && !raf) loop();
+  });
+  document.querySelectorAll(".opt").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (answered) return; answered = true;
+      var ok = b.dataset.a === "stays";
+      b.classList.add(ok ? "right" : "wrong");
+      if (!ok) document.querySelector('[data-a="stays"]').classList.add("right");
+      setTimeout(function () { evowiki.resize(); }, 0);
+      document.getElementById("fb").textContent = ok ? "对：这是吉布斯现象。尖角越来越窄，但高度停在跳变的约 9%。" : "其实不会：拖到 N = 40 看看，尖角变窄了，高度还在约 9%。";
+      evowiki.item("gibbs", b.dataset.a, ok, false, Date.now() - shown);
+      evowiki.summary({ total: 1, right: ok ? 1 : 0, missed: ok ? [] : ["gibbs"] });
+    });
+  });
+  evowiki.onInit(function (p) { if (p && p.n >= 1 && p.n <= 40) { N = p.n; slider.value = String(N); update(); } });
+  addEventListener("resize", function () { draw(); evowiki.resize(); });
+  addEventListener("evowiki:theme", draw);
+  update(); if (playing) loop(); else document.getElementById("play").setAttribute("aria-pressed", "false");
+  evowiki.ready();
+  evowiki.resize();
+})();
+</script>
+</body>
+</html>
