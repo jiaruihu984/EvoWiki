@@ -133,7 +133,7 @@ K 让教学决策建立在持续积累的学习证据上，而不只是模型对
 
 经过几十次学习、数百道练习后，重要信息可能散落在大量会话中。全部塞进上下文既昂贵，也容易引入无关信息；简单截断又会丢失关键经历。
 
-EvoWiki 借鉴 [Claude Dreaming](https://www.anthropic.com/research/components-of-agent-memory)，为 Agent 增加后台记忆整理机制。
+EvoWik为 Agent 增加了后台记忆整理机制。
 
 - **记住学习经历。** 跨会话整理知识掌握的变化、曾经的误解、尚未解决的问题。新会话读取相关概要，需要时再追溯原始记录。
 - **记住系统改进经历。** 整理每次修改的原因、测试、效果和回滚结果，让后续改进能够参考过去的经验。
@@ -145,7 +145,7 @@ EvoWiki 借鉴 [Claude Dreaming](https://www.anthropic.com/research/components-o
 
 普通 AI 收到负反馈，通常只会调整当前回答。下一次遇到类似问题，背后的提示词、工具和执行策略可能完全没变。
 
-EvoWiki 参考 [Harness²](https://arxiv.org/abs/2610.14224)，构建了受控的 RSI机制。
+EvoWiki构建了受控的 RSI机制。
 
 改进者可以读取执行轨迹、用户反馈、当前配置和历史实验，分析问题究竟出在提示词、工具、上下文还是执行流程。
 
@@ -163,7 +163,7 @@ EvoWiki 参考 [Harness²](https://arxiv.org/abs/2610.14224)，构建了受控�
 
 **阅读、写作、练习、记忆整理和系统改进，其实不需要五套 Agent。**
 
-EvoWiki 借鉴 [Pi](https://github.com/earendil-works/pi)，将核心执行统一为：
+EvoWiki将核心执行统一为：
 
 **模型判断 → 工具调用 → 获取结果 → 继续执行**
 
