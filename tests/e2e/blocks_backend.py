@@ -163,14 +163,23 @@ CASCADE = {"title": "复杂网络的级联失效", "framing": "", "caveat": "", 
 COVERS = {b["name"]: b["covers"] for b in BLOCKS["blocks"]}
 # An entered block's pages (one level, intake@v26): its covers as one page each.
 BLOCK_PAGES: dict[str, list[str]] = {name: list(COVERS[name]) for name in SIX}
-_BLOCKS_CALL = "把学习目标分成几大块"        # intake@v32: the user's blocks prompt
 # intake@v32: entering a block that is not atomic splits it one level (goals/intake ONE_LEVEL_SCOPE)
 _ENTERED = re.compile(r"(?:里的一块|下面的一部分)「(.+?)」（id ")
 
 
 def intake_reply(prompt: str) -> dict:
     """goals.intake: the blocks call, or one entered block's parts; anything else fails closed."""
-    if _BLOCKS_CALL in prompt:
+    # The entered-block request also has a goal header. Route its more specific scope first.
+    m = _ENTERED.search(prompt)
+    if m:
+        name = m.group(1)
+        pages = BLOCK_PAGES.get(name, [name])
+        return {"parts": [
+            {"name": p, "summary": f"{p}是怎么回事、要注意什么", "atomic": True} for p in pages],
+            "recommended": [{"from": pages[0], "to": p, "why": f"{p}是在{pages[0]}的基础上讲的"}
+                            for p in pages[1:]]}
+    # Match the request's data header, not the learner-facing wording or editable instructions.
+    if re.search(r"^学习目标：「", prompt, re.MULTILINE):
         # S1 (intake@v31): his words for the goal (the 「他为这个目标说的原话」 lines, or the goal line)
         line = re.search(r"学习目标：「(.*?)」", prompt, re.DOTALL)
         said = re.search(r"他为这个目标说的原话：.*?<<<资料内容开始>>>\n(.*?)\n<<<资料内容结束>>>",
@@ -190,14 +199,6 @@ def intake_reply(prompt: str) -> dict:
                  if '"framing"' in prompt or k not in ("framing", "caveat", "mainline", "start",
                                                      "question")}
         return {**reply, "limits": limits, "stated_beginner": word != "", "beginner_quote": word}
-    m = _ENTERED.search(prompt)
-    if m:
-        name = m.group(1)
-        pages = BLOCK_PAGES.get(name, [name])
-        return {"parts": [      # each cover one point to learn and check on its own
-            {"name": p, "summary": f"{p}是怎么回事、要注意什么", "atomic": True} for p in pages],
-            "recommended": [{"from": pages[0], "to": p, "why": f"{p}是在{pages[0]}的基础上讲的"}
-                            for p in pages[1:]]}
     raise Unscripted(f"goals.intake: {prompt[:80]!r}")
 
 

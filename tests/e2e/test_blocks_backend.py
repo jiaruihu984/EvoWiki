@@ -56,18 +56,38 @@ def test_the_limits_edit_is_a_valid_edit_goal_blocks():
 
 
 def test_s1_reply_has_the_goal_record():
+    from evowiki.goals.blocks import blocks_prompt
     from tests.e2e.blocks_backend import intake_reply
-    out = intake_reply("把学习目标分成几大块\n学习目标：「我要学黑壳虾」\n他为这个目标说的原话：\n"
-                       "（以下是资料内容）\n<<<资料内容开始>>>\n完全零基础，想尽快读到第一页\n"
-                       "<<<资料内容结束>>>\nframing")
+    out = intake_reply(blocks_prompt("我要学黑壳虾", ["完全零基础，想尽快读到第一页"], [], "zh"))
     assert out["stated_beginner"] and out["beginner_quote"] == "完全零基础"
     assert out["limits"] == ["尽快读到第一页"]
 
 
-def test_the_scripted_intake_answers_the_real_blocks_prompt():
-    """The blocks prompt's wording moved (「…把学习目标分成几大块」): the fail-closed script raised
-    Unscripted (a BaseException) inside new_goal's step and the e2e turns hung PENDING."""
+@pytest.mark.parametrize("intro", [None, "根据这位学习者的目标安排学习顺序。"])
+def test_the_scripted_intake_answers_the_real_blocks_prompt(intro):
+    """Changing planning instructions must not break the fail-closed product fixture."""
     from evowiki.goals.blocks import blocks_prompt
     from tests.e2e.blocks_backend import intake_reply
-    out = intake_reply(blocks_prompt("我要学黑壳虾", ["完全零基础"], [], "zh"))
+    prompt = blocks_prompt("我要学黑壳虾", ["完全零基础"], [], "zh")
+    if intro is not None:
+        prompt = intro + "\n" + prompt.partition("\n")[2]
+    out = intake_reply(prompt)
     assert out["blocks"] and out["stated_beginner"]
+
+
+def test_entered_block_with_goal_header_is_not_a_new_goal():
+    from evowiki.goals.intake import GOAL_LINE, ONE_LEVEL_SCOPE
+    from tests.e2e.blocks_backend import BLOCK_PAGES, intake_reply
+    prompt = GOAL_LINE.format(goal="我要学黑壳虾") + ONE_LEVEL_SCOPE.format(
+        parent_goal="黑壳虾", where="一块", region_name="分类与鉴别", region_id="region-1",
+        scope="俗称和身体结构", level_title="基础", siblings="")
+    out = intake_reply(prompt)
+    assert [part["name"] for part in out["parts"]] == BLOCK_PAGES["分类与鉴别"]
+    assert "blocks" not in out
+
+
+def test_an_unrecognized_intake_request_still_fails_closed():
+    from tests.e2e.blocks_backend import intake_reply
+    from tests.e2e.wiki_backend import Unscripted
+    with pytest.raises(Unscripted):
+        intake_reply("没有目标或待展开模块的请求")
