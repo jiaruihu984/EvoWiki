@@ -746,7 +746,7 @@ def _local_id(map_id: str, name: str) -> str:
 
 
 def _goal_graph(w: _Work, res: IntakeResult, final: dict[str, str], *,
-                parent: tuple[str, str] | None = None) -> None:
+                parent: tuple[str, str] | None = None, layout_map: GoalMap | None = None) -> None:
     """Write this goal's nodes and relations into the graph (`GraphSaved(action="goal_nodes")`
     with its K and name events; nothing when the graph does not change or the user is not
     converted yet): every intake node is a node (named as its K definition; a new node takes the
@@ -798,7 +798,9 @@ def _goal_graph(w: _Work, res: IntakeResult, final: dict[str, str], *,
         log.warning("goal nodes for %s skipped %s", w.user_id, x)
     if same_structure(graph, g):
         return
-    aspect, wiki = graph_events(w.state, w.k, graph, "goal_nodes", now=w.now, new_id=w.new_id)
+    layout_state = (w.state.model_copy(update={"maps": {**w.state.maps, layout_map.map_id: layout_map}})
+                    if layout_map is not None else w.state)
+    aspect, wiki = graph_events(layout_state, w.k, graph, "goal_nodes", now=w.now, new_id=w.new_id)
     w.add_aspect(aspect)
     w.add_events(wiki)
 
@@ -1645,9 +1647,13 @@ def enter_region(repo: Repo, gw: CountingGateway, user_id: str, map_id: str, reg
     flag = marked(w.state, {node.id: False}, {node.id: node.name})
     if flag is not None:
         w.add(flag)
-    _goal_graph(w, res.model_copy(update={"regions": ()}), {}, parent=(node.id, node.name))
-    _show_children(w, m, node, [c.id for c in res.concepts], {c.id: c.name for c in res.concepts},
-                   _child_said(res), {c.id: c.in_goal for c in res.concepts if c.in_goal})
+    kids, child_log = node_children(
+        w.state, m, node, [c.id for c in res.concepts], {c.id: c.name for c in res.concepts},
+        said=_child_said(res), scopes={c.id: c.in_goal for c in res.concepts if c.in_goal})
+    expanded = _log_lines(m.replace(node.model_copy(update={"state": "expanded"}), *kids), child_log)
+    _goal_graph(w, res.model_copy(update={"regions": ()}), {}, parent=(node.id, node.name),
+                layout_map=expanded)
+    _save_map(w, m, expanded, "expanded")
     links = res.links
     w.commit(repo, [lambda conn: sources.write_links(conn, user_id, links, now)]
              if sources is not None and links else ())

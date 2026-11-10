@@ -44,6 +44,7 @@ from evowiki.wikiapp.goal_groups import goal_groups
 from evowiki.wikiapp.group_places import _vectors, group_text, top_groups
 from evowiki.wikiapp.kwrite import Ids
 from evowiki.wikiapp.repo import Commit, Repo, Snapshot
+from evowiki.wikiapp.split_layout import split_members, split_positions
 from evowiki.wikiapp.state import WikiState
 from evowiki.wikiapp.wiki_schemas import GroupOut
 
@@ -146,10 +147,14 @@ def _by_relations(members: Sequence[str], graph: NodeGraph) -> list[tuple[float,
     return [(float(x), float(y)) for x, y in p]
 
 
-def _cloud(members: Sequence[str], name: str, px: float, room: int = 0, graph: NodeGraph | None = None) -> tuple[_Box, dict[str, tuple[float, float]]]:
+def _cloud(members: Sequence[str], name: str, px: float, room: int = 0, graph: NodeGraph | None = None,
+           splits: dict[str, dict[str, tuple[float, float]]] | None = None) -> tuple[_Box, dict[str, tuple[float, float]]]:
     """A cloud with its title above: its box, and each point from the box's bottom-left (y grows up, as the page draws it). `room`: the points
     drawn across this and other goals, including its further dots when shared."""
-    pts = _by_relations(members, graph) if graph is not None and len(members) >= room else _scatter(max(len(members), room), name + "|" + "|".join(members))
+    fixed = (splits or {}).get(members[0]) if members else None
+    pts = ([fixed[m] for m in members] if fixed is not None else
+           _by_relations(members, graph) if graph is not None and len(members) >= room else
+           _scatter(max(len(members), room), name + "|" + "|".join(members)))
     pts = pts or [(0.0, 0.0)]
     x0, x1 = min(p[0] for p in pts), max(p[0] for p in pts)
     y0, y1 = min(p[1] for p in pts), max(p[1] for p in pts)
@@ -159,11 +164,12 @@ def _cloud(members: Sequence[str], name: str, px: float, room: int = 0, graph: N
     return _Box(w, h), {m: (w / 2 + p[0] - mid, SPACING / 2 + p[1] - y0) for m, p in zip(members, pts, strict=False)}
 
 
-def _picture(name: str, blocks: Sequence[tuple[str, Sequence[str], int]], graph: NodeGraph) -> tuple[_Box, dict[str, tuple[float, float]]]:
+def _picture(name: str, blocks: Sequence[tuple[str, Sequence[str], int]], graph: NodeGraph,
+             splits: dict[str, dict[str, tuple[float, float]]] | None = None) -> tuple[_Box, dict[str, tuple[float, float]]]:
     """A top group at its best spacing: its blocks in a compact organic cluster under its title; or, with one block, a cloud under its title."""
     if len(blocks) == 1:
-        return _cloud(blocks[0][1], name, GOAL_TITLE, blocks[0][2], graph)
-    clouds = [_cloud(members, title, BLOCK_TITLE, room, graph) for title, members, room in blocks]
+        return _cloud(blocks[0][1], name, GOAL_TITLE, blocks[0][2], graph, splits)
+    clouds = [_cloud(members, title, BLOCK_TITLE, room, graph, splits) for title, members, room in blocks]
     # Measure real clouds and titles, seed compact irregular centres, then keep
     # their measured rectangles clear with the same solver as the whole map.
     boxes = [c[0] for c in clouds]
@@ -267,9 +273,18 @@ def arrange(state: WikiState, embedder: Embedder | None = None, *, fresh: bool =
     for t in tops:
         kids = [g for g in groups if g.level == 1 and g.parent == t.id]
         blocks = []
+        splits: dict[str, dict[str, tuple[float, float]]] = {}
         for g in kids or [t]:
             region = _region_of(state, g)
             members = [m for m in g.members if m not in seen]
+            # The hidden hub is part of the same rigid picture as its real children.
+            if region is not None and region.state == "expanded" and g.map_id is not None:
+                children = [i for i in split_members(state.maps[g.map_id], region)
+                            if i in stored and i not in seen]
+                if children and region.id in stored and region.id not in seen:
+                    members = [region.id, *children]
+                    splits[region.id] = {region.id: (0.0, 0.0),
+                                         **split_positions((0.0, 0.0), children)}
             # a block all of whose points stand on an earlier goal has its place all the same: its own node marks it
             if not members and region is not None and graph.node(region.id) is not None:
                 members = [region.id]
@@ -283,7 +298,7 @@ def arrange(state: WikiState, embedder: Embedder | None = None, *, fresh: bool =
             box, pts, at = _stood({m: stored[m] for m in mine}, t.name)
             starts.append(at)
         else:
-            box, pts = _picture(t.name, blocks, graph) if blocks else (_Box(_title_w(t.name, GOAL_TITLE), _head(GOAL_TITLE)), {})
+            box, pts = _picture(t.name, blocks, graph, splits) if blocks else (_Box(_title_w(t.name, GOAL_TITLE), _head(GOAL_TITLE)), {})
             starts.append(None)
         boxes.append(box)
         pictures.append(pts)

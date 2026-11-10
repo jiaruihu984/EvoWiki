@@ -34,7 +34,9 @@ export class WikiCore {
    * `of` sections, `ended` once the stream is over (written, failed or stopped). 学点新的's page cards fill with it.
    */
   readonly writeProgress = new Set<(p: { pageId: string; done: number; of: number; ended: boolean; ok: boolean }) => void>();
+  noteWriteProgress: { pageId: string; pass: number | null; section: number | null; of: number | null } | null = null;
   emitWriteProgress(p: { pageId: string; done: number; of: number; ended: boolean; ok: boolean }): void {
+    if (this.noteWriteProgress?.pageId === p.pageId) this.noteWriteProgress = p.ended ? null : { ...this.noteWriteProgress, section: p.done, of: p.of };
     for (const fn of [...this.writeProgress]) { try { fn(p); } catch (e) { console.warn("EvoWiki: a write progress listener failed", e); } }
   }
   disposed = false;

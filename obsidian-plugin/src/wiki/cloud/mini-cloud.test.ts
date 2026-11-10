@@ -63,6 +63,20 @@ describe("MiniCloud (今天's thumbnail = a live miniature of the 知识图谱 p
     expect(FakeSigma.last.killed).toBe(true);
   });
 
+  it("keeps the miniature drifting when Windows requests reduced motion", async () => {
+    expect(matchMedia("(prefers-reduced-motion: reduce)").matches).toBe(true);
+    let frame: FrameRequestCallback = () => undefined;
+    vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) => { frame = cb; return 1; });
+    let now = 1000; vi.spyOn(performance, "now").mockImplementation(() => now);
+    const { m } = make(source());
+    Object.defineProperty(m.canvas, "offsetWidth", { value: 260 });
+    document.body.append(m.root, m.goals.root); m.sync(); await flush();
+    const graph = FakeSigma.last.graph, id = graph.nodes()[0]!, x = Number(graph.getNodeAttribute(id, "x"));
+    now = 1300; frame(now);
+    expect(graph.getNodeAttribute(id, "x")).not.toBe(x);
+    m.destroy();
+  });
+
   it("the box getting a size (placed in 今天, the sidebar resized) resizes Sigma", async () => {
     const { m } = make(source());
     document.body.append(m.root, m.goals.root);
@@ -86,14 +100,17 @@ describe("MiniCloud (今天's thumbnail = a live miniature of the 知识图谱 p
     m.destroy();
   });
 
-  it("always the whole graph: a new graph puts the camera back on Sigma's fit", async () => {
+  it("an unchanged graph poll retains the graph, rows and camera", async () => {
     const { m } = make(source());                                    // every read is a new graph object
     document.body.append(m.root, m.goals.root);
     m.sync();
     await flush();
     FakeSigma.last.camera.setState({ x: 0.1, ratio: 0.3 });
+    const graph = FakeSigma.last.graph, row = m.goals.root.firstElementChild;
     await m.goals.graphStore.refresh();
-    expect(FakeSigma.last.camera.getState()).toMatchObject({ x: 0.5, y: 0.5, ratio: 1 });
+    expect(FakeSigma.last.graph).toBe(graph);
+    expect(m.goals.root.firstElementChild).toBe(row);
+    expect(FakeSigma.last.camera.getState()).toMatchObject({ x: 0.1, y: 0.5, ratio: 0.3 });
     m.destroy();
   });
 

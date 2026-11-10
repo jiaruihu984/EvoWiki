@@ -223,8 +223,8 @@ def blocks_step_line(step: str, titles: Sequence[str] = ()) -> str:
     named = [t for t in titles if t.strip()]
     if named:
         more = f"等 {len(named)} 份资料" if len(named) > 1 else ""
-        return f"正在看{_book(named[0])}{more}，分成几大块"
-    return "正在把目标分成几大块"
+        return f"正在看{_book(named[0])}{more}，拆解学习路径"
+    return "正在拆解学习路径"
 
 
 _READING_STEPS = {"plan": "正在排段落", "check": "正在核对段落", "repair": "正在修正段落"}

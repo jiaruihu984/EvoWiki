@@ -67,7 +67,7 @@ export class PromptView extends ItemView {
   private name(): string | null {
     const p = this.host.controller().state.prompts;
     const step = p.kind === "ready" ? p.value.find((x) => x.step === this.key) : undefined;
-    return step ? step.name : null;
+    return step ? PROMPT_COPY.name(step.step) : null;
   }
 
   /** A controller change: draw when the data first arrives; later, bring in a text that changed elsewhere (an undo) unless it is being edited. */
@@ -116,15 +116,15 @@ export class PromptView extends ItemView {
     ta.value = step.text;
     this.ta = ta;
     this.shown = step.text;
-    localizedAttribute(ta, "aria-label", () => (PROMPT_COPY.promptLabel(step.name)));
+    localizedAttribute(ta, "aria-label", () => (PROMPT_COPY.promptLabel(PROMPT_COPY.name(step.step))));
     const row = el("div", "row");
     row.style.marginTop = "12px";
     const save = btn(() => (PROMPT_COPY.save), "primary", () => { void this.guard(save, reset, () => c.savePrompt(this.key, ta.value)); });
     const reset = btn(() => (PROMPT_COPY.reset), "", () => {
-      void this.guard(save, reset, async () => { const t = await c.resetPrompt(this.key); if (t !== null) ta.value = t; return t !== null; });
+      void this.guard(save, reset, async () => { const before = ta.value; const t = await c.resetPrompt(this.key); if (t !== null && (ta.value === before || ta.value === t)) { ta.value = t; this.shown = t; } return t !== null; });
     });
     row.append(save, reset);
-    page.append(el("h1", "", step.name));
+    page.append(el("h1", "", () => PROMPT_COPY.name(step.step)));
     if (step.format_note) { const n = el("div", "muted", step.format_note); n.dataset.role = "format-note"; page.append(n); }
     page.append(ta, row);
   }

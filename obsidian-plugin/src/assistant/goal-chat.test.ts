@@ -42,12 +42,12 @@ describe("the goal_new card (asst.js draftList a.unit = 块, app.js blocksAct)",
     expect(rows.slice(-1)[0]).toMatchObject({ phase: "live", title: "梯度下降" });
     rig.dispose();
   });
-  it("a draft of blocks: 「黑壳虾」分成 5 块, rows 第 n 块, × 去掉「…」, 加一块, 确认 / 取消 (no sub line)", async () => {
+  it("a draft of blocks: 为「黑壳虾」拆解学习路径, rows 第 n 块, × 去掉「…」, 加一块, 确认 / 取消 (no sub line)", async () => {
     const rig = cardRig();
     await rig.ask([FIVE]);
     const card = rig.q(".ew-amsg > .ew-propcard")!;
     expect([...card.children].map((c) => c.tagName.toLowerCase() + "." + c.className)).toEqual(["b.", "div.ew-draft", "div.ew-row"]);
-    expect(card.querySelector("b")!.textContent).toBe("「黑壳虾」分成 5 块");
+    expect(card.querySelector("b")!.textContent).toBe("为「黑壳虾」拆解学习路径");
     const li = rig.all(".ew-alist.ew-drag > li");
     expect(li[1]!.getAttribute("aria-label")).toBe("第 2 块：水质，拖动或用 Alt + 上下键调整顺序");
     // × has no native title tooltip (master ui-polish-1023), only its aria-label
@@ -58,7 +58,7 @@ describe("the goal_new card (asst.js draftList a.unit = 块, app.js blocksAct)",
     expect([...card.querySelectorAll(":scope > .ew-row button")].map((b) => b.textContent)).toEqual(["确认", "取消"]);
     // the title follows the draft as it is edited
     li[1]!.querySelector<HTMLButtonElement>(".ew-x")!.click();
-    expect(rig.q(".ew-amsg > .ew-propcard b")!.textContent).toBe("「黑壳虾」分成 4 块");
+    expect(rig.q(".ew-amsg > .ew-propcard b")!.textContent).toBe("为「黑壳虾」拆解学习路径");
     rig.dispose();
   });
 
@@ -90,7 +90,7 @@ describe("the goal_new card (asst.js draftList a.unit = 块, app.js blocksAct)",
     await rig.ask([FOUR], "水质和养起来合成一块");
     const cards = rig.all(".ew-amsg > .ew-propcard");
     expect(cards.map((c) => [c.querySelector("b")!.textContent, c.querySelector(".ew-res")?.textContent ?? null]))
-      .toEqual([["「黑壳虾」分成 5 块", "已换成新的分法"], ["「黑壳虾」分成 4 块", null]]);
+      .toEqual([["为「黑壳虾」拆解学习路径", "已换成新的分法"], ["为「黑壳虾」拆解学习路径", null]]);
     expect(rows.map((r) => [r.actionId, r.phase, r.replaced, r.blocks.length])).toEqual([["g1", "wait", false, 5], ["g1", "rejected", true, 5], ["g2", "wait", false, 4]]);
     expect(rows[2]!.blocks[1]).toEqual({ key: "keep", name: "养起来", scope: "水温、开缸", level: "" });
     rig.dispose();
@@ -164,7 +164,7 @@ describe("the goal_new card (asst.js draftList a.unit = 块, app.js blocksAct)",
     rig.dispose();
   });
 
-  it("确认 with an edited list: the edited draft goes with approve; the done card 已把「黑壳虾」分成 3 块 + 已完成, no list, 查看详情 / 撤销; the row's result reaches 学点新的", async () => {
+  it("确认 with an edited list: the edited draft goes with approve; the done card 已为「黑壳虾」拆解学习路径 + 已完成, no list, 查看详情 / 撤销; the row's result reaches 学点新的", async () => {
     const rig = cardRig();
     const rows: GoalChatRow[] = [];
     rig.ctl.onGoalRow((r) => rows.push(r));
@@ -175,7 +175,7 @@ describe("the goal_new card (asst.js draftList a.unit = 块, app.js blocksAct)",
     await rig.ctl.confirmAction("g1");
     expect(rig.api.actionCalls[0]).toEqual({ op: "approve", id: "g1", draft: { pages: [{ key: "id" }, { key: "keep" }, { key: "sick" }] } });
     const card = rig.q(".ew-amsg > .ew-propcard")!;
-    expect(card.querySelector(".ew-thead b")!.textContent).toBe("已把「黑壳虾」分成 3 块");
+    expect(card.querySelector(".ew-thead b")!.textContent).toBe("已为「黑壳虾」拆解学习路径");
     expect(card.querySelector(".ew-thead .ew-chip")!.textContent).toBe("已完成");
     expect(card.querySelector(".ew-alist")).toBeNull();
     expect([...card.querySelectorAll(".ew-aacts button")].map((b) => b.textContent)).toEqual(["查看详情", "撤销"]);
@@ -402,7 +402,7 @@ describe("a goal confirmed in the chat goes on in the chat (D3a)", () => {
     return rig;
   }
 
-  it("after 确认 the goal is the goal's own name, not the card's title 「黑壳虾」分成 5 块 (the cloud's title, a page's goal)", async () => {
+  it("after 确认 the goal is the goal's own name, not the card's title 为「黑壳虾」拆解学习路径 (the cloud's title, a page's goal)", async () => {
     const { out, goals } = await goalsOf();
     const rig = await confirmed(goals, out);
     const { topic, goal } = rig.ctl.goalRun("g1")!.flow.state;
@@ -452,7 +452,7 @@ describe("a goal confirmed in the chat goes on in the chat (D3a)", () => {
     expect(JSON.parse(Object.values(progress.rec)[0]!)).toMatchObject({ draftId: out.draft_id });
     first.dispose();
     // a new controller (the reload) reads the stored session back: the card carries the row's result
-    const card = { action_id: "g1", kind: "goal_new", goal_title: "黑壳虾", title: "「黑壳虾」分成 5 块", status: "executed", confirm: true, can_undo: true, detail: "", replaces: "",
+    const card = { action_id: "g1", kind: "goal_new", goal_title: "黑壳虾", title: "为「黑壳虾」拆解学习路径", status: "executed", confirm: true, can_undo: true, detail: "", replaces: "",
       result: { draft_id: out.draft_id, map_id: out.map_id }, items: FIVE.items, page_id: null, section_id: null };
     const session: SessionOut = { gone_sources: [], session_id: "ses_g", page_id: null, recap: null, decisions: [], proposals: [], actions: [card], messages: [
       { message_id: "m1", role: "user", card_at: null, stopped: false, intent: null, draft_id: null, text: "帮我整理这一篇", sources: [], proposals: [], actions: [], selection: null, tools: [], attachments: [], rating: null, asks: [] },
@@ -469,7 +469,7 @@ describe("a goal confirmed in the chat goes on in the chat (D3a)", () => {
   });
 
   it("after a reload, a conversation 学点新的 started (its message stored with intent learn_goal) shows its waiting draft in the chat: nothing else shows it now", async () => {
-    const card = { action_id: "g1", kind: "goal_new", goal_title: "黑壳虾", title: "「黑壳虾」分成 5 块", status: "proposed", confirm: true, can_undo: false, detail: "", replaces: "",
+    const card = { action_id: "g1", kind: "goal_new", goal_title: "黑壳虾", title: "为「黑壳虾」拆解学习路径", status: "proposed", confirm: true, can_undo: false, detail: "", replaces: "",
       result: {}, items: FIVE.items, page_id: null, section_id: null };
     const msgs = (intent: "learn_goal" | null): SessionOut => ({ gone_sources: [], session_id: "ses_l", page_id: null, recap: null, decisions: [], proposals: [], actions: [card], messages: [
       { draft_id: null, message_id: "m1", role: "user", card_at: null, stopped: false, intent, text: "我要学黑壳虾", sources: [], proposals: [], actions: [], selection: null, tools: [], attachments: [], rating: null, asks: [] },

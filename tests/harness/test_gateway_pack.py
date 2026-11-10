@@ -12,6 +12,7 @@ from evowiki.llm.log import CallLog
 from evowiki.llm.prices import PriceTable
 from evowiki.llm.scripted import ScriptedChatProvider, ScriptedProvider
 from evowiki.llm.usage_control import UsageControl
+from evowiki.llm.writing_style import DEFAULT_LANGUAGE_STYLE, prepend_style
 from evowiki.store import trace
 from tests.harness.conftest import ACC, CFG, Out, _Meter, request
 from tests.runtime.helpers import make_user
@@ -29,7 +30,7 @@ def test_guidance_comes_from_pack(make_gateway):
     _, call = gw.call("generator", request(), Out, account=ACC)
     sent = gw.provider.calls[0]
     assert sent.prompt == "目标：x\n只说具体，不缩小范围。\n只回复 JSON。"
-    assert sent.system == "只回复 JSON。只说具体，不缩小范围。"
+    assert sent.system == prepend_style("只回复 JSON。只说具体，不缩小范围。", DEFAULT_LANGUAGE_STYLE)
     assert sent.prompt_version == call.prompt_version == "intake@v30+user"
 
 
@@ -139,9 +140,9 @@ def test_as_sent_uses_the_pinned_guidance(make_gateway):
                       system="规则。⟦g:decompose⟧默认的话。⟦/g⟧",
                       messages=(ChatMessage(role="user", text="问"),))
     sent = gw.as_sent(req, ACC, {"decompose": "旧的。"})
-    assert sent.system == "规则。旧的。" and sent.prompt_version == "t@v1+user" and reads == []
-    assert gw.as_sent(req, None, {"decompose": "旧的。"}).system == "规则。默认的话。"
-    assert gw.as_sent(req, ACC).system == "规则。新的。" and reads == ["u1"]
+    assert sent.system == prepend_style("规则。旧的。", DEFAULT_LANGUAGE_STYLE) and sent.prompt_version == "t@v1+user" and reads == []
+    assert gw.as_sent(req, None, {"decompose": "旧的。"}).system == prepend_style("规则。默认的话。", DEFAULT_LANGUAGE_STYLE)
+    assert gw.as_sent(req, ACC).system == prepend_style("规则。新的。", DEFAULT_LANGUAGE_STYLE) and reads == ["u1"]
 
 
 def test_with_harness_is_a_copy_sharing_logs_and_usage(make_gateway):

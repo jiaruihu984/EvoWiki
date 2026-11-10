@@ -79,6 +79,7 @@ def test_update_without_new_evidence_costs_zero_calls(w):
     assert row.watermarks == {'s1': 1} and covered_turns(row, 's1') == 1
     assert {'session:s1', 'turn:s1/m1'} <= set(row.sources)
     assert update(w, info) and len(w.gateway.requests) == 1
+    assert w.gateway.requests[0].purpose == 'memory_anchor'
     w.sessions.append('s1', 'compact', 'compaction', {'summary': 'not raw evidence'}, T)
     assert update(w, info) and len(w.gateway.requests) == 1
 

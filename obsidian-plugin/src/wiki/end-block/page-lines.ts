@@ -56,8 +56,6 @@ export function createTopLine(pageId: string, hub: EndHub): Drawn {
     } else if (t.kind === "revised") {
       // the same 撤销 link as the feedback line (B11); the ledger's undo, then the note follows the page
       line.append(t.text, " · ", link(REVISE_COPY.undo, () => { void src?.reviseDecide(t.actionId, "undo"); }));
-    } else if (t.kind === "working") {
-      line.append(el("i", "spin"), t.text);
     } else if (t.kind === "hand-failed") {
       line.append(t.text, " ");
       if (t.conflict) line.append(link(WIKI_COPY.handEditKeep, () => { void src?.keepMine(pageId); }), " · ");

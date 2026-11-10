@@ -38,6 +38,8 @@ export interface SceneGroup2 { id: string; name: string; summary: string; x: num
 /** A broad domain over top groups (GET /wiki/graph `domains`). */
 export interface SceneDomain { id: string; name: string; summary: string; kids: string[] }
 export interface Scene {
+  /** Stored positions of containers omitted from the ordinary dot list. */
+  anchors?: ReadonlyMap<string, { x: number; y: number }>;
   /** Drawn node ids in draw order. */ order: string[];
   nodes: Map<string, SceneNode>;
   /** Every node's name (drawn or not): 属于 and 前置 lines name nodes that may not be dots. */ names: Map<string, string>;
@@ -138,7 +140,8 @@ export function buildScene(graph: GraphOut): Scene {
   // One level of groups (a small or loosely connected graph): the far view shows those groups as its blocks, so it is
   // never empty (graph.html always has blocks there).
   if (l2.length === 0) for (const g of l1) l2.push({ id: g.id, name: g.name, summary: g.summary, x: g.x, y: g.y, at: g.at ?? null, kids: [g.id] });
-  return { order, nodes, names: new Map(graph.nodes.map((n) => [n.id, n.name])), l1, l2, domains: graph.domains };
+  return { order, nodes, anchors: new Map(graph.nodes.filter((n) => !nodes.has(n.id)).map((n) => [n.id, { x: n.x, y: n.y }])),
+    names: new Map(graph.nodes.map((n) => [n.id, n.name])), l1, l2, domains: graph.domains };
 }
 
 /** graph.html inFocus: no goal selected → everything; else the dots in the goal's own blocks. */

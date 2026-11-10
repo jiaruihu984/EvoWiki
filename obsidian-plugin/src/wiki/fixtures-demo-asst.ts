@@ -162,7 +162,7 @@ const FIRST_REPLY: Record<string, { paras: string[]; tail: string[] }> = {
       "你是想自己把虾养好，还是把它当成一种生物来研究？前一种会把操作排前面，后一种会多讲分类和生理。"] },
 };
 export function firstReply(topic: string, n: number): { paras: string[]; tail: string[] } {
-  return FIRST_REPLY[topic] ?? { paras: [`按你说的目标，「${topic}」先分成 ${n} 块，进入一块时再细分成页。`],
+  return FIRST_REPLY[topic] ?? { paras: [`按你说的目标，为「${topic}」拆解学习路径，先安排 ${n} 个学习主题，再逐个细化为学习页面。`],
     tail: ["你是想先能用起来，还是想把原理弄懂？两种排法不一样。"] };
 }
 
@@ -180,7 +180,7 @@ export function demoGoalOf(body: MessageIn): { goal: string; background: string 
 }
 
 function blocksRow(c: { goal: string; background: string; topic: string }, blocks: DemoBlock[], said: string | null, id: string, now: Date): ActionOut {
-  const n = blocks.length, title = `「${c.topic}」分成 ${n} 块`;
+  const title = `为「${c.topic}」拆解学习路径`;
   return row({ action_id: id, kind: "goal_new", scope: "goal", summary: title,
     why: said !== null ? `你在助手里说「${said}」` : `你在学点新的里说「${c.goal}」`,
     content: { goal: c.goal, background: c.background, title: c.topic, confirm: true,

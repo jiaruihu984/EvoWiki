@@ -134,7 +134,7 @@ def test_closed_steps_are_the_feedback_step_only():
     assert H1_JUDGE_STEPS == frozenset()
     # the evidence: the feedback reader (RSI's signals), rule provenance contract P0
     assert H1_EVIDENCE_STEPS == {"feedback"}
-    assert H1_CLOSED_STEPS == H1_EVIDENCE_STEPS
+    assert H1_CLOSED_STEPS == H1_EVIDENCE_STEPS | {"language_style"}
     assert closed_h1("H1.feedback") and not closed_h1("H1.write") and not closed_h1("H2.feedback")
 
 

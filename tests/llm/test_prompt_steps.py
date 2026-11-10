@@ -6,6 +6,7 @@ import inspect
 import re
 from datetime import UTC, datetime
 
+import pytest
 from pydantic import BaseModel
 
 from evowiki.assistant import compact as compact_mod
@@ -14,6 +15,7 @@ from evowiki.deep import agent as deep_agent
 from evowiki.deep import skill as write_skill
 from evowiki.goals import path
 from evowiki.goals.itemflaws import ITEM_RULES_ZH
+from evowiki.harness.pack import HarnessPack
 from evowiki.llm.chat import ChatMessage, ChatRequest, ChatTurn
 from evowiki.llm.gateway import Gateway
 from evowiki.llm.log import CallLog
@@ -31,6 +33,7 @@ from evowiki.llm.prompt_steps import (
 from evowiki.llm.scripted import ScriptedChatProvider, ScriptedProvider
 from evowiki.llm.usage import Account
 from evowiki.llm.usage_control import UsageControl
+from evowiki.llm.writing_style import DEFAULT_LANGUAGE_STYLE, STYLE_END, STYLE_HEADER, prepend_style
 from evowiki.service import engine, prompt_defaults
 from evowiki.wikiapp import graph_groups
 from tests.llm_cases.inventory import INVENTORY
@@ -40,9 +43,9 @@ ANY_MARK = re.compile(r"⟦g:[a-z0-9_]+⟧|⟦/g⟧")
 
 # ---- registry ----
 
-# Purposes with no 参数 step: the material-import prompts (table of contents, summary, glossary)
-# run once per upload and are not user-tunable; they stay in INVENTORY for the prompt cases.
-NOT_STEPPED = {"sources.toc", "sources.summary", "sources.glossary",
+# Fixed extraction and evaluation protocols have no editable task step. They remain inventoried;
+# the shared language-style prefix is separate from task-specific guidance.
+NOT_STEPPED = {"sources.toc", "sources.glossary",
                "sources.exam", "sources.exam_attach",
                # the repair of a refused reading plan: its own fixed prompt, not one the user can edit
                "goals.reading.repair",
@@ -57,9 +60,10 @@ NOT_STEPPED = {"sources.toc", "sources.summary", "sources.glossary",
                # the page-writing evaluator's core (evaluation/page.py, protected), likewise
                "eval.page.judge",
                # cross-session memory's background calls (memory/): no step, no user override
-               "assistant.consolidate", "memory.conflicts",
-               # the page's visuals (deep/visual.py, deep/scene.py): inventoried on master, no step yet
-               "deep.scene", "deep.visual", "deep.visual.decide", "deep.visual.recheck"}
+               "assistant.consolidate", "memory.conflicts", "memory_anchor",
+               # Verbatim OCR and diagram consistency checking retain their fixed protocols.
+               "source.vision",
+               "deep.visual.recheck"}
 
 
 def test_every_inventory_purpose_belongs_to_exactly_one_step():
@@ -74,7 +78,7 @@ def test_every_inventory_purpose_belongs_to_exactly_one_step():
     assert len({s.key for s in STEPS}) == len(STEPS)
     assert len({s.name for s in STEPS}) == len(STEPS)
     assert all(s.description.strip() and len(s.description) >= 10 for s in STEPS)
-    assert all(s.source in INVENTORY for s in STEPS)
+    assert all(s.source in INVENTORY or s.source == "global" for s in STEPS)
     assert step_of("not.a.purpose") is None
 
 
@@ -87,6 +91,7 @@ def _src(*objs) -> str:
 
 
 RENDERED = {
+    **{k: prompt_defaults.RENDER[k] for k in ("visual_guide", "domain_naming", "source_summary")},
     "decompose": lambda: engine._enter(),
     "source_outline": lambda: engine._intake((engine.SOURCE,)),
     "source_reference": lambda: engine._intake((engine.SOURCE,), mode="reference"),
@@ -109,7 +114,7 @@ RENDERED = {
 
 
 def test_every_step_has_a_marked_prompt():
-    assert set(RENDERED) == {s.key for s in STEPS}
+    assert set(RENDERED) == {s.key for s in STEPS if s.category != "global"}
     for key, render in RENDERED.items():
         text = render()
         assert open_mark(key) in text, key
@@ -254,7 +259,7 @@ def test_gateway_without_override_sends_the_unmarked_text(tmp_path):
     _, call = g.call("generator", _request(), _Out, account=ACC)
     sent = prov.calls[0]
     assert sent.prompt == "目标：x\n1. 说具体。\n只回复 JSON。"
-    assert sent.system == "只回复 JSON。系统里的规则。"
+    assert sent.system == prepend_style("只回复 JSON。系统里的规则。", DEFAULT_LANGUAGE_STYLE)
     assert sent.prompt_version == call.prompt_version == "intake@v30"
     assert seen == ["u1"]
 
@@ -275,7 +280,7 @@ def test_gateway_applies_the_users_override_and_marks_the_version(tmp_path):
     _, call = g.call("generator", _request(), _Out, account=ACC)
     sent = prov.calls[0]
     assert sent.prompt == "目标：x\n只说具体，不缩小范围。\n只回复 JSON。"
-    assert sent.system == "只回复 JSON。只说具体，不缩小范围。"
+    assert sent.system == prepend_style("只回复 JSON。只说具体，不缩小范围。", DEFAULT_LANGUAGE_STYLE)
     assert sent.prompt_version == call.prompt_version == "intake@v30+user"
     # another user's call is not affected (and is a different recording)
     g.call("generator", _request(), _Out, account=Account(user_id="u2", group="page"))
@@ -296,7 +301,7 @@ def test_converse_without_override_sends_the_unmarked_text(tmp_path):
     g = _gateway(tmp_path, lambda uid: {}, prov)
     _, call = g.converse("generator", _chat_request(), account=ACC)
     sent = prov.chat_calls[0]
-    assert sent.system == "你是作者。\n- 先讲人话。\n用 write_section 写。"
+    assert sent.system == prepend_style("你是作者。\n- 先讲人话。\n用 write_section 写。", DEFAULT_LANGUAGE_STYLE)
     assert sent.messages[0] == _chat_request().messages[0]      # messages are never processed
     assert sent.prompt_version == call.prompt_version == "deep@v18"
 
@@ -306,7 +311,7 @@ def test_converse_applies_the_users_override(tmp_path):
     g = _gateway(tmp_path, lambda uid: {"write": "例子要能算出结果。"}, prov)
     _, call = g.converse("generator", _chat_request(), account=ACC)
     sent = prov.chat_calls[0]
-    assert sent.system == "你是作者。\n例子要能算出结果。\n用 write_section 写。"
+    assert sent.system == prepend_style("你是作者。\n例子要能算出结果。\n用 write_section 写。", DEFAULT_LANGUAGE_STYLE)
     assert sent.messages[0] == _chat_request().messages[0]      # messages are never processed
     assert sent.prompt_version == call.prompt_version == "deep@v18+user"
 
@@ -321,3 +326,84 @@ def test_real_prompt_through_the_gateway_is_todays_text(tmp_path):
     g.call("generator", req, _Out, account=ACC)
     assert prov.calls[0].prompt == ANY_MARK.sub("", text)
     assert not ANY_MARK.search(prov.calls[0].prompt)
+
+
+def test_global_style_on_unmarked_structured_requests_changes_cache_and_isolates_accounts(tmp_path):
+    styles = {"u1": {"language_style": "用短句。"}, "u2": {"language_style": ""}}
+    provider = ScriptedProvider("scripted", lambda m, r: '{"text": "好"}')
+    gateway = _gateway(tmp_path, lambda uid: styles[uid], provider)
+    request = _request().model_copy(update={"system": "Reply as JSON.", "prompt": "Summarize."})
+    _, first = gateway.call("generator", request, _Out, account=ACC)
+    gateway.call("generator", request, _Out, account=ACC)
+    assert len(provider.calls) == 1
+    assert provider.calls[0].system == prepend_style(request.system, "用短句。")
+    _, other = gateway.call("generator", request, _Out,
+                            account=Account(user_id="u2", group="page"))
+    assert provider.calls[1].system == prepend_style(request.system, "")
+    assert other.input_hash != first.input_hash
+    styles["u1"] = {}
+    _, reset = gateway.call("generator", request, _Out, account=ACC)
+    assert provider.calls[2].system == prepend_style(request.system, DEFAULT_LANGUAGE_STYLE)
+    assert reset.input_hash != first.input_hash
+
+
+def test_chat_pinned_blank_survives_serialization_and_converse(tmp_path):
+    provider = ScriptedChatProvider("scripted", lambda m, r: ChatTurn(text="好"))
+    gateway = _gateway(tmp_path, lambda uid: {"language_style": "live style"}, provider)
+    original = _chat_request()
+    sent = gateway.as_sent(original, ACC, {"language_style": "", "write": "pinned rules"})
+    restored = ChatRequest.model_validate_json(sent.model_dump_json())
+    assert gateway.as_sent(restored, ACC).system == sent.system
+    gateway.converse("generator", restored, account=ACC)
+    actual = provider.chat_calls[0]
+    assert actual.system == sent.system
+    assert actual.system.count(STYLE_HEADER) == 1
+    assert "live style" not in actual.system and DEFAULT_LANGUAGE_STYLE not in actual.system
+    assert "pinned rules" in actual.system
+    assert actual.messages == original.messages
+    assert actual.tools == original.tools
+
+
+def test_no_account_requests_receive_default_style_without_reading_overrides(tmp_path):
+    provider = ScriptedProvider("scripted", lambda m, r: '{"text": "好"}')
+    gateway = _gateway(tmp_path, lambda uid: (_ for _ in ()).throw(AssertionError("read")), provider)
+    gateway.call("generator", _request(), _Out)
+    assert provider.calls[0].system == prepend_style(strip_marks(_request().system), DEFAULT_LANGUAGE_STYLE)
+
+
+def test_style_prefix_precedes_fixed_task_and_mutable_profile(tmp_path):
+    provider = ScriptedChatProvider("scripted", lambda m, r: ChatTurn(text="好"))
+    gateway = _gateway(tmp_path, lambda uid: {"language_style": "same prefix"}, provider)
+    gateway._profile = lambda uid, purpose: "Learner profile\nmutable account context"
+    request = _chat_request()
+    sent = gateway.as_sent(request, ACC)
+    style, body = sent.system.split(f"\n{STYLE_END}\n\n", 1)
+    assert style.startswith(STYLE_HEADER + "\n")
+    assert style.endswith("same prefix")
+    assert body.startswith(strip_marks(request.system))
+    assert body.endswith("Learner profile\nmutable account context")
+    assert gateway.as_sent(ChatRequest.model_validate_json(sent.model_dump_json()), ACC) == sent
+
+
+@pytest.mark.parametrize("purpose", ["rsi.h.improve", "rsi.h.triage", "rsi.h.judge",
+                                    "rsi.experience.digest", "forge.tool", "forge.patch",
+                                    "forge.replay", "forge.replay.probe", "eval.page.judge",
+                                    "eval.compact.judge"])
+def test_internal_calls_do_not_receive_style(tmp_path, purpose):
+    provider = ScriptedProvider("scripted", lambda m, r: '{"text": "好"}')
+    gateway = _gateway(tmp_path, lambda uid: {"language_style": "user style"}, provider)
+    request = _request().model_copy(update={"purpose": purpose})
+    gateway.call("generator", request, _Out, account=ACC)
+    assert provider.calls[0].system == strip_marks(request.system)
+
+
+def test_product_call_keeps_style_in_rsi_account_and_replay_context(tmp_path):
+    provider = ScriptedChatProvider("scripted", lambda m, r: ChatTurn(text="好"))
+    gateway = _gateway(tmp_path, lambda uid: {"language_style": "user style"}, provider)
+    # Replay gateways use a candidate harness and salt, while retaining product purpose.
+    replay = gateway.with_harness(lambda uid: HarnessPack(
+        4, {"H1.language_style": "user style"})).salted("harness-replay")
+    account = Account(user_id="u1", group="rsi")
+    replay.converse("generator", _chat_request(), account=account)
+    assert provider.chat_calls[0].system.startswith(STYLE_HEADER + "\n")
+    assert "user style" in provider.chat_calls[0].system

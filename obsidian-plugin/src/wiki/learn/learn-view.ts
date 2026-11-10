@@ -24,17 +24,18 @@ import { ewNotice } from "../../ui/ew-notice";
 import { reorderable } from "../../ui/reorder";
 import { openMenuAt } from "../../ui/floating";
 import { colorOfMix, readColors, rgb, type CloudColors } from "../colors";
-import { tipSpot, GraphCloud, type GraphCloudHandle, type Hover } from "../graph-page/sigma-cloud";
+import { tipSpot, type GraphCloudHandle, type Hover } from "../graph-page/sigma-cloud";
+import { goalCloud, goalScene, goalTints, regionState } from "./goal-cloud";
 import { GRAPH_COPY } from "../graph-page/copy";
 import { examTagTip } from "../exam/exam-model";
 import { qTip } from "../q-tip";
 import { regionWord } from "../starmap/starmap-view";
-import { buildScene, realId, type Scene } from "../graph-page/scene";
+import { buildScene, type Scene } from "../graph-page/scene";
 import { GraphStore, type GraphSource } from "../graph-page/store";
 import { BAND_WORD, errorText } from "../format";
 import { coverLine, rowSections } from "../graph-page/panel-logic";
 import type {
-  Band, BlockOut, GoalMapOut, GraphPlacesOut, MapNodeOut, ProgressOut, ReadingOut, ReadingPointOut, ReadingUnitOut, SectionEditIn, SourceDetail, SourceOut,
+  BlockOut, GoalMapOut, GraphPlacesOut, MapNodeOut, ProgressOut, ReadingOut, ReadingPointOut, ReadingUnitOut, SectionEditIn, SourceDetail, SourceOut,
 } from "../schema";
 import { SourceBlocked, SourceRefused, type SourceUpdate } from "../sources/sources-controller";
 import { SOURCES_COPY } from "../sources/sources-copy";
@@ -46,9 +47,9 @@ import { fillLayer, paintFill } from "./writing-fill";
 import type { GoalApi } from "./goal-api";
 import type { GoalChatRow, PendingGoal } from "../../assistant/goal-chat";
 import { pickTopic, TOPICS } from "./goal-fake";
-import { learnScene, type LearnScene } from "./learn-scene";
+import { type LearnScene } from "./learn-scene";
 import {
-  bandOf, type ChatStart, draftMap, type DraftBlock, LearnFlow, learnErrorText, nodeOf, type PageRow, partsOf, regionsOf,
+  type ChatStart, draftMap, type DraftBlock, LearnFlow, learnErrorText, nodeOf, type PageRow, partsOf, regionsOf,
   startOver, topRegions,
 } from "./learn-flow";
 
@@ -56,8 +57,6 @@ export const LEARN_VIEW_TYPE = "evowiki-learn";
 
 /** A block row's state (its dot and word): 掌握 / 熟悉 / 不会 / 正在问 / 还没问. */
 type BlockState = keyof typeof LEARN_COPY.stateWord;
-/** A block row's state as the band its point is drawn in (正在问 is a ring, not a colour). */
-const TINT: Record<BlockState, Band> = { known: "known", shaky: "shaky", gap: "gap", asking: "none", none: "none" };
 
 export interface LearnHost {
   /** The goal API a fresh flow runs on (read per flow). */
@@ -290,18 +289,11 @@ export class LearnView extends ItemView {
     this.contentEl.replaceChildren(root);
     this.els = { root, panel, tip, empty };
     this.C = readColors(root);
-    this.cloud = GraphCloud(box, {
-      tokens: root,
-      font: () => getComputedStyle(root).fontFamily,
-      reduced: () => matchMedia("(prefers-reduced-motion: reduce)").matches,
-      onSelect: (id) => { const r = id === null ? undefined : this.scene?.goalOf.get(id); if (r !== undefined) this.enterRegion(r); },
-      onGroup: (id) => this.enterRegion(this.scene?.goalOf.get(id) ?? id),
-      onHover: (h) => { this.hover(h); },
-      // the grow demo: the goal's blocks and points grow in, every name written, a block's name bold and clear of others
-      grows: (id) => this.scene?.goalOf.has(id) === true,
-      semantic: true, washByBand: true,
-      pinned: (id) => this.scene?.goalOf.get(id) === realId(id),
-      canClick: (id) => { const r = this.scene?.goalOf.get(id); const n = r === undefined ? undefined : nodeOf(this.flow?.state.map ?? null, r); return n !== undefined && this.enterable(n); },
+    this.cloud = goalCloud(box, {
+      root, scene: () => this.scene, background: "mastery",
+      enter: (region) => this.enterRegion(region),
+      canEnter: (region) => { const n = nodeOf(this.flow?.state.map ?? null, region); return n !== undefined && this.enterable(n); },
+      hover: (h) => { this.hover(h); },
     });
     this.cleanups.push(this.host.onCssChange(() => { this.recolor(); }));
     const offDiag = this.host.assistant?.onDiag?.(() => { if (this.menuKey === null && this.editKey === null) this.render(); else this.syncCloud(); });
@@ -511,13 +503,11 @@ export class LearnView extends ItemView {
     // New blocks enter the picture at their canonical places, never in a temporary row.
     const map = this.askPlaces(requested) ? requested : null;
     // a block drawn as its own point takes its row's colour (a 摸底 tap shows there at once, then fades with the map)
-    const tint = new Map(map ? topRegions(map).map((r) => [r.id, TINT[this.blockState(r, false)]] as const) : []);
+    const tint = goalTints(map, this.host.assistant?.diag?.() ?? null);
     const tintKey = JSON.stringify([...tint]);
     if (this.drawnFrom?.k !== k || this.drawnFrom.map !== map || this.drawnFrom.tint !== tintKey || this.drawnFrom.places !== this.places) {
       this.drawnFrom = { k, map, tint: tintKey, places: this.places };
-      this.scene = learnScene(k, map, this.places, this.goalTitle(map));
-      // Only the region point follows its self-assessment; actual children have their own bands.
-      for (const [id, r] of this.scene.goalOf) { const band = tint.get(r), n = this.scene.scene.nodes.get(id); if (band !== undefined && n !== undefined && realId(id) === r) n.band = band; }
+      this.scene = goalScene(k, map, this.places, this.goalTitle(map), this.host.assistant?.diag?.() ?? null);
       cloud.setScene(this.scene.scene);
       const goal = [...this.scene.goalDots], id = map?.map_id ?? "";
       if (goal.length === 0) { if (this.framed !== null) cloud.fit(); this.framed = null; }
@@ -582,7 +572,7 @@ export class LearnView extends ItemView {
     if (m) this.host.pageFromGoal?.(pageId, m.map_id);
   }
 
-  private enterRegion(id: string): boolean {
+  enterRegion(id: string): boolean {
     const r = nodeOf(this.flow?.state.map ?? null, id);
     if (r === undefined || !this.enterable(r)) return false;
     this.enter(r.id);                       // as its row's 开始学习 (the chat's run writes its first page)
@@ -1123,18 +1113,7 @@ export class LearnView extends ItemView {
 
   /** A block's state: 正在问 while its question is open, the 摸底 grid's tap, else its band on the map (还没问 without one). */
   private blockState(r: MapNodeOut, withAsking = true): BlockState {
-    const d = this.host.assistant?.diag?.() ?? null;
-    if (withAsking && d?.asking === r.id) return "asking";
-    const m = d?.marks[r.id];
-    const mark: BlockState | null = m === undefined ? null : m === "know" ? "known" : m === "partly" ? "shaky" : "gap";
-    if (mark !== null && d?.open !== false) return mark;
-    // 掌握 only as the server has it (state "known": every cell likely or known in K, the block the goal skips); a
-    // block partly known is 熟悉 — so the row, the block the goal enters next and the chat's start line agree
-    const b = bandOf(r);
-    const learned = (r.mix.known ?? 0) + (r.mix.likely ?? 0) >= 0.999;     // entered again: K still has every cell
-    const band: BlockState = r.state === "known" || learned ? "known" : b === "known" || b === "likely" || b === "shaky" ? "shaky"
-      : b === "gap" ? "gap" : "none";
-    return band === "none" && mark !== null ? (mark === "known" ? "shaky" : mark) : band;
+    return regionState(r, this.host.assistant?.diag?.() ?? null, withAsking);
   }
 
   /**

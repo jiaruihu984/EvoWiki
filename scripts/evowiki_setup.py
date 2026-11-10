@@ -19,9 +19,9 @@ from dotenv.parser import parse_stream
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
+from evowiki.file_lock import file_lock
 from evowiki.llm.catalog import PROVIDERS, configured, model_specs
 from evowiki.llm.prices import load_prices
-from evowiki.service.backup import BackupBusy, _file_lock
 
 FIELDS = {"op", "expected_revision", "language", "provider", "api_key", "clear_key",
           "base_url", "model", "models", "prices_file", "forge_enabled", "backup_directory", "backup_keep"}
@@ -409,7 +409,7 @@ def handle(request: dict, root: Path = ROOT, control=runtime) -> dict:
                 run = root / ".evowiki-run"
                 run.mkdir(exist_ok=True)
                 lock = run / "setup.lock"
-                with _file_lock(lock):
+                with file_lock(lock):
                     ensure_integrity(root)
                     if (path.read_bytes() if path.exists() else b"") != raw:
                         raise SetupError("revision_conflict", "expected_revision")
@@ -445,7 +445,7 @@ def handle(request: dict, root: Path = ROOT, control=runtime) -> dict:
             else:
                 response.update(**summary(new))
         response.update(ok=True, code="ok")
-    except BackupBusy:
+    except BlockingIOError:
         response.update(code="setup_busy", errors=[{"field": "configuration", "code": "setup_busy"}])
     except SetupError as exc:
         response.update(code=exc.code, errors=[{"field": exc.field, "code": exc.code}])

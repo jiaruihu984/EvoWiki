@@ -140,6 +140,11 @@ export class GraphStore {
   }
 
   private set(next: GraphState): void {
+    // Polls deserialize fresh objects even when the server has nothing new.
+    // Keep the displayed graph identity so subscribers retain canvases and rows.
+    if (next.graph !== null && this._state.graph !== null && JSON.stringify(next.graph) === JSON.stringify(this._state.graph)) {
+      next = { ...next, graph: this._state.graph };
+    }
     const changed = next.graph !== this._state.graph;
     this._state = next;
     for (const fn of [...this.subs]) fn();

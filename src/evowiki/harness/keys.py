@@ -59,7 +59,7 @@ def _int(name: str, lo: int, hi: int, doc: str) -> Key:
 
 
 KEYS: tuple[Key, ...] = (
-    *(Key(h1_key(s.key), "H1", "text", 1, TEXT_MAX["H1"], f"「{s.name}」的写法") for s in STEPS),
+    *(Key(h1_key(s.key), "H1", "text", 0 if s.key == "language_style" else 1, TEXT_MAX["H1"], f"「{s.name}」的写法") for s in STEPS),
     _int("H4.deep.max_tool_calls", 10, 200, "写页面：每轮最多调用几次工具"),
     _int("H4.deep.max_rewrites", 0, 4, "写页面：最多重写几轮"),
     _int("H4.deep.max_nudges", 0, 4, "写页面：没调工具时最多催几次"),

@@ -319,3 +319,29 @@ def test_a_kept_unsure_understand_wording_carries_the_format_note(client):
     assert put(client, "understand", "前置别列太宽。").status_code == 200
     assert get_all(client)["understand"].format_note == ""
     assert format_note("write", unsure) == "" and format_note("understand", None) == ""
+
+
+def test_language_style_blank_reset_and_undo_preserve_distinct_states(client, services):
+    from evowiki.harness.pack import HarnessInvalid, validate
+    from evowiki.llm.writing_style import DEFAULT_LANGUAGE_STYLE
+
+    default = get_all(client)["language_style"]
+    assert default.category == "global" and default.text == DEFAULT_LANGUAGE_STYLE
+    assert put(client, "language_style", "  ").json()["text"] == ""
+    assert get_all(client)["language_style"].edited
+    assert reader(services.pool)("u1").guidance()["language_style"] == ""
+    assert validate("H1.language_style", "") == ""
+    with pytest.raises(HarnessInvalid):
+        validate("H1.write", "")
+    assert put(client, "write", "").status_code == 422
+    signup(client, "u2")
+    assert get_all(client, "u2")["language_style"].text == DEFAULT_LANGUAGE_STYLE
+    reset = client.delete("/wiki/prompts/language_style", headers=H("u1"))
+    assert reset.status_code == 200 and not reset.json()["edited"]
+    assert reset.json()["text"] == DEFAULT_LANGUAGE_STYLE
+    row = rows(services)[-1]
+    assert row["content"]["before"] == "" and row["content"]["after"] is None
+    undo = client.post(f"/wiki/rsi/patches/{row['action_id']}/undo", headers=H("u1"))
+    assert undo.status_code == 200, undo.text
+    assert get_all(client)["language_style"].text == ""
+    assert get_all(client)["language_style"].edited

@@ -39,9 +39,10 @@ from evowiki.llm.models import (
     ProviderResponse,
     Role,
 )
-from evowiki.llm.prompt_steps import MARK_OPEN, apply_marks
+from evowiki.llm.prompt_steps import apply_marks
 from evowiki.llm.usage import Account, Usage
 from evowiki.llm.usage_control import UsageControl
+from evowiki.llm.writing_style import DEFAULT_LANGUAGE_STYLE, prepend_style, uses_language_style
 
 log = logging.getLogger(__name__)
 
@@ -343,10 +344,6 @@ def input_hash(ref: ModelRef, request: LLMRequest, schema_name: str) -> str:
     return hashlib.sha256(blob).hexdigest()
 
 
-# Every guidance marker opens with it (llm/prompt_steps.MARK_OPEN): a cheap pre-check.
-MARK = MARK_OPEN.split("{", 1)[0]
-
-
 _STRAY = " \t\r\n}]"      # what may follow a complete object (`_parse`)
 
 
@@ -507,8 +504,10 @@ class Gateway:
         of the harness source."""
         if account is None:
             return {}
+        if pinned is not None:
+            return pinned
         if self._harness is not None:
-            return pinned if pinned is not None else self.harness_for(account.user_id).guidance()
+            return self.harness_for(account.user_id).guidance()
         if self.overrides is None:
             return {}
         return self.overrides(account.user_id)
@@ -608,21 +607,26 @@ class Gateway:
         return f"{system}\n\n{block}" if system else block
 
     def _guided_request(self, request: LLMRequest, account: Account | None) -> LLMRequest:
-        """`request` with its guidance markers applied and the profile appended (class doc).
+        """`request` with its guidance markers applied, style prepended and profile appended (class doc).
         Both texts are code-built prompts: a JSON call's prompt holds the step's rules next to
         the call's data (the markers sit in the builder's literals; user text is only
         interpolated around them)."""
-        system = self._with_profile(request.system, request.purpose, account)
-        if system != request.system:
-            request = request.model_copy(update={"system": system})
-        if MARK not in request.system and MARK not in request.prompt:
-            return request
         ov = self._guidance(account)
         system, a1 = apply_marks(request.system, ov)
         prompt, a2 = apply_marks(request.prompt, ov)
-        version = request.prompt_version + (USER_VERSION if a1 or a2 else "")
-        return request.model_copy(update={"system": system, "prompt": prompt,
-                                          "prompt_version": version})
+        system = self._with_profile(system, request.purpose, account)
+        updates = {"system": system, "prompt": prompt,
+                   "prompt_version": request.prompt_version + (USER_VERSION if a1 or a2 else "")}
+        guided = request.model_copy(update=updates)
+        return self._styled(guided, ov)
+
+    def _styled[T: LLMRequest | ChatRequest](
+        self, request: T, guidance: Mapping[str, str],
+    ) -> T:
+        if not uses_language_style(request.purpose):
+            return request
+        text = guidance.get("language_style", DEFAULT_LANGUAGE_STYLE)
+        return request.model_copy(update={"system": prepend_style(request.system, text)})
 
     def as_sent(self, request: ChatRequest, account: Account | None,
                 guidance: Mapping[str, str] | None = None) -> ChatRequest:
@@ -638,14 +642,12 @@ class Gateway:
         """`request` with its guidance markers applied to the system only and the profile
         appended (class doc): messages carry user and tool text, which is sent exactly as
         written, markers or not."""
-        system = self._with_profile(request.system, request.purpose, account)
-        if system != request.system:
-            request = request.model_copy(update={"system": system})
-        if MARK not in request.system:
-            return request
-        system, applied = apply_marks(request.system, self._guidance(account, pinned))
+        ov = self._guidance(account, pinned)
+        system, applied = apply_marks(request.system, ov)
+        system = self._with_profile(system, request.purpose, account)
         version = request.prompt_version + (USER_VERSION if applied else "")
-        return request.model_copy(update={"system": system, "prompt_version": version})
+        guided = request.model_copy(update={"system": system, "prompt_version": version})
+        return self._styled(guided, ov)
 
     def route_provider(self, role: Role, account: Account | None = None,
                        purpose: str | None = None) -> str:

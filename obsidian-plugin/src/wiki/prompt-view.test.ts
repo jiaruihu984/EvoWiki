@@ -1,5 +1,5 @@
 import type { WorkspaceLeaf } from "obsidian";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { setup } from "./controller-test-kit";
 import { PROMPT_STEPS } from "./fixtures";
 import { PromptView } from "./prompt-view";
@@ -59,7 +59,7 @@ describe("PromptView", () => {
     ta.value = "我的写法";
     q<HTMLButtonElement>(root, ".ew-row > .ew-primary").click();
     await new Promise((r) => setTimeout(r, 0));
-    expect(notices[notices.length - 1]).toBe("已保存。以后这一步按这个写。");
+    expect(notices[notices.length - 1]).toBe("已保存");
     expect(c.state.prompts.kind === "ready" && c.state.prompts.value.find((x) => x.step === "write")?.edited).toBe(true);
     q<HTMLButtonElement>(root, ".ew-row > button:not(.ew-primary)").click();
     await new Promise((r) => setTimeout(r, 0));
@@ -67,4 +67,37 @@ describe("PromptView", () => {
     expect(ta.value).toBe(PROMPT_STEPS.find((p) => p.step === "write")?.default_text);
   });
 
+});
+
+
+describe("global language style editor", () => {
+  it("saves an empty style, restores its default and keeps ordinary prompts nonempty", async () => {
+    const { root, c, notices } = await open("language_style");
+    const ta = q<HTMLTextAreaElement>(root, "#prompt-edit");
+    ta.value = "";
+    q<HTMLButtonElement>(root, ".ew-primary").click();
+    await vi.waitFor(() => expect(notices[notices.length - 1]).toBe("已保存"));
+    expect(c.state.prompts.kind === "ready" && c.state.prompts.value.find((p) => p.step === "language_style")).toMatchObject({ text: "", edited: true });
+    q<HTMLButtonElement>(root, ".ew-row > button:not(.ew-primary)").click();
+    await vi.waitFor(() => expect(ta.value).toBe(PROMPT_STEPS.find((p) => p.step === "language_style")?.default_text));
+    expect(await c.savePrompt("write", "")).toBe(false);
+  });
+
+  it("keeps text typed while reset is in flight", async () => {
+    const { root, api } = await open("language_style");
+    const ta = q<HTMLTextAreaElement>(root, "#prompt-edit");
+    const original = api.resetPrompt.bind(api);
+    let finish!: () => void;
+    vi.spyOn(api, "resetPrompt").mockImplementation(async (step) => {
+      await new Promise<void>((resolve) => { finish = resolve; });
+      return original(step);
+    });
+    ta.value = "before reset";
+    q<HTMLButtonElement>(root, ".ew-row > button:not(.ew-primary)").click();
+    await vi.waitFor(() => expect(finish).toBeTypeOf("function"));
+    ta.value = "new unsaved edits";
+    finish();
+    await vi.waitFor(() => expect(q<HTMLButtonElement>(root, ".ew-primary").disabled).toBe(false));
+    expect(ta.value).toBe("new unsaved edits");
+  });
 });

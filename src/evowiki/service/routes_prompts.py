@@ -24,7 +24,7 @@ UNAVAILABLE = "现在改不了。"
 
 
 def _out(s: Step, override: str | None, default: str) -> PromptStepOut:
-    return PromptStepOut(step=s.key, name=s.name, description=s.description,
+    return PromptStepOut(step=s.key, name=s.name, description=s.description, category=s.category,
                          text=default if override is None else override,
                          default_text=default, edited=override is not None,
                          format_note=format_note(s.key, override))

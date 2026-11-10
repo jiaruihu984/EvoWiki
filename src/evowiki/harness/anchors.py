@@ -32,4 +32,4 @@ IMPROVER_AGENTS = frozenset({"deep", "assistant"})   # assistant: only what a re
 # feedback reader makes the signals RSI learns from).
 H1_JUDGE_STEPS = frozenset(s.key for s in STEPS if s.anchor == "judge")
 H1_EVIDENCE_STEPS = frozenset(s.key for s in STEPS if s.anchor == "evidence")
-H1_CLOSED_STEPS = H1_JUDGE_STEPS | H1_EVIDENCE_STEPS
+H1_CLOSED_STEPS = H1_JUDGE_STEPS | H1_EVIDENCE_STEPS | {"language_style"}

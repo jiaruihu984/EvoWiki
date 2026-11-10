@@ -60,11 +60,15 @@ log = logging.getLogger("evowiki.deep.visual")
 PURPOSE = "deep.visual"
 DECIDE_PURPOSE = "deep.visual.decide"
 RECHECK_PURPOSE = "deep.visual.recheck"
-PROMPT_VERSION = "visual@v4"
+PROMPT_VERSION = "visual@v5"
 MAX_QUERIES = 3
 CANDIDATES_PER_QUERY = 4
 MAX_PROBES = 3
 MAX_DRAWING = 4                          # pictures of one page drawn at once (each opens its own browser for its checks)
+
+VISUAL_GUIDE = """⟦g:visual_guide⟧围绕学习者当前卡住的具体问题设计图示，让没学过的人能看出关键关系或变化。
+用具体、准确的图形帮助理解，不用装饰、文字堆砌或单纯读数代替解释。
+需要交互时，让操作前后的变化说明一个明确的道理；已经能用正文讲清楚的内容不必重复画。⟦/g⟧"""
 
 LOOK = ("上面是你写的小程序的真实渲染：依次是刚打开、做完 probes 每一步、窄屏、深色模式。\n{notes}\n"
         "只看图判断：把文字遮住，一个没学过的人能看出这个概念吗？动手前后的变化说明问题吗？哪里挤、哪里被裁、哪里看不清、"
@@ -89,12 +93,12 @@ class VisualFailed(Exception):
 
 @cache
 def system_text() -> str:
-    return load_skill("draw-visual").body
+    return load_skill("draw-visual").body + "\n\n" + VISUAL_GUIDE
 
 
 @cache
 def decide_text() -> str:
-    return load_skill("decide-visual").body
+    return load_skill("decide-visual").body + "\n\n" + VISUAL_GUIDE
 
 
 @dataclass(frozen=True)
@@ -311,7 +315,7 @@ class VisualStep:
     def conflict_left(self, body: str, conflict: str, html: str) -> str:
         """After the text was corrected: what still disagrees ("" = nothing). No answer: it stays open."""
         try:
-            raw = self._plain(RECHECK_PURPOSE, system_text(), (ChatMessage(
+            raw = self._plain(RECHECK_PURPOSE, load_skill("draw-visual").body, (ChatMessage(
                 role="user", text=RECHECK.format(body=body, conflict=conflict, html=html)),)).text
         except (ProviderOutputError, ProviderUnavailableError, DeadlineExceeded):
             return conflict

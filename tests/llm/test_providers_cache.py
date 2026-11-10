@@ -107,10 +107,17 @@ def _strip(kw):
     for t in kw.get("tools", []):
         t.pop("cache_control", None)
     if isinstance(kw["system"], list):
-        assert len(kw["system"]) == 1
-        kw["system"] = kw["system"][0]["text"]
+        kw["system"] = "".join(block["text"] for block in kw["system"])
     for m in kw["messages"]:
         if isinstance(m["content"], list):
+            blocks = m["content"]
+            if (m["role"] == "user" and len(blocks) >= 2
+                    and blocks[-2].get("cache_control") == MARK_1H
+                    and blocks[-2].get("type") == blocks[-1].get("type") == "text"):
+                # The stable question prefix may follow image/document attachments.
+                tail_mark = blocks[-1].get("cache_control", blocks[-2]["cache_control"])
+                m["content"] = [*blocks[:-2], {"type": "text",
+                    "text": blocks[-2]["text"] + blocks[-1]["text"], "cache_control": tail_mark}]
             had = [isinstance(b, dict) and b.pop("cache_control", None) is not None
                    for b in m["content"]]
             if (any(had) and m["role"] == "user"
@@ -381,10 +388,11 @@ def test_deep_write_shares_tools_system_and_stable_block_across_pages_and_turns(
         assert all("cache_control" not in t for t in kw["tools"])
         assert kw["system"][0]["cache_control"] == MARK_1H
         first = kw["messages"][0]["content"]
-        assert [b["cache_control"] for b in first] == [MARK_1H, MARK]
+        assert [b.get("cache_control") for b in first] == [MARK_1H, MARK]
     # The final request-only language contract has its own moving-tail marker.
     from evowiki.deep.language import output_rule
 
+    # The short default shares the task's system block, leaving all three message slots.
     assert _ttls(a1) == _ttls(a3) == ["1h", "1h", "5m", "5m"]
     assert all(kw["messages"][-1]["content"][-1] == {
         "type": "text", "text": output_rule("zh"), "cache_control": MARK} for kw in kws)
@@ -509,3 +517,86 @@ def test_deep_write_shares_stable_cache_prefix_across_output_languages(tmp_path)
         assert a["messages"][-1]["content"][-1]["text"] == output_rule("zh")
         assert b["messages"][-1]["content"][-1]["text"] == output_rule("en")
         assert _ttl_order_ok(a) and _ttl_order_ok(b)
+
+
+# Global style is injected by the gateway before provider rendering. These wire tests pass
+# the already-prepended system exactly as the gateway does, with no network or paid SDK call.
+def test_global_style_has_one_identical_cache_block_across_dynamic_structured_purposes():
+    from evowiki.llm.writing_style import STYLE_END, prepend_style
+
+    style = "清楚解释。" * 300
+    left = prepend_style("TASK A: changing learner profile", style)
+    right = prepend_style("TASK B: another learner profile", style)
+    a, _ = _complete("sources.summary", left)
+    b, _ = _complete("deep.page_fit", right)
+    assert a["system"][0] == b["system"][0]
+    assert a["system"][0]["text"].endswith(STYLE_END)
+    assert a["system"][0]["cache_control"] == MARK_1H
+    assert a["system"][1] == {"type": "text", "text": "\n\nTASK A: changing learner profile"}
+    assert _markers(a) == [("system", 0)]
+    assert "".join(block["text"] for block in a["system"]) == left
+    assert "".join(block["text"] for block in b["system"]) == right
+    assert a["messages"] == b["messages"] == [{"role": "user", "content": "P"}]
+    stable, _ = _complete("goals.intake", left)
+    assert _ttls(stable) == ["1h", "1h"]
+    assert "".join(block["text"] for block in stable["system"]) == left
+
+
+@pytest.mark.parametrize("attachments", [False, True])
+@pytest.mark.parametrize("multi_turn", [False, True])
+def test_global_style_and_task_body_fit_four_breakpoints_with_stable_user_and_tail(
+        attachments, multi_turn):
+    from evowiki.llm.chat import ImagePart
+    from evowiki.llm.writing_style import prepend_style
+
+    stable = "REUSABLE LEARNING CONTEXT " * 100
+    parts = ((ImagePart(media_type="image/png", sha256="a" * 64, data_b64="aGVsbG8="),)
+             if attachments else ())
+    first = ChatMessage(role="user", text=stable + "PAGE A", stable_prefix=len(stable), parts=parts)
+    req = _req([first, *TURN3[1:]] if multi_turn else [first],
+               system=prepend_style("FIXED TASK RULES", "清楚解释。" * 300))
+    before = copy.deepcopy(req.model_dump())
+    ref = ModelRef(provider="anthropic", model="claude-sonnet-5-5")
+    digest = chat_input_hash(ref, req)
+    kw, _ = _call(req)
+    assert _ttls(kw) == ["1h", "1h", "1h", "5m"] and _ttl_order_ok(kw)
+    assert _strip(kw) == _old_kwargs(req)
+    text_blocks = kw["messages"][0]["content"][-2:]
+    assert text_blocks[0] == {"type": "text", "text": stable, "cache_control": MARK_1H}
+    assert text_blocks[1] == {"type": "text", "text": "PAGE A", **(
+        {} if multi_turn else {"cache_control": MARK})}
+    if multi_turn:
+        assert kw["messages"][-1]["content"][-1]["cache_control"] == MARK
+    if attachments:
+        assert kw["messages"][0]["content"][1]["type"] == "image"
+    assert req.model_dump() == before
+    # Cache rendering neither edits the serialized request nor adds anything to its identity.
+    assert chat_input_hash(ref, req) == digest
+    off = req.model_copy(update={"cache": False})
+    uncached, _ = _call(off)
+    assert _markers(uncached) == [] and uncached == _old_kwargs(off)
+
+
+def test_style_cache_obeys_model_minimum_and_keeps_short_or_missing_style_shape():
+    from evowiki.llm.writing_style import prepend_style
+    from evowiki.tokens import estimate_tokens
+
+    for style in ("", "讲清楚。"):
+        system = prepend_style("DYNAMIC TASK", style)
+        assert _complete("sources.summary", system)[0]["system"] == system
+        # A chat still retains its pre-existing whole-system cache policy, with no extra
+        # breakpoint allocated to a style that cannot independently meet the minimum.
+        chat, _ = _call(_req(TURN3, system=system))
+        assert chat["system"] == [{"type": "text", "text": system, "cache_control": MARK_1H}]
+    system = prepend_style("TASK", "清楚解释。" * 300)
+    prefix_tokens = estimate_tokens(system)
+    assert 512 <= prefix_tokens < 4096
+    assert isinstance(_complete("sources.summary", system, model="claude-haiku-5-5")[0]["system"], list)
+    assert _complete("sources.summary", system, model="claude-haiku-4-5")[0]["system"] == system
+    style_only = prepend_style("", "清楚解释。" * 300)
+    kw, _ = _call(_req(TURN3, system=style_only))
+    assert kw["system"] == [{"type": "text", "text": style_only, "cache_control": MARK_1H}]
+    assert _ttl_order_ok(kw)
+    # Marker-like text inside an ordinary task is never parsed as a global prefix.
+    plain = "TASK mentions " + style_only
+    assert _complete("sources.summary", plain)[0]["system"] == plain

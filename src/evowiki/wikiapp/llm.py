@@ -81,7 +81,7 @@ JSON_PROMPT_VERSION = {"goals.intake": "intake@v38",
                        # checked; summary v2 no inference, length enforced; v3 in Chinese, a long
                        # one compressed from its own text; match v2 per section;
                        # glossary v3 names only, code filters; exam v3 stem checked in the text
-                       "sources.toc": "sources-toc@v4", "sources.summary": "sources-summary@v3",
+                       "sources.toc": "sources-toc@v4", "sources.summary": "sources-summary@v4",
                        "sources.match": "sources-match@v2",
                        "sources.glossary": "glossary@v3",
                        "sources.exam": "sources-exam@v3",

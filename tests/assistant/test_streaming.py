@@ -283,10 +283,10 @@ def test_follower_hands_out_a_tool_step_line_once_per_change():
     bus = LiveBus()
     f = Follower("w", bus=bus)
     assert f._status() is None
-    bus.status("w", "正在把目标分成几大块")
-    assert f._status() == StatusLine(text="正在把目标分成几大块")
+    bus.status("w", "正在拆解学习路径")
+    assert f._status() == StatusLine(text="正在拆解学习路径")
     assert f._status() is None                       # once
-    bus.status("w", "正在把目标分成几大块")          # the same line again: no change
+    bus.status("w", "正在拆解学习路径")          # the same line again: no change
     assert f._status() is None
     bus.status("w", "正在检查分块")
     assert f._status() == StatusLine(text="正在检查分块")
@@ -311,7 +311,7 @@ def test_dbos_a_long_tool_says_its_steps_while_it_runs(dbos_env):
 
     class Slow(FakeTool):
         def run(self, args, ctx):
-            ctx.progress("正在把目标分成几大块")
+            ctx.progress("正在拆解学习路径")
             assert gate.wait(30), "never released"
             return ToolResult(content="好了")
 
@@ -321,7 +321,7 @@ def test_dbos_a_long_tool_says_its_steps_while_it_runs(dbos_env):
     seen = []
     for ev in it:
         seen.append(ev)
-        if ev == StatusLine(text="正在把目标分成几大块"):
+        if ev == StatusLine(text="正在拆解学习路径"):
             break
     gate.set()
     seen += list(it)
@@ -329,4 +329,4 @@ def test_dbos_a_long_tool_says_its_steps_while_it_runs(dbos_env):
     wid = DBOS.list_workflows(workflow_id_prefix="turn:s1:", load_input=False,
                               load_output=False)[0].workflow_id
     durable_events = [turn_runs.decode_event(x) for x in DBOS.read_stream(wid, "events")]
-    assert all(e != StatusLine(text="正在把目标分成几大块") for e in durable_events)
+    assert all(e != StatusLine(text="正在拆解学习路径") for e in durable_events)

@@ -1,3 +1,4 @@
+import { uiLanguage } from "../i18n/index";
 import { labelNode } from "../i18n/index";
 import { localizedAttribute } from "../i18n/index";
 /**
@@ -6,8 +7,8 @@ import { localizedAttribute } from "../i18n/index";
  * aria-selected and the red count `.ew-cnt`; offline, then the one 未连接到服务器 · 重试 line), then the tab slot (`div` min-height:0) holding the shown tab: 今天's
  * `.ew-side-body`, 参数's `.ew-side-body.ew-set.ew-side-set`, or the assistant panel's root. The header is built once
  * (only its attributes change); the 助手 panel is mounted once and only shown or hidden, so its input, caret and
- * streaming transcript are untouched by wiki updates. update() rebuilds the other tab bodies from the state but keeps
- * the focused field (and its caret), the open <details> and the body's scroll position.
+ * streaming transcript are untouched by wiki updates. Today's form and miniature stay mounted; only changed sections
+ * redraw. Engine rebuilds keep the focused field (and its caret), open <details> and the body's scroll position.
  */
 import { btn, el } from "../ui/ew";
 import type { AccountState } from "../account";
@@ -17,6 +18,8 @@ import type { Counts } from "./dots";
 import { renderEngine } from "./render-engine";
 import { offlineBanner } from "./render-common";
 import { renderToday } from "./render-today";
+import { renderLearn } from "./render-learn";
+import { renderNext } from "./render-next";
 import { progressOf, updateSourceCard } from "./sources/render-sources";
 import { type Tab, TABS, type WikiState } from "./state";
 import { TODAY_COPY } from "./today-copy";
@@ -54,6 +57,7 @@ export class WikiRenderer {
   private readonly slot: HTMLDivElement = el("div");
   private body: HTMLElement | null = null;
   private bodyTab: Tab | null = null;
+  private todayKeys = { next: "", learn: "", demo: false };
   /**
    * The one offline line of the whole sidebar (今天 / 助手 / 参数): 未连接到服务器 + 重试, last in the header, hidden
    * while connected. The tab bodies say nothing about being offline (their failed reads stay empty).
@@ -128,6 +132,24 @@ export class WikiRenderer {
     }
     this.slot.hidden = account?.kind === "error" || account?.kind === "loading";
     this.slot.inert = this.slot.hidden;
+    const ctx: RenderCtx = this.cloud ? { ...this.ctx(), cloud: this.cloud } : this.ctx();
+    const keys = {
+      next: JSON.stringify([uiLanguage(), s.demo, s.configured, s.conn, s.busy, s.review, s.bot, s.catalog, s.progress, s.path, s.followups]),
+      learn: JSON.stringify([uiLanguage(), s.configured, s.conn, s.k, s.recommendations]),
+      demo: s.demo,
+    };
+    // Controller notifications include unrelated page/engine polling. Keep Today's
+    // mounted form, miniature and goal rows; redraw only a section whose data changed.
+    if (tab === "today" && this.bodyTab === "today" && this.body !== null && this.todayKeys.demo === s.demo) {
+      const focus = this.captureFocus();
+      if (keys.next !== this.todayKeys.next) this.body.querySelector('[data-section="next"]')?.replaceWith(renderNext(s, this.actions, ctx));
+      if (keys.learn !== this.todayKeys.learn) this.body.querySelector('[data-section="learn"]')?.replaceWith(renderLearn(s, this.actions));
+      this.todayKeys = keys;
+      this.cloud?.sync();
+      if (focus && !this.body.contains(document.activeElement)) this.restoreFocus(focus);
+      return;
+    }
+    this.todayKeys = keys;
     const focus = this.captureFocus();
     if (this.body !== null) for (const d of this.body.querySelectorAll("details")) this.details.set(detailsKey(d), d.open);
     const scroll = this.body !== null && this.bodyTab === tab ? this.body.scrollTop : 0;
@@ -137,7 +159,6 @@ export class WikiRenderer {
 
     if (this.assistant) this.assistant.style.display = tab === "assistant" ? "" : "none";
     if (tab !== "assistant") {
-      const ctx: RenderCtx = this.cloud ? { ...this.ctx(), cloud: this.cloud } : this.ctx();
       const body = tab === "engine" ? renderEngine(s, this.actions, counts.log) : renderToday(s, this.actions, ctx);
       this.slot.insertBefore(body, this.assistant && this.assistant.parentElement === this.slot ? this.assistant : null);
       this.body = body;

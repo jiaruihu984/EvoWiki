@@ -6718,6 +6718,18 @@
   "PromptStepOut": {
    "additionalProperties": false,
    "properties": {
+    "category": {
+     "enum": [
+      "global",
+      "planning",
+      "materials",
+      "writing",
+      "review",
+      "assistant",
+      "memory"
+     ],
+     "type": "string"
+    },
     "default_text": {
      "type": "string"
     },
@@ -6743,6 +6755,7 @@
    "required": [
     "step",
     "name",
+    "category",
     "description",
     "text",
     "default_text",

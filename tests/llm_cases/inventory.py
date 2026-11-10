@@ -56,6 +56,8 @@ INVENTORY: dict[str, Entry] = {
     "assistant.consolidate": Entry("src/evowiki/memory/consolidate.py", (),
                                    "tests/memory/test_consolidate.py"),
     "memory.conflicts": Entry("src/evowiki/memory/conflicts.py", (), "tests/memory/test_conflicts.py"),
+    "memory_anchor": Entry("src/evowiki/memory/anchors.py", (), "tests/memory/test_anchors.py"),
+    "source.vision": Entry("src/evowiki/sources/claude_pages.py", (), "tests/sources/test_claude_pages.py"),
     # the conversation summary's fixed evaluator (protected: evaluation/**)
     "eval.compact.judge": _e("src/evowiki/evaluation/compact.py", (), "compact_eval"),
     # the page-writing evaluator's core (protected: evaluation/**; RSI-B's Gate judge metrics)
@@ -76,7 +78,8 @@ INVENTORY: dict[str, Entry] = {
 # simulator, experiments are the legacy content-graph reader and research code, not the wiki).
 PRODUCT_DIRS = ("src/evowiki/goals", "src/evowiki/wikiapp", "src/evowiki/wiki",
                 "src/evowiki/deep", "src/evowiki/assistant", "src/evowiki/teach",
-                "src/evowiki/evaluation", "src/evowiki/memory")
+                "src/evowiki/evaluation", "src/evowiki/memory", "src/evowiki/sources",
+                "src/evowiki/bot")
 
 # The separate verifier call is removed and must stay removed (rule NO_VERIFIER).
 # The old per-cell item generator was unreachable from the product and was deleted.

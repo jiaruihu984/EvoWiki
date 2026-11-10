@@ -44,10 +44,10 @@ def step(key: str) -> Step:
     return s
 
 
-def validate(text: str) -> str:
+def validate(text: str, *, key: str = "") -> str:
     """The text to store (stripped), or PromptInvalid with the plain reason (plan D1)."""
     t = text.strip()
-    if not t:
+    if not t and key != "language_style":
         raise PromptInvalid(EMPTY)
     if len(t) > MAX_CHARS:
         raise PromptInvalid(TOO_LONG)
@@ -70,7 +70,7 @@ def change(pool, ledger: ActionLedger, user_id: str, key: str, text: str | None,
     changes nothing writes nothing; otherwise the override and its ledger row (content: step,
     before, after) commit together."""
     s = step(key)
-    new = None if text is None else validate(text)
+    new = None if text is None else validate(text, key=key)
     if new == default.strip():
         new = None
     with pool.connection() as conn, conn.transaction():

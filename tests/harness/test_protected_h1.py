@@ -18,7 +18,7 @@ CLOSED = sorted(f"H1.{k}" for k in H1_CLOSED_STEPS)
 
 
 def test_the_closed_set_holds_feedback():
-    assert set(CLOSED) == {"H1.feedback"}
+    assert set(CLOSED) == {"H1.feedback", "H1.language_style"}
     assert all(closed_h1(n) for n in CLOSED) and not closed_h1("H1.write")
 
 

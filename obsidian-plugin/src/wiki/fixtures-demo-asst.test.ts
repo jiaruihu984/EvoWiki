@@ -62,7 +62,7 @@ describe("the demo fixture's 学点新的 blocks (app.js startBlocks / blocksRep
       + "你是想自己把虾养好，还是把它当成一种生物来研究？前一种会把操作排前面，后一种会多讲分类和生理。";
     expect(text(e1)).toBe(paras + tail);
     expect(e1.filter((e) => e.type === "text_delta").map((e) => (e.type === "text_delta" ? e.at : -1))).toEqual([null, paras.length]);
-    expect([card(e1)!.kind, card(e1)!.title, card(e1)!.items.map((i) => [i.title, i.level])]).toEqual(["goal_new", "「黑壳虾」分成 6 块",
+    expect([card(e1)!.kind, card(e1)!.title, card(e1)!.items.map((i) => [i.title, i.level])]).toEqual(["goal_new", "为「黑壳虾」拆解学习路径",
       [["分类与鉴别", "基础"], ["水质与环境", "基础"], ["开缸与日常", "核心"], ["营养与摄食", "核心"], ["生长与繁殖", "进阶"], ["疾病与风险", "进阶"]]]);
     expect((fx.assistant.actionRows.get(card(e1)!.action_id)!.content.pages as { level: string }[]).map((x) => x.level)).toEqual(["基础", "基础", "核心", "核心", "进阶", "进阶"]);
     const e2 = await go("水质和开缸合成一块");

@@ -21,8 +21,11 @@ from evowiki.wikiapp.state import WikiState
 from evowiki.wikiapp.wiki_schemas import DomainOut, GroupOut
 
 PURPOSE = "graph.group_naming"
-PROMPT_VERSION = "domain-grouping-v1"
+PROMPT_VERSION = "domain-grouping-v2"
 MAX_NAMES = 12            # a group as the model is shown it: its name and what it holds
+
+DOMAIN_NAMING_GUIDE = """⟦g:domain_naming⟧每个领域用简明、具体的名词起名，让学习者一眼看出它涵盖什么。
+描述用一句自然的话说明这个领域共同讨论的内容，不罗列成员，也不写学习任务或口号。⟦/g⟧"""
 
 
 class DomainReply(BaseModel):
@@ -61,6 +64,7 @@ def domain_request(tops: Sequence[GroupOut], groups: Sequence[GroupOut], names: 
 {listing}
 
 每个领域起一个名字，写一句描述。和别的大块都不同领域的，不用列。
+{DOMAIN_NAMING_GUIDE}
 
 {language_rule(language)}
 只回复 JSON：{{"domains":[{{"name":"…","summary":"…","groups":[1,2]}}]}}"""

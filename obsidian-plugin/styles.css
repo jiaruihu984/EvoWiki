@@ -83,9 +83,10 @@ body .ew .ew-check .ew-h svg{width:16px;height:16px;stroke:var(--accent);fill:no
 body .ew .ew-check .ew-stem{font-family:var(--font-text);font-size:15.5px}
 body .ew .ew-check .ew-opts{display:flex;flex-direction:column;gap:6px}
 body .ew .ew-check .ew-o{text-align:left;border:1px solid var(--border);background:var(--bg-0);border-radius:8px;padding:6px 12px;cursor:pointer}
-body .ew .ew-check .ew-o:hover:not(:disabled){background:var(--bg-1)}
+body .ew .ew-check .ew-o:hover:not(:disabled),body .ew .ew-check[data-answered="false"] .ew-o:hover{background:var(--bg-1)}
 body .ew .ew-check .ew-o.ew-idk{border-style:dashed;color:var(--tx-2)}
 body .ew .ew-check .ew-o:disabled{cursor:default}
+body .ew .ew-check[data-answered="false"] .ew-o:disabled{cursor:pointer}
 body .ew .ew-check .ew-o.ew-right{border-color:var(--known);color:var(--known);font-weight:600}
 body .ew .ew-check .ew-o.ew-wrong{border-color:var(--gap);color:var(--gap)}
 body .ew .ew-res{font-size:13.5px}
@@ -749,6 +750,8 @@ body .ew .ew-fg-item input:checked::after{position:static;inset:auto;-webkit-mas
    .note rules are re-created on Obsidian's DOM here (values verbatim from shell.html); plugin-drawn parts sit in
    .ew.ew-inline wrappers and use the EXACT block directly. ===== */
 body .ew.ew-inline{display:contents}
+/* A rendered quiz is a card, not a source-code editor: keep Obsidian's hover frame off it. */
+.markdown-source-view.mod-cm6 .cm-embed-block:has(.evowiki-check){--embed-block-shadow-hover:none}
 /* .note: max-width 680px is its content box (content-box sizing) + 24px side padding, centred, padding 28px top / 80px bottom, text font 16px/1.9 */
 .markdown-preview-view.evowiki-page,.markdown-source-view.is-live-preview.evowiki-page{--file-line-width:680px;--p-spacing:12px;--heading-spacing:30px;--font-text-size:16px;--line-height-normal:1.9;--h2-size:20px;--h2-weight:700;--h2-line-height:1.9;--h2-font:var(--font-ui);--h2-color:var(--tx-1);--h2-letter-spacing:normal;--h2-variant:normal;--h2-style:normal;background:var(--bg-0);color:var(--tx-1)}
 .markdown-preview-view.evowiki-page{font-family:var(--font-text);font-size:16px;line-height:1.9;padding:0 24px}

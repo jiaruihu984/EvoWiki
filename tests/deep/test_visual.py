@@ -410,6 +410,7 @@ def test_the_text_recheck_has_its_own_purpose_so_it_does_not_count_as_a_decision
     _, m = _tool(ws, "<ok/>")
     assert ws.visual.conflict_left("正文", "不一致", "图") == ""
     assert m.requests[0].purpose == "deep.visual.recheck"
+    assert "⟦g:visual_guide⟧" not in m.requests[0].system
 
 
 # ---- the render check

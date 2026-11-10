@@ -118,8 +118,12 @@ export class GoalProgress {
     void this.store.refresh();
   }
 
+  private drawnKey = "";
   private draw(): void {
     const s = this.store.state;
+    const key = JSON.stringify([s.status, s.offline, s.graph?.goals, this.host.progress(), this.host.offline?.() ?? false]);
+    if (key === this.drawnKey) return;
+    this.drawnKey = key;
     this.line.replaceChildren();
     this.line.hidden = true;
     this.root.replaceChildren();

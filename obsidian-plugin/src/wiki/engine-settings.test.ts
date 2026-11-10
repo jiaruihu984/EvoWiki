@@ -1,11 +1,13 @@
 ﻿import { afterEach, describe, expect, it, vi } from "vitest";
+import { setUiLanguage } from "../i18n/index";
+import { PROMPT_STEPS } from "./fixtures";
 import { ENGINE_COPY } from "./engine-copy";
 import { mountEngineSettings } from "./engine-settings";
 import { setup } from "./controller-test-kit";
 import { fakeActions } from "./render-test-kit";
 import { INITIAL_WIKI_STATE, type WikiState } from "./state";
 
-afterEach(() => { document.body.replaceChildren(); });
+afterEach(() => { document.body.replaceChildren(); setUiLanguage("zh"); });
 
 function draw(s: Partial<WikiState>) {
   const a = fakeActions();
@@ -40,5 +42,23 @@ describe("设置 · 自动改进讲解和助手", () => {
     await c.setRsiSwitch(false);
     expect(fail).toHaveBeenCalled();
     expect(c.state.rsiSwitch).toEqual({ kind: "ready", value: true });
+  });
+});
+
+
+describe("prompt categories", () => {
+  it("groups prompts by category with global style first and localized labels", () => {
+    const { box, a } = draw({ prompts: { kind: "ready", value: [...PROMPT_STEPS].reverse() } });
+    const headings = [...box.querySelectorAll<HTMLElement>("[data-prompt-category]")];
+    expect(headings.map((h) => h.dataset.promptCategory)).toEqual(["global", "planning", "materials", "writing", "review", "assistant", "memory"]);
+    expect(headings[0]?.textContent).toBe("全局");
+    const first = box.querySelector<HTMLButtonElement>("[data-prompt]")!;
+    expect(first.dataset.prompt).toBe("language_style");
+    expect(first.textContent).toBe("语言风格");
+    first.click();
+    expect(a.openPrompt).toHaveBeenCalledWith("language_style");
+    setUiLanguage("en");
+    expect(headings[0]?.textContent).toBe("Global");
+    expect(first.textContent).toBe("Language style");
   });
 });

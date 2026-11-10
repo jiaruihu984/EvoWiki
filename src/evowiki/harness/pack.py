@@ -40,7 +40,7 @@ def validate(name: str, value: object) -> Value:
     if not isinstance(value, str):
         raise HarnessInvalid(f"{name} 要是文字")
     t = value.strip()
-    if not t:
+    if len(t) < k.lo:
         raise HarnessInvalid(f"{name} 不能是空的")
     if len(t) > k.hi:  # type: ignore[operator]
         raise HarnessInvalid(f"{name} 最多 {k.hi} 个字")

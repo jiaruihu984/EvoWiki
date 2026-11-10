@@ -26,6 +26,27 @@ def stopped(root, op):
     return {"state": "stopped", "port": 8002}
 
 
+def test_bootstrap_import_needs_no_database_or_service_dependencies():
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    result = subprocess.run([sys.executable, "-c", """
+import importlib.abc
+import sys
+sys.path.insert(0, sys.argv[1])
+class BootstrapOnly(importlib.abc.MetaPathFinder):
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname.split('.')[0] in {'psycopg', 'psycopg_pool', 'psutil', 'pydantic', 'fastapi'}:
+            raise ModuleNotFoundError('Runtime dependency imported by bootstrap: ' + fullname)
+sys.meta_path.insert(0, BootstrapOnly())
+from evowiki_setup import parse_config
+assert parse_config(b'EVOWIKI_LANGUAGE=zh\\n')['EVOWIKI_LANGUAGE'] == 'zh'
+""", str(Path(__file__).resolve().parents[2] / "scripts")],
+        capture_output=True, text=True, check=False)
+    assert result.returncode == 0, result.stderr
+
+
 def test_keyless_status_and_check_are_free_and_secretless(config):
     initial = status(config)
     assert initial["ok"]
@@ -125,8 +146,8 @@ def test_exclusive_setup_lock_prevents_overlapping_write_and_recovers_after_kill
     child = subprocess.Popen([sys.executable, "-u", "-c", """
 import sys
 from pathlib import Path
-from evowiki.service.backup import _file_lock
-with _file_lock(Path(sys.argv[1])):
+from evowiki.file_lock import file_lock
+with file_lock(Path(sys.argv[1])):
     print('locked', flush=True)
     sys.stdin.read()
 """, str(config / ".evowiki-run" / "setup.lock")],

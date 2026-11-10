@@ -674,6 +674,13 @@ export class WikiController {
   graphSource(): GraphSource { return this.knowledge.graphSource(); }
   /** The writes watcher's last read (null in the demo or before the first read): the assistant's cards use it too. */
   writesSnapshot(): WritesSnapshot | null { return this.core.watcher?.snapshot() ?? null; }
+  onWritesChanged(fn: () => void): () => void { return this.core.watcher?.subscribe(fn) ?? (() => undefined); }
+  noteWriteProgress(pageId: string): { pass: number | null; section: number | null; of: number | null } | undefined {
+    const p = this.core.noteWriteProgress;
+    if (this.writingPage() === pageId && p?.pageId === pageId) return p;
+    const w = this.writesSnapshot()?.writes.find((w) => w.page_id === pageId && ["queued", "planning", "writing"].includes(w.state));
+    return w === undefined ? undefined : { pass: w.pass, section: w.section, of: w.of };
+  }
   starMapStore(): StarMapStore { return this.knowledge.starMapStore(); }
   declareConcept(conceptId: string, v: Declared, opts: { quietOk?: boolean } = {}): Promise<boolean> { return this.knowledge.declareConcept(conceptId, v, opts); }
 

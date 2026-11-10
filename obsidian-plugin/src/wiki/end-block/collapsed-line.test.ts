@@ -26,6 +26,12 @@ describe("a page another goal reuses", () => {
 });
 
 describe("the collapsed-page line (恢复成完整页 entry point on the note)", () => {
+  it("organizing has no duplicate placeholder strip below the header's progress bar", async () => {
+    const h = await harness();
+    const pageId = h.c.state.page.kind === "open" ? h.c.state.page.page.page_id : "";
+    expect(topLine({ ...h.c.state, busy: { what: "organize", abortable: true } }, pageId)).toBeNull();
+    h.c.dispose();
+  });
   it("a collapsed page shows its card line (shelf_line) with one .ew-lk that expands it; a full page has no such line", async () => {
     const h = await harness();
     const pageId = h.c.state.page.kind === "open" ? h.c.state.page.page.page_id : "";

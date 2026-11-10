@@ -82,6 +82,10 @@ def test_the_printed_only_variant_has_its_own_prompt_and_version(tmp_path):
     p.read([png((1, 1, 1))])
     r.read([png((2, 2, 2))])
     printed, plain = prov.chat_calls
-    assert (printed.system, printed.prompt_version) == (PRINTED_SYSTEM, PRINTED_PROMPT_VERSION)
-    assert (plain.system, plain.prompt_version) == (SYSTEM, PROMPT_VERSION)
+    from evowiki.llm.writing_style import DEFAULT_LANGUAGE_STYLE, prepend_style
+
+    assert (printed.system, printed.prompt_version) == (
+        prepend_style(PRINTED_SYSTEM, DEFAULT_LANGUAGE_STYLE), PRINTED_PROMPT_VERSION)
+    assert (plain.system, plain.prompt_version) == (
+        prepend_style(SYSTEM, DEFAULT_LANGUAGE_STYLE), PROMPT_VERSION)
     assert printed.purpose == plain.purpose == "source.vision"

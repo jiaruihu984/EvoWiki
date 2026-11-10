@@ -87,6 +87,7 @@ export class Streams {
     const ac = new AbortController();
     this.core.abort = ac;
     this.core.abortPage = pageId;
+    this.core.noteWriteProgress = { pageId, pass: null, section: null, of: null };
     // (also tells the subscribers that this page's write can now be stopped)
     const stopped = this.core.state.stopped;
     this.core.set({ stopped: stopped?.pageId === pageId ? null : stopped });
@@ -101,6 +102,12 @@ export class Streams {
     const on = (e: OrganizeEvent): void => {
       if (end !== null) return;
       switch (e.event) {
+        case "planning": {
+          if (!live()) return;
+          this.core.noteWriteProgress = { pageId, pass: e.data.pass, section: null, of: null };
+          this.core.set({});
+          return;
+        }
         case "outline": {
           if (!live()) return;
           const { sections, profile, assumed, source } = e.data;

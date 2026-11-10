@@ -333,6 +333,17 @@ export const DEFAULT_BOT_SETTINGS: BotSettings = {
 // ---- 提示词设置 (GET /wiki/prompts): the demo ENGINE.prompts texts for steps llm/prompt_steps.STEPS has (names + descriptions generated) ----
 const PS = (step: keyof typeof PROMPT_STEP_INFO, text: string): PromptStepOut => ({ step, ...PROMPT_STEP_INFO[step], text, default_text: text, edited: false, format_note: "" });
 export const PROMPT_STEPS: readonly PromptStepOut[] = [
+  PS("language_style", "用清楚、自然的语言解释；先说明结论，再按需要展开。"),
+  PS("source_outline", "按照资料目录组织学习内容。"),
+  PS("source_reference", "围绕学习目标引用资料中的相关内容。"),
+  PS("understand", "识别资料的重点及必要基础知识。"),
+  PS("blocks", "根据学习目标拆解学习路径，安排主题和学习顺序。"),
+  PS("page_fit", "判断已有页面是否适合当前学习目标。"),
+  PS("reading_unit", "识别当前资料段落的重点和前置知识。"),
+  PS("source_match", "找出新资料与已有页面的关联。"),
+  PS("visual_guide", "用图示说明难以只用文字表达的关系。"),
+  PS("domain_naming", "用明确的学科名称归类学习内容。"),
+  PS("source_summary", "概括资料重点并保留来源信息。"),
   PS("decompose", "把目标拆成一个个点：一页能讲清的就是一个点，不为了显得有结构往下拆。已经在 Wiki 里的点直接用，不重复建。"),
   PS("path", "一行一个点，一页讲一个点。每页写一个短名字和一句它回答的问题，用学习者自己的话，比如「模型是不是在背答案」。"),
   PS("outline", "按学习者现在掌握到哪安排每一段：会的折起来，记不清的给提醒，不会的讲透。"),

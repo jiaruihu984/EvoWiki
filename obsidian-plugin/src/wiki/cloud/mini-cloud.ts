@@ -53,7 +53,8 @@ export class MiniCloud {
     this.unsubStore = this.store.subscribe(() => { this.update(); });
     this.unCss = host.onCssChange(() => { this.cloud?.recolor(); });
     try {
-      this.cloud = GraphCloud(this.canvas, { tokens: this.root, small: true, font: () => "", reduced: () => true });
+      // Graph motion is enabled within EvoWiki, independently of Windows UI animations.
+      this.cloud = GraphCloud(this.canvas, { tokens: this.root, small: true, font: () => "", reduced: () => false });
     } catch (e) {
       // No WebGL: the box stays empty; the rest of 今天 is unaffected.
       console.warn("EvoWiki: the small knowledge cloud could not start", e);

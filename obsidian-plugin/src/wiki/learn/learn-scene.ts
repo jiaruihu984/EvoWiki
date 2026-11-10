@@ -60,7 +60,7 @@ export function learnScene(k: Scene | null, map: GoalMapOut | null, places: Grap
     if (!ownDot.has(realId(dot))) ownDot.set(realId(dot), n);
   }
   // a point the goal takes from elsewhere on the map (a draft, a cluster): round its block once the block has its place, so no line crosses the map
-  const onMap = (id: string, r: string): SceneNode | undefined => ownDot.get(`${realId(id)}|${r}`) ?? ownDot.get(realId(id)) ?? (places?.places[r] === undefined ? base.nodes.get(id) : undefined);
+  const onMap = (id: string, r: string): { x: number; y: number } | undefined => ownDot.get(`${realId(id)}|${r}`) ?? ownDot.get(realId(id)) ?? base.anchors?.get(realId(id)) ?? (places?.places[r] === undefined ? base.nodes.get(id) : undefined);
   const spot = (id: string, r: string): { x: number; y: number } => {
     const known = onMap(id, r);
     if (known !== undefined && ![...nodes.values()].some((n) => n.x === known.x && n.y === known.y)) return { x: known.x, y: known.y };
@@ -157,7 +157,7 @@ export function learnScene(k: Scene | null, map: GoalMapOut | null, places: Grap
       at: at.length > 0 ? [at.reduce((t, p) => t + p[0], 0) / at.length, at.reduce((t, p) => t + p[1], 0) / at.length] : null }];
   }
   return {
-    scene: { order, nodes, names: new Map([...base.names, ...[...nodes.values()].map((n) => [n.id, n.name] as const)]), l1: standing, l2,
+    scene: { order, nodes, anchors: base.anchors, names: new Map([...base.names, ...[...nodes.values()].map((n) => [n.id, n.name] as const)]), l1: standing, l2,
       // the same domains as 知识图谱: the goal drawn here stands in for itself on the map
       domains: (base.domains ?? []).map((d) => ({ ...d, kids: d.kids.map((k) => (goalId !== null && kids.length > 0 && itself.has(k) ? goalId : k)).filter((k) => l2.some((g) => g.id === k) || standing.some((g) => g.id === k && g.parent === null)) })).filter((d) => d.kids.length > 1) },
     goalOf, goalDots,

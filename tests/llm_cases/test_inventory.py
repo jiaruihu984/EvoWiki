@@ -9,7 +9,7 @@ from tests.llm_cases.inventory import INVENTORY, PRODUCT_DIRS, REMOVED_PURPOSES
 ROOT = Path(__file__).resolve().parents[2]
 # PURPOSE = "x" / X_PURPOSE = "x" / purpose="x" in the product code (digits allowed after the
 # first character)
-PURPOSE_RE = re.compile(r'(?:\b[A-Z_]*PURPOSE\s*=\s*|purpose\s*=\s*)"([a-z_][a-z0-9_.]*)"')
+PURPOSE_RE = re.compile(r'''(?:\b[A-Z_]*PURPOSE\s*=\s*|purpose\s*=\s*)["']([a-z_][a-z0-9_.]*)["']''')
 
 
 def _product_sources():

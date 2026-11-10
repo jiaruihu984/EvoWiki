@@ -22,6 +22,7 @@ from evowiki.llm.log import AttemptLog, CallLog
 from evowiki.llm.models import GatewayConfig, LLMRequest, ModelRef
 from evowiki.llm.providers import ProviderEmptyOutputError
 from evowiki.llm.scripted import ScriptedProvider
+from evowiki.llm.writing_style import DEFAULT_LANGUAGE_STYLE, prepend_style
 from evowiki.runtime.llm import RUNTIME_RECORD_MAX_ATTEMPTS
 from tests.runtime.llm_helpers import MemoryAttemptLog, MemoryCallLog
 
@@ -167,20 +168,21 @@ def test_redact_is_not_hashed_and_not_sent(tmp_path):
     prov = ScriptedProvider("gen", lambda m, r: RAW)
     _gw(MemoryCallLog(), None, prov).call("generator", _req(redact=(SEL, HEAD)), Echo)
     [sent] = prov.calls
-    assert sent.system == "sys" and sent.prompt == "p"  # providers build payloads from these only
+    assert sent.system == prepend_style("sys", DEFAULT_LANGUAGE_STYLE) and sent.prompt == "p"  # providers build payloads from these only
 
 
 # --- no redact, no change -------------------------------------------------------------------
 
 @STORES
 @pytest.mark.parametrize("redact", [(), ("",)])
-def test_no_redact_is_byte_identical_to_today(tmp_path, kind, redact):
+def test_no_redact_preserves_output_and_hashes_styled_input(tmp_path, kind, redact):
     log, attempts = _stores(kind, tmp_path)
     prov = ScriptedProvider("gen", lambda m, r: RAW)
     gw = _gw(log, attempts, prov)
     req = _req(redact=redact)
     out, call = gw.call("generator", req, Echo)
-    h = input_hash(CONFIG.generator, req, "Echo")
+    h = input_hash(CONFIG.generator, req.model_copy(update={
+        "system": prepend_style(req.system, DEFAULT_LANGUAGE_STYLE)}), "Echo")
     assert call.id == f"llm_{h[:20]}" and call.replayable is True
     [stored] = log.calls()
     assert stored == call and stored.raw_output == RAW and out.sentence == SEL
@@ -202,7 +204,8 @@ def test_identical_redacted_requests_are_two_executions(tmp_path, kind):
     prov = ScriptedProvider("gen", lambda m, r: RAW)
     gw = _gw(log, attempts, prov)
     req = _req(redact=(SEL, HEAD))
-    h = input_hash(CONFIG.generator, req, "Echo")
+    h = input_hash(CONFIG.generator, req.model_copy(update={
+        "system": prepend_style(req.system, DEFAULT_LANGUAGE_STYLE)}), "Echo")
     out1, c1 = gw.call("generator", req, Echo)
     out2, c2 = gw.call("generator", req, Echo)
     assert len(prov.calls) == 2

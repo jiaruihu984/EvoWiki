@@ -838,7 +838,7 @@ def round_tools(inp: RefineInput, ws: Workspace, checker: Checker,
     builtins = apply.toolset(pack, "deep", build_tools(
         ws, user_id=inp.user_id, page_id=inp.page_id, title=inp.title, kview=inp.kview,
         names=inp.names, teaching=inp.teaching, checker=checker, known=inp.known, setup=setup,
-        on_outline=on_outline, other_pages=inp.other_pages, sources=reader))
+        on_outline=on_outline, other_pages=inp.other_pages, sources=reader, guidance=pack.guidance()))
     if forge is None:
         return apply.describe(pack, "deep", builtins)
     return apply.describe(pack, "deep", [*builtins, *forge(builtins, _tool_ctx(inp))])
@@ -1340,7 +1340,7 @@ def practice_round(inp: RefineInput, ws: Workspace, gw: Gateway, account: Accoun
     ws.submitted = None
     tools = apply.describe(pack, "deep", apply.toolset(pack, "deep", practice_tools(
         ws, user_id=inp.user_id, page_id=inp.page_id, title=inp.title, kview=inp.kview,
-        names=inp.names, teaching=inp.teaching, checker=checker)))
+        names=inp.names, teaching=inp.teaching, checker=checker, guidance=pack.guidance())))
     stop = _run_round(inp, gw, account, tools, practice_message(inp, ws, must_fix, skills=skills),
                       PRACTICE_SYSTEM, must_fix, rnd, calls, pack=pack,
                       cancel=cancel, trace=trace, run_id=run_id,

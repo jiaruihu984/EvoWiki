@@ -9,12 +9,16 @@ from functools import cache
 from evowiki.assistant import compact as compact_mod
 from evowiki.assistant import loop as loop_mod
 from evowiki.deep import agent as deep_agent
+from evowiki.deep.visual import VISUAL_GUIDE
 from evowiki.goals import path
 from evowiki.goals.intake import IntakeConcept, IntakeResult
 from evowiki.llm.prompt_steps import STEPS, marked
+from evowiki.llm.writing_style import DEFAULT_LANGUAGE_STYLE
 from evowiki.service import engine
 from evowiki.sources import match
+from evowiki.sources.summary import SUMMARY_GUIDE
 from evowiki.wikiapp import graph_groups
+from evowiki.wikiapp.group_domains import DOMAIN_NAMING_GUIDE
 
 
 def _path() -> str:
@@ -33,6 +37,9 @@ def _source_match() -> str:
 
 
 RENDER: dict[str, Callable[[], str]] = {
+    "visual_guide": lambda: VISUAL_GUIDE,
+    "domain_naming": lambda: DOMAIN_NAMING_GUIDE,
+    "source_summary": lambda: SUMMARY_GUIDE,
     "decompose": engine._enter,
     "source_outline": lambda: engine._intake((engine.SOURCE,)),
     "source_reference": lambda: engine._intake((engine.SOURCE,), mode="reference"),
@@ -66,4 +73,5 @@ def default_texts() -> dict[str, str]:
     """Step key → its default guidance (unmarked), the same for every user. Raises when a step
     has no marked span (a builder lost its markers): the prompt settings must never show an
     empty default."""
-    return {s.key: _default(s.key, RENDER[s.key]()) for s in STEPS}
+    return {s.key: DEFAULT_LANGUAGE_STYLE if s.key == "language_style"
+            else _default(s.key, RENDER[s.key]()) for s in STEPS}

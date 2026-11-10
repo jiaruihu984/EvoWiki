@@ -30,12 +30,14 @@ import { examTagTip } from "../exam/exam-model";
 import { qTip } from "../q-tip";
 import { canSplitRow, coverLine, rowSections, optimisticPath, parentNames, shareSegments } from "../graph-page/panel-logic";
 import { buildScene, focusTest, realId, type Scene } from "../graph-page/scene";
-import { GraphCloud, tipSpot, type GraphCloudHandle, type Hover } from "../graph-page/sigma-cloud";
+import { tipSpot, type GraphCloudHandle, type Hover } from "../graph-page/sigma-cloud";
+import { goalCloud, goalScene, tintGoalScene } from "../learn/goal-cloud";
+import type { LearnDiag } from "../learn/learn-view";
 import { GraphStore, type GraphSource } from "../graph-page/store";
-import type { Band, GoalOut, GoalPathOut, GraphOut, PathEditIn, PathItemOut } from "../schema";
+import type { Band, GoalMapOut, GoalOut, GoalPathOut, GraphOut, PathEditIn, PathItemOut } from "../schema";
 import { offlineBanner } from "../render-common";
-import { learnScene, type LearnScene } from "../learn/learn-scene";
-import { topRegions } from "../learn/learn-flow";
+import type { LearnScene } from "../learn/learn-scene";
+import { regionsOf, topRegions } from "../learn/learn-flow";
 import type { GoalApi } from "../learn/goal-api";
 import { LEARN_COPY } from "../learn/copy";
 import { STAR_COPY } from "./copy";
@@ -50,10 +52,14 @@ export interface StarMapHost {
   source: GraphSource;
   /** The same read API used by the learning view, including canonical places. */
   goalApi(): GoalApi;
+  diag?(): LearnDiag | null;
+  onDiag?(fn: () => void): () => void;
   /** 去学点新的 (the empty state's link): the 学点新的 tab. */
   openLearn(topic?: string): void;
   /** Open an existing goal and reveal a node without generating anything. */
   openGoal(mapId: string, nodeId: string): void;
+  /** The same region click as 学点新的, including its existing page/learning flow. */
+  enterRegion(mapId: string, region: string): void;
   /** 看不懂 found a written page: open it, at the section that teaches the node when there is one. */
   showPage(pageId: string, sectionId: string | null): void;
   /** A page got a new title: its note follows. Absent: no note here (the fixture). */
@@ -100,8 +106,10 @@ export class StarMapView extends ItemView {
   private baseScene: Scene | null = null;
   private goalScene: LearnScene | null = null;
   private readonly goalScenes = new Map<string, LearnScene>();
+  private readonly goalMaps = new Map<string, GoalMapOut>();
+  private readonly learningRegions = new Map<string, Set<string>>();
   private sceneRead = 0;
-  private composedFocus: string | null = null;
+  private composedFocus: string | null | undefined = undefined;
   private sceneKey: GraphOut | null = null;
   private focus: string | null = null;
   private selected: string | null = null;
@@ -189,19 +197,25 @@ export class StarMapView extends ItemView {
     this.contentEl.replaceChildren(root);
     this.els = { root, panel, wrap, canvas, tip, zoom, legend, state: null, list };
 
-    this.canvasH = GraphCloud(canvas, {
-      semantic: true,
-      grows: (id) => this.goalScene?.goalOf.has(id) === true,
-      pinned: (id) => this.goalScene?.goalOf.get(id) === realId(id),
-      onGroup: (id) => { if (this.scene?.nodes.has(id)) { this.select(id); return true; } return false; },
-      tokens: root,
-      font: () => getComputedStyle(root).fontFamily,
-      reduced: () => matchMedia("(prefers-reduced-motion: reduce)").matches,
-      onSelect: (id) => { this.select(id); },
-      onHover: (h) => { this.showTip(h); },
+    this.canvasH = goalCloud(canvas, {
+      root, scene: () => this.goalScene, background: "domain",
+      enter: (region) => this.enterRegion(region),
+      canEnter: () => true,
+      inspect: (id) => { this.select(id); },
+      hover: (h) => { this.showTip(h); },
     });
     const cv = this.canvasH;
     this.cleanups.push(this.host.onCssChange(() => { cv.recolor(); this.render(); }));
+    const offDiag = this.host.onDiag?.(() => {
+      if (this.goalScene === null) return;
+      for (const [id, map] of this.goalMaps) {
+        const own = this.goalScenes.get(id);
+        if (own) tintGoalScene(own, map, this.host.diag?.() ?? null);
+      }
+      this.canvasH?.setScene(this.scene);
+      this.render();
+    });
+    if (offDiag) this.cleanups.push(offDiag);
     root.addEventListener("keydown", this.onKey);
     list.addEventListener("keydown", this.onListKey);
     list.addEventListener("focusin", this.onListFocus);
@@ -222,7 +236,7 @@ export class StarMapView extends ItemView {
 
     this.store = new GraphStore(this.host.source, true);
     this.unsubStore = this.store.subscribe(() => { this.update(); });
-    const kChanged = this.host.source.kChanged?.(() => { void this.store?.refresh(); });
+    const kChanged = this.host.source.kChanged?.(() => { this.refresh(); });
     if (kChanged) this.cleanups.push(kChanged);
     const conn = this.host.connection;
     if (conn) {
@@ -258,7 +272,13 @@ export class StarMapView extends ItemView {
   }
 
   /** Reads the graph again (重试; main may call it when the tab is shown again). */
-  refresh(): void { void this.store?.refresh(); this.loadParked(); }
+  refresh(): void {
+    // Goal topology can change while the graph payload stays identical.
+    // Invalidate its read without discarding the currently displayed scene.
+    this.sceneKey = null;
+    this.sceneRead++;
+    void this.store?.refresh(); this.loadParked();
+  }
 
   private focusedGoal(): GoalOut | null { return this.graph?.goals.find((g) => g.map_id === this.focus) ?? null; }
 
@@ -394,7 +414,7 @@ export class StarMapView extends ItemView {
 
   /** Frames the focused goal's points (a goal without points yet: the camera stays). */
   private frameGoal(): void {
-    const S = this.scene, goal = this.focusedGoal();
+    const S = this.scene, goal = this.focusedGoal() ?? (this.graph?.goals.length === 1 ? this.graph.goals[0]! : null);
     if (S === null || goal === null) return;
     const own = this.goalScenes.get(goal.map_id);
     this.canvasH?.frame(own ? [...own.goalDots] : S.order.filter(focusTest(S, goal)), own ? "top" : "block");
@@ -570,6 +590,10 @@ export class StarMapView extends ItemView {
   /** The points of the focused goal's pages that are not skipped (graph.html onPath). */
   private litNodes(): ReadonlySet<string> {
     const g = this.focusedGoal();
+    if (this.goalScene !== null) {
+      const scenes = g === null ? [...this.goalScenes] : [...this.goalScenes].filter(([id]) => id === g.map_id);
+      return new Set(scenes.flatMap(([id, scene]) => [...scene.goalOf].filter(([, region]) => this.learningRegions.get(id)?.has(region)).map(([dot]) => dot)));
+    }
     return g === null ? new Set() : new Set(pathsOf(g).flatMap((x) => x.path).filter((p) => !p.skipped).flatMap((p) => p.node_ids));
   }
 
@@ -582,6 +606,7 @@ export class StarMapView extends ItemView {
     this.render();
     void this.readGoalScene();
     if (mapId !== null) this.frameGoal();
+    else if (this.graph?.goals.length === 1) this.frameGoal();
     else this.canvasH?.fit();
   }
 
@@ -603,9 +628,11 @@ export class StarMapView extends ItemView {
       if (this.closed || version !== this.sceneRead || this.graph !== graph) return;
       let scene = base;
       const goalOf = new Map<string, string>(), goalDots = new Set<string>();
-      this.goalScenes.clear();
+      this.goalScenes.clear(); this.goalMaps.clear(); this.learningRegions.clear();
       for (const { map, places } of maps) {
-        const own = learnScene(scene, map, places, map.title.trim());
+        this.goalMaps.set(map.map_id, map);
+        this.learningRegions.set(map.map_id, new Set(regionsOf(map).filter((r) => r.state === "expanded").map((r) => r.id)));
+        const own = goalScene(scene, map, places, map.title.trim(), this.host.diag?.() ?? null);
         scene = own.scene;
         this.goalScenes.set(map.map_id, own);
         for (const [id, region] of own.goalOf) if (!goalDots.has(id)) goalOf.set(id, region);
@@ -617,6 +644,7 @@ export class StarMapView extends ItemView {
       }
       this.goalScene = { scene, goalOf, goalDots };
       this.scene = scene;
+      this.lit = this.litNodes();
       this.canvasH?.setScene(this.scene);
       this.renderList(); this.render();
       if (this.composedFocus !== this.focus) this.frameGoal();
@@ -869,6 +897,15 @@ export class StarMapView extends ItemView {
   }
 
   // ---- selection ----
+  private enterRegion(id: string): boolean {
+    const goals = [...this.goalScenes].sort(([a], [b]) => Number(b === this.focus) - Number(a === this.focus));
+    for (const [mapId, scene] of goals) {
+      const region = scene.goalOf.get(id);
+      if (region !== undefined) { this.host.enterRegion(mapId, region); return true; }
+    }
+    return false;
+  }
+
   private select(id: string | null, focusCard = false): void {
     if (id !== null && !this.scene?.nodes.has(id)) id = null;
     this.selected = id;

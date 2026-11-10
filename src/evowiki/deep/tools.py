@@ -1322,21 +1322,22 @@ class SubmitTool:
         return ToolResult(content="已提交。")
 
 
-def _read_ref(ws: Workspace) -> Tool:
+def _read_ref(ws: Workspace, guidance: Mapping[str, str] | None) -> Tool:
     """The write-page skill's read_ref (deep@v32); the pack's H8 templates are the workspace's."""
     from evowiki.deep.skill import read_ref_tool
-    return read_ref_tool(lambda: ws.evoui_extra)
+    return read_ref_tool(lambda: ws.evoui_extra, guidance=guidance)
 
 
 def practice_tools(ws: Workspace, *, user_id: str, page_id: str, title: str, kview: KView,
-                   names: Mapping[str, str], teaching: TeachingSpec, checker: Checker) -> list[Tool]:
+                   names: Mapping[str, str], teaching: TeachingSpec, checker: Checker,
+                   guidance: Mapping[str, str] | None = None) -> list[Tool]:
     """A practice run's tools: the same reads, place_component (with a library), write_block and
     render_check as a write round, and `finish` = `SubmitTool`. No plan_page, no write_section."""
     pages = DraftPageStore(ws, user_id, page_id, title)
     place: list[Tool] = [PlaceComponentTool(ws, checker)] if ws.components else []
     # real pictures reach a practice run through draw_visual: an image alone is not something it can submit
     return [ReadKTool(kview, names), ReadPageTool(pages), ReadSpecTool(teaching), *place,
-            _read_ref(ws), DrawVisualTool(ws), WriteBlockTool(ws, checker), RenderCheckTool(ws, checker),
+            _read_ref(ws, guidance), DrawVisualTool(ws), WriteBlockTool(ws, checker), RenderCheckTool(ws, checker),
             SubmitTool(ws)]
 
 
@@ -1382,7 +1383,8 @@ def build_tools(ws: Workspace, *, user_id: str, page_id: str, title: str, kview:
                 names: Mapping[str, str], teaching: TeachingSpec, checker: Checker,
                 known: str, setup: OutlineSetup | None = None,
                 on_outline: Outlined | None = None, other_pages: Sequence[WikiPage] = (),
-                sources: "SourceReader | None" = None) -> list[Tool]:
+                sources: "SourceReader | None" = None,
+                guidance: Mapping[str, str] | None = None) -> list[Tool]:
     """plan_page first (`known`, `setup`, `on_outline`: `PlanPageTool`); place_component only with
     a non-empty library; write_block and render_check always (a placement is render-checked when it
     is made; render_check runs a check again) (the writer composes interactives
@@ -1398,7 +1400,7 @@ def build_tools(ws: Workspace, *, user_id: str, page_id: str, title: str, kview:
                           else [])
     return [PlanPageTool(ws, known=known, setup=setup, on_outline=on_outline),
             ReadKTool(kview, names), ReadPageTool(pages), ReadSpecTool(teaching), *material,
-            *images, WriteSectionTool(ws), *place, _read_ref(ws), DrawVisualTool(ws), WriteBlockTool(ws, checker),
+            *images, WriteSectionTool(ws), *place, _read_ref(ws, guidance), DrawVisualTool(ws), WriteBlockTool(ws, checker),
             RenderCheckTool(ws, checker),
             FinishTool(ws, page_id, None, check_rules(teaching))]
 

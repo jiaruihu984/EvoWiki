@@ -149,10 +149,11 @@ class ReadRefTool:
     skill's prefix). Results over READ_REF_CHARS say which refs are left for the next call."""
 
     def __init__(self, skills: Sequence[Skill], includes: Includes = {},  # noqa: B006 - read only
-                 appendix: Appendix | None = None):
+                 appendix: Appendix | None = None, *, transform: Callable[[str], str] | None = None):
         self._skills = {s.name: s for s in skills}
         self._first = skills[0].name if skills else ""
         self._includes, self._appendix = includes, appendix
+        self._transform = transform
         self.spec = spec("read_ref", "读方法说明（参考）。只读这一步实际要用的。", ReadRefArgs, "read")
 
     def names(self) -> list[str]:
@@ -183,7 +184,10 @@ class ReadRefTool:
         out: list[str] = []
         left: list[str] = []
         for n, skill, ref in found:
-            text = f"【{n}】\n" + read_ref(skill, ref, self._includes, self._appendix)
+            body = read_ref(skill, ref, self._includes, self._appendix)
+            if self._transform is not None:
+                body = self._transform(body)
+            text = f"【{n}】\n" + body
             if left or (out and sum(map(len, out)) + len(text) > READ_REF_CHARS):
                 left.append(n)
             else:

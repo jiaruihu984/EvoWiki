@@ -211,6 +211,43 @@ describe("GraphCloud: 学点新的's grow, fade, pulse and pinned names (graphol
     done();
   });
 
+  it("new non-goal points reveal progressively; identical scenes retain animation, titles and drift", () => {
+    const { h, K, frame, done } = setup();
+    const id = K.order[0]!;
+    const partial = { ...K, order: K.order.filter((n) => n !== id), nodes: new Map([...K.nodes].filter(([n]) => n !== id)) };
+    h.setScene(partial); frame(2000);
+    h.setScene(K);
+    expect(h.graph().getNodeAttribute(id, "grow")).toBe(0);
+    frame(2200);
+    const graph = h.graph(), growth = graph.getNodeAttribute(id, "grow") ?? 1, x = graph.getNodeAttribute(id, "x");
+    const title = FakeSigma.last.container.querySelector(".ew-gtitle");
+    h.setScene({ ...K, nodes: new Map(K.nodes) });
+    expect(h.graph()).toBe(graph);
+    expect(FakeSigma.last.container.querySelector(".ew-gtitle")).toBe(title);
+    expect(graph.getNodeAttribute(id, "grow")).toBe(growth);
+    expect(graph.getNodeAttribute(id, "x")).toBe(x);
+    frame(2600);
+    expect(graph.getNodeAttribute(id, "grow") ?? 1).toBeGreaterThan(growth);
+    expect(graph.getNodeAttribute(id, "x")).not.toBe(x);
+    done();
+  });
+
+  it("reduced motion draws newly added points fully and keeps their anchors fixed", () => {
+    const { K, frame, done } = setup();
+    // The renderer reads the preference on every frame, including a live preference change.
+    const reducedBox = document.createElement("div"); document.body.append(reducedBox);
+    Object.defineProperties(reducedBox, { offsetWidth: { value: 800 }, clientWidth: { value: 800 }, clientHeight: { value: 600 } });
+    const reduced = GraphCloud(reducedBox, { tokens: reducedBox, font: () => "sans-serif", reduced: () => true });
+    reduced.setScene(K);
+    reduced.setScene(learnScene(K, draftMap(blocks)).scene);
+    const graph = reduced.graph();
+    const before = graph.mapNodes((id, a) => [id, a.x, a.y, a.grow]);
+    frame(8000);
+    expect(graph.mapNodes((id, a) => [id, a.x, a.y, a.grow])).toEqual(before);
+    expect(graph.nodes().every((id) => graph.getNodeAttribute(id, "grow") === undefined)).toBe(true);
+    reduced.destroy(); reducedBox.remove(); done();
+  });
+
   it("a block whose band changed fades from the colour it showed to its band's", () => {
     const { h, K, frame, at, done } = setup();
     const map = draftMap(blocks);

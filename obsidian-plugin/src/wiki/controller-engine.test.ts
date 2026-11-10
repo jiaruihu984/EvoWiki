@@ -107,11 +107,11 @@ describe("提示词设置: savePrompt / resetPrompt", () => {
     expect(p.value.some((x) => x.edited)).toBe(false);
   });
 
-  it("savePrompt: 「已保存。以后这一步按这个写。」 and the step is edited in the list; resetPrompt: 「已恢复默认。」 and the default text", async () => {
+  it("savePrompt: 「已保存」 and the step is edited in the list; resetPrompt: 「已恢复默认。」 and the default text", async () => {
     const { c, notices } = setup();
     await c.loadEngine();
     expect(await c.savePrompt("write", "我的写法")).toBe(true);
-    expect(notices).toEqual(["已保存。以后这一步按这个写。"]);
+    expect(notices).toEqual(["已保存"]);
     const p = c.state.prompts;
     if (p.kind !== "ready") throw new Error(p.kind);
     expect(p.value.find((x) => x.step === "write")).toMatchObject({ text: "我的写法", edited: true });

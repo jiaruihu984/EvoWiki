@@ -130,7 +130,7 @@ describe("WikiRenderer: re-render keeps focus, caret and scroll (no sidebar <det
     body(r).scrollTop = 40;
     r.update({ ...s });
     expect(document.activeElement?.textContent).toBe(WIKI_COPY.retry);
-    expect(document.activeElement).not.toBe(retry);
+    expect(document.activeElement).toBe(retry);
     expect(body(r).scrollTop).toBe(40);
   });
 });
@@ -187,4 +187,45 @@ describe("WikiRenderer: offline is one line at the top of the sidebar (今天 / 
     r.update({ ...base, conn: "online", tab: "today" });
     expect(r.root.textContent).not.toContain("没能读到");
   });
+});
+
+
+it("unrelated controller refreshes retain Today input, mini canvas and goal rows in the document", () => {
+  const a = fakeActions(), mini = document.createElement("div"), canvas = document.createElement("canvas"), goals = document.createElement("div");
+  mini.append(canvas);
+  const line = document.createElement("div");
+  const r = new WikiRenderer(a, () => fakeCtx(), null, { root: mini, goals: { root: goals, line }, sync: () => undefined });
+  document.body.append(r.root);
+  r.update({ ...base, tab: "today" });
+  const input = r.root.querySelector<HTMLInputElement>('[data-action="learn-topic"]')!;
+  input.value = "unfinished topic"; input.focus(); input.setSelectionRange(3, 7);
+  const oldBody = body(r), next = r.root.querySelector('[data-section="next"]');
+  const mutations: MutationRecord[] = [];
+  const observer = new MutationObserver((records) => mutations.push(...records));
+  observer.observe(oldBody, { childList: true, subtree: true });
+  r.update({ ...base, tab: "today", learnTopic: input.value });
+  mutations.push(...observer.takeRecords()); observer.disconnect();
+  expect(body(r)).toBe(oldBody);
+  expect(r.root.querySelector('[data-action="learn-topic"]')).toBe(input);
+  expect([input.value, input.selectionStart, input.selectionEnd]).toEqual(["unfinished topic", 3, 7]);
+  expect(r.root.contains(canvas)).toBe(true); expect(r.root.contains(goals)).toBe(true);
+  expect(r.root.querySelector('[data-section="next"]')).toBe(next);
+  expect(mutations).toHaveLength(0);
+});
+
+
+it("Today updates busy, configuration and read errors while retaining unaffected sections", () => {
+  const { r } = mount();
+  const ready = { ...base, tab: "today" as const, configured: true };
+  r.update(ready);
+  const oldBody = body(r), learn = r.root.querySelector('[data-section="learn"]');
+  r.update({ ...ready, busy: { what: "organize", abortable: true } });
+  expect(body(r)).toBe(oldBody);
+  expect(r.root.querySelector('[data-section="learn"]')).toBe(learn);
+  r.update({ ...ready, configured: false });
+  expect(r.root.querySelector<HTMLButtonElement>('[data-action="learn-start"]')!.disabled).toBe(true);
+  expect(r.root.querySelector('[data-section="next"]')!.textContent).toContain(WIKI_COPY.needsSettings);
+  r.update({ ...ready, catalog: { kind: "error", message: "failed" } });
+  expect(r.root.querySelector('[data-section="next"] [data-action="retry"]')).not.toBeNull();
+  expect(body(r)).toBe(oldBody);
 });

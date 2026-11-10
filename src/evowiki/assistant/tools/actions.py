@@ -2439,7 +2439,7 @@ def build_action_tools(deps: ActionDeps) -> list[Any]:
         draft("postpone", "把路径上某几页往后放。", PostponeArgs, _postpone),
         draft("set_deadline", "给目标设考试 / 截止日期：复习间隔压到考前；路径顺序不变。",
               DeadlineArgs, _deadline),
-        draft("new_goal", "开一个新学习目标：用户说想学一个新东西时用。要学的目标先分成几大块，"
+        draft("new_goal", "开一个新学习目标：用户说想学一个新东西时用。先根据目标拆解学习路径，"
               "返回分块草稿（卡片上每行一块，用户可以拖动、去掉、加一块再确认；确认后在聊天里一题一题"
               "做摸底）。用户附了资料并想按它学或读懂它时，把资料 id 放进 source_ids；goal 写用户的原话，"
               "附了资料时可以空；先用 web_search 查过这个领域时，把要点放进 notes。结果里有分块和"

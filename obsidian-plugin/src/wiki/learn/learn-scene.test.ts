@@ -6,6 +6,38 @@ import { draftMap } from "./learn-flow";
 import { learnScene } from "./learn-scene";
 
 describe("学点新的's scene draws actual map nodes", () => {
+  it("keeps a stored container's position after projection and reopening", () => {
+    const map = draftMap([{ key: "wq", name: "水质", scope: "" }]);
+    const k: Scene = { order: [], nodes: new Map(), names: new Map(), l1: [], l2: [], anchors: new Map([["wq", { x: -2, y: 3 }]]) };
+    const first = learnScene(k, map, { places: { wq: [7, 8] }, links: [] }, "目标");
+    const reopened = learnScene(k, map, { places: { wq: [7, 8] }, links: [] }, "目标");
+    expect(first.scene.nodes.get("wq")).toMatchObject({ x: -2, y: 3 });
+    expect(reopened.scene.nodes.get("wq")).toEqual(first.scene.nodes.get("wq"));
+    expect(first.scene.anchors).toBe(k.anchors);
+    expect(first.scene.order).toEqual(["wq"]);
+  });
+
+  it("reads the saved parent and child coordinates without laying them out again after reopening", () => {
+    const draft = draftMap([{ key: "wq", name: "Water", scope: "" }]);
+    const children: MapNodeOut[] = ["a", "b", "c", "d"].map((id) => ({ ...draft.nodes[0]!, id, name: id, kind: "concept", parent: "wq", scope: "", enter: "learn" }));
+    const map = { ...draft, nodes: [...draft.nodes, ...children] };
+    const k = learnScene(null, map, null, "Goal").scene;
+    // Reading a saved picture must not apply a second centring/clearance rule.
+    const positions: [number, number][] = [[-0.0956, 0], [0, 0.2], [0.0956, 0], [0, -0.2]];
+    children.forEach((child, index) => Object.assign(k.nodes.get(child.id)!, { x: positions[index]![0], y: positions[index]![1] }));
+    // Containers omitted from the base drawing retain their saved anchor.
+    k.nodes.delete("wq");
+    k.order = k.order.filter((id) => id !== "wq");
+    for (const g of k.l1) { g.members = g.members.filter((id) => id !== "wq"); g.all = g.all.filter((id) => id !== "wq"); }
+    k.anchors = new Map([["wq", { x: 0, y: 0.4 }]]);
+    const drawn = learnScene(k, map, null, "Goal").scene;
+    expect(drawn.nodes.get("wq")).toMatchObject({ x: 0, y: 0.4 });
+    children.forEach((child, index) => expect(drawn.nodes.get(child.id)).toMatchObject({ x: positions[index]![0], y: positions[index]![1] }));
+    expect(k.anchors.get("wq")).toEqual({ x: 0, y: 0.4 });
+    const reopened = learnScene(k, map, null, "Goal").scene;
+    expect([...reopened.nodes]).toEqual([...drawn.nodes]);
+  });
+
   it("an unsplit region stays one point regardless of the concepts named in its scope, in draft and confirmed maps", () => {
     const map = draftMap([{ key: "wq", name: "水质与环境", scope: "水温、pH 和 GH / KH、硝化" }, { key: "x", name: "空块", scope: "" }]);
     for (const value of [map, { ...map, map_id: "confirmed-map" }]) {

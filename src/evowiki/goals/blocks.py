@@ -15,7 +15,7 @@ looking at its members. The fixes are prompt / harness, never code caps:
    whole goal; each block `{name, level, summary, covers: [短名词…], target?, existing_id?}`, plus
    `title` and `reference`.
    `covers` are the small topics a block holds — not the next level's nodes, only there so the
-   model and the learner see the borders. Rules (BLOCKS_GUIDE, marked as step 先分几大块): split by
+   model and the learner see the borders. Rules (BLOCKS_GUIDE, marked as step 拆解学习路径): split by
    what the learner does / meets, not by discipline type; one topic belongs to exactly one block;
    blocks of similar size (a one-page block joins a neighbour); reuse an existing node only after
    looking at what it contains (the known rows list every node's parts, a hub's members too).
@@ -346,7 +346,7 @@ class _BlocksOut(BaseModel):
 
 # --- prompts ----------------------------------------------------------------------------------
 
-# How to split into blocks, what the learner reads and how it is worded (step 先分几大块, marked so
+# How to split into blocks, what the learner reads and how it is worded (step 拆解学习路径, marked so
 # the 参数 tab can edit it). intake@v30 on the prompt-review branch: the user's own rewrite
 # (2026-10-28); the blocks call no longer carries the shared 拆成知识点 guidance (DECOMPOSE_GUIDE),
 # its scope rules are in here. intake@v32: that text on S1's goal record (his words fenced, the
@@ -416,7 +416,7 @@ REPLY_FIELDS = ("framing", "caveat", "mainline", "start", "question")
 # S1, the blocks (intake@v32: the user's rewrite on S1). {words}: his words beyond the goal line,
 # fenced (WORDS_BLOCK); {known} / {notes} / {sources}: the existing graph, the web notes and an
 # attached material's outline (读懂这篇: UNDERSTAND_BLOCK), each only when there is one.
-BLOCKS_PROMPT = """你在为一个个人学习 Wiki 把学习目标分成几大块。学习者会先在聊天里查看和修改这些块，可以合并、删除、改名或新增。进入某一块后，才会继续拆成具体知识点和页面。
+BLOCKS_PROMPT = """你在为一个个人学习 Wiki 根据学习目标拆解学习路径，确定各个学习模块。学习者会先在聊天里查看和修改这些块，可以合并、删除、改名或新增。进入某一块后，才会继续拆成具体知识点和页面。
 学习目标：「{goal}」
 {words}如果 Wiki 已有相关节点，会提供节点名称、ID 和内容范围。如果之前查过资料，也会提供相关信息。
 {known}{notes}{sources}

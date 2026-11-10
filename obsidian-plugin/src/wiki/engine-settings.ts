@@ -70,17 +70,27 @@ function promptsSection(x: HTMLElement, s: WikiState, a: WikiActions): void {
     const b = el("button", "pz-go pz-plain");
     b.type = "button";
     b.dataset.prompt = st.step;
-    b.append(el("span", "", st.name));
+    b.append(el("span", "", () => PROMPT_COPY.name(st.step)));
     r.append(b, el("span", "faint", () => (st.edited ? PROMPT_COPY.edited : "")));
     if (st.format_note !== "") { const t = el("span", "faint", () => (PROMPT_COPY.formatChanged)); t.dataset.role = "format-note"; r.append(t); }
     r.onclick = () => a.openPrompt(st.step);
-    const tip = qTip(st.description, () => (PROMPT_COPY.helpLabel(st.name)));
+    const tip = qTip(st.description, () => (PROMPT_COPY.helpLabel(PROMPT_COPY.name(st.step))));
     tip.addEventListener("click", (e) => e.stopPropagation());
     r.append(tip);
     x.append(r);
   };
   const p: Load<PromptStepOut[]> = s.prompts;
-  if (p.kind === "ready") { for (const st of p.value) row(st); return; }
+  if (p.kind === "ready") {
+    for (const category of ["global", "planning", "materials", "writing", "review", "assistant", "memory"] as const) {
+      const steps = p.value.filter((st) => st.category === category);
+      if (!steps.length) continue;
+      const heading = el("h3", "", () => PROMPT_COPY.category(category));
+      heading.dataset.promptCategory = category;
+      x.append(heading);
+      for (const st of steps.sort((a, b) => Number(b.step === "language_style") - Number(a.step === "language_style"))) row(st);
+    }
+    return;
+  }
   if (p.kind === "error") append(x, failLine(s, "prompts-error", () => a.loadEngine(), "prompts-reload"));
   else x.append(mutedLine(WIKI_COPY.loading));
 }

@@ -95,6 +95,7 @@ function card(ref: CheckRef, pageTitle: string, c: CheckOut, s: WikiState, error
   const answered = c.answered !== null;
   const disabled = answered || s.busy !== null;
   const box = el("div", "check");
+  box.dataset.answered = String(answered);
   const head = el("div", "h");
   head.append(questionIcon(), labelNode(() => (WIKI_COPY.checkTitle)));
   box.append(head, el("div", "stem", c.stem));

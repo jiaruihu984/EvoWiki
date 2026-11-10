@@ -378,8 +378,22 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
     this.registerView(STARMAP_VIEW_TYPE, (leaf) => new StarMapView(leaf, {
       source: this.graphSource(),
       goalApi: () => this.goalApi(),
+      diag: () => this.assistant.diag(),
+      onDiag: (fn) => {
+        let seen = JSON.stringify(this.assistant.diag());
+        return this.assistant.subscribe(() => {
+          const now = JSON.stringify(this.assistant.diag());
+          if (now !== seen) { seen = now; fn(); }
+        });
+      },
       openLearn: (topic = "") => { void this.openLearn(topic, true); },
       openGoal: (mapId, nodeId) => { void this.openGoal(mapId, nodeId); },
+      enterRegion: (mapId, region) => {
+        void this.openGoal(mapId).then(() => {
+          const view = this.app.workspace.getLeavesOfType(LEARN_VIEW_TYPE)[0]?.view;
+          if (view instanceof LearnView && view.state?.state.map?.map_id === mapId) view.enterRegion(region);
+        }).catch(() => { ewNotice(WIKI_COPY.failed); });
+      },
       // A written page opens (at the section that teaches the node); a page in the trash is written again, not opened.
       showPage: (pageId, sectionId) => {
         const c = this.wikiController();
@@ -1109,8 +1123,11 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
       if (!this.wikiDemo) c.subscribe(() => { if (this.wiki === c && c.state.busy === null) this.followPending(); });
       // The headers' writing line follows the controller's write (停止 while it streams, 已停止 · 重新写 after).
       if (!this.wikiDemo) {
+        this.register(c.onWriteProgress(() => { if (this.wiki === c) this.refreshNoteHeaders(); }));
+        this.register(c.onWritesChanged(() => { if (this.wiki === c) this.refreshNoteHeaders(); }));
         c.subscribe(() => {
-          const key = JSON.stringify([c.writingPage(), c.state.stopped?.pageId ?? null]);
+          const pageId = c.writingPage();
+          const key = JSON.stringify([pageId, c.state.stopped?.pageId ?? null, pageId === null ? null : c.noteWriteProgress(pageId)]);
           if (this.wiki !== c) return;
           if (key === this.headerRunKey) return;
           this.headerRunKey = key;
@@ -1603,7 +1620,9 @@ export default class EvoWikiPlugin extends Plugin implements SettingsHost {
         const f = v.file, i = f ? headerInfo(this.frontmatter(f), f.basename) : null;
         // the page's write as this plugin runs it: 停止 while it streams, 已停止 · 重新写 after (the demo wiki writes nothing)
         const run = i !== null && this.wiki !== null && !this.wikiDemo ? this.wiki.writeRun(i.pageId) : null;
-        return i !== null && run !== null ? { ...i, run } : i;
+        if (i === null) return null;
+        const progress = this.wiki !== null && !this.wikiDemo ? this.wiki.noteWriteProgress(i.pageId) : undefined;
+        return { ...i, ...(run !== null ? { run } : {}), ...(progress !== undefined ? { writing: true, progress } : {}) };
       };
       if (this.headerWatch.has(v)) applyHeader(v.containerEl, info(), this.headerHooks);
       else this.headerWatch.set(v, watchHeader(v.containerEl, info, this.headerHooks));

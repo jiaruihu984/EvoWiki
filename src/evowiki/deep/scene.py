@@ -21,7 +21,7 @@ from evowiki.deep.evoui.contracts import MAX_FALLBACK_CHARS, BlockDraft, EvoUIBl
 from evowiki.deep.evoui.markup import MarkupError, compile_markup
 from evowiki.deep.evoui.validate import validate as validate_block
 from evowiki.deep.language import messages_in_language, output_rule
-from evowiki.deep.visual import Brief, Drawn, VisualFailed, tried_note
+from evowiki.deep.visual import VISUAL_GUIDE, Brief, Drawn, VisualFailed, tried_note
 from evowiki.goals.language import Language
 from evowiki.llm.budget import BudgetExceededError
 from evowiki.llm.chat import ChatMessage, ChatRequest, ImagePart, ImagesNotSupported
@@ -33,7 +33,7 @@ from evowiki.llm.usage import Account
 log = logging.getLogger("evowiki.deep.scene")
 
 PURPOSE = "deep.scene"
-PROMPT_VERSION = "scene@v4"
+PROMPT_VERSION = "scene@v5"
 REPAIR = "没过检查：{why}\n改好后输出完整的几段。"
 REVISE = "\n\n这一段已经有一张图（编译后的 JSON）：\n{block}\n要改的地方：{change}\n其余尽量不动，用标记写出修改后的完整几段。"
 LOOK = ("上面是你画的图的真实渲染：依次是刚打开、改变控件之后、最窄的窗格、深色模式。\n{notes}\n"
@@ -44,7 +44,7 @@ MAX_REASONS = 6
 
 @cache
 def system_text() -> str:
-    return load_skill("draw-scene").body
+    return load_skill("draw-scene").body + "\n\n" + VISUAL_GUIDE
 
 
 def _tag(text: str, tag: str) -> str:

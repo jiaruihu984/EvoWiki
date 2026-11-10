@@ -39,6 +39,7 @@ from evowiki.llm.models import (
     ProviderResponse,
 )
 from evowiki.llm.prices import PriceTable, load_prices
+from evowiki.llm.writing_style import STYLE_END, STYLE_HEADER
 from evowiki.tokens import estimate_tokens
 
 ENV_KEYS: dict[str, str] = {"anthropic": "ANTHROPIC_API_KEY", "deepseek": "DEEPSEEK_API_KEY"}
@@ -537,7 +538,7 @@ def _mark_message(msg: dict[str, Any]) -> dict[str, Any]:
     return msg
 
 
-def _mark_split(msg: dict[str, Any], stable: int) -> dict[str, Any]:
+def _mark_split(msg: dict[str, Any], stable: int, *, mark_tail: bool = True) -> dict[str, Any]:
     """The first user message with a stable prefix: two text blocks, the stable part with a
     1-hour marker and the rest with a 5-minute one (the text is unchanged when joined). The whole
     text stable: one block with the 1-hour marker."""
@@ -548,7 +549,7 @@ def _mark_split(msg: dict[str, Any], stable: int) -> dict[str, Any]:
         last = text[-1]
         if last.get("type") != "text":
             return _mark_message(msg)
-        head_msg = _mark_split({**msg, "content": last["text"]}, stable)
+        head_msg = _mark_split({**msg, "content": last["text"]}, stable, mark_tail=mark_tail)
         tail_blocks = head_msg["content"]
         if isinstance(tail_blocks, str):
             return {**msg, "content": [*text[:-1], {"type": "text", "text": tail_blocks}]}
@@ -559,22 +560,27 @@ def _mark_split(msg: dict[str, Any], stable: int) -> dict[str, Any]:
     if not tail.strip():
         return {**msg, "content": [{"type": "text", "text": text,
                                     "cache_control": dict(_EPHEMERAL_1H)}]}
+    tail_block: dict[str, Any] = {"type": "text", "text": tail}
+    if mark_tail:
+        tail_block["cache_control"] = dict(_EPHEMERAL)
     return {**msg, "content": [
         {"type": "text", "text": head, "cache_control": dict(_EPHEMERAL_1H)},
-        {"type": "text", "text": tail, "cache_control": dict(_EPHEMERAL)}]}
+        tail_block]}
 
 
 def cache_marked_messages(messages: list[dict[str, Any]],
-                          stable: int = 0) -> list[dict[str, Any]]:
+                          stable: int = 0, *, max_breakpoints: int = 3) -> list[dict[str, Any]]:
     """Breakpoints on the first user message (the round's prompt) and on the last message (the
     moving tail); one marker when they are the same message. `stable` > 0: the first user
     message's leading `stable` characters are shared across requests and get their own 1-hour
-    breakpoint (`_mark_split`): at most 3 markers here, 2 without a stable prefix."""
+    breakpoint (`_mark_split`): at most 3 markers here, 2 without a stable prefix.
+    When only 2 fit, prefer the stable prefix and final message over the first moving tail."""
     out = list(messages)
     first = next((i for i, m in enumerate(out) if m.get("role") == "user"), None)
     if first is not None:
         if stable > 0 and isinstance(out[first]["content"], (str, list)):
-            out[first] = _mark_split(out[first], stable)
+            out[first] = _mark_split(
+                out[first], stable, mark_tail=max_breakpoints >= 3 or first == len(out) - 1)
         else:
             out[first] = _mark_message(out[first])
     if out and len(out) - 1 != first:
@@ -586,15 +592,36 @@ def stable_system_purpose(purpose: str) -> bool:
     return any(purpose == p or purpose.startswith(p + ".") for p in STABLE_SYSTEM_PURPOSES)
 
 
+def _cached_system(model: str, system: str, *, cache_body: bool) -> Any:
+    """Split a cacheable global style from task instructions without changing any text.
+
+    Tools precede system blocks in Anthropic's cache identity. The style is a reusable prefix
+    when those earlier tools (and other cache-affecting API settings) also match.
+    """
+    minimum = CACHE_MIN_TOKENS.get(model, CACHE_MIN_DEFAULT)
+    end = system.find(f"\n{STYLE_END}") if system.startswith(f"{STYLE_HEADER}\n") else -1
+    if end >= 0:
+        end += len(f"\n{STYLE_END}")
+        prefix, body = system[:end], system[end:]
+        if estimate_tokens(prefix) >= minimum:
+            blocks = [{"type": "text", "text": prefix,
+                       "cache_control": dict(_EPHEMERAL_1H)}]
+            if body:
+                block: dict[str, Any] = {"type": "text", "text": body}
+                if cache_body:
+                    block["cache_control"] = dict(_EPHEMERAL_1H)
+                blocks.append(block)
+            return blocks
+    if cache_body:
+        return [{"type": "text", "text": system, "cache_control": dict(_EPHEMERAL_1H)}]
+    return system
+
+
 def complete_system(model: str, purpose: str, system: str) -> Any:
-    """The `system` of a complete() call. A stable system prompt (STABLE_SYSTEM_PURPOSES) long
-    enough for the model to cache gets a 1-hour breakpoint (no tools: it is the whole shared
-    prefix); anything else is the plain string (a marker on a per-request prompt only adds the
-    cache-write premium)."""
-    if (not stable_system_purpose(purpose)
-            or estimate_tokens(system) < CACHE_MIN_TOKENS.get(model, CACHE_MIN_DEFAULT)):
-        return system
-    return [{"type": "text", "text": system, "cache_control": dict(_EPHEMERAL_1H)}]
+    """Cache global style for any purpose; cache task bodies only when known to be stable."""
+    cache_body = (stable_system_purpose(purpose)
+                  and estimate_tokens(system) >= CACHE_MIN_TOKENS.get(model, CACHE_MIN_DEFAULT))
+    return _cached_system(model, system, cache_body=cache_body)
 
 
 def _bounded_create(provider: str, client: Any, request: Any,
@@ -865,8 +892,8 @@ class AnthropicProvider:
     def complete(
         self, model: str, request: LLMRequest, json_schema: dict[str, Any]
     ) -> ProviderResponse:
-        # Prompt caching: only a stable system prompt is marked (`complete_system`, 1-hour TTL);
-        # the prompt itself is per-request, so a marker there would only add the write premium.
+        # Global style and known stable task instructions get separate 1-hour breakpoints;
+        # the per-request prompt is never marked.
         resp = self._create(
             request, lambda c: c.beta.messages.create,
             model=model,
@@ -907,10 +934,10 @@ class AnthropicProvider:
         bounded by progress, not in total: `_bounded_create`); the response is the same."""
         # Prompt caching: at most 4 cache_control breakpoints, added here only (the ChatRequest
         # and its hash are unchanged, so recordings still replay). 1-hour TTL on the prefixes
-        # shared across requests, which come first: the system block (it caches tools + system;
-        # the last tool instead when there is no system) and the first user message's stable
-        # prefix (`ChatMessage.stable_prefix`); 5-minute TTL on the moving tail after them: the
-        # end of the first user message and the last message. `request.cache` False: no
+        # shared across requests: global style, fixed task instructions (or the last tool when
+        # there is no system), then the first user's stable prefix. With two system breakpoints,
+        # omit the first user's moving-tail marker and retain the final message's 5-minute one.
+        # `request.cache` False: no
         # breakpoint at all (a one-off request, nothing would read the cache it writes).
         tool_kwargs: dict[str, Any] = {}
         has_system = bool(request.system.strip())
@@ -921,9 +948,10 @@ class AnthropicProvider:
                 tools[-1] = {**tools[-1], "cache_control": dict(_EPHEMERAL_1H)}
             tool_kwargs["tools"] = tools
             tool_kwargs["tool_choice"] = {"type": request.tool_choice}
-        system: Any = ([{"type": "text", "text": request.system,
-                         "cache_control": dict(_EPHEMERAL_1H)}]
-                       if has_system and request.cache else request.system)
+        system = (_cached_system(model, request.system, cache_body=True)
+                  if has_system and request.cache else request.system)
+        system_breakpoints = (sum("cache_control" in block for block in system)
+                              if isinstance(system, list) else 0)
         first_user = next((m for m in request.messages if m.role == "user"), None)
         messages = anthropic_messages(request)
         binding: dict[str, Any] = {}
@@ -936,7 +964,8 @@ class AnthropicProvider:
                            "betas": [THINKING_BINDING_BETA]}
         if request.cache:
             messages = cache_marked_messages(
-                messages, stable=first_user.stable_prefix if first_user is not None else 0)
+                messages, stable=first_user.stable_prefix if first_user is not None else 0,
+                max_breakpoints=4 - system_breakpoints - int(bool(request.tools) and not has_system))
         kwargs: dict[str, Any] = dict(
             model=model,
             max_tokens=max_output(16000),

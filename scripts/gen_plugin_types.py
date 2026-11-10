@@ -276,7 +276,7 @@ def _consts() -> list[Table | Value]:
         t("FOLLOWUP_CHOICES", W.FollowupChoice, "FollowupChoice"),
         t("WRITE_STATES", ftype(W.WriteOut, "state"), "WriteState"),
         v("MAX_PROMPT_CHARS", BP.MAX_CHARS, doc="The longest saved prompt (bot/prompts.py MAX_CHARS)."),
-        v("PROMPT_STEP_INFO", lambda: {s.key: {"name": s.name, "description": s.description} for s in STEPS},
+        v("PROMPT_STEP_INFO", lambda: {s.key: {"name": s.name, "description": s.description, "category": s.category} for s in STEPS},
           doc="Learner-facing prompt step names and help, from llm/prompt_steps.STEPS."),
         v("INFER_PARAM_INFO", lambda: {p: {"label": IP.PATH_LABEL[p], "description": IP.PATH_DESCRIPTION[p]} for p in IP.PATHS},
           doc="Learner-facing assessment parameter labels and help, from teach/infer_paths."),

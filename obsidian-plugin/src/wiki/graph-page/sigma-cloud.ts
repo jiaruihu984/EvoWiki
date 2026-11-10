@@ -65,8 +65,8 @@ const CLICK_SLOP = 4, COLOR_WAIT_MS = 200, COLOR_TRIES = 50, SHOWN_SETTLE_MS = 2
 /** A map with more points than this is not measured pair by pair: `place_missing` keeps at least MAP_MIN_GAP between them. */
 const GAP_MEASURED_UP_TO = 1500, MAP_MIN_GAP = 0.1;
 export const ROOM_DOT = 5.5, ROOM_LINE = 1.2, GLOW_MID = 0.3, GLOW_OUT = 0.11, GLOW_BREATH = 0.07, GLOW_BACK = 0.25;
-/** Territory washes: their colours (cool, none like a band), opacity, and blur as a share of the spacing between points. */
-export const WASH = ["#4e79a7", "#76b7b2", "#b07aa1", "#9c755f", "#a0cbe8", "#d4a6c8", "#79706e", "#499894"], WASH_ALPHA = 0.16, WASH_BLUR = 0.45;
+/** Domain/group colours, distinct from mastery bands. */
+export const WASH = ["#4e79a7", "#76b7b2", "#b07aa1", "#9c755f", "#a0cbe8", "#d4a6c8", "#79706e", "#499894"];
 
 export interface NodeAttrs {
   x: number; y: number; size: number; color: string; label: string;
@@ -147,7 +147,6 @@ export function readCloudColors(from: Element): Colors {
 const rng = (seed: number) => (): number => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 const mixHex = (a: string, b: string, t: number): string => "#" + mix(hex(a), hex(b), t).map((v) => v.toString(16).padStart(2, "0")).join("");
 const FREE = "~";
-
 /** The top group a level-1 group stands in: its level-2 group when the scene has it, else itself. */
 function topOf(S: Scene): (g: string | null) => string {
   const l2 = new Set(S.l2.map((g) => g.id)), parent = new Map(S.l1.map((g) => [g.id, g.parent]));
@@ -629,77 +628,49 @@ export function GraphCloud(container: HTMLElement, o: GraphCloudOpts): GraphClou
   };
   if (layer) sigma.on("afterRender", placeTitles);
 
-  // territories: each point paints a disc in its group's colour on an off-screen canvas, which is laid behind the
-  // canvases blurred and faint (where groups meet, the later one's colour wins: a border, softened by the blur)
+  // Reuse the original learning glow. The graph's colour still identifies its domain/group.
   const wash = o.small ? null : container.insertBefore(document.createElement("canvas"), container.firstChild);
-  const ink = wash ? document.createElement("canvas") : null;
   if (wash) wash.className = "ew-gwash";
-  let hue = new Map<ZoomLevel, Map<string, string>>(), domainOf = new Map<string, string>(), unit = 0, zoomFrom: ZoomLevel | null = null, zoomAt = 0, dotsFrom = 0, dotsAt = -Infinity;
+  let hue = new Map<ZoomLevel, Map<string, string>>(), domainOf = new Map<string, string>(), zoomFrom: ZoomLevel | null = null, zoomAt = 0, dotsFrom = 0, dotsAt = -Infinity;
   const paintWash = (): void => {
-    const wc = wash?.getContext("2d"), ic = ink?.getContext("2d");
-    if (!wash || !ink || !wc || !ic) return;
+    const wc = wash?.getContext("2d");
+    if (!wash || !wc) return;
     const W = container.clientWidth, H = container.clientHeight, dpr = window.devicePixelRatio || 1;
-    for (const c of [wash, ink]) if (c.width !== Math.round(W * dpr) || c.height !== Math.round(H * dpr)) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
+    if (wash.width !== Math.round(W * dpr) || wash.height !== Math.round(H * dpr)) { wash.width = Math.round(W * dpr); wash.height = Math.round(H * dpr); }
     wc.setTransform(1, 0, 0, 1, 0, 0); wc.clearRect(0, 0, wash.width, wash.height);
     if (W === 0 || H === 0 || G.order === 0) return;
     const levelKey = (l: ZoomLevel, a: NodeAttrs): string | null => (l === "point" ? null : l === "domain" ? domainOf.get(a.top) ?? a.top : l === "top" ? a.top : a.group ?? a.top);
-    if (o.washByBand) {
-      // big-goal-demo.html: each group of the level a round glow in its points' average colour, breathing a little
-      const glowLevel = (l: ZoomLevel, share: number): void => {
-        const groups = new Map<string, { x: number; y: number; n: number; colors: string[]; ps: { x: number; y: number }[]; mine: boolean }>();
-        G.forEachNode((_, a) => {
-          const key = levelKey(l, a);
-          if (key === null) return;
-          const p = sigma.graphToViewport(a), g = groups.get(key) ?? { x: 0, y: 0, n: 0, colors: [], ps: [], mine: false };
-          g.x += p.x; g.y += p.y; g.n++; g.colors.push(G.getNodeAttribute(_, "color")); g.ps.push(p); g.mine ||= state.focus === null || state.focus.has(_); groups.set(key, g);
-        });
-        const now = o.reduced() ? null : performance.now();
-        wc.setTransform(dpr, 0, 0, dpr, 0, 0);
-        for (const [key, g] of groups) {
-          const x = g.x / g.n, y = g.y / g.n, far = Math.max(...g.ps.map((p) => Math.hypot(p.x - x, p.y - y)));
-          const phase = [...key].reduce((t, ch) => t + ch.charCodeAt(0), 0);
-          const rr = Math.max(46, far * 1.6 + 30) * (now === null ? 1 : 1 + GLOW_BREATH * Math.sin(now / 1900 + phase));
-          const tint = glowTint(g.colors), glow = wc.createRadialGradient(x, y, 0, x, y, rr);
-          const strength = share * (g.mine ? 1 : GLOW_BACK);
-          glow.addColorStop(0, rgb(tint, GLOW_MID * strength)); glow.addColorStop(0.6, rgb(tint, GLOW_OUT * strength)); glow.addColorStop(1, rgb(tint, 0));
-          wc.fillStyle = glow; wc.beginPath(); wc.arc(x, y, rr, 0, Math.PI * 2); wc.fill();
-        }
-      };
-      const t = zoomFrom === null || o.reduced() ? 1 : (performance.now() - zoomAt) / CROSSFADE_MS;
-      if (t >= 1) { zoomFrom = null; glowLevel(zoom, 1); return; }
-      glowLevel(zoomFrom!, 1 - t);
-      glowLevel(zoom, t);
-      return;
-    }
-    const a0 = sigma.graphToViewport({ x: 0, y: 0 }), a1 = sigma.graphToViewport({ x: unit, y: 0 });
-    const r = Math.min(80, Math.max(8, Math.hypot(a1.x - a0.x, a1.y - a0.y) * 0.9));
-    /** One level's regions at this share of the wash's strength. */
-    const paintLevel = (l: ZoomLevel, share: number): void => {
-      // the finest level is points far apart: a territory would only be a smudge behind each dot
-      if (l === "point") return;
-      const colors = hue.get(l);
-      ic.setTransform(dpr, 0, 0, dpr, 0, 0); ic.clearRect(0, 0, W, H);
+    // big-goal-demo.html: each group of the level a round glow in its points' average colour, breathing a little
+    const glowLevel = (l: ZoomLevel, share: number): void => {
+      const groups = new Map<string, { x: number; y: number; n: number; colors: string[]; ps: { x: number; y: number }[]; mine: boolean }>();
       G.forEachNode((_, a) => {
-        const c = colors?.get(levelKey(l, a) ?? "");
-        if (c === undefined) return;
-        const p = sigma.graphToViewport(a);
-        if (p.x < -r || p.y < -r || p.x > W + r || p.y > H + r) return;
-        ic.fillStyle = c; ic.beginPath(); ic.arc(p.x, p.y, r, 0, Math.PI * 2); ic.fill();
+        const key = levelKey(l, a);
+        if (key === null) return;
+        const p = sigma.graphToViewport(a), g = groups.get(key) ?? { x: 0, y: 0, n: 0, colors: [], ps: [], mine: false };
+        g.x += p.x; g.y += p.y; g.n++; g.colors.push(G.getNodeAttribute(_, "color")); g.ps.push(p); g.mine ||= state.focus === null || state.focus.has(_); groups.set(key, g);
       });
-      wc.globalAlpha = WASH_ALPHA * share; wc.filter = `blur(${Math.round(r * WASH_BLUR * dpr)}px)`;
-      wc.drawImage(ink, 0, 0);
-      wc.filter = "none"; wc.globalAlpha = 1;
+      const now = o.reduced() ? null : performance.now();
+      wc.setTransform(dpr, 0, 0, dpr, 0, 0);
+      for (const [key, g] of groups) {
+        const x = g.x / g.n, y = g.y / g.n, far = Math.max(...g.ps.map((p) => Math.hypot(p.x - x, p.y - y)));
+        const phase = [...key].reduce((t, ch) => t + ch.charCodeAt(0), 0);
+        const rr = Math.max(46, far * 1.6 + 30) * (now === null ? 1 : 1 + GLOW_BREATH * Math.sin(now / 1900 + phase));
+        const tint = o.washByBand ? glowTint(g.colors) : hex(hue.get(l)?.get(key) ?? ""), glow = wc.createRadialGradient(x, y, 0, x, y, rr);
+        const strength = share * (g.mine ? 1 : GLOW_BACK);
+        glow.addColorStop(0, rgb(tint, GLOW_MID * strength)); glow.addColorStop(0.6, rgb(tint, GLOW_OUT * strength)); glow.addColorStop(1, rgb(tint, 0));
+        wc.fillStyle = glow; wc.beginPath(); wc.arc(x, y, rr, 0, Math.PI * 2); wc.fill();
+      }
     };
     const t = zoomFrom === null || o.reduced() ? 1 : (performance.now() - zoomAt) / CROSSFADE_MS;
-    if (t >= 1) { zoomFrom = null; paintLevel(zoom, 1); return; }
-    paintLevel(zoomFrom!, 1 - t);
-    paintLevel(zoom, t);
+    if (t >= 1) { zoomFrom = null; glowLevel(zoom, 1); return; }
+    glowLevel(zoomFrom!, 1 - t);
+    glowLevel(zoom, t);
   };
   if (wash) sigma.on("afterRender", paintWash);
   // the dots' size follows the camera (nodeReducer)
   sigma.getCamera().on("updated", () => { sigma.refresh({ skipIndexation: true }); });
 
-  let scene: Scene | null = null;
+  let scene: Scene | null = null, sceneKey = "";
   // floating: every point on its own slow ellipse around its laid-out place (seeded, so a graph floats the same way)
   let home = new Map<string, { x: number; y: number; w: number; p: number; q: number }>(), home0 = new Map<string, { x: number; y: number }>(), amp = 0, raf = 0, last = -Infinity;
   // when the data moved the map: each point glides from where it stood
@@ -708,7 +679,6 @@ export function GraphCloud(container: HTMLElement, o: GraphCloudOpts): GraphClou
     const r = rng(23);
     gapWorld = nearestGap(G);
     amp = FLOAT_AMP * gapWorld;
-    unit = WASH_REACH;
     if (G.order > 0) {
       // the map's own box: fixed, so the camera at ratio 1 is the whole map, whatever the box's shape. It holds the territories
       // too, blur included, not only the points; the thumbnail has none
@@ -716,8 +686,12 @@ export function GraphCloud(container: HTMLElement, o: GraphCloudOpts): GraphClou
       mapW = Math.max(...xs) - Math.min(...xs) + 2 * pad; mapH = Math.max(...ys) - Math.min(...ys) + 2 * pad;
       sigma.setCustomBBox({ x: [Math.min(...xs) - pad, Math.max(...xs) + pad], y: [Math.min(...ys) - pad, Math.max(...ys) + pad] });
     } else sigma.setCustomBBox(null);
-    home = new Map([...home0].map(([id, p]) => [id, { x: p.x, y: p.y, w: (2 * Math.PI) / (FLOAT_PERIOD[0] + r() * (FLOAT_PERIOD[1] - FLOAT_PERIOD[0])) / 1000,
-      p: r() * 2 * Math.PI, q: r() * 2 * Math.PI }]));
+    home = new Map([...home0].map(([id, p]) => {
+      const prior = home.get(id);
+      return [id, { ...p,
+        w: prior?.w ?? (2 * Math.PI) / (FLOAT_PERIOD[0] + r() * (FLOAT_PERIOD[1] - FLOAT_PERIOD[0])) / 1000,
+        p: prior?.p ?? r() * 2 * Math.PI, q: prior?.q ?? r() * 2 * Math.PI }];
+    }));
   };
   // grow / fade (cloud-anim.ts): when each growing point was born, each fading point's colour and start
   const born = new Map<string, number>();
@@ -871,6 +845,9 @@ export function GraphCloud(container: HTMLElement, o: GraphCloudOpts): GraphClou
     levels: () => (scene === null ? [] : zoomTitles(scene).levels),
     worldOf: (id) => home0.get(id) ?? null,
     setScene(S) {
+      const key = JSON.stringify(S === null ? null : [S.order, [...S.nodes.values()], [...S.names], [...(S.anchors ?? [])], S.l1, S.l2, S.domains]);
+      if (key === sceneKey) return;
+      sceneKey = key;
       const fresh = G.order === 0;
       C = readCloudColors(o.tokens);
       hov = null;
@@ -881,22 +858,31 @@ export function GraphCloud(container: HTMLElement, o: GraphCloudOpts): GraphClou
       // where the server moved a point (the map changed with the data): it glides there from where it stood
       const moved = new Map<string, { x: number; y: number }>();
       G.forEachNode((id, a) => { const h = home.get(id); if (was.hasNode(id) && h !== undefined && Math.hypot(h.x - a.x, h.y - a.y) > 1e-6) moved.set(id, { x: h.x, y: h.y }); });
-      glide = moved.size > 0 && !o.reduced() ? { from: moved, at: now } : null;
+      if (o.reduced() || G.order === 0) glide = null;
+      else if (moved.size > 0) glide = { from: moved, at: now };
       // a goal's point new to the cloud grows in (one after another); one whose band changed fades from what it showed
       // one after another, the whole of it in about a second however many there are
       let k = 0;
-      const growing = G.filterNodes((id) => !was.hasNode(id) && o.grows?.(id) === true).length, stagger = Math.min(GROW_STAGGER, GROW_TOTAL_MS / Math.max(1, growing));
+      const shouldGrow = (id: string): boolean => o.grows?.(id) === true || !fresh;
+      const growing = G.filterNodes((id) => !was.hasNode(id) && shouldGrow(id)).length, stagger = Math.min(GROW_STAGGER, GROW_TOTAL_MS / Math.max(1, growing));
       G.forEachNode((id, a) => {
         if (!was.hasNode(id)) {
-          if (o.grows?.(id) === true && !o.reduced()) { born.set(id, now + k++ * stagger); G.setNodeAttribute(id, "grow", 0); }
+          if (shouldGrow(id) && !o.reduced()) { born.set(id, now + k++ * stagger); G.setNodeAttribute(id, "grow", 0); }
           return;
         }
         const g = was.getNodeAttribute(id, "grow");
         if (g !== undefined) G.setNodeAttribute(id, "grow", g);
         const shown = was.getNodeAttribute(id, "color");
-        if (shown !== a.color && !o.reduced()) { fades.set(id, { from: shown, at: now }); G.setNodeAttribute(id, "color", shown); }
+        if (shown !== a.color && !o.reduced()) {
+          if (was.getNodeAttribute(id, "band") !== a.band || !fades.has(id)) fades.set(id, { from: shown, at: now });
+          G.setNodeAttribute(id, "color", shown);
+        }
       });
       settle();
+      // A data refresh must not snap floating points back to their anchors for a frame.
+      if (!o.reduced()) G.forEachNode((id) => {
+        if (was.hasNode(id)) G.mergeNodeAttributes(id, { x: was.getNodeAttribute(id, "x"), y: was.getNodeAttribute(id, "y") });
+      });
       sigma.setGraph(G);
       makeTitles(S);
       needs = S !== null && o.semantic === true ? levelNeeds(S) : new Map<ZoomLevel, number>();

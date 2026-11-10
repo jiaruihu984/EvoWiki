@@ -27,6 +27,7 @@ from evowiki.wikiapp.events import (
     GraphSaved,
     WikiEvent,
 )
+from evowiki.wikiapp.split_layout import place_split_children
 from evowiki.wikiapp.state import WikiState
 
 log = logging.getLogger(__name__)
@@ -41,7 +42,9 @@ def graph_apply(state: WikiState, graph: NodeGraph, action: GraphAction) -> Grap
     kept = [r.model_copy(update={"x": old[r.id].x, "y": old[r.id].y})
             if r.id in old and r.x is None and r.y is None else r for r in graph.nodes]
     fresh = not old and all(r.x is None and r.y is None for r in kept)
-    return GraphSaved(graph=place_missing(graph.updated(nodes=kept)), action=action,
+    grown = place_split_children(graph.updated(nodes=kept), state.maps.values(),
+                                 {r.id for r in state.graph.nodes})
+    return GraphSaved(graph=place_missing(grown), action=action,
                       layout=LAYOUT_VERSION if fresh and kept else 0)
 
 

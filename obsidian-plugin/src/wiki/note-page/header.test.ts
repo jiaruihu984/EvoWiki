@@ -31,24 +31,24 @@ describe("buildHeader / ensureHeader", () => {
     const fm = { evowiki_page_id: "p1", cssclasses: ["evowiki-page"], "evowiki-status": "writing" };
     const i = headerInfo(fm, "x")!;
     expect(i.writing).toBe(true);
-    expect(buildHeader(i).querySelector(".ew-ws")?.textContent).toBe("生成中");
-    expect(buildHeader({ ...i, writing: false }).querySelector(".ew-ws")).toBeNull();
+    expect(buildHeader(i).querySelector(".ew-note-write-progress")?.textContent).toBe("生成中");
+    expect(buildHeader({ ...i, writing: false }).querySelector(".ew-note-write-progress")).toBeNull();
     expect(headerInfo({ ...fm, "evowiki-status": undefined }, "x")!.writing).toBeUndefined();
   });
 
   it("a write this plugin streams: 生成中 + 停止 (calls stop); after 停止: 已停止 + 重新写 (restarts that page)", () => {
     const hooks = { stop: vi.fn(), restart: vi.fn() };
-    const w = buildHeader({ ...info, writing: true, run: "writing" }, hooks).querySelector(".ew-ws")!;
+    const w = buildHeader({ ...info, writing: true, run: "writing" }, hooks).querySelector(".ew-note-write-progress")!;
     expect(w.textContent).toBe("生成中停止");
-    expect(w.querySelector("i")).not.toBeNull();
+    expect(w.querySelector(".ew-spin")).not.toBeNull();
     (w.querySelector("[data-action=stop]") as HTMLButtonElement).click();
     expect(hooks.stop).toHaveBeenCalledOnce();
-    const st = buildHeader({ ...info, run: "stopped" }, hooks).querySelector(".ew-ws")!;
+    const st = buildHeader({ ...info, run: "stopped" }, hooks).querySelector(".ew-note-write-progress")!;
     expect(st.textContent).toBe("已停止重新写");
     (st.querySelector("[data-action=restart]") as HTMLButtonElement).click();
     expect(hooks.restart).toHaveBeenCalledWith("p2");
     // a write it does not stream (the Bot's): plain 生成中, no button
-    expect(buildHeader({ ...info, writing: true }, hooks).querySelector(".ew-ws button")).toBeNull();
+    expect(buildHeader({ ...info, writing: true }, hooks).querySelector(".ew-note-write-progress button")).toBeNull();
   });
 
   it("the header is redrawn when the write's state changes", () => {
@@ -56,7 +56,26 @@ describe("buildHeader / ensureHeader", () => {
     const hooks = { stop: vi.fn(), restart: vi.fn() };
     ensureHeader(parent, { ...info, run: "writing" }, null, hooks);
     expect(ensureHeader(parent, { ...info, run: "stopped" }, null, hooks)).toBe(true);
-    expect(parent.querySelector(".ew-ws")?.textContent).toBe("已停止重新写");
+    expect(parent.querySelector(".ew-note-write-progress")?.textContent).toBe("已停止重新写");
+  });
+
+  it("one gray progress bar follows metadata, with real pass/section ticks and a retained spinner", () => {
+    const parent = document.createElement("div");
+    const hooks = { stop: vi.fn(), restart: vi.fn() };
+    const writing = { ...info, run: "writing" as const, progress: { pass: 2, section: 1, of: 4 } };
+    ensureHeader(parent, writing, null, hooks);
+    const header = parent.firstElementChild!;
+    expect([...header.children].map((c) => c.tagName)).toEqual(["H1", "DL", "DIV"]);
+    expect(header.querySelectorAll(".ew-topline")).toHaveLength(1);
+    expect(header.querySelector(".ew-ws")).toBeNull();
+    expect(header.querySelector(".ew-topline")?.textContent).toBe("生成中 · 第 2 轮 · 1 / 4 节停止");
+    expect(header.querySelector(".ew-spin")).not.toBeNull();
+    expect(ensureHeader(parent, { ...writing, progress: { pass: 2, section: 3, of: 4 } }, null, hooks)).toBe(true);
+    expect(parent.querySelector(".ew-topline")?.textContent).toBe("生成中 · 第 2 轮 · 3 / 4 节停止");
+    const background = buildHeader({ ...info, writing: true, progress: { pass: null, section: 0, of: 3 } }, hooks);
+    expect(background.querySelector(".ew-topline")?.textContent).toBe("生成中 · 0 / 3 节");
+    expect(background.querySelector(".ew-spin")).not.toBeNull();
+    expect(background.querySelector("button")).toBeNull();
   });
 
   it("app.js renderNote's DOM inside a .ew.ew-inline wrapper: h1, then dl.ew-meta 目标 / 更新于", () => {

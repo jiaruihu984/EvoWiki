@@ -202,7 +202,24 @@ def split_events(snap: Snapshot, node_id: str, res: IntakeResult, *, reason: Spl
     graph = ops.split(g, node_id, kids, links, change_id=new_id("g"), at=now, why=WHY[reason],
                       summary=f"把「{parent.name}」拆成了几个小点", words=words,
                       reused=[c.id for c in res.concepts if c.reused and g.node(c.id) is not None])
-    aspect, wiki = graph_events(state, snap.k, graph, "split", now=now, new_id=new_id,
+    # Use the very map that will be saved below, before assigning world positions.
+    m = state.maps.get(map_id) if map_id is not None else None
+    here = m.node(node_id) if m is not None else None
+    order = tuple(ids[c.id] for c in res.concepts)
+    saved_map = None
+    if m is not None and here is not None:
+        layout_flag = marked(state, {node_id: False, **{ids[c.id]: c.atomic for c in res.concepts
+                                                      if c.atomic is not None}},
+                             {node_id: parent.name, **{ids[c.id]: c.name for c in res.concepts}})
+        layout_state = state.model_copy(update={"graph": graph})
+        if layout_flag is not None:
+            layout_state = apply_event(layout_state, WikiEvent(event_id="layout", ts=now, body=layout_flag))
+        children, _ = child_nodes(layout_state, m, here, order, {ids[c.id]: c.name for c in res.concepts},
+                                  scopes={ids[c.id]: c.in_goal for c in res.concepts if c.in_goal})
+        saved_map = m.replace(here.model_copy(update={"state": "expanded"}), *children)
+    layout_state = (state.model_copy(update={"maps": {**state.maps, saved_map.map_id: saved_map}})
+                    if saved_map is not None else state)
+    aspect, wiki = graph_events(layout_state, snap.k, graph, "split", now=now, new_id=new_id,
                                 aspects={ids[c.id]: c.aspects for c in new})
     after = _apply(state, wiki)
     flag = marked(after, {node_id: False, **{ids[c.id]: c.atomic for c in res.concepts
@@ -212,16 +229,10 @@ def split_events(snap: Snapshot, node_id: str, res: IntakeResult, *, reason: Spl
         ev = WikiEvent(event_id=new_id("wev"), ts=now, body=flag)
         wiki.append(ev)
         after = apply_event(after, ev)
-    m = after.maps.get(map_id) if map_id is not None else None
-    here = m.node(node_id) if m is not None else None
-    order = tuple(ids[c.id] for c in res.concepts)
-    if m is not None and here is not None:
-        shown = {ids[c.id]: c.name for c in res.concepts}
-        children, _ = child_nodes(after, m, here, order, shown,
-                                  scopes={ids[c.id]: c.in_goal for c in res.concepts if c.in_goal})
-        saved = m.replace(here.model_copy(update={"state": "expanded"}), *children)
+    if saved_map is not None:
         wiki.append(WikiEvent(event_id=new_id("wev"), ts=now,
-                              body=GoalMapSaved(record=saved, action="expanded")))
+                              body=GoalMapSaved(record=saved_map, action="expanded")))
+    graph = after.graph
     return SplitEvents(children=order, change=graph.changes[-1], graph=graph,
                        questions={ids[c.id]: c.question for c in res.concepts},
                        aspect=tuple(aspect), wiki=wiki, added=tuple(ids[c.id] for c in new))

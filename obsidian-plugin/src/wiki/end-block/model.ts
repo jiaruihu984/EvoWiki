@@ -56,7 +56,6 @@ export function endModel(s: WikiState, pageId: string): EndModel | null {
 
 /** What the strip at the top of the page says (one line at a time); null = nothing. */
 export type TopLine =
-  | { kind: "working"; text: string }
   | { kind: "changed"; text: string; canUndo: boolean; undo: UndoState }
   /** The hand edit in the note could not go up: the note stays as typed; 恢复 is the way out. */
   | { kind: "hand-failed"; text: string; note: string; conflict?: boolean }
@@ -80,15 +79,15 @@ export function changeSummary(m: FeedbackMarkOut): string {
 }
 
 /**
- * Priority: feedback being handled > organizing > the feedback result (撤销) > a confirmed materials draft (撤销) > the
- * collapsed-page line. Which model wrote the page is never shown (the switch to a fallback writer is internal).
+ * Organizing uses the note header's progress strip. Otherwise show the feedback result (撤销), a confirmed materials
+ * draft (撤销), or the collapsed-page line. Which model wrote the page is never shown.
  */
 export function topLine(s: WikiState, pageId: string): TopLine | null {
   const p = s.page;
   if (p.kind !== "open" || p.page.page_id !== pageId || !p.page.organized) return null;
   const e = s.pageEnd[pageId] ?? EMPTY_END;
-  // 按当前状态重新组织 (app.js: 「正在看你掌握到哪、列大纲…」 while the page is organized again).
-  if (s.busy?.what === "organize") return { kind: "working", text: WIKI_COPY.outlining };
+  // The note header owns the one writing strip, including stop / restart and live progress.
+  if (s.busy?.what === "organize") return null;
   if (e.handFailed !== null) return { kind: "hand-failed", text: e.handFailed.text, note: e.handFailed.note, ...(e.handFailed.conflict ? { conflict: true } : {}) };
   const m = p.page.feedback;
   const hand = p.page.hand_edit;

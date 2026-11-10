@@ -64,7 +64,7 @@ EvoWiki 是一款基于 **Obsidian** 的桌面端 AI 学习 Wiki。
 
 Evowiki不止文字，创新UI系统可以让LLM生成多种多样适合教学理解的可操作组件帮助学习。
 
-![音阶、语言闪卡和排序算法的互动页面](docs/media/interactive-learning/interactive-learning.gif)
+![音阶、语言闪卡、排序算法和钢材性能的互动页面](docs/media/interactive-learning/interactive-learning.gif)
 
 ### 越学越完整的个人知识库
 

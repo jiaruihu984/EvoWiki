@@ -464,6 +464,7 @@ def build_eyes_gateway(env: Mapping[str, str], pool: ConnectionPool, meter: Usag
     Anthropic provider (whether or not the main generator is Anthropic), metered to the user's
     account without tiers (as the deep tier is), every call logged. None without an Anthropic
     key. An unpriced vision model fails startup (`check_prices`)."""
+    from evowiki.harness.source import reader
     from evowiki.llm.models import ModelRef
     from evowiki.sources.claude_pages import vision_model
 
@@ -475,7 +476,7 @@ def build_eyes_gateway(env: Mapping[str, str], pool: ConnectionPool, meter: Usag
     check_prices([config], prices)
     return Gateway(config, PgCallLog(pool), mode="record", providers={"anthropic": anthropic},
                    attempts=PgAttemptLog(pool), clock=clock, record_max_attempts=1,
-                   usage=UsageControl(meter, prices), profile=profile)
+                   usage=UsageControl(meter, prices), profile=profile, harness=reader(pool))
 
 
 def build_page_readers(env: Mapping[str, str], pool: ConnectionPool, meter: UsageMeter,

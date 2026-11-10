@@ -1011,7 +1011,7 @@ export class FakeWikiApi implements WikiApi {
     return this.run("putPrompt", [step, text], () => {
       this.promptOut(step);
       const t = text.trim();
-      if (!t) throw http(422, PROMPT_EMPTY);
+      if (!t && step !== "language_style") throw http(422, PROMPT_EMPTY);
       if (t.length > 4000) throw http(422, PROMPT_TOO_LONG);
       if (t.includes("⟦") || t.includes("⟧")) throw http(422, PROMPT_MARKERS);
       const low = t.toLowerCase();

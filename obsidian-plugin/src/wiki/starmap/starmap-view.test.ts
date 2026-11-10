@@ -17,6 +17,7 @@ import type { GoalApi } from "../learn/goal-api";
 import { FakeGoalApi } from "../learn/goal-fake";
 import { NestedGoalApi, NESTED_MAP } from "../learn/nested-goal-kit";
 import { learnScene } from "../learn/learn-scene";
+import type { LearnDiag } from "../learn/learn-view";
 import { buildScene } from "../graph-page/scene";
 import { STAR_COPY } from "./copy";
 import { regionWord, STARMAP_VIEW_TYPE, StarMapView, type StarMapHost } from "./starmap-view";
@@ -40,7 +41,7 @@ beforeEach(() => {
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); noticeHost().replaceChildren(); document.body.replaceChildren(); });
 
 interface Opts { api?: GoalApi; load?: () => Promise<unknown>; offline?: boolean; demo?: boolean; connection?: StarMapHost["connection"]; fail?: Partial<Record<"split" | "skip" | "want" | "editPath" | "splitRow", boolean>>;
-  writes?: GraphSource["writes"]; splitGate?: Promise<void>; waits?: StarMapHost["waits"]; kChanged?: GraphSource["kChanged"] }
+  writes?: GraphSource["writes"]; splitGate?: Promise<void>; waits?: StarMapHost["waits"]; kChanged?: GraphSource["kChanged"]; diag?: StarMapHost["diag"]; onDiag?: StarMapHost["onDiag"] }
 function make(o: Opts = {}) {
   const fx = new GraphFixture();
   const calls: [string, ...unknown[]][] = [];
@@ -57,13 +58,14 @@ function make(o: Opts = {}) {
     ...(o.writes ? { writes: o.writes } : {}),
     ...(o.kChanged ? { kChanged: o.kChanged } : {}),
   };
-  const openLearn = vi.fn(), openGoal = vi.fn();
+  const openLearn = vi.fn(), openGoal = vi.fn(), enterRegion = vi.fn();
   let cssFn: (() => void) | null = null;
   const unsubCss = vi.fn();
   const showPage = vi.fn(), writePage = vi.fn(), openRow = vi.fn();
   const pendingApi = new FakeGoalApi({ roundMs: 0 });
   pendingApi.getMap = () => new Promise(() => {}); // These tests isolate the base graph while the map read is pending.
-  const host: StarMapHost = { source, goalApi: () => o.api ?? pendingApi, openLearn, openGoal, showPage, writePage, openRow, onCssChange: (fn) => { cssFn = fn; return unsubCss; }, ...(o.connection ? { connection: o.connection } : {}),
+  const host: StarMapHost = { source, goalApi: () => o.api ?? pendingApi, openLearn, openGoal, enterRegion, showPage, writePage, openRow, onCssChange: (fn) => { cssFn = fn; return unsubCss; }, ...(o.connection ? { connection: o.connection } : {}),
+    ...(o.diag ? { diag: o.diag } : {}), ...(o.onDiag ? { onDiag: o.onDiag } : {}),
     ...(o.waits ? { waits: o.waits } : {}) };
   const view = new StarMapView({} as WorkspaceLeaf, host);
   document.body.append(view.contentEl);
@@ -80,13 +82,22 @@ function make(o: Opts = {}) {
   const goalButtons = (): HTMLButtonElement[] => all<HTMLButtonElement>(".ew-goal");
   const pathTitles = (): string[] => all(".ew-pages li .ew-t").map((t) => t.firstChild!.textContent!);
   const open = async (): Promise<void> => { await view.onOpen(); await flush(); };
-  return { view, fx, calls, load, openLearn, openGoal, showPage, writePage, openRow, root, q, all, button, state, pickNode, card, goalButtons, pathTitles, open, css: () => cssFn?.(), unsubCss };
+  return { view, fx, calls, load, openLearn, openGoal, enterRegion, showPage, writePage, openRow, root, q, all, button, state, pickNode, card, goalButtons, pathTitles, open, css: () => cssFn?.(), unsubCss };
 }
 type M = ReturnType<typeof make>;
 /** The Sigma the page drew with (jsdom: the fake). */
 const sigma = (): FakeSigma => FakeSigma.last;
 /** Zoomed in to the block level, where the dots are, and their fade over. */
-const atBlocks = async (): Promise<void> => { sigma().camera.ratio = 0.4; sigma().graphToViewport = (p: { x: number; y: number }) => ({ x: p.x * 3000, y: p.y * 3000 }); sigma().emit("afterRender"); await new Promise((r) => setTimeout(r, 300)); };
+const atBlocks = async (): Promise<void> => {
+  sigma().camera.ratio = 0.4;
+  sigma().graphToViewport = (p: { x: number; y: number }) => ({ x: p.x * 3000, y: p.y * 3000 });
+  sigma().emit("afterRender");
+  // performance.now is controlled above: a wall-clock sleep cannot finish
+  // the actual semantic-zoom/dot crossfade when EvoWiki motion is enabled.
+  clock += 300;
+  sigma().emit("afterRender");
+  await flush();
+};
 /** 数学's points (the fixture's map_math). */
 const MATH = ["vec", "mul", "eig", "der", "grad", "mean", "var", "cond", "pca"];
 /** The camera sits in the middle of these points' box, moved up by the room for a title (framed at block level). */
@@ -114,6 +125,40 @@ describe("知识图谱: a wait with no page (page-waits.ts)", () => {
 });
 
 describe("the focused goal shares 学点新的's composed scene", () => {
+  it("updates the same assessment tint immediately without refetching maps or moving nodes", async () => {
+    const api = new NestedGoalApi(); await api.enterRegion(NESTED_MAP, "A");
+    const getMap = vi.spyOn(api, "getMap");
+    const graph = new GraphFixture().graph();
+    graph.goals = [{ ...graph.goals[0]!, map_id: NESTED_MAP, name: "黑壳虾", nodes: [], path_id: null, path: [], paths: [] }];
+    let marked = false, changed = (): void => undefined;
+    const stop = vi.fn();
+    const m = make({ api, load: () => Promise.resolve(graph), diag: (): LearnDiag => ({ asking: null, marks: marked ? { A: "know" } : {}, open: true }), onDiag: (fn) => { changed = fn; return stop; } });
+    await m.open(); await flush();
+    const reads = getMap.mock.calls.length;
+    const before = m.view.canvasHandle!.worldOf("A");
+    marked = true; changed();
+    expect(m.view.canvasHandle!.graph().getNodeAttribute("A", "band")).toBe("known");
+    expect(m.view.canvasHandle!.worldOf("A")).toEqual(before);
+    expect(getMap).toHaveBeenCalledTimes(reads);
+    await m.view.onClose(); expect(stop).toHaveBeenCalledOnce();
+  });
+
+  it("a chart point and its block title use the existing learning region action", async () => {
+    const api = new NestedGoalApi(); await api.enterRegion(NESTED_MAP, "A");
+    const graph = new GraphFixture().graph();
+    graph.goals = [{ ...graph.goals[0]!, map_id: NESTED_MAP, name: "黑壳虾", nodes: [], path_id: null, path: [], paths: [] }];
+    const m = make({ api, load: () => Promise.resolve(graph) }); await m.open(); await flush();
+    await atBlocks();
+    sigma().emit("clickNode", { node: "A2" });
+    expect(m.enterRegion).toHaveBeenLastCalledWith(NESTED_MAP, "A");
+    const title = m.all<HTMLElement>(".ew-gtitle").find((e) => e.textContent === api.map().nodes.find((n) => n.id === "A")!.name)!;
+    title.click();
+    expect(m.enterRegion).toHaveBeenCalledTimes(2);
+    expect(m.openGoal).not.toHaveBeenCalled();
+    expect(m.calls).toEqual([]);
+    await m.view.onClose();
+  });
+
   it("uses the same nodes, coordinates and links, including actual parent spokes and canonical place links", async () => {
     const api = new NestedGoalApi(); await api.enterRegion(NESTED_MAP, "A");
     const places = { places: { A: [0.1, 0.2] as [number, number], B: [0.7, 0.8] as [number, number] }, links: [["A", "B"] as [string, string]] };
@@ -373,7 +418,7 @@ describe("the cloud: Sigma.js + graphology (their layout, labels, camera)", () =
     await m.view.onClose();
   });
 
-  it("＋ / － go one level a press (reduced motion: at once); past the coarsest, one camera step; a new graph keeps where the learner put it", async () => {
+  it("＋ / － go one level a press; past the coarsest, one camera step; a new graph keeps where the learner put it", async () => {
     const m = make();
     await m.open();
     const h = m.view["canvasH"]!;
@@ -511,7 +556,7 @@ describe("the node card (graph.html nodeCard)", () => {
     expect(copies).toHaveLength(2);
     expect(new Set(copies.map((id) => String(sigma().graph.getNodeAttribute(id, "color")))).size).toBe(1);
     for (const goal of m.fx.graph().goals) {
-      m.view.focusOn(goal.map_id); await flush();
+      m.view.focusOn(goal.map_id); await atBlocks();
       const visible = copies.filter((id) => sigma().node(id).color === sigma().graph.getNodeAttribute(id, "color"));
       expect(visible).toHaveLength(1);
       sigma().emit("clickNode", { node: visible[0]! });

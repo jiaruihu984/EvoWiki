@@ -23,7 +23,8 @@ import { FM_KEYS, PAGE_CSS_CLASS, STATUS_WRITING } from "../note/format";
  * no mark. `run` (the wiki controller's, header-run below): "writing" = this plugin streams the page's write, the line gets
  * 停止; "stopped" = 停止 was clicked, the line reads 已停止 with 重新写.
  */
-export interface HeaderInfo { pageId: string; title: string; goal: string; updated: string; writing?: boolean; run?: "writing" | "stopped" }
+export interface HeaderProgress { pass: number | null; section: number | null; of: number | null }
+export interface HeaderInfo { pageId: string; title: string; goal: string; updated: string; writing?: boolean; run?: "writing" | "stopped"; progress?: HeaderProgress }
 /** What the line's buttons do (main.ts: the wiki controller's stop / restart). */
 export interface HeaderHooks { stop(): void; restart(pageId: string): void }
 
@@ -58,18 +59,28 @@ export function headerInfo(fm: unknown, basename: string): HeaderInfo | null {
     ...(str(f[FM_KEYS.status]) === STATUS_WRITING ? { writing: true } : {}) };
 }
 
-const keyOf = (i: HeaderInfo): string => JSON.stringify([i.pageId, i.title, i.goal, i.updated, i.writing, i.run]);
+const keyOf = (i: HeaderInfo): string => JSON.stringify([i.pageId, i.title, i.goal, i.updated, i.writing, i.run, i.progress]);
+
+function progressLabel(i: HeaderInfo): string {
+  const p = i.progress;
+  const parts = [WIKI_COPY.sectionWritingShort];
+  if (p?.pass != null) parts.push(tr("note.header.pass", { pass: p.pass }));
+  if (p?.section != null && p.of != null && p.of > 0) parts.push(tr("note.header.sections", { section: p.section, of: p.of }));
+  return parts.join(" · ");
+}
 
 /**
- * The writing line under the title (`span.ws`, app.js paintWrites): 生成中 (the pulsing dot) + 停止 while this plugin
- * streams the write; 已停止 + 重新写 after 停止; plain 生成中 for a write it does not stream (the Bot's); else nothing.
+ * One gray progress strip below the metadata: spinner + real write progress + 停止 for the local stream;
+ * 已停止 + 重新写 after 停止; spinner + real progress without controls for background writes.
  */
 function writeLine(i: HeaderInfo, hooks: HeaderHooks | null): HTMLElement | null {
-  const ws = el("span", "ws");
+  const ws = el("div", "topline note-write-progress");
+  ws.setAttribute("role", "status");
+  ws.setAttribute("aria-live", "polite");
   if (i.run === "writing" && hooks !== null) {
     const b = btn(() => (WIKI_COPY.stop), "xs", () => hooks.stop());
     b.dataset.action = "stop";
-    ws.append(el("i"), labelNode(() => (WIKI_COPY.sectionWritingShort)), b);
+    ws.append(el("i", "spin"), labelNode(() => progressLabel(i)), b);
     return ws;
   }
   if (i.run === "stopped" && hooks !== null) {
@@ -78,7 +89,7 @@ function writeLine(i: HeaderInfo, hooks: HeaderHooks | null): HTMLElement | null
     ws.append(labelNode(() => (WIKI_COPY.stopped)), b);
     return ws;
   }
-  if (i.writing === true) { ws.append(labelNode(() => (WIKI_COPY.sectionWritingShort))); return ws; }
+  if (i.writing === true) { ws.append(el("i", "spin"), labelNode(() => progressLabel(i))); return ws; }
   return null;
 }
 
@@ -94,9 +105,9 @@ export function buildHeader(i: HeaderInfo, hooks: HeaderHooks | null = null): HT
   if (i.goal !== "") m.append(el("dt", "", () => tr("note.header.goal")), el("dd", "", i.goal));
   if (i.updated !== "") m.append(el("dt", "", () => tr("note.header.updated")), el("dd", "", i.updated));
   host.append(el("h1", "", i.title));
+  host.append(m);
   const line = writeLine(i, hooks);
   if (line !== null) host.append(line);
-  host.append(m);
   return host;
 }
 

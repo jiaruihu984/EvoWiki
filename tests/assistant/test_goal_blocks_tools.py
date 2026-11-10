@@ -776,9 +776,9 @@ def test_goal_and_background_have_no_caps_of_their_own():
 def test_new_goal_says_which_step_it_is_on():
     from evowiki.assistant.status_line import blocks_step_line
     from evowiki.goals.blocks import BLOCKS_STEP
-    assert blocks_step_line(BLOCKS_STEP) == "正在把目标分成几大块"
-    assert blocks_step_line(BLOCKS_STEP, ["蛋白互作"]) == "正在看《蛋白互作》，分成几大块"
-    assert blocks_step_line(BLOCKS_STEP, ["甲", "乙"]) == "正在看《甲》等 2 份资料，分成几大块"
+    assert blocks_step_line(BLOCKS_STEP) == "正在拆解学习路径"
+    assert blocks_step_line(BLOCKS_STEP, ["蛋白互作"]) == "正在看《蛋白互作》，拆解学习路径"
+    assert blocks_step_line(BLOCKS_STEP, ["甲", "乙"]) == "正在看《甲》等 2 份资料，拆解学习路径"
 
 
 def test_new_goal_reports_its_call_as_it_starts(env):
@@ -792,7 +792,7 @@ def test_new_goal_reports_its_call_as_it_starts(env):
         calls_seen.append(s.calls(OUTLINE_PURPOSE))
     res = env.tools["new_goal"].run({"goal": GOAL}, CTX.model_copy(update={"progress": say}))
     assert res.error is None, res.content
-    assert lines == ["正在把目标分成几大块"]
+    assert lines == ["正在拆解学习路径"]
     assert calls_seen == [0]                          # the line before the call
 
 

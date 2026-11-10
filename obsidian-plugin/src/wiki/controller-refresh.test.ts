@@ -28,6 +28,38 @@ function neverOffline(s: Setup): void {
 }
 
 describe("Important 1: a failed refresh GET keeps the write's result line", () => {
+  it("note progress reads the actual streamed section counts before notifying listeners and clears at the end", async () => {
+    const s = setup();
+    const ticks: { section: number | null; of: number | null }[] = [];
+    const off = s.c.onWriteProgress((p) => {
+      if (p.ended) return;
+      const progress = s.c.noteWriteProgress(p.pageId)!;
+      expect(progress.section).toBe(p.done);
+      expect(progress.of).toBe(p.of);
+      ticks.push(progress);
+    });
+    await firstPage(s.c);
+    off();
+    expect(ticks.length).toBeGreaterThan(1);
+    expect(ticks[0]?.section).toBe(0);
+    expect(ticks.some((p) => p.section !== null && p.section > 0)).toBe(true);
+    expect(s.c.noteWriteProgress("p1")).toBeUndefined();
+    s.c.dispose();
+  });
+
+  it("background note progress reads each server snapshot without offering local run controls", () => {
+    const s = setup();
+    const write = { page_id: "background", run_id: "r1", kind: "organize" as const, state: "writing" as const, pass: 2, section: 1, of: 4, started_at: null, cost_usd: 0 };
+    const snapshot = vi.spyOn(s.c, "writesSnapshot").mockReturnValue({ at: 1, writes: [write] });
+    expect(s.c.noteWriteProgress("background")).toEqual({ pass: 2, section: 1, of: 4 });
+    expect(s.c.writeRun("background")).toBeNull();
+    snapshot.mockReturnValue({ at: 2, writes: [{ ...write, section: 3 }] });
+    expect(s.c.noteWriteProgress("background")?.section).toBe(3);
+    snapshot.mockReturnValue({ at: 3, writes: [] });
+    expect(s.c.noteWriteProgress("background")).toBeUndefined();
+    s.c.dispose();
+  });
+
   it("每天最多: catalog GET offline → 已保存 stays, refreshOffline below it", async () => {
     const ref = setup();
     await firstPage(ref.c);

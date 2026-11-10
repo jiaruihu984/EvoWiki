@@ -17,6 +17,7 @@ from evowiki.agent.skills import Includes, ReadRefTool, Skill, load_skill, read_
 from evowiki.deep.evoui import GROUPS, group_templates
 from evowiki.goals.itemflaws import ITEM_RULES_ZH
 from evowiki.goals.outline_context import PLAIN_CHECK
+from evowiki.llm.prompt_steps import apply_marks
 from evowiki.teach.standard import sections
 
 NAME = "write-page"
@@ -53,8 +54,10 @@ def ref(name: str, extra: Sequence[Mapping[str, Any]] = ()) -> str:
     return read_ref(skill(), name, INCLUDES, _appendix(lambda: extra))
 
 
-def read_ref_tool(extra: Extra = tuple) -> ReadRefTool:
-    return ReadRefTool([skill()], INCLUDES, _appendix(extra))
+def read_ref_tool(extra: Extra = tuple, *, guidance: Mapping[str, str] | None = None) -> ReadRefTool:
+    pinned = dict(guidance or {})
+    return ReadRefTool([skill()], INCLUDES, _appendix(extra),
+                       transform=lambda text: apply_marks(text, pinned)[0])
 
 
 def system_text() -> str:

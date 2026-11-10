@@ -332,7 +332,7 @@ describe("the whole flow (fake data)", () => {
     vi.stubGlobal("matchMedia", () => ({ matches: true }));
     vi.stubGlobal("ResizeObserver", class { observe(): void {} disconnect(): void {} });
     try {
-      const big = new StarMapView({} as WorkspaceLeaf, { source: f.c.graphSource(), goalApi: () => new FakeGoalApi({ roundMs: 0 }), openLearn: () => undefined, openGoal: () => undefined, showPage: () => undefined, writePage: () => undefined, openRow: () => undefined, onCssChange: () => () => undefined });
+      const big = new StarMapView({} as WorkspaceLeaf, { source: f.c.graphSource(), goalApi: () => new FakeGoalApi({ roundMs: 0 }), openLearn: () => undefined, openGoal: () => undefined, enterRegion: () => undefined, showPage: () => undefined, writePage: () => undefined, openRow: () => undefined, onCssChange: () => () => undefined });
       document.body.append(big.contentEl);
       await big.onOpen();
       await wait(() => big.contentEl.querySelector("ul.evowiki-sr-only [data-node]") !== null);

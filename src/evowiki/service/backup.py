@@ -5,7 +5,6 @@ without making the service unavailable. An OS lock fences automatic/manual backu
 implemented in scripts/evowiki_backup.py and always uses a new database.
 """
 
-import errno
 import hashlib
 import json
 import logging
@@ -25,6 +24,8 @@ from pathlib import Path
 import psycopg
 from dotenv import dotenv_values
 from psycopg.conninfo import conninfo_to_dict, make_conninfo
+
+from evowiki.file_lock import file_lock
 
 log = logging.getLogger(__name__)
 
@@ -175,38 +176,8 @@ def _record_failure(cfg: BackupConfig, now: datetime, exc: Exception) -> None:
 
 
 @contextmanager
-def _file_lock(path: Path):
-    """An OS lock is released even when a backup process dies."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a+b") as f:
-        if os.fstat(f.fileno()).st_size == 0:
-            f.write(b"0")
-            f.flush()
-        f.seek(0)
-        try:
-            if sys.platform == "win32":
-                import msvcrt
-                msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
-            else:
-                import fcntl
-                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except OSError as exc:
-            if exc.errno not in (errno.EACCES, errno.EAGAIN):
-                raise
-            raise BackupBusy("a backup is already running") from exc
-        try:
-            yield
-        finally:
-            f.seek(0)
-            if sys.platform == "win32":
-                msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
-            else:
-                fcntl.flock(f, fcntl.LOCK_UN)
-
-
-@contextmanager
 def _backup_lock(cfg: BackupConfig):
-    with _file_lock(cfg.folder / f"{cfg.dbname}.lock"):
+    with file_lock(cfg.folder / f"{cfg.dbname}.lock", busy_error=BackupBusy):
         yield
 
 
@@ -248,7 +219,7 @@ def status(cfg: BackupConfig | None) -> dict:
         elif cfg.ledger is not None and not _current_schema_bundle(files[-1]):
             out["warning"] = "latest backup predates the current schema; run backup again"
     try:
-        with _file_lock(cfg.state_file.with_suffix(".lock")):
+        with file_lock(cfg.state_file.with_suffix(".lock"), busy_error=BackupBusy):
             pass
     except BackupBusy:
         out["running"] = True
@@ -337,7 +308,7 @@ def run_once(cfg: BackupConfig, now: datetime,
     try:
         # Serialize the entire attempt and its result, including destination setup failures.
         # Keep the destination lock too: another instance can share that destination.
-        with _file_lock(cfg.state_file.with_suffix(".lock")):
+        with file_lock(cfg.state_file.with_suffix(".lock"), busy_error=BackupBusy):
             try:
                 with _backup_lock(cfg):
                     return _run_once(cfg, now, dump, force=force)

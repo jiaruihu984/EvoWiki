@@ -1997,6 +1997,7 @@ class PromptStepOut(BaseModel):
 
     step: str
     name: str
+    category: Literal["global", "planning", "materials", "writing", "review", "assistant", "memory"]
     description: str
     text: str
     default_text: str

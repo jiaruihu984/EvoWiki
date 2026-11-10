@@ -750,7 +750,7 @@ describe("学点新的 · 上传附件 (full-demo goalCard, user rulings 2026-10
     gi.value = "  "; gi.dispatchEvent(new Event("input"));
     pick(m, pdf()); await flush(); src.uploaded("ready"); await flush();
     m.button("开始").click(); await flush();
-    expect(m.panel().querySelector(".ew-thinking")!.textContent).toBe("正在把「按《讲义.pdf》学」分成几大块…");
+    expect(m.panel().querySelector(".ew-thinking")!.textContent).toBe("正在为「按《讲义.pdf》学」拆解学习路径…");
   });
 
   it("a goal without a map: the path's rows show their § labels and the coverage line sits under the path (final review #2)", async () => {
@@ -1017,7 +1017,7 @@ describe("学点新的 · chat-first blocks (big-goal-demo.html start → blocks
     await m.view.onClose();
   });
 
-  it("开始: the goal card folds, 正在把「黑壳虾」分成几大块…, then only the folded card while the blocks are talked over; 取消 → the form with the text", async () => {
+  it("开始: the goal card folds, 正在为「黑壳虾」拆解学习路径…, then only the folded card while the blocks are talked over; 取消 → the form with the text", async () => {
     const m = chatHost();
     await m.view.onOpen();
     m.view.openTopic("我要学黑壳虾");
@@ -1028,7 +1028,7 @@ describe("学点新的 · chat-first blocks (big-goal-demo.html start → blocks
     expect(m.sent).toEqual(["我要学黑壳虾\n背景：学过高中生物，想知道黑壳虾是什么、怎么养。"]);
     expect(m.learn).toEqual([{ goal: "我要学黑壳虾", background: "学过高中生物，想知道黑壳虾是什么、怎么养。" }]);   // intent learn_goal
     expect(m.cards().map((c) => c.className)).toEqual(["ew-card ew-done", "ew-thinking"]);
-    expect(m.cards()[1]!.textContent).toBe("正在把「黑壳虾」分成几大块…");
+    expect(m.cards()[1]!.textContent).toBe("正在为「黑壳虾」拆解学习路径…");
     m.row(row({}));
     expect(m.cards().map((c) => c.className)).toEqual(["ew-card ew-done", "ew-card"]);           // the blocks: 学点新的's list
     expect(m.cards()[0]!.querySelector(".ew-goaltext")!.textContent).toBe("我要学黑壳虾");
