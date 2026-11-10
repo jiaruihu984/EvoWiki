@@ -196,7 +196,7 @@ Bot 不是独立的 Agent 架构，而是同一套运行机制的主动模式。
 在希望保存项目的位置打开 PowerShell，例如 D 盘的 Apps 目录：
 
 ```powershell
-git clone https://github.com/jiaruihu984/EvoWiki-product.git EvoWiki
+git clone https://github.com/jiaruihu984/EvoWiki.git EvoWiki
 cd EvoWiki
 uv run --isolated --no-project --with python-dotenv==1.2.4 python scripts/evowiki_run.py init
 ```

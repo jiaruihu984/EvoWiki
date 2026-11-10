@@ -13,7 +13,7 @@ Install [Git for Windows](https://git-scm.com/install/windows), [uv](https://doc
 Choose a project folder, for example on drive D:
 
 ```powershell
-git clone https://github.com/jiaruihu984/EvoWiki-product.git EvoWiki
+git clone https://github.com/jiaruihu984/EvoWiki.git EvoWiki
 cd EvoWiki
 uv run --isolated --no-project --with python-dotenv==1.2.4 python scripts/evowiki_run.py init --language en
 uv run --isolated --no-project --with python-dotenv==1.2.4 python scripts/evowiki_run.py doctor --language en
