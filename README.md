@@ -103,7 +103,7 @@ Evowiki配有RSI自进化系统，让整个系统从各个维度上越用越懂�
 在希望保存项目的位置打开 PowerShell，例如 D 盘的 Apps 目录：
 
 ```powershell
-git clone https://github.com/jiaruihu984/EvoWiki.git
+git clone https://github.com/jiaruihu984/EvoWiki-product.git EvoWiki
 cd EvoWiki
 uv run --isolated --no-project --with python-dotenv==1.2.4 python scripts/evowiki_run.py init
 ```
